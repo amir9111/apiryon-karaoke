@@ -41,7 +41,7 @@ export default function Audience() {
         style={{
           position: "fixed",
           top: "80px",
-          left: "50%",
+          left: "48%",
           transform: "translateX(-50%)",
           zIndex: 50,
           display: "flex",
