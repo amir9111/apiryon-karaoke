@@ -17,17 +17,22 @@ export default function Admin() {
   const queryClient = useQueryClient();
 
   React.useEffect(() => {
+    let mounted = true;
     async function checkAuth() {
       try {
         const currentUser = await base44.auth.me();
-        setUser(currentUser);
-        setLoading(false);
+        if (mounted) {
+          setUser(currentUser);
+          setLoading(false);
+        }
       } catch (error) {
-        console.error("Auth error:", error);
-        setLoading(false);
+        if (mounted) {
+          setLoading(false);
+        }
       }
     }
     checkAuth();
+    return () => { mounted = false; };
   }, []);
 
   const { data: requests = [], isLoading } = useQuery({
