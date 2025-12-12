@@ -3,7 +3,7 @@ import NavigationMenu from "../components/NavigationMenu";
 import ApyironLogo from "../components/ApyironLogo";
 import AudioWave from "../components/AudioWave";
 import FloatingParticles from "../components/FloatingParticles";
-import LiveStats from "../components/LiveStats";
+
 import EventSummaryModal from "../components/EventSummaryModal";
 import { motion } from "framer-motion";
 import { base44 } from "@/api/base44Client";
@@ -32,16 +32,15 @@ export default function Audience() {
     }}>
       <FloatingParticles />
       <NavigationMenu />
-      <LiveStats requests={requests} />
       
       {/* APIRYON Logo - Center Top */}
       <motion.div
-        initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, type: "spring" }}
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1.2, type: "spring", bounce: 0.4 }}
         style={{
           position: "fixed",
-          top: "20px",
+          top: "80px",
           left: "50%",
           transform: "translateX(-50%)",
           zIndex: 50,
@@ -52,16 +51,16 @@ export default function Audience() {
       >
         <motion.div
           animate={{ 
-            scale: [1, 1.05, 1],
-            rotate: [0, 2, -2, 0]
+            scale: [1, 1.08, 1],
+            rotate: [0, 3, -3, 0]
           }}
           transition={{ 
-            duration: 4, 
+            duration: 5, 
             repeat: Infinity,
             ease: "easeInOut"
           }}
         >
-          <ApyironLogo size="small" showCircle={true} />
+          <ApyironLogo size="large" showCircle={true} />
         </motion.div>
       </motion.div>
       
@@ -120,7 +119,7 @@ export default function Audience() {
         }
       `}</style>
 
-      <div style={{ position: "relative", zIndex: 1, minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px 20px" }}>
+      <div style={{ position: "relative", zIndex: 1, minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "320px 20px 40px 20px" }}>
         {/* Current Song - HERO SECTION */}
         {current ? (
           <motion.div
