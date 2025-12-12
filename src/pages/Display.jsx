@@ -1,15 +1,12 @@
 import React from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { QrCode } from "lucide-react";
 import ApyironLogo from "../components/ApyironLogo";
 import AudioWave from "../components/AudioWave";
-import AudienceRating from "../components/AudienceRating";
 import StarRating from "../components/StarRating";
 
 export default function Display() {
-  const queryClient = useQueryClient();
-
   const { data: requests = [] } = useQuery({
     queryKey: ['karaoke-requests'],
     queryFn: () => base44.entities.KaraokeRequest.list('-created_date', 100),
@@ -166,16 +163,8 @@ export default function Display() {
               </div>
             </div>
 
-            {/* Sidebar - Up Next & Rating */}
+            {/* Sidebar - Up Next */}
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-              {/* Audience Rating Component */}
-              {currentSong && (
-                <AudienceRating 
-                  currentSong={currentSong}
-                  onRatingSubmitted={() => queryClient.invalidateQueries({ queryKey: ['karaoke-requests'] })}
-                />
-              )}
-
               <div style={{ 
                 background: "rgba(15,23,42,0.96)", 
                 borderRadius: "20px", 
