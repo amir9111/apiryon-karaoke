@@ -4,10 +4,8 @@ import { base44 } from "@/api/base44Client";
 export default function Home() {
   const [formData, setFormData] = useState({
     singer_name: "",
-    email: "",
     song_title: "",
-    song_artist: "",
-    notes: ""
+    song_artist: ""
   });
   const [status, setStatus] = useState({ type: null, message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -35,10 +33,8 @@ export default function Home() {
     setStatus({ type: "ok", message: "הבקשה נרשמה! בהצלחה 🎤" });
     setFormData({
       singer_name: "",
-      email: "",
       song_title: "",
-      song_artist: "",
-      notes: ""
+      song_artist: ""
     });
     setIsSubmitting(false);
 
@@ -100,33 +96,6 @@ export default function Home() {
 
             <div>
               <label className="block text-[0.9rem] mb-0.5">
-                מייל (לא חובה)
-              </label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="אם תרצה שניצור קשר"
-                className="w-full px-3 py-2.5 rounded-xl border outline-none text-[0.95rem]"
-                style={{
-                  borderColor: "#1f2937",
-                  background: "rgba(15,23,42,0.9)",
-                  color: "#f9fafb"
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = "#22c55e";
-                  e.target.style.boxShadow = "0 0 0 1px rgba(34,197,94,0.5)";
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = "#1f2937";
-                  e.target.style.boxShadow = "none";
-                }}
-              />
-            </div>
-
-            <div>
-              <label className="block text-[0.9rem] mb-0.5">
                 שם השיר
               </label>
               <input
@@ -164,32 +133,6 @@ export default function Home() {
                 onChange={handleChange}
                 placeholder="לדוגמה: חדווה ודוד"
                 className="w-full px-3 py-2.5 rounded-xl border outline-none text-[0.95rem]"
-                style={{
-                  borderColor: "#1f2937",
-                  background: "rgba(15,23,42,0.9)",
-                  color: "#f9fafb"
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = "#22c55e";
-                  e.target.style.boxShadow = "0 0 0 1px rgba(34,197,94,0.5)";
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = "#1f2937";
-                  e.target.style.boxShadow = "none";
-                }}
-              />
-            </div>
-
-            <div>
-              <label className="block text-[0.9rem] mb-0.5">
-                הקדשה / הערות לדי׳גיי
-              </label>
-              <textarea
-                name="notes"
-                value={formData.notes}
-                onChange={handleChange}
-                placeholder="לדוגמה: להנמיך טון, שרים לשרית"
-                className="w-full px-3 py-2.5 rounded-xl border outline-none text-[0.95rem] min-h-[70px] resize-y"
                 style={{
                   borderColor: "#1f2937",
                   background: "rgba(15,23,42,0.9)",

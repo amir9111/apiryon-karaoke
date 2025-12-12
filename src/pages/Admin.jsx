@@ -4,7 +4,18 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 export default function Admin() {
   const [viewMode, setViewMode] = useState("admin");
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const queryClient = useQueryClient();
+
+  React.useEffect(() => {
+    async function checkAuth() {
+      const currentUser = await base44.auth.me();
+      setUser(currentUser);
+      setLoading(false);
+    }
+    checkAuth();
+  }, []);
 
   const { data: requests = [], isLoading } = useQuery({
     queryKey: ['karaoke-requests'],
@@ -65,6 +76,26 @@ export default function Admin() {
 
   const currentSong = requests.find(r => r.status === "performing");
   const waitingList = requests.filter(r => r.status === "waiting");
+
+  if (loading) {
+    return (
+      <div dir="rtl" style={{ background: "#020617", color: "#e5e7eb", minHeight: "100vh", padding: "12px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ fontSize: "1.2rem" }}>טוען...</div>
+      </div>
+    );
+  }
+
+  if (!user || user.email !== "amir.abu300@gmail.com") {
+    return (
+      <div dir="rtl" style={{ background: "#020617", color: "#e5e7eb", minHeight: "100vh", padding: "12px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ textAlign: "center" }}>
+          <div style={{ fontSize: "1.5rem", marginBottom: "10px" }}>🚫</div>
+          <div style={{ fontSize: "1.2rem", fontWeight: "600", marginBottom: "8px" }}>אין לך הרשאה</div>
+          <div style={{ fontSize: "0.9rem", color: "#9ca3af" }}>רק המנהל יכול לגשת למסך הניהול</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div dir="rtl" style={{ background: "#020617", color: "#e5e7eb", minHeight: "100vh", padding: "12px" }}>
