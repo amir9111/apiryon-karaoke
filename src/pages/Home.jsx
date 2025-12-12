@@ -19,6 +19,10 @@ export default function Home() {
   const [status, setStatus] = useState({ type: null, message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
+  const [capturedPhoto, setCapturedPhoto] = useState(null);
+  const [showCamera, setShowCamera] = useState(false);
+  const videoRef = React.useRef(null);
+  const canvasRef = React.useRef(null);
   const [showTerms, setShowTerms] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
 
@@ -76,6 +80,40 @@ export default function Home() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const startCamera = async () => {
+    setShowCamera(true);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+    } catch (err) {
+      setStatus({ type: "error", message: "לא ניתן לגשת למצלמה" });
+      setShowCamera(false);
+    }
+  };
+
+  const capturePhoto = () => {
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    if (video && canvas) {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0);
+      const photoData = canvas.toDataURL('image/jpeg', 0.8);
+      setCapturedPhoto(photoData);
+      stopCamera();
+    }
+  };
+
+  const stopCamera = () => {
+    if (videoRef.current && videoRef.current.srcObject) {
+      videoRef.current.srcObject.getTracks().forEach(track => track.stop());
+    }
+    setShowCamera(false);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -86,9 +124,18 @@ export default function Home() {
 
     setIsSubmitting(true);
     
+    let photoUrl = null;
+    if (capturedPhoto) {
+      const blob = await fetch(capturedPhoto).then(r => r.blob());
+      const file = new File([blob], 'singer.jpg', { type: 'image/jpeg' });
+      const uploadResult = await base44.integrations.Core.UploadFile({ file });
+      photoUrl = uploadResult.file_url;
+    }
+    
     await base44.entities.KaraokeRequest.create({
       ...formData,
-      status: "waiting"
+      status: "waiting",
+      photo_url: photoUrl
     });
 
     setStatus({ type: "ok", message: "הבקשה נרשמה! בהצלחה 🎤" });
@@ -97,6 +144,7 @@ export default function Home() {
       song_title: "",
       song_artist: ""
     });
+    setCapturedPhoto(null);
     setIsSubmitting(false);
 
     setTimeout(() => {
@@ -343,6 +391,99 @@ export default function Home() {
           </p>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-2.5 mt-2">
+            {/* Camera Section */}
+            <div style={{
+              padding: "16px",
+              background: "rgba(0, 202, 255, 0.05)",
+              border: "1px solid rgba(0, 202, 255, 0.2)",
+              borderRadius: "12px",
+              textAlign: "center"
+            }}>
+              <div style={{ fontSize: "0.9rem", fontWeight: "600", color: "#00caff", marginBottom: "8px" }}>
+                📸 צלם תמונה להתחרות
+              </div>
+              {!capturedPhoto ? (
+                <>
+                  {!showCamera ? (
+                    <button
+                      type="button"
+                      onClick={startCamera}
+                      style={{
+                        padding: "10px 20px",
+                        background: "linear-gradient(135deg, #00caff, #0088ff)",
+                        color: "#001a2e",
+                        border: "none",
+                        borderRadius: "10px",
+                        fontSize: "0.9rem",
+                        fontWeight: "600",
+                        cursor: "pointer"
+                      }}
+                    >
+                      פתח מצלמה
+                    </button>
+                  ) : (
+                    <div>
+                      <video ref={videoRef} autoPlay playsInline style={{ width: "100%", borderRadius: "12px", marginBottom: "8px" }} />
+                      <canvas ref={canvasRef} style={{ display: "none" }} />
+                      <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
+                        <button
+                          type="button"
+                          onClick={capturePhoto}
+                          style={{
+                            padding: "10px 20px",
+                            background: "linear-gradient(135deg, #10b981, #059669)",
+                            color: "#fff",
+                            border: "none",
+                            borderRadius: "10px",
+                            fontSize: "0.9rem",
+                            fontWeight: "600",
+                            cursor: "pointer"
+                          }}
+                        >
+                          צלם תמונה
+                        </button>
+                        <button
+                          type="button"
+                          onClick={stopCamera}
+                          style={{
+                            padding: "10px 20px",
+                            background: "rgba(248, 113, 113, 0.2)",
+                            color: "#f87171",
+                            border: "1px solid rgba(248, 113, 113, 0.3)",
+                            borderRadius: "10px",
+                            fontSize: "0.9rem",
+                            fontWeight: "600",
+                            cursor: "pointer"
+                          }}
+                        >
+                          ביטול
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div>
+                  <img src={capturedPhoto} alt="Captured" style={{ width: "100%", maxWidth: "200px", borderRadius: "12px", marginBottom: "8px" }} />
+                  <button
+                    type="button"
+                    onClick={() => setCapturedPhoto(null)}
+                    style={{
+                      padding: "8px 16px",
+                      background: "rgba(248, 113, 113, 0.2)",
+                      color: "#f87171",
+                      border: "1px solid rgba(248, 113, 113, 0.3)",
+                      borderRadius: "8px",
+                      fontSize: "0.85rem",
+                      cursor: "pointer"
+                    }}
+                  >
+                    צלם מחדש
+                  </button>
+                </div>
+              )}
+            </div>
+
             <div>
               <label className="block text-[0.9rem] mb-0.5">
                 שם מלא / שם במה
