@@ -2,6 +2,7 @@ import Home from './pages/Home';
 import Admin from './pages/Admin';
 import Terms from './pages/Terms';
 import Audience from './pages/Audience';
+import Profile from './pages/Profile';
 
 
 export const PAGES = {
@@ -9,6 +10,7 @@ export const PAGES = {
     "Admin": Admin,
     "Terms": Terms,
     "Audience": Audience,
+    "Profile": Profile,
 }
 
 export const pagesConfig = {
