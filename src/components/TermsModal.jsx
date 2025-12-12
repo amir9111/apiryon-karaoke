@@ -79,11 +79,16 @@ export default function TermsModal({ onAccept }) {
             padding: "20px",
             background: "rgba(30, 41, 59, 0.5)",
             borderRadius: "16px",
-            border: "2px solid rgba(0, 202, 255, 0.4)",
+            border: scrolledToBottom 
+              ? "3px solid rgba(16, 185, 129, 0.8)" 
+              : "3px solid rgba(239, 68, 68, 0.8)",
             marginBottom: "20px",
-            maxHeight: "50vh",
+            maxHeight: "65vh",
             position: "relative",
-            boxShadow: "inset 0 0 20px rgba(0, 202, 255, 0.1)"
+            boxShadow: scrolledToBottom 
+              ? "0 0 25px rgba(16, 185, 129, 0.4), inset 0 0 20px rgba(16, 185, 129, 0.1)"
+              : "0 0 25px rgba(239, 68, 68, 0.4), inset 0 0 20px rgba(239, 68, 68, 0.1)",
+            transition: "all 0.4s ease"
           }}
         >
           <div style={{ color: "#e2e8f0", fontSize: "0.9rem", lineHeight: "1.7" }}>
@@ -195,30 +200,56 @@ export default function TermsModal({ onAccept }) {
         {!scrolledToBottom && (
           <div style={{
             textAlign: "center",
-            marginBottom: "12px"
+            marginBottom: "12px",
+            position: "relative"
           }}>
             <div style={{
-              fontSize: "3rem",
+              fontSize: "3.5rem",
               marginBottom: "8px",
-              animation: "bounce 1.5s infinite"
+              animation: "bounce 1.5s infinite",
+              opacity: 0.7
             }}>
               👇
             </div>
             <div style={{
-              fontSize: "1rem",
-              fontWeight: "700",
-              color: "#00caff",
-              textShadow: "0 0 15px rgba(0, 202, 255, 0.8)",
-              animation: "pulse 2s infinite"
+              fontSize: "1.1rem",
+              fontWeight: "800",
+              color: "#ef4444",
+              textShadow: "0 0 20px rgba(239, 68, 68, 0.8)",
+              animation: "pulse 2s infinite",
+              marginBottom: "6px"
             }}>
-              ⚠️ גלול למטה לקריאת כל התנאים ⚠️
+              ⚠️ חובה לגלול למטה עד הסוף! ⚠️
             </div>
             <div style={{
-              fontSize: "0.85rem",
-              color: "#94a3b8",
-              marginTop: "6px"
+              fontSize: "0.9rem",
+              color: "#fca5a5",
+              fontWeight: "600"
             }}>
-              החלק את האצבע כלפי מעלה בתיבה הכחולה
+              החלק את האצבע למעלה בתיבה האדומה
+            </div>
+          </div>
+        )}
+        
+        {scrolledToBottom && (
+          <div style={{
+            textAlign: "center",
+            marginBottom: "12px",
+            animation: "fadeIn 0.5s"
+          }}>
+            <div style={{
+              fontSize: "3rem",
+              marginBottom: "8px"
+            }}>
+              ✅
+            </div>
+            <div style={{
+              fontSize: "1.1rem",
+              fontWeight: "800",
+              color: "#10b981",
+              textShadow: "0 0 20px rgba(16, 185, 129, 0.8)"
+            }}>
+              מעולה! קראת את כל התנאים
             </div>
           </div>
         )}
@@ -298,6 +329,11 @@ export default function TermsModal({ onAccept }) {
             50% { 
               transform: translateY(-15px); 
             }
+          }
+          
+          @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
           }
         `}</style>
       </div>
