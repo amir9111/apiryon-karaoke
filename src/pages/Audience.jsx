@@ -1,5 +1,8 @@
 import React from "react";
 import NavigationMenu from "../components/NavigationMenu";
+import ApyironLogo from "../components/ApyironLogo";
+import AudioWave from "../components/AudioWave";
+import { motion } from "framer-motion";
 
 export default function Audience() {
   const [requests, setRequests] = React.useState([]);
@@ -23,70 +26,224 @@ export default function Audience() {
   return (
     <div dir="rtl" style={{
       minHeight: "100vh",
-      background: "#020617",
+      background: "linear-gradient(135deg, #020617 0%, #0a1929 50%, #020617 100%)",
       color: "#fff",
-      padding: "40px 20px"
+      padding: "20px",
+      position: "relative",
+      overflow: "hidden"
     }}>
       <NavigationMenu />
-      <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-        
-        <h1 style={{ textAlign: "center", fontSize: "3rem", color: "#00caff", marginBottom: "60px" }}>
-          🎤 APIRYON קריוקי
-        </h1>
+      
+      {/* Animated background effects */}
+      <style>{`
+        @keyframes pulse {
+          0%, 100% { opacity: 0.3; transform: scale(1); }
+          50% { opacity: 0.5; transform: scale(1.05); }
+        }
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-20px); }
+        }
+        @keyframes glow {
+          0%, 100% { box-shadow: 0 0 40px rgba(0, 202, 255, 0.4), 0 0 80px rgba(0, 202, 255, 0.2); }
+          50% { box-shadow: 0 0 60px rgba(0, 202, 255, 0.6), 0 0 120px rgba(0, 202, 255, 0.3); }
+        }
+      `}</style>
 
-        {current && (
-          <div style={{
-            background: "rgba(15, 23, 42, 0.9)",
-            borderRadius: "30px",
-            padding: "60px",
-            marginBottom: "40px",
-            border: "3px solid #00caff",
-            textAlign: "center"
-          }}>
-            <div style={{ fontSize: "1.5rem", color: "#00caff", marginBottom: "20px" }}>
-              שר עכשיו
+      <div style={{ maxWidth: "1400px", margin: "0 auto", padding: "40px 20px" }}>
+        
+        {/* Logo at top */}
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: "40px" }}>
+          <ApyironLogo size="large" showCircle={true} />
+        </div>
+
+        {/* Current Song - HERO SECTION */}
+        {current ? (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            style={{
+              background: "rgba(15, 23, 42, 0.95)",
+              borderRadius: "40px",
+              padding: "80px 60px",
+              marginBottom: "50px",
+              border: "3px solid #00caff",
+              textAlign: "center",
+              position: "relative",
+              animation: "glow 3s ease-in-out infinite",
+              backdropFilter: "blur(20px)"
+            }}
+          >
+            {/* Decorative corners */}
+            <div style={{
+              position: "absolute",
+              top: "20px",
+              right: "20px",
+              width: "60px",
+              height: "60px",
+              borderTop: "4px solid #00caff",
+              borderRight: "4px solid #00caff",
+              borderRadius: "8px"
+            }} />
+            <div style={{
+              position: "absolute",
+              top: "20px",
+              left: "20px",
+              width: "60px",
+              height: "60px",
+              borderTop: "4px solid #00caff",
+              borderLeft: "4px solid #00caff",
+              borderRadius: "8px"
+            }} />
+            <div style={{
+              position: "absolute",
+              bottom: "20px",
+              right: "20px",
+              width: "60px",
+              height: "60px",
+              borderBottom: "4px solid #00caff",
+              borderRight: "4px solid #00caff",
+              borderRadius: "8px"
+            }} />
+            <div style={{
+              position: "absolute",
+              bottom: "20px",
+              left: "20px",
+              width: "60px",
+              height: "60px",
+              borderBottom: "4px solid #00caff",
+              borderLeft: "4px solid #00caff",
+              borderRadius: "8px"
+            }} />
+
+            <div style={{ 
+              fontSize: "2rem", 
+              color: "#00caff", 
+              marginBottom: "30px",
+              textTransform: "uppercase",
+              letterSpacing: "0.2em",
+              fontWeight: "800",
+              textShadow: "0 0 30px rgba(0, 202, 255, 0.8)"
+            }}>
+              🎤 שר עכשיו על הבמה 🎤
+            </div>
+
+            <div style={{ marginBottom: "40px" }}>
+              <AudioWave isPlaying={true} />
             </div>
             
             {current.photo_url && (
-              <img 
+              <motion.img 
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.2, type: "spring" }}
                 src={current.photo_url} 
                 alt={current.singer_name}
                 style={{
-                  width: "180px",
-                  height: "180px",
+                  width: "250px",
+                  height: "250px",
                   borderRadius: "50%",
                   objectFit: "cover",
-                  marginBottom: "30px",
-                  border: "5px solid #00caff"
+                  marginBottom: "40px",
+                  border: "8px solid #00caff",
+                  boxShadow: "0 0 60px rgba(0, 202, 255, 0.6)",
+                  animation: "float 4s ease-in-out infinite"
                 }}
               />
             )}
 
-            <div style={{ fontSize: "4rem", fontWeight: "900", marginBottom: "20px" }}>
+            <motion.div 
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              style={{ 
+                fontSize: "5rem", 
+                fontWeight: "900", 
+                marginBottom: "30px",
+                color: "#ffffff",
+                textShadow: "0 0 40px rgba(0, 202, 255, 0.5), 0 4px 20px rgba(0, 0, 0, 0.5)",
+                lineHeight: "1.2"
+              }}
+            >
               {current.singer_name}
-            </div>
-            <div style={{ fontSize: "2.5rem", color: "#e2e8f0" }}>
+            </motion.div>
+
+            <motion.div 
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              style={{ 
+                fontSize: "3rem", 
+                color: "#e2e8f0",
+                fontWeight: "700",
+                marginBottom: "15px",
+                textShadow: "0 2px 10px rgba(0, 0, 0, 0.3)"
+              }}
+            >
               {current.song_title}
-            </div>
+            </motion.div>
+
             {current.song_artist && (
-              <div style={{ fontSize: "1.8rem", color: "#94a3b8", marginTop: "10px" }}>
+              <motion.div 
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.5 }}
+                style={{ 
+                  fontSize: "2rem", 
+                  color: "#94a3b8",
+                  fontWeight: "600"
+                }}
+              >
                 {current.song_artist}
-              </div>
+              </motion.div>
             )}
+          </motion.div>
+        ) : (
+          <div style={{
+            background: "rgba(15, 23, 42, 0.8)",
+            borderRadius: "30px",
+            padding: "80px 40px",
+            marginBottom: "50px",
+            border: "2px dashed #00caff",
+            textAlign: "center"
+          }}>
+            <div style={{ fontSize: "3rem", marginBottom: "20px" }}>🎵</div>
+            <div style={{ fontSize: "2.5rem", color: "#00caff", fontWeight: "700" }}>
+              בקרוב... הזמר הבא יעלה לבמה!
+            </div>
           </div>
         )}
 
-        <div style={{ display: "grid", gridTemplateColumns: window.innerWidth > 900 ? "1fr 1fr" : "1fr", gap: "30px" }}>
+        {/* Bottom Section: Next + QR */}
+        <div style={{ 
+          display: "grid", 
+          gridTemplateColumns: window.innerWidth > 900 ? "1fr 1fr" : "1fr", 
+          gap: "40px" 
+        }}>
           
-          <div style={{
-            background: "rgba(15, 23, 42, 0.9)",
-            borderRadius: "25px",
-            padding: "40px",
-            border: "2px solid #00caff",
-            textAlign: "center"
-          }}>
-            <div style={{ fontSize: "1.8rem", color: "#00caff", marginBottom: "30px" }}>
-              הבא בתור
+          {/* Next Singer */}
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3 }}
+            style={{
+              background: "rgba(15, 23, 42, 0.9)",
+              borderRadius: "30px",
+              padding: "50px 40px",
+              border: "2px solid rgba(0, 202, 255, 0.5)",
+              textAlign: "center",
+              boxShadow: "0 10px 40px rgba(0, 202, 255, 0.2)"
+            }}
+          >
+            <div style={{ 
+              fontSize: "2.2rem", 
+              color: "#00caff", 
+              marginBottom: "35px",
+              fontWeight: "800",
+              textShadow: "0 0 20px rgba(0, 202, 255, 0.6)"
+            }}>
+              ⏭️ הבא בתור
             </div>
             
             {next ? (
@@ -96,64 +253,116 @@ export default function Audience() {
                     src={next.photo_url} 
                     alt={next.singer_name}
                     style={{
-                      width: "140px",
-                      height: "140px",
+                      width: "180px",
+                      height: "180px",
                       borderRadius: "50%",
                       objectFit: "cover",
-                      marginBottom: "20px",
-                      border: "4px solid #00caff"
+                      marginBottom: "25px",
+                      border: "5px solid #00caff",
+                      boxShadow: "0 0 30px rgba(0, 202, 255, 0.4)"
                     }}
                   />
                 )}
-                <div style={{ fontSize: "2rem", fontWeight: "800", marginBottom: "10px" }}>
+                <div style={{ 
+                  fontSize: "2.5rem", 
+                  fontWeight: "900", 
+                  marginBottom: "15px",
+                  color: "#ffffff"
+                }}>
                   {next.singer_name}
                 </div>
-                <div style={{ fontSize: "1.5rem", color: "#cbd5e1" }}>
+                <div style={{ 
+                  fontSize: "1.8rem", 
+                  color: "#cbd5e1",
+                  fontWeight: "600"
+                }}>
                   {next.song_title}
                 </div>
                 {next.song_artist && (
-                  <div style={{ fontSize: "1.2rem", color: "#94a3b8", marginTop: "8px" }}>
+                  <div style={{ 
+                    fontSize: "1.4rem", 
+                    color: "#94a3b8", 
+                    marginTop: "10px" 
+                  }}>
                     {next.song_artist}
                   </div>
                 )}
               </>
             ) : (
-              <div style={{ color: "#64748b", fontSize: "1.5rem", padding: "40px" }}>
-                אין ממתינים
+              <div style={{ 
+                color: "#64748b", 
+                fontSize: "1.8rem", 
+                padding: "60px 20px",
+                fontWeight: "600"
+              }}>
+                אין ממתינים כרגע
               </div>
             )}
-          </div>
+          </motion.div>
 
-          <div style={{
-            background: "rgba(15, 23, 42, 0.9)",
-            borderRadius: "25px",
-            padding: "40px",
-            border: "2px solid #00caff",
-            textAlign: "center",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center"
-          }}>
-            <div style={{ fontSize: "1.8rem", color: "#00caff", marginBottom: "20px" }}>
-              הצטרפו לווצאפ
+          {/* QR Code for WhatsApp */}
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.4 }}
+            style={{
+              background: "rgba(15, 23, 42, 0.9)",
+              borderRadius: "30px",
+              padding: "50px 40px",
+              border: "2px solid rgba(0, 202, 255, 0.5)",
+              textAlign: "center",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              boxShadow: "0 10px 40px rgba(0, 202, 255, 0.2)"
+            }}
+          >
+            <div style={{ 
+              fontSize: "2.2rem", 
+              color: "#00caff", 
+              marginBottom: "30px",
+              fontWeight: "800",
+              textShadow: "0 0 20px rgba(0, 202, 255, 0.6)"
+            }}>
+              💬 הצטרפו לקבוצת הווצאפ
             </div>
+            
             <div style={{
-              width: "200px",
-              height: "200px",
+              width: "280px",
+              height: "280px",
               background: "#fff",
-              borderRadius: "15px",
+              borderRadius: "20px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: "4rem"
+              marginBottom: "25px",
+              boxShadow: "0 0 40px rgba(0, 202, 255, 0.3)",
+              border: "4px solid #00caff"
             }}>
-              📱
+              <img 
+                src="https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15"
+                alt="QR Code WhatsApp"
+                style={{ width: "260px", height: "260px" }}
+              />
             </div>
-            <div style={{ marginTop: "20px", fontSize: "1.2rem", color: "#cbd5e1" }}>
-              סרקו להצטרפות
+            
+            <div style={{ 
+              fontSize: "1.6rem", 
+              color: "#cbd5e1",
+              fontWeight: "700",
+              marginBottom: "15px"
+            }}>
+              סרקו להצטרפות מהירה
             </div>
-          </div>
+            <div style={{
+              fontSize: "1.2rem",
+              color: "#94a3b8",
+              fontWeight: "600"
+            }}>
+              התעדכנו בכל ערבי הקריוקי!
+            </div>
+          </motion.div>
         </div>
       </div>
     </div>
