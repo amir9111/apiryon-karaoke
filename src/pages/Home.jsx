@@ -52,33 +52,45 @@ export default function Home() {
   };
 
   React.useEffect(() => {
-    const hasAcceptedTerms = localStorage.getItem('apiryon_terms_accepted');
-    const hasVisited = localStorage.getItem('apiryon_visited');
-    
-    if (!hasAcceptedTerms) {
-      setShowTerms(true);
-    } else {
-      setTermsAccepted(true);
-      if (!hasVisited) {
-        setShowWelcome(true);
-        localStorage.setItem('apiryon_visited', 'true');
-        
-        const timer = setTimeout(() => {
-          setShowWelcome(false);
-        }, 5000);
-        
-        return () => clearTimeout(timer);
+    let timer;
+    try {
+      const hasAcceptedTerms = localStorage.getItem('apiryon_terms_accepted');
+      const hasVisited = localStorage.getItem('apiryon_visited');
+      
+      if (!hasAcceptedTerms) {
+        setShowTerms(true);
+      } else {
+        setTermsAccepted(true);
+        if (!hasVisited) {
+          setShowWelcome(true);
+          localStorage.setItem('apiryon_visited', 'true');
+          
+          timer = setTimeout(() => {
+            setShowWelcome(false);
+          }, 5000);
+        }
       }
+    } catch (e) {
+      // localStorage not available
+      setTermsAccepted(true);
     }
+    
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
   }, []);
 
   const handleAcceptTerms = () => {
-    localStorage.setItem('apiryon_terms_accepted', 'true');
+    try {
+      localStorage.setItem('apiryon_terms_accepted', 'true');
+    } catch (e) {
+      // Silent fail
+    }
     setShowTerms(false);
     setTermsAccepted(true);
     setShowWelcome(true);
     
-    const timer = setTimeout(() => {
+    setTimeout(() => {
       setShowWelcome(false);
     }, 5000);
   };
@@ -94,6 +106,9 @@ export default function Home() {
       const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
+      } else {
+        stream.getTracks().forEach(track => track.stop());
+        setShowCamera(false);
       }
     } catch (err) {
       setStatus({ type: "error", message: "לא ניתן לגשת למצלמה" });
@@ -117,8 +132,13 @@ export default function Home() {
   };
 
   const stopCamera = () => {
-    if (videoRef.current && videoRef.current.srcObject) {
-      videoRef.current.srcObject.getTracks().forEach(track => track.stop());
+    try {
+      if (videoRef.current?.srcObject) {
+        const tracks = videoRef.current.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+    } catch (e) {
+      // Silent cleanup
     }
     setShowCamera(false);
   };
@@ -126,15 +146,19 @@ export default function Home() {
   const [photoUploaded, setPhotoUploaded] = React.useState(false);
 
   React.useEffect(() => {
-    const savedName = localStorage.getItem('apiryon_user_name');
-    const savedPhoto = localStorage.getItem('apiryon_user_photo');
-    
-    if (savedName) {
-      setNamePlaceholder(savedName);
-    }
-    if (savedPhoto) {
-      setCapturedPhoto(savedPhoto);
-      setPhotoUploaded(true);
+    try {
+      const savedName = localStorage.getItem('apiryon_user_name');
+      const savedPhoto = localStorage.getItem('apiryon_user_photo');
+      
+      if (savedName) {
+        setNamePlaceholder(savedName);
+      }
+      if (savedPhoto) {
+        setCapturedPhoto(savedPhoto);
+        setPhotoUploaded(true);
+      }
+    } catch (e) {
+      // localStorage not available
     }
   }, []);
 
@@ -172,10 +196,14 @@ export default function Home() {
     
     await base44.entities.KaraokeRequest.create(sanitizedData);
 
-    localStorage.setItem('apiryon_user_name', formData.singer_name);
-    localStorage.setItem('apiryon_user_email', sanitizedData.email);
-    if (capturedPhoto) {
-      localStorage.setItem('apiryon_user_photo', capturedPhoto);
+    try {
+      localStorage.setItem('apiryon_user_name', formData.singer_name);
+      localStorage.setItem('apiryon_user_email', sanitizedData.email);
+      if (capturedPhoto) {
+        localStorage.setItem('apiryon_user_photo', capturedPhoto);
+      }
+    } catch (e) {
+      // localStorage full or unavailable
     }
 
     setStatus({ type: "ok", message: "הבקשה נרשמה! בהצלחה 🎤" });
