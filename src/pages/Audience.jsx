@@ -24,7 +24,7 @@ export default function Audience() {
   const next = requests.filter(r => r.status === "waiting")[0];
 
   return (
-    <div dir="rtl" style={{
+    <div dir="rtl" role="application" aria-label="מסך קהל - תצוגה חיה" style={{
       minHeight: "100vh",
       background: "linear-gradient(135deg, #020617 0%, #0a1929 50%, #020617 100%)",
       color: "#fff",
@@ -169,7 +169,7 @@ export default function Audience() {
         }
       `}</style>
 
-      <div style={{ position: "relative", zIndex: 1, minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "clamp(100px, 15vh, 140px) clamp(12px, 3vw, 20px) 40px" }}>
+      <main id="main-content" role="main" style={{ position: "relative", zIndex: 1, minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "clamp(100px, 15vh, 140px) clamp(12px, 3vw, 20px) 40px" }}>
         {/* Current Song - HERO SECTION */}
         {current ? (
           <motion.div
@@ -265,7 +265,9 @@ export default function Audience() {
                     animate={{ scale: 1, rotate: 0 }}
                     transition={{ delay: 0.2, type: "spring", damping: 10 }}
                     src={current.photo_url} 
-                    alt={current.singer_name}
+                    alt={`תמונת פרופיל של ${current.singer_name}`}
+                    role="img"
+                    aria-label={`${current.singer_name} מבצע כעת על הבמה`}
                     style={{
                       width: "250px",
                       height: "250px",
@@ -600,7 +602,7 @@ export default function Audience() {
               </div>
             </motion.div>
           </div>
-      </div>
+      </main>
     </div>
   );
 }

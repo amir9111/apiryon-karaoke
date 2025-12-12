@@ -4,6 +4,11 @@ import { Helmet } from "react-helmet";
 export default function PWASetup() {
   const [manifestURL, setManifestURL] = useState("");
   const [iconURL, setIconURL] = useState("");
+  
+  const siteUrl = typeof window !== 'undefined' ? window.location.origin : '';
+  const siteName = "Apiryon - מערכת קריוקי";
+  const siteDescription = "מערכת ניהול קריוקי מתקדמת עם מסך קהל חי, דירוגים ואנליטיקס";
+  const siteImage = `${siteUrl}/og-image.png`;
 
   useEffect(() => {
     // Create icon
@@ -76,6 +81,12 @@ export default function PWASetup() {
 
   return (
     <Helmet>
+      {/* Basic Meta Tags */}
+      <title>{siteName}</title>
+      <meta name="description" content={siteDescription} />
+      <link rel="canonical" href={siteUrl} />
+      
+      {/* PWA */}
       <link rel="manifest" href={manifestURL} />
       <meta name="theme-color" content="#00caff" />
       <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -83,6 +94,50 @@ export default function PWASetup() {
       <meta name="apple-mobile-web-app-title" content="Apiryon" />
       <link rel="apple-touch-icon" href={iconURL} />
       <meta name="mobile-web-app-capable" content="yes" />
+      
+      {/* Open Graph / Facebook */}
+      <meta property="og:type" content="website" />
+      <meta property="og:url" content={siteUrl} />
+      <meta property="og:title" content={siteName} />
+      <meta property="og:description" content={siteDescription} />
+      <meta property="og:image" content={iconURL} />
+      <meta property="og:site_name" content="Apiryon" />
+      <meta property="og:locale" content="he_IL" />
+      
+      {/* Twitter */}
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:url" content={siteUrl} />
+      <meta name="twitter:title" content={siteName} />
+      <meta name="twitter:description" content={siteDescription} />
+      <meta name="twitter:image" content={iconURL} />
+      
+      {/* TikTok */}
+      <meta name="tiktok:app:name" content="Apiryon" />
+      <meta name="tiktok:app:url" content="https://www.tiktok.com/@apiryon.club" />
+      
+      {/* Structured Data - JSON-LD */}
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          "name": "Apiryon",
+          "description": siteDescription,
+          "url": siteUrl,
+          "applicationCategory": "EntertainmentApplication",
+          "operatingSystem": "Any",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "ILS"
+          },
+          "sameAs": [
+            "https://www.tiktok.com/@apiryon.club"
+          ]
+        })}
+      </script>
+      
+      {/* Accessibility */}
+      <html lang="he" dir="rtl" />
     </Helmet>
   );
 }

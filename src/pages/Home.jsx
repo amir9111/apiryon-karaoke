@@ -10,6 +10,8 @@ import AudioWave from "../components/AudioWave";
 import PWAInstallPrompt from "../components/PWAInstallPrompt";
 import PWASetup from "../components/PWASetup";
 import ServiceWorkerRegistration from "../components/ServiceWorkerRegistration";
+import PushNotifications from "../components/PushNotifications";
+import AccessibilityHelper from "../components/AccessibilityHelper";
 import { QrCode } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -194,6 +196,8 @@ export default function Home() {
     >
       <PWASetup />
       <ServiceWorkerRegistration />
+      <PushNotifications />
+      <AccessibilityHelper />
       
       {/* Terms Modal - Must accept first */}
       {showTerms && <TermsModal onAccept={handleAcceptTerms} />}
