@@ -114,6 +114,18 @@ export default function Home() {
     setShowCamera(false);
   };
 
+  React.useEffect(() => {
+    const savedName = localStorage.getItem('apiryon_user_name');
+    const savedPhoto = localStorage.getItem('apiryon_user_photo');
+    
+    if (savedName) {
+      setFormData(prev => ({ ...prev, singer_name: savedName }));
+    }
+    if (savedPhoto) {
+      setCapturedPhoto(savedPhoto);
+    }
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -142,6 +154,11 @@ export default function Home() {
       status: "waiting",
       photo_url: photoUrl
     });
+
+    localStorage.setItem('apiryon_user_name', formData.singer_name);
+    if (capturedPhoto) {
+      localStorage.setItem('apiryon_user_photo', capturedPhoto);
+    }
 
     setStatus({ type: "ok", message: "הבקשה נרשמה! בהצלחה 🎤" });
     setFormData({
