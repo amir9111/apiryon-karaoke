@@ -2,7 +2,7 @@ import React from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 
-export default function Display() {
+function Display() {
   const [isMobile, setIsMobile] = React.useState(false);
   const [debugMode, setDebugMode] = React.useState(false);
   const [debugLogs, setDebugLogs] = React.useState(["🚀 Display page loaded"]);
@@ -450,3 +450,8 @@ export default function Display() {
     </div>
   );
 }
+
+// Mark this page as public - no authentication required
+Display.isPublic = true;
+
+export default Display;
