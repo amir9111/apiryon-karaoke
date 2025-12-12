@@ -225,7 +225,7 @@ export default function Admin() {
           />
           <StatsCard 
             icon="📈" 
-            label="סה\"כ שירים" 
+            label='סה"כ שירים' 
             value={stats.totalCompleted}
             color="#00caff"
             delay={0.4}
