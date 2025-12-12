@@ -483,6 +483,44 @@ export default function Admin() {
             <Monitor className="w-6 h-6" />
             <span>הצג</span>
           </button>
+
+          {/* Test Button */}
+          <button
+            onClick={() => window.open(createPageUrl('DisplayTest'), '_blank')}
+            style={{
+              position: "fixed",
+              bottom: "110px",
+              left: "30px",
+              width: "70px",
+              height: "70px",
+              borderRadius: "50%",
+              border: "none",
+              background: "linear-gradient(135deg, #fbbf24, #f59e0b)",
+              color: "#001a2e",
+              fontSize: "0.9rem",
+              fontWeight: "700",
+              cursor: "pointer",
+              boxShadow: "0 0 40px rgba(251, 191, 36, 0.6), 0 4px 20px rgba(0, 0, 0, 0.4)",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "4px",
+              zIndex: 9999,
+              transition: "transform 0.2s, box-shadow 0.2s"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "scale(1.1)";
+              e.currentTarget.style.boxShadow = "0 0 60px rgba(251, 191, 36, 0.8), 0 6px 30px rgba(0, 0, 0, 0.5)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "scale(1)";
+              e.currentTarget.style.boxShadow = "0 0 40px rgba(251, 191, 36, 0.6), 0 4px 20px rgba(0, 0, 0, 0.4)";
+            }}
+          >
+            <span style={{ fontSize: "1.5rem" }}>🔧</span>
+            <span>בדיקה</span>
+          </button>
         </div>
       </div>
     );
