@@ -40,6 +40,7 @@ export default function LiveClock() {
         top: "20px",
         left: "20px",
         zIndex: 100,
+        pointerEvents: "none",
         background: "rgba(15, 23, 42, 0.8)",
         backdropFilter: "blur(20px)",
         borderRadius: "20px",
