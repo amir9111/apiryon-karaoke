@@ -150,8 +150,8 @@ export default function Admin() {
                         padding: "10px 16px", 
                         fontSize: "0.9rem", 
                         cursor: "pointer", 
-                        background: "linear-gradient(135deg, #22c55e, #16a34a)", 
-                        color: "#022c22", 
+                        background: "linear-gradient(135deg, #00caff, #0088ff)", 
+                        color: "#001a2e", 
                         fontWeight: "600",
                         display: "flex",
                         alignItems: "center",
@@ -187,12 +187,12 @@ export default function Admin() {
                   <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.9rem" }}>
                     <thead style={{ position: "sticky", top: 0, background: "rgba(15,23,42,0.95)", backdropFilter: "blur(10px)", zIndex: 1 }}>
                       <tr>
-                        <th style={{ padding: "12px", textAlign: "right", borderBottom: "2px solid rgba(34,197,94,0.2)", fontWeight: "600", color: "#94a3b8", fontSize: "0.85rem" }}>#</th>
-                        <th style={{ padding: "12px", textAlign: "right", borderBottom: "2px solid rgba(34,197,94,0.2)", fontWeight: "600", color: "#94a3b8", fontSize: "0.85rem" }}>זמר/ת</th>
-                        <th style={{ padding: "12px", textAlign: "right", borderBottom: "2px solid rgba(34,197,94,0.2)", fontWeight: "600", color: "#94a3b8", fontSize: "0.85rem" }}>שם השיר</th>
-                        <th style={{ padding: "12px", textAlign: "right", borderBottom: "2px solid rgba(34,197,94,0.2)", fontWeight: "600", color: "#94a3b8", fontSize: "0.85rem" }}>אמן</th>
-                        <th style={{ padding: "12px", textAlign: "center", borderBottom: "2px solid rgba(34,197,94,0.2)", fontWeight: "600", color: "#94a3b8", fontSize: "0.85rem" }}>סטטוס</th>
-                        <th style={{ padding: "12px", textAlign: "center", borderBottom: "2px solid rgba(34,197,94,0.2)", fontWeight: "600", color: "#94a3b8", fontSize: "0.85rem" }}>פעולות</th>
+                        <th style={{ padding: "12px", textAlign: "right", borderBottom: "2px solid rgba(0,202,255,0.2)", fontWeight: "600", color: "#94a3b8", fontSize: "0.85rem" }}>#</th>
+                        <th style={{ padding: "12px", textAlign: "right", borderBottom: "2px solid rgba(0,202,255,0.2)", fontWeight: "600", color: "#94a3b8", fontSize: "0.85rem" }}>זמר/ת</th>
+                        <th style={{ padding: "12px", textAlign: "right", borderBottom: "2px solid rgba(0,202,255,0.2)", fontWeight: "600", color: "#94a3b8", fontSize: "0.85rem" }}>שם השיר</th>
+                        <th style={{ padding: "12px", textAlign: "right", borderBottom: "2px solid rgba(0,202,255,0.2)", fontWeight: "600", color: "#94a3b8", fontSize: "0.85rem" }}>אמן</th>
+                        <th style={{ padding: "12px", textAlign: "center", borderBottom: "2px solid rgba(0,202,255,0.2)", fontWeight: "600", color: "#94a3b8", fontSize: "0.85rem" }}>סטטוס</th>
+                        <th style={{ padding: "12px", textAlign: "center", borderBottom: "2px solid rgba(0,202,255,0.2)", fontWeight: "600", color: "#94a3b8", fontSize: "0.85rem" }}>פעולות</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -275,7 +275,7 @@ export default function Admin() {
               </div>
 
               {/* Summary */}
-              <div style={{ background: "rgba(15,23,42,0.5)", borderRadius: "20px", padding: "20px", border: "1px solid rgba(34,197,94,0.2)", backdropFilter: "blur(10px)" }}>
+              <div style={{ background: "rgba(15,23,42,0.5)", borderRadius: "20px", padding: "20px", border: "1px solid rgba(0,202,255,0.2)", backdropFilter: "blur(10px)" }}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px", marginBottom: "16px" }}>
                   <div>
                     <div style={{ fontSize: "1.2rem", fontWeight: "700", color: "#f1f5f9" }}>⚡ כרגע</div>
@@ -302,8 +302,8 @@ export default function Admin() {
                 </div>
                 
                 <div style={{ 
-                  background: "rgba(34,197,94,0.05)", 
-                  border: "1px solid rgba(34,197,94,0.2)", 
+                  background: "rgba(0,202,255,0.05)", 
+                  border: "1px solid rgba(0,202,255,0.2)", 
                   borderRadius: "14px", 
                   padding: "16px",
                   marginBottom: "16px"
@@ -345,8 +345,8 @@ export default function Admin() {
                         >
                           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                             <span style={{ 
-                              background: "rgba(34,197,94,0.2)", 
-                              color: "#22c55e", 
+                              background: "rgba(0,202,255,0.2)", 
+                              color: "#00caff", 
                               borderRadius: "6px", 
                               padding: "2px 8px", 
                               fontSize: "0.75rem", 
