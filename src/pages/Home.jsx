@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+import Logo from "../components/Logo";
+import QRCode from "../components/QRCode";
 
 export default function Home() {
   const [formData, setFormData] = useState({
@@ -56,14 +58,19 @@ export default function Home() {
           className="rounded-[18px] p-5 md:p-6"
           style={{
             background: "rgba(15, 23, 42, 0.95)",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
-            backdropFilter: "blur(12px)"
+            boxShadow: "0 10px 30px rgba(0, 202, 255, 0.2)",
+            backdropFilter: "blur(12px)",
+            border: "1px solid rgba(0, 202, 255, 0.2)"
           }}
         >
+          <div className="mb-4">
+            <Logo size="medium" showCircle={true} />
+          </div>
+          
           <h1 className="text-[1.6rem] md:text-[1.9rem] font-bold text-center mb-2">
             תור קריוקי
           </h1>
-          <p className="text-[0.9rem] text-center mb-4" style={{ color: "#cbd5f5" }}>
+          <p className="text-[0.9rem] text-center mb-4" style={{ color: "#00caff" }}>
             ממלאים, מצטרפים לתור – ומחכים שיקראו לכם 🎤
           </p>
 
@@ -156,8 +163,8 @@ export default function Home() {
               disabled={isSubmitting}
               className="w-full mt-2 py-[11px] px-[14px] rounded-full border-none cursor-pointer font-semibold text-base"
               style={{
-                background: "linear-gradient(135deg, #22c55e, #16a34a)",
-                color: "#022c22",
+                background: "linear-gradient(135deg, #00caff, #0088ff)",
+                color: "#001a2e",
                 opacity: isSubmitting ? 0.7 : 1
               }}
               onMouseDown={(e) => e.currentTarget.style.transform = "scale(0.98)"}
@@ -170,34 +177,40 @@ export default function Home() {
             {status.type && (
               <div 
                 className="mt-2.5 text-[0.9rem] text-center"
-                style={{ color: status.type === "ok" ? "#4ade80" : "#f97373" }}
+                style={{ color: status.type === "ok" ? "#00caff" : "#f97373" }}
               >
                 {status.message}
               </div>
             )}
-          </form>
+            </form>
 
-          <hr 
+            <hr 
             className="my-[18px] md:my-3 h-px border-0"
-            style={{ background: "radial-gradient(circle, #4b5563 0, transparent 70%)" }}
-          />
+            style={{ background: "radial-gradient(circle, #00caff 0, transparent 70%)" }}
+            />
 
-          <div className="flex flex-col items-center gap-1.5 text-[0.9rem]">
-            <div>רוצים להתעדכן בכל ערבי הקריוקי?</div>
-            <a
-              href="https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15?mode=hqrt3"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 mt-1 py-[9px] px-[14px] rounded-full no-underline font-semibold text-[0.9rem] whitespace-nowrap"
-              style={{
-                background: "#22c55e",
-                color: "#022c22"
-              }}
-            >
-              <span className="text-[1.1rem]">💬</span>
-              <span>להצטרפות לקבוצת הווטסאפ</span>
-            </a>
-          </div>
+            <div className="flex flex-col md:flex-row items-center justify-center gap-6 text-[0.9rem]">
+            <div className="flex flex-col items-center gap-1.5">
+              <div className="text-center mb-1">הצטרפו לקבוצת הווטסאפ:</div>
+              <a
+                href="https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15?mode=hqrt3"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 py-[9px] px-[14px] rounded-full no-underline font-semibold text-[0.9rem] whitespace-nowrap"
+                style={{
+                  background: "#00caff",
+                  color: "#001a2e"
+                }}
+              >
+                <span className="text-[1.1rem]">💬</span>
+                <span>קבוצת ווטסאפ</span>
+              </a>
+            </div>
+
+            <div className="flex flex-col items-center">
+              <QRCode url={window.location.origin + window.location.pathname} size={120} />
+            </div>
+            </div>
         </div>
 
         <Link 
