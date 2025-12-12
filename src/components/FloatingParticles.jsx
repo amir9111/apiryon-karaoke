@@ -1,8 +1,26 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { motion } from "framer-motion";
 
 export default function FloatingParticles() {
-  const particles = Array.from({ length: 20 }, (_, i) => i);
+  const particles = useMemo(() => {
+    if (typeof window === 'undefined') return [];
+    return Array.from({ length: 20 }, (_, i) => ({
+      id: i,
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      scale: Math.random() * 0.5 + 0.5,
+      opacity: Math.random() * 0.3 + 0.1,
+      targetY: Math.random() * window.innerHeight,
+      targetX: Math.random() * window.innerWidth,
+      targetScale: Math.random() * 0.8 + 0.4,
+      targetOpacity: Math.random() * 0.4 + 0.1,
+      duration: Math.random() * 20 + 15,
+      color: Math.random() > 0.5 ? "#00caff" : "#0088ff",
+      glow: Math.random() * 20 + 10
+    }));
+  }, []);
+
+  if (typeof window === 'undefined') return null;
 
   return (
     <div style={{
@@ -15,23 +33,23 @@ export default function FloatingParticles() {
       pointerEvents: "none",
       zIndex: 0
     }}>
-      {particles.map((i) => (
+      {particles.map((particle) => (
         <motion.div
-          key={i}
+          key={particle.id}
           initial={{
-            x: Math.random() * window.innerWidth,
-            y: Math.random() * window.innerHeight,
-            scale: Math.random() * 0.5 + 0.5,
-            opacity: Math.random() * 0.3 + 0.1
+            x: particle.x,
+            y: particle.y,
+            scale: particle.scale,
+            opacity: particle.opacity
           }}
           animate={{
-            y: [null, Math.random() * window.innerHeight],
-            x: [null, Math.random() * window.innerWidth],
-            scale: [null, Math.random() * 0.8 + 0.4],
-            opacity: [null, Math.random() * 0.4 + 0.1]
+            y: [null, particle.targetY],
+            x: [null, particle.targetX],
+            scale: [null, particle.targetScale],
+            opacity: [null, particle.targetOpacity]
           }}
           transition={{
-            duration: Math.random() * 20 + 15,
+            duration: particle.duration,
             repeat: Infinity,
             ease: "linear"
           }}
@@ -40,12 +58,8 @@ export default function FloatingParticles() {
             width: "4px",
             height: "4px",
             borderRadius: "50%",
-            background: `radial-gradient(circle, ${
-              Math.random() > 0.5 ? "#00caff" : "#0088ff"
-            }, transparent)`,
-            boxShadow: `0 0 ${Math.random() * 20 + 10}px ${
-              Math.random() > 0.5 ? "#00caff" : "#0088ff"
-            }`
+            background: `radial-gradient(circle, ${particle.color}, transparent)`,
+            boxShadow: `0 0 ${particle.glow}px ${particle.color}`
           }}
         />
       ))}

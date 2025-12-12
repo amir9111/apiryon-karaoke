@@ -110,7 +110,7 @@ export default function EventSummaryModal({ isOpen, onClose, requests }) {
               </h2>
               <div style={{
                 display: "grid",
-                gridTemplateColumns: window.innerWidth > 800 ? "repeat(3, 1fr)" : "1fr",
+                gridTemplateColumns: typeof window !== 'undefined' && window.innerWidth > 800 ? "repeat(3, 1fr)" : "1fr",
                 gap: "30px"
               }}>
                 {topSingers.map((singer, index) => (
@@ -250,7 +250,7 @@ export default function EventSummaryModal({ isOpen, onClose, requests }) {
                       }}
                     />
                   )}
-                  <div style={{ textAlign: window.innerWidth > 700 ? "right" : "center" }}>
+                  <div style={{ textAlign: typeof window !== 'undefined' && window.innerWidth > 700 ? "right" : "center" }}>
                     <div style={{
                       fontSize: "2.5rem",
                       fontWeight: "900",
@@ -279,7 +279,7 @@ export default function EventSummaryModal({ isOpen, onClose, requests }) {
                     <div style={{
                       display: "flex",
                       alignItems: "center",
-                      justifyContent: window.innerWidth > 700 ? "flex-start" : "center",
+                      justifyContent: typeof window !== 'undefined' && window.innerWidth > 700 ? "flex-start" : "center",
                       gap: "10px",
                       fontSize: "2rem",
                       color: "#fbbf24",
