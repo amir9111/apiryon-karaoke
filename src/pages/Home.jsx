@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import ApyironLogo from "../components/ApyironLogo";
+import TermsModal from "../components/TermsModal";
 import { QrCode } from "lucide-react";
 
 export default function Home() {
@@ -14,20 +15,40 @@ export default function Home() {
   const [status, setStatus] = useState({ type: null, message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   React.useEffect(() => {
+    const hasAcceptedTerms = localStorage.getItem('apiryon_terms_accepted');
     const hasVisited = localStorage.getItem('apiryon_visited');
-    if (!hasVisited) {
-      setShowWelcome(true);
-      localStorage.setItem('apiryon_visited', 'true');
-      
-      const timer = setTimeout(() => {
-        setShowWelcome(false);
-      }, 5000);
-      
-      return () => clearTimeout(timer);
+    
+    if (!hasAcceptedTerms) {
+      setShowTerms(true);
+    } else {
+      setTermsAccepted(true);
+      if (!hasVisited) {
+        setShowWelcome(true);
+        localStorage.setItem('apiryon_visited', 'true');
+        
+        const timer = setTimeout(() => {
+          setShowWelcome(false);
+        }, 5000);
+        
+        return () => clearTimeout(timer);
+      }
     }
   }, []);
+
+  const handleAcceptTerms = () => {
+    localStorage.setItem('apiryon_terms_accepted', 'true');
+    setShowTerms(false);
+    setTermsAccepted(true);
+    setShowWelcome(true);
+    
+    const timer = setTimeout(() => {
+      setShowWelcome(false);
+    }, 5000);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -68,8 +89,11 @@ export default function Home() {
       className="min-h-screen w-full flex justify-center p-4 md:p-8"
       style={{ background: "linear-gradient(135deg, #020617 0%, #0a1929 50%, #020617 100%)", color: "#f9fafb" }}
     >
+      {/* Terms Modal - Must accept first */}
+      {showTerms && <TermsModal onAccept={handleAcceptTerms} />}
+
       {/* Welcome Modal */}
-      {showWelcome && (
+      {showWelcome && termsAccepted && (
         <div 
           style={{
             position: "fixed",
@@ -383,13 +407,22 @@ export default function Home() {
           </div>
         </div>
 
-        <Link 
-          to={createPageUrl("Admin")}
-          className="block text-center mt-4 text-[0.75rem]"
-          style={{ color: "#4b5563" }}
-        >
-          🎛️ כניסה למסך ניהול
-        </Link>
+        <div style={{ textAlign: "center", marginTop: "16px" }}>
+          <Link 
+            to={createPageUrl("Admin")}
+            className="block text-[0.75rem] mb-2"
+            style={{ color: "#4b5563" }}
+          >
+            🎛️ כניסה למסך ניהול
+          </Link>
+          <Link 
+            to={createPageUrl("Terms")}
+            className="block text-[0.7rem]"
+            style={{ color: "#64748b" }}
+          >
+            📜 תנאי שימוש ומדיניות פרטיות
+          </Link>
+        </div>
       </div>
     </div>
   );
