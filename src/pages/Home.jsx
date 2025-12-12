@@ -7,6 +7,7 @@ import TermsModal from "../components/TermsModal";
 import MenuButton from "../components/MenuButton";
 import AudienceRating from "../components/AudienceRating";
 import AudioWave from "../components/AudioWave";
+import PWAInstallPrompt from "../components/PWAInstallPrompt";
 import { QrCode } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -722,6 +723,9 @@ export default function Home() {
 
         {/* Hamburger Menu */}
         <MenuButton />
-        </div>
-        );
-        }
+        
+        {/* PWA Install Prompt */}
+        <PWAInstallPrompt />
+      </div>
+    );
+}

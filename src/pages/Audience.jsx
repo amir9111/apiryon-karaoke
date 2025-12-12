@@ -168,7 +168,7 @@ export default function Audience() {
         }
       `}</style>
 
-      <div style={{ position: "relative", zIndex: 1, minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "140px 20px 40px 20px" }}>
+      <div style={{ position: "relative", zIndex: 1, minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "clamp(100px, 15vh, 140px) clamp(12px, 3vw, 20px) 40px" }}>
         {/* Current Song - HERO SECTION */}
         {current ? (
           <motion.div
@@ -382,8 +382,8 @@ export default function Audience() {
         {/* Next + QR in a compact row */}
         <div style={{ 
           display: "grid", 
-          gridTemplateColumns: window.innerWidth > 900 ? "1fr 1fr 1fr" : "1fr", 
-          gap: "40px",
+          gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))", 
+          gap: "clamp(20px, 4vw, 40px)",
           width: "100%",
           maxWidth: "1400px"
         }}>
