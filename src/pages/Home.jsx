@@ -413,25 +413,62 @@ export default function Home() {
               </p>
               
               {!showCamera ? (
-                <button
-                  type="button"
-                  onClick={startCamera}
-                  style={{
+                <div style={{ display: "flex", flexDirection: "column", gap: "12px", alignItems: "center" }}>
+                  <button
+                    type="button"
+                    onClick={startCamera}
+                    style={{
+                      padding: "16px 32px",
+                      background: "linear-gradient(135deg, #00caff, #0088ff)",
+                      color: "#001a2e",
+                      border: "none",
+                      borderRadius: "12px",
+                      fontSize: "1.1rem",
+                      fontWeight: "700",
+                      cursor: "pointer",
+                      boxShadow: "0 0 30px rgba(0, 202, 255, 0.5)",
+                      width: "100%",
+                      maxWidth: "300px"
+                    }}
+                  >
+                    📸 פתח מצלמה
+                  </button>
+                  
+                  <div style={{ color: "#94a3b8", fontSize: "0.9rem" }}>או</div>
+                  
+                  <label style={{
                     padding: "16px 32px",
-                    background: "linear-gradient(135deg, #00caff, #0088ff)",
-                    color: "#001a2e",
+                    background: "linear-gradient(135deg, #8b5cf6, #6d28d9)",
+                    color: "#fff",
                     border: "none",
                     borderRadius: "12px",
                     fontSize: "1.1rem",
                     fontWeight: "700",
                     cursor: "pointer",
-                    boxShadow: "0 0 30px rgba(0, 202, 255, 0.5)",
+                    boxShadow: "0 0 30px rgba(139, 92, 246, 0.5)",
                     width: "100%",
-                    maxWidth: "300px"
-                  }}
-                >
-                  📸 פתח מצלמה
-                </button>
+                    maxWidth: "300px",
+                    textAlign: "center",
+                    display: "inline-block"
+                  }}>
+                    📤 העלה תמונה
+                    <input
+                      type="file"
+                      accept="image/*"
+                      style={{ display: "none" }}
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            setCapturedPhoto(reader.result);
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      }}
+                    />
+                  </label>
+                </div>
               ) : (
                 <div>
                   <video ref={videoRef} autoPlay playsInline style={{ width: "100%", maxWidth: "400px", borderRadius: "16px", marginBottom: "16px", border: "3px solid #00caff", boxShadow: "0 0 30px rgba(0, 202, 255, 0.3)" }} />
