@@ -8,9 +8,12 @@ import MenuButton from "../components/MenuButton";
 import AudienceRating from "../components/AudienceRating";
 import AudioWave from "../components/AudioWave";
 import MyQueueStatus from "../components/MyQueueStatus";
-import PWAManager from "../components/PWAManager";
+import PWAInstallPrompt from "../components/PWAInstallPrompt";
+import PWASetup from "../components/PWASetup";
+import ServiceWorkerRegistration from "../components/ServiceWorkerRegistration";
 import PushNotifications from "../components/PushNotifications";
 import AccessibilityHelper from "../components/AccessibilityHelper";
+import PWADebugger from "../components/PWADebugger";
 import { QrCode } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -268,7 +271,9 @@ export default function Home() {
       className="min-h-screen w-full flex justify-center p-4 md:p-8"
       style={{ background: "linear-gradient(135deg, #020617 0%, #0a1929 50%, #020617 100%)", color: "#f9fafb" }}
     >
-      <PWAManager />
+      <ServiceWorkerRegistration />
+      <PWASetup />
+      <PWADebugger />
       <PushNotifications />
       <AccessibilityHelper />
       
@@ -834,6 +839,9 @@ export default function Home() {
 
         {/* Hamburger Menu */}
         <MenuButton />
+        
+        {/* PWA Install Prompt */}
+        <PWAInstallPrompt />
       </div>
     );
 }
