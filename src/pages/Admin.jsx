@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Play, Check, SkipForward, UserPlus, Monitor, Settings } from "lucide-react";
+import { Play, Check, SkipForward, UserPlus, Monitor, Settings, QrCode } from "lucide-react";
 import ApyironLogo from "../components/ApyironLogo";
 import AudioWave from "../components/AudioWave";
 import AudienceRating from "../components/AudienceRating";
@@ -42,25 +42,15 @@ export default function Admin() {
     updateMutation.mutate({ id, data: { status } });
   };
 
-  const goNextAuto = () => {
-    const current = requests.find(r => r.status === "performing");
-    const next = requests.find(r => r.status === "waiting");
-    
-    if (current) {
-      updateMutation.mutate({ id: current.id, data: { status: "done" } });
-    }
-    if (next) {
-      setTimeout(() => {
-        updateMutation.mutate({ id: next.id, data: { status: "performing" } });
-      }, 300);
-    }
-  };
-
   const markCurrentDone = () => {
     const current = requests.find(r => r.status === "performing");
     if (current) {
       updateMutation.mutate({ id: current.id, data: { status: "done" } });
     }
+  };
+
+  const startPerforming = (id) => {
+    updateMutation.mutate({ id, data: { status: "performing" } });
   };
 
   const addDemoSong = () => {
@@ -139,150 +129,166 @@ export default function Admin() {
 
           <TabsContent value="control">
             <div style={{ display: "grid", gridTemplateColumns: window.innerWidth > 900 ? "minmax(0, 2fr) minmax(0, 1fr)" : "minmax(0, 1fr)", gap: "20px" }}>
-              {/* Queue Table */}
+              {/* Current Song Control */}
               <div style={{ background: "rgba(15,23,42,0.5)", borderRadius: "20px", padding: "20px", border: "1px solid rgba(0, 202, 255, 0.2)", backdropFilter: "blur(10px)", boxShadow: "0 0 30px rgba(0, 202, 255, 0.1)" }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px", marginBottom: "16px" }}>
-                  <div>
-                    <div style={{ fontSize: "1.2rem", fontWeight: "700", color: "#f1f5f9" }}>🎵 תור השירים</div>
-                    <div style={{ fontSize: "0.85rem", color: "#94a3b8", marginTop: "4px" }}>שלוט על התור בקלות</div>
-                  </div>
-                  <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                    <button 
-                      onClick={goNextAuto} 
-                      style={{ 
-                        border: "none", 
-                        borderRadius: "12px", 
-                        padding: "10px 16px", 
-                        fontSize: "0.9rem", 
-                        cursor: "pointer", 
-                        background: "linear-gradient(135deg, #00caff, #0088ff)", 
-                        color: "#001a2e", 
-                        fontWeight: "600",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "6px",
-                        boxShadow: "0 0 20px rgba(0, 202, 255, 0.4)"
-                      }}
-                    >
-                      <Play className="w-4 h-4" />
-                      הבא בתור
-                    </button>
-                    <button 
-                      onClick={markCurrentDone} 
-                      style={{ 
-                        border: "1px solid rgba(148,163,184,0.3)", 
-                        borderRadius: "12px", 
-                        padding: "10px 16px", 
-                        fontSize: "0.9rem", 
-                        cursor: "pointer", 
-                        background: "rgba(30,41,59,0.5)", 
-                        color: "#e2e8f0",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "6px"
-                      }}
-                    >
-                      <Check className="w-4 h-4" />
-                      סיים נוכחי
-                    </button>
-                  </div>
+                <div style={{ marginBottom: "16px" }}>
+                  <div style={{ fontSize: "1.2rem", fontWeight: "700", color: "#f1f5f9" }}>🎤 שיר נוכחי / הבא</div>
+                  <div style={{ fontSize: "0.85rem", color: "#94a3b8", marginTop: "4px" }}>נהל את השיר המתנגן</div>
                 </div>
 
-                <div style={{ maxHeight: "65vh", overflow: "auto", borderRadius: "16px", background: "rgba(15,23,42,0.3)" }}>
-                  <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.9rem" }}>
-                    <thead style={{ position: "sticky", top: 0, background: "rgba(15,23,42,0.95)", backdropFilter: "blur(10px)", zIndex: 1 }}>
-                      <tr>
-                        <th style={{ padding: "12px", textAlign: "right", borderBottom: "2px solid rgba(0, 202, 255, 0.2)", fontWeight: "600", color: "#94a3b8", fontSize: "0.85rem" }}>#</th>
-                        <th style={{ padding: "12px", textAlign: "right", borderBottom: "2px solid rgba(0, 202, 255, 0.2)", fontWeight: "600", color: "#94a3b8", fontSize: "0.85rem" }}>זמר/ת</th>
-                        <th style={{ padding: "12px", textAlign: "right", borderBottom: "2px solid rgba(0, 202, 255, 0.2)", fontWeight: "600", color: "#94a3b8", fontSize: "0.85rem" }}>שם השיר</th>
-                        <th style={{ padding: "12px", textAlign: "right", borderBottom: "2px solid rgba(0, 202, 255, 0.2)", fontWeight: "600", color: "#94a3b8", fontSize: "0.85rem" }}>אמן</th>
-                        <th style={{ padding: "12px", textAlign: "center", borderBottom: "2px solid rgba(0, 202, 255, 0.2)", fontWeight: "600", color: "#94a3b8", fontSize: "0.85rem" }}>סטטוס</th>
-                        <th style={{ padding: "12px", textAlign: "center", borderBottom: "2px solid rgba(0, 202, 255, 0.2)", fontWeight: "600", color: "#94a3b8", fontSize: "0.85rem" }}>פעולות</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {isLoading ? (
-                        <tr><td colSpan={6} style={{ padding: "40px", textAlign: "center", color: "#64748b" }}>טוען...</td></tr>
-                      ) : ordered.length === 0 ? (
-                        <tr><td colSpan={6} style={{ padding: "40px", textAlign: "center", color: "#64748b" }}>אין בקשות בתור כרגע</td></tr>
-                      ) : (
-                        ordered.map((req, index) => (
-                          <tr key={req.id} style={{ 
-                            background: req.status === "performing" ? "rgba(0, 202, 255, 0.1)" : index % 2 === 0 ? "rgba(30,41,59,0.3)" : "rgba(30,41,59,0.5)",
-                            transition: "all 0.2s"
-                          }}>
-                            <td style={{ padding: "14px 12px", borderBottom: "1px solid rgba(51,65,85,0.5)", fontWeight: "500", color: "#cbd5e1" }}>{index + 1}</td>
-                            <td style={{ padding: "14px 12px", borderBottom: "1px solid rgba(51,65,85,0.5)", fontWeight: "600", color: "#f1f5f9" }}>{req.singer_name}</td>
-                            <td style={{ padding: "14px 12px", borderBottom: "1px solid rgba(51,65,85,0.5)", color: "#e2e8f0" }}>{req.song_title}</td>
-                            <td style={{ padding: "14px 12px", borderBottom: "1px solid rgba(51,65,85,0.5)", color: "#94a3b8" }}>{req.song_artist || "-"}</td>
-                            <td style={{ padding: "14px 12px", borderBottom: "1px solid rgba(51,65,85,0.5)", textAlign: "center" }}>
-                              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "4px" }}>
-                                <span style={{
-                                display: "inline-flex",
-                                padding: "6px 12px",
-                                borderRadius: "8px",
-                                fontSize: "0.8rem",
-                                fontWeight: "600",
-                                background: req.status === "waiting" ? "rgba(59,130,246,0.15)" : req.status === "performing" ? "rgba(0, 202, 255, 0.2)" : req.status === "done" ? "rgba(100,116,139,0.15)" : "rgba(248,113,113,0.15)",
-                                color: req.status === "waiting" ? "#60a5fa" : req.status === "performing" ? "#00caff" : req.status === "done" ? "#94a3b8" : "#f87171",
-                                border: `1px solid ${req.status === "waiting" ? "rgba(59,130,246,0.3)" : req.status === "performing" ? "rgba(0, 202, 255, 0.4)" : req.status === "done" ? "rgba(100,116,139,0.3)" : "rgba(248,113,113,0.3)"}`
-                                }}>
-                                  {req.status === "waiting" ? "⏳ ממתין" : req.status === "performing" ? "🎤 שר עכשיו" : req.status === "done" ? "✅ הסתיים" : "⏭️ דולג"}
-                                </span>
-                                {req.status === "done" && req.average_rating > 0 && (
-                                  <div style={{ fontSize: "0.75rem", color: "#fbbf24", display: "flex", alignItems: "center", gap: "2px" }}>
-                                    ⭐ {req.average_rating.toFixed(1)}
-                                  </div>
-                                )}
+                {currentSong ? (
+                  <div style={{
+                    background: "rgba(0, 202, 255, 0.08)",
+                    border: "2px solid rgba(0, 202, 255, 0.3)",
+                    borderRadius: "16px",
+                    padding: "20px",
+                    marginBottom: "16px",
+                    boxShadow: "0 0 30px rgba(0, 202, 255, 0.2)"
+                  }}>
+                    <div style={{ fontSize: "0.85rem", color: "#00caff", marginBottom: "8px", fontWeight: "600" }}>🎤 שר כרגע</div>
+                    <div style={{ fontSize: "1.5rem", fontWeight: "700", color: "#f1f5f9", marginBottom: "6px" }}>{currentSong.singer_name}</div>
+                    <div style={{ fontSize: "1.1rem", color: "#cbd5e1", marginBottom: "4px" }}>{currentSong.song_title}</div>
+                    {currentSong.song_artist && (
+                      <div style={{ fontSize: "0.9rem", color: "#94a3b8", marginBottom: "12px" }}>{currentSong.song_artist}</div>
+                    )}
+                    <button
+                      onClick={markCurrentDone}
+                      style={{
+                        width: "100%",
+                        padding: "12px",
+                        borderRadius: "12px",
+                        border: "none",
+                        background: "linear-gradient(135deg, #10b981, #059669)",
+                        color: "#fff",
+                        fontSize: "1rem",
+                        fontWeight: "700",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "8px",
+                        boxShadow: "0 0 20px rgba(16, 185, 129, 0.4)"
+                      }}
+                    >
+                      <Check className="w-5 h-5" />
+                      סיים שיר
+                    </button>
+                  </div>
+                ) : waitingList.length > 0 ? (
+                  <div style={{
+                    background: "rgba(0, 202, 255, 0.08)",
+                    border: "2px solid rgba(0, 202, 255, 0.3)",
+                    borderRadius: "16px",
+                    padding: "20px",
+                    marginBottom: "16px",
+                    boxShadow: "0 0 30px rgba(0, 202, 255, 0.2)"
+                  }}>
+                    <div style={{ fontSize: "0.85rem", color: "#00caff", marginBottom: "8px", fontWeight: "600" }}>⏭️ הבא בתור</div>
+                    <div style={{ fontSize: "1.5rem", fontWeight: "700", color: "#f1f5f9", marginBottom: "6px" }}>{waitingList[0].singer_name}</div>
+                    <div style={{ fontSize: "1.1rem", color: "#cbd5e1", marginBottom: "4px" }}>{waitingList[0].song_title}</div>
+                    {waitingList[0].song_artist && (
+                      <div style={{ fontSize: "0.9rem", color: "#94a3b8", marginBottom: "12px" }}>{waitingList[0].song_artist}</div>
+                    )}
+                    <div style={{ display: "flex", gap: "8px" }}>
+                      <button
+                        onClick={() => startPerforming(waitingList[0].id)}
+                        style={{
+                          flex: 1,
+                          padding: "12px",
+                          borderRadius: "12px",
+                          border: "none",
+                          background: "linear-gradient(135deg, #00caff, #0088ff)",
+                          color: "#001a2e",
+                          fontSize: "1rem",
+                          fontWeight: "700",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "8px",
+                          boxShadow: "0 0 20px rgba(0, 202, 255, 0.4)"
+                        }}
+                      >
+                        <Play className="w-5 h-5" />
+                        התחל שיר
+                      </button>
+                      <button
+                        onClick={() => setStatus(waitingList[0].id, "skipped")}
+                        style={{
+                          padding: "12px 16px",
+                          borderRadius: "12px",
+                          border: "1px solid rgba(248, 113, 113, 0.3)",
+                          background: "rgba(248, 113, 113, 0.1)",
+                          color: "#f87171",
+                          fontSize: "1rem",
+                          fontWeight: "700",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "6px"
+                        }}
+                      >
+                        <SkipForward className="w-5 h-5" />
+                        דלג
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div style={{
+                    background: "rgba(0, 202, 255, 0.05)",
+                    border: "1px dashed rgba(0, 202, 255, 0.3)",
+                    borderRadius: "16px",
+                    padding: "20px",
+                    marginBottom: "16px",
+                    textAlign: "center"
+                  }}>
+                    <div style={{ fontSize: "1.1rem", fontWeight: "600", color: "#94a3b8" }}>אין שירים בתור</div>
+                  </div>
+                )}
+
+                <div style={{ marginBottom: "12px" }}>
+                  <div style={{ fontSize: "1rem", fontWeight: "700", color: "#f1f5f9", marginBottom: "8px" }}>📋 ממתינים בתור ({waitingList.length})</div>
+                </div>
+
+                <div style={{ maxHeight: "50vh", overflow: "auto", borderRadius: "16px", background: "rgba(15,23,42,0.3)" }}>
+                  {waitingList.length === 0 ? (
+                    <div style={{ padding: "40px", textAlign: "center", color: "#64748b" }}>אין שירים ממתינים</div>
+                  ) : (
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px", padding: "8px" }}>
+                      {waitingList.map((req, index) => (
+                        <div key={req.id} style={{
+                          background: index === 0 ? "rgba(0, 202, 255, 0.15)" : "rgba(30,41,59,0.5)",
+                          border: index === 0 ? "1px solid rgba(0, 202, 255, 0.4)" : "1px solid rgba(51,65,85,0.5)",
+                          borderRadius: "12px",
+                          padding: "12px",
+                          boxShadow: index === 0 ? "0 0 20px rgba(0, 202, 255, 0.2)" : "none"
+                        }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                            <div style={{
+                              minWidth: "32px",
+                              height: "32px",
+                              borderRadius: "8px",
+                              background: index === 0 ? "linear-gradient(135deg, #00caff, #0088ff)" : "rgba(51, 65, 85, 0.8)",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              fontWeight: "700",
+                              fontSize: "0.9rem",
+                              color: index === 0 ? "#001a2e" : "#94a3b8"
+                            }}>
+                              {index + 1}
+                            </div>
+                            <div style={{ flex: 1 }}>
+                              <div style={{ fontSize: "1rem", fontWeight: "700", color: "#f1f5f9" }}>{req.singer_name}</div>
+                              <div style={{ fontSize: "0.85rem", color: "#94a3b8" }}>
+                                {req.song_title}{req.song_artist ? ` • ${req.song_artist}` : ""}
                               </div>
-                            </td>
-                            <td style={{ padding: "14px 12px", borderBottom: "1px solid rgba(51,65,85,0.5)", textAlign: "center" }}>
-                              <div style={{ display: "flex", gap: "6px", justifyContent: "center" }}>
-                                <button 
-                                  onClick={() => setStatus(req.id, "performing")} 
-                                  style={{ 
-                                    border: "1px solid rgba(0, 202, 255, 0.3)", 
-                                    borderRadius: "8px", 
-                                    padding: "6px 12px", 
-                                    fontSize: "0.8rem", 
-                                    cursor: "pointer", 
-                                    background: "rgba(0, 202, 255, 0.1)", 
-                                    color: "#00caff",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "4px",
-                                    fontWeight: "500"
-                                  }}
-                                >
-                                  <Play className="w-3 h-3" />
-                                  שיר
-                                </button>
-                                <button 
-                                  onClick={() => setStatus(req.id, "skipped")} 
-                                  style={{ 
-                                    border: "1px solid rgba(148,163,184,0.3)", 
-                                    borderRadius: "8px", 
-                                    padding: "6px 12px", 
-                                    fontSize: "0.8rem", 
-                                    cursor: "pointer", 
-                                    background: "rgba(51,65,85,0.3)", 
-                                    color: "#cbd5e1",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "4px",
-                                    fontWeight: "500"
-                                  }}
-                                >
-                                  <SkipForward className="w-3 h-3" />
-                                  דלג
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -387,13 +393,13 @@ export default function Admin() {
             {/* Logo and Header */}
             <div style={{ textAlign: "center", marginBottom: "8px" }}>
               <div style={{ display: "flex", justifyContent: "center", marginBottom: "12px" }}>
-                <ApyironLogo size="medium" showCircle={true} />
+                <ApyironLogo size="large" showCircle={true} />
               </div>
-              <h1 style={{ margin: 0, fontSize: "clamp(1.8rem, 3.5vw, 2.5rem)", color: "#00caff", textShadow: "0 0 30px rgba(0, 202, 255, 0.6)" }}>
-                ערב קריוקי 🎤
+              <h1 style={{ margin: 0, fontSize: "clamp(2rem, 4vw, 3rem)", color: "#00caff", textShadow: "0 0 40px rgba(0, 202, 255, 0.8)", fontWeight: "900", letterSpacing: "0.05em" }}>
+                🎤 מועדון האפריון 🎤
               </h1>
-              <p style={{ margin: "8px 0 0", fontSize: "clamp(0.85rem, 1.5vw, 1rem)", color: "#94a3b8" }}>
-                המסך מציג מי שר עכשיו ומי הבא בתור
+              <p style={{ margin: "12px 0 0", fontSize: "clamp(1rem, 2vw, 1.3rem)", color: "#e2e8f0", fontWeight: "600" }}>
+                ערב קריוקי מטורף • שרים, מדרגים ונהנים
               </p>
             </div>
 
@@ -619,19 +625,20 @@ export default function Admin() {
                 )}
                 <div style={{ 
                   marginTop: "16px", 
-                  padding: "12px",
-                  borderRadius: "12px",
-                  background: "rgba(0, 202, 255, 0.05)",
-                  border: "1px solid rgba(0, 202, 255, 0.2)",
-                  fontSize: "0.8rem", 
-                  color: "#94a3b8",
-                  textAlign: "center"
+                  padding: "16px",
+                  borderRadius: "16px",
+                  background: "rgba(0, 202, 255, 0.08)",
+                  border: "2px solid rgba(0, 202, 255, 0.3)",
+                  textAlign: "center",
+                  boxShadow: "0 0 30px rgba(0, 202, 255, 0.2)"
                 }}>
-                  להצטרפות לקבוצת הווטסאפ:
-                  <br />
-                  <span style={{ color: "#00caff", fontWeight: "600" }}>
-                    https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15
-                  </span>
+                  <QrCode style={{ width: "120px", height: "120px", color: "#00caff", margin: "0 auto 12px" }} />
+                  <div style={{ fontSize: "1rem", fontWeight: "700", color: "#00caff", marginBottom: "8px" }}>
+                    סרקו להצטרפות לקבוצת הווטסאפ 💬
+                  </div>
+                  <div style={{ fontSize: "0.85rem", color: "#cbd5e1" }}>
+                    הצטרפו לקבוצה לעדכונים על ערבים הבאים!
+                  </div>
                   </div>
                 </div>
               </div>
