@@ -1,16 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import NavigationMenu from "../components/NavigationMenu";
 import ApyironLogo from "../components/ApyironLogo";
 import AudioWave from "../components/AudioWave";
+import FloatingParticles from "../components/FloatingParticles";
+import LiveStats from "../components/LiveStats";
+import EventSummaryModal from "../components/EventSummaryModal";
 import { motion } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
+import { BarChart3 } from "lucide-react";
 
 export default function Audience() {
+  const [showSummary, setShowSummary] = useState(false);
+
   const { data: requests = [] } = useQuery({
     queryKey: ['karaoke-requests'],
     queryFn: () => base44.entities.KaraokeRequest.list('-created_date', 100),
-    refetchInterval: 2000,
+    refetchInterval: 1000,
   });
 
   const current = requests.find(r => r.status === "performing");
@@ -21,13 +27,49 @@ export default function Audience() {
       minHeight: "100vh",
       background: "linear-gradient(135deg, #020617 0%, #0a1929 50%, #020617 100%)",
       color: "#fff",
-      padding: "20px",
       position: "relative",
       overflow: "hidden"
     }}>
+      <FloatingParticles />
       <NavigationMenu />
+      <LiveStats requests={requests} />
       
-      {/* Animated background effects */}
+      {/* Summary Button */}
+      <motion.button
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={() => setShowSummary(true)}
+        style={{
+          position: "fixed",
+          top: "20px",
+          right: "100px",
+          background: "linear-gradient(135deg, #fbbf24, #f59e0b)",
+          border: "none",
+          borderRadius: "20px",
+          padding: "16px 28px",
+          cursor: "pointer",
+          zIndex: 100,
+          display: "flex",
+          alignItems: "center",
+          gap: "10px",
+          boxShadow: "0 0 30px rgba(251, 191, 36, 0.5)",
+          color: "#001a2e",
+          fontSize: "1.1rem",
+          fontWeight: "800"
+        }}
+      >
+        <BarChart3 className="w-6 h-6" />
+        <span>סיכום הערב</span>
+      </motion.button>
+
+      <EventSummaryModal 
+        isOpen={showSummary}
+        onClose={() => setShowSummary(false)}
+        requests={requests}
+      />
+      
       <style>{`
         @keyframes pulse {
           0%, 100% { opacity: 0.3; transform: scale(1); }
@@ -38,450 +80,289 @@ export default function Audience() {
           50% { transform: translateY(-20px); }
         }
         @keyframes glow {
-          0%, 100% { box-shadow: 0 0 40px rgba(0, 202, 255, 0.4), 0 0 80px rgba(0, 202, 255, 0.2); }
-          50% { box-shadow: 0 0 60px rgba(0, 202, 255, 0.6), 0 0 120px rgba(0, 202, 255, 0.3); }
+          0%, 100% { box-shadow: 0 0 60px rgba(0, 202, 255, 0.6), 0 0 120px rgba(0, 202, 255, 0.3); }
+          50% { box-shadow: 0 0 100px rgba(0, 202, 255, 0.8), 0 0 180px rgba(0, 202, 255, 0.5); }
+        }
+        @keyframes rotate {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
         }
       `}</style>
 
-      <div style={{ maxWidth: "1400px", margin: "0 auto", padding: "40px 20px" }}>
-        
-        {/* Logo at top */}
-        <div style={{ display: "flex", justifyContent: "center", marginBottom: "40px" }}>
-          <ApyironLogo size="large" showCircle={true} />
-        </div>
-
+      <div style={{ position: "relative", zIndex: 1, minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px 20px" }}>
         {/* Current Song - HERO SECTION */}
         {current ? (
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
+            key={current.id}
+            initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.6, type: "spring" }}
             style={{
-              background: "rgba(15, 23, 42, 0.95)",
-              borderRadius: "40px",
-              padding: "80px 60px",
-              marginBottom: "50px",
-              border: "3px solid #00caff",
-              textAlign: "center",
-              position: "relative",
-              animation: "glow 3s ease-in-out infinite",
-              backdropFilter: "blur(20px)"
+              width: "100%",
+              maxWidth: "1000px",
+              marginBottom: "60px",
+              position: "relative"
             }}
           >
-            {/* Decorative corners */}
+            {/* Rotating glow ring */}
             <div style={{
               position: "absolute",
-              top: "20px",
-              right: "20px",
-              width: "60px",
-              height: "60px",
-              borderTop: "4px solid #00caff",
-              borderRight: "4px solid #00caff",
-              borderRadius: "8px"
-            }} />
-            <div style={{
-              position: "absolute",
-              top: "20px",
-              left: "20px",
-              width: "60px",
-              height: "60px",
-              borderTop: "4px solid #00caff",
-              borderLeft: "4px solid #00caff",
-              borderRadius: "8px"
-            }} />
-            <div style={{
-              position: "absolute",
-              bottom: "20px",
-              right: "20px",
-              width: "60px",
-              height: "60px",
-              borderBottom: "4px solid #00caff",
-              borderRight: "4px solid #00caff",
-              borderRadius: "8px"
-            }} />
-            <div style={{
-              position: "absolute",
-              bottom: "20px",
-              left: "20px",
-              width: "60px",
-              height: "60px",
-              borderBottom: "4px solid #00caff",
-              borderLeft: "4px solid #00caff",
-              borderRadius: "8px"
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "500px",
+              height: "500px",
+              borderRadius: "50%",
+              background: "radial-gradient(circle, transparent 40%, rgba(0, 202, 255, 0.3) 70%, transparent)",
+              animation: "rotate 20s linear infinite, pulse 3s ease-in-out infinite",
+              pointerEvents: "none"
             }} />
 
-            <div style={{ 
-              fontSize: "2rem", 
-              color: "#00caff", 
-              marginBottom: "30px",
-              textTransform: "uppercase",
-              letterSpacing: "0.2em",
-              fontWeight: "800",
-              textShadow: "0 0 30px rgba(0, 202, 255, 0.8)"
+            {/* Main content */}
+            <div style={{
+              background: "rgba(15, 23, 42, 0.6)",
+              borderRadius: "50px",
+              padding: "60px 40px",
+              textAlign: "center",
+              position: "relative",
+              backdropFilter: "blur(20px)",
+              border: "3px solid rgba(0, 202, 255, 0.5)",
+              boxShadow: "0 0 100px rgba(0, 202, 255, 0.4), inset 0 0 50px rgba(0, 202, 255, 0.1)"
             }}>
-              🎤 שר עכשיו על הבמה 🎤
-            </div>
-
-            <div style={{ marginBottom: "40px" }}>
-              <AudioWave isPlaying={true} />
-            </div>
-            
-            {current.photo_url && (
-              <motion.img 
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.2, type: "spring" }}
-                src={current.photo_url} 
-                alt={current.singer_name}
-                style={{
-                  width: "250px",
-                  height: "250px",
-                  borderRadius: "50%",
-                  objectFit: "cover",
-                  marginBottom: "40px",
-                  border: "8px solid #00caff",
-                  boxShadow: "0 0 60px rgba(0, 202, 255, 0.6)",
-                  animation: "float 4s ease-in-out infinite"
-                }}
-              />
-            )}
-
-            <motion.div 
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              style={{ 
-                fontSize: "5rem", 
-                fontWeight: "900", 
-                marginBottom: "30px",
-                color: "#ffffff",
-                textShadow: "0 0 40px rgba(0, 202, 255, 0.5), 0 4px 20px rgba(0, 0, 0, 0.5)",
-                lineHeight: "1.2"
-              }}
-            >
-              {current.singer_name}
-            </motion.div>
-
-            <motion.div 
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.4 }}
-              style={{ 
-                fontSize: "3rem", 
-                color: "#e2e8f0",
-                fontWeight: "700",
-                marginBottom: "15px",
-                textShadow: "0 2px 10px rgba(0, 0, 0, 0.3)"
-              }}
-            >
-              {current.song_title}
-            </motion.div>
-
-            {current.song_artist && (
-              <motion.div 
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.5 }}
+              <motion.div
+                animate={{ scale: [1, 1.05, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
                 style={{ 
-                  fontSize: "2rem", 
-                  color: "#94a3b8",
-                  fontWeight: "600"
+                  fontSize: "2.5rem", 
+                  color: "#00caff", 
+                  marginBottom: "40px",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.3em",
+                  fontWeight: "900",
+                  textShadow: "0 0 40px rgba(0, 202, 255, 1), 0 0 80px rgba(0, 202, 255, 0.5)"
                 }}
               >
-                {current.song_artist}
+                🎤 LIVE NOW 🎤
               </motion.div>
-            )}
-          </motion.div>
-        ) : (
-          <div style={{
-            background: "rgba(15, 23, 42, 0.8)",
-            borderRadius: "30px",
-            padding: "80px 40px",
-            marginBottom: "50px",
-            border: "2px dashed #00caff",
-            textAlign: "center"
-          }}>
-            <div style={{ fontSize: "3rem", marginBottom: "20px" }}>🎵</div>
-            <div style={{ fontSize: "2.5rem", color: "#00caff", fontWeight: "700" }}>
-              בקרוב... הזמר הבא יעלה לבמה!
-            </div>
-          </div>
-        )}
 
-        {/* Top Stars of the Night */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          style={{
-            background: "rgba(15, 23, 42, 0.9)",
-            borderRadius: "30px",
-            padding: "40px",
-            marginBottom: "40px",
-            border: "2px solid rgba(251, 191, 36, 0.5)",
-            boxShadow: "0 10px 40px rgba(251, 191, 36, 0.2)"
-          }}
-        >
-          <div style={{
-            fontSize: "2.2rem",
-            color: "#fbbf24",
-            textAlign: "center",
-            marginBottom: "30px",
-            fontWeight: "800",
-            textShadow: "0 0 20px rgba(251, 191, 36, 0.6)"
-          }}>
-            🌟 כוכבי הערב 🌟
-          </div>
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: window.innerWidth > 700 ? "repeat(3, 1fr)" : "1fr",
-            gap: "25px"
-          }}>
-            {requests
-              .filter(r => r.status === "done" && r.average_rating > 0)
-              .sort((a, b) => b.average_rating - a.average_rating)
-              .slice(0, 3)
-              .map((singer, index) => (
-                <div
-                  key={singer.id}
-                  style={{
-                    background: index === 0 
-                      ? "linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(245, 158, 11, 0.2))"
-                      : "rgba(30, 41, 59, 0.5)",
-                    borderRadius: "20px",
-                    padding: "25px",
-                    textAlign: "center",
-                    border: index === 0 ? "3px solid #fbbf24" : "2px solid rgba(251, 191, 36, 0.3)",
-                    position: "relative"
-                  }}
-                >
-                  {index === 0 && (
-                    <div style={{
+              {/* Audio wave around photo */}
+              <div style={{ 
+                position: "relative",
+                display: "inline-block",
+                marginBottom: "50px"
+              }}>
+                {/* Multiple animated rings */}
+                {[1, 2, 3].map((ring) => (
+                  <motion.div
+                    key={ring}
+                    animate={{
+                      scale: [1, 1.5, 1],
+                      opacity: [0.6, 0, 0.6]
+                    }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      delay: ring * 0.4
+                    }}
+                    style={{
                       position: "absolute",
-                      top: "-15px",
+                      top: "50%",
                       left: "50%",
-                      transform: "translateX(-50%)",
-                      fontSize: "2.5rem"
-                    }}>
-                      👑
-                    </div>
-                  )}
+                      transform: "translate(-50%, -50%)",
+                      width: "350px",
+                      height: "350px",
+                      borderRadius: "50%",
+                      border: "4px solid #00caff",
+                      pointerEvents: "none"
+                    }}
+                  />
+                ))}
+
+                {current.photo_url ? (
+                  <motion.img 
+                    initial={{ scale: 0, rotate: -180 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    transition={{ delay: 0.2, type: "spring", damping: 10 }}
+                    src={current.photo_url} 
+                    alt={current.singer_name}
+                    style={{
+                      width: "320px",
+                      height: "320px",
+                      borderRadius: "50%",
+                      objectFit: "cover",
+                      border: "10px solid #00caff",
+                      boxShadow: "0 0 80px rgba(0, 202, 255, 0.8), inset 0 0 30px rgba(0, 202, 255, 0.3)",
+                      position: "relative",
+                      zIndex: 1
+                    }}
+                  />
+                ) : (
                   <div style={{
-                    fontSize: "1.8rem",
-                    fontWeight: "900",
-                    color: "#fbbf24",
-                    marginBottom: "10px"
-                  }}>
-                    #{index + 1}
-                  </div>
-                  {singer.photo_url && (
-                    <img
-                      src={singer.photo_url}
-                      alt={singer.singer_name}
-                      style={{
-                        width: "100px",
-                        height: "100px",
-                        borderRadius: "50%",
-                        objectFit: "cover",
-                        marginBottom: "15px",
-                        border: "4px solid #fbbf24",
-                        boxShadow: "0 0 20px rgba(251, 191, 36, 0.4)"
-                      }}
-                    />
-                  )}
-                  <div style={{
-                    fontSize: "1.5rem",
-                    fontWeight: "800",
-                    color: "#ffffff",
-                    marginBottom: "8px"
-                  }}>
-                    {singer.singer_name}
-                  </div>
-                  <div style={{
-                    fontSize: "1.1rem",
-                    color: "#cbd5e1",
-                    marginBottom: "10px"
-                  }}>
-                    {singer.song_title}
-                  </div>
-                  <div style={{
+                    width: "320px",
+                    height: "320px",
+                    borderRadius: "50%",
+                    background: "linear-gradient(135deg, #00caff, #0088ff)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    gap: "8px",
-                    fontSize: "1.4rem",
-                    color: "#fbbf24",
-                    fontWeight: "700"
+                    fontSize: "8rem",
+                    border: "10px solid #00caff",
+                    boxShadow: "0 0 80px rgba(0, 202, 255, 0.8)"
                   }}>
-                    ⭐ {singer.average_rating.toFixed(1)}
+                    🎤
                   </div>
-                </div>
-              ))}
-          </div>
-          {requests.filter(r => r.status === "done" && r.average_rating > 0).length === 0 && (
-            <div style={{
-              textAlign: "center",
-              color: "#64748b",
-              fontSize: "1.4rem",
-              padding: "40px"
-            }}>
-              הערב עדיין מתחיל... כוכבים בדרך! ⭐
-            </div>
-          )}
-        </motion.div>
-
-        {/* Song of the Night */}
-        {(() => {
-          const topSong = requests
-            .filter(r => r.status === "done" && r.average_rating > 0)
-            .sort((a, b) => b.average_rating - a.average_rating)[0];
-          
-          return topSong && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.3 }}
-              style={{
-                background: "linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(167, 139, 250, 0.2))",
-                borderRadius: "30px",
-                padding: "40px",
-                marginBottom: "40px",
-                border: "3px solid #a78bfa",
-                textAlign: "center",
-                boxShadow: "0 10px 40px rgba(139, 92, 246, 0.3)"
-              }}
-            >
-              <div style={{
-                fontSize: "2.2rem",
-                color: "#a78bfa",
-                marginBottom: "25px",
-                fontWeight: "800",
-                textShadow: "0 0 20px rgba(139, 92, 246, 0.6)"
-              }}>
-                🎯 שיר האהוב של הערב 🎯
-              </div>
-              <div style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "30px",
-                flexWrap: "wrap"
-              }}>
-                {topSong.photo_url && (
-                  <img
-                    src={topSong.photo_url}
-                    alt={topSong.singer_name}
-                    style={{
-                      width: "120px",
-                      height: "120px",
-                      borderRadius: "50%",
-                      objectFit: "cover",
-                      border: "5px solid #a78bfa",
-                      boxShadow: "0 0 30px rgba(139, 92, 246, 0.5)"
-                    }}
-                  />
                 )}
-                <div style={{ textAlign: window.innerWidth > 700 ? "right" : "center" }}>
-                  <div style={{
-                    fontSize: "2rem",
-                    fontWeight: "900",
-                    color: "#ffffff",
-                    marginBottom: "8px"
-                  }}>
-                    {topSong.song_title}
-                  </div>
-                  {topSong.song_artist && (
-                    <div style={{
-                      fontSize: "1.5rem",
-                      color: "#cbd5e1",
-                      marginBottom: "8px"
-                    }}>
-                      {topSong.song_artist}
-                    </div>
-                  )}
-                  <div style={{
-                    fontSize: "1.3rem",
-                    color: "#a78bfa",
-                    fontWeight: "700",
-                    marginBottom: "10px"
-                  }}>
-                    ביצוע: {topSong.singer_name}
-                  </div>
-                  <div style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: window.innerWidth > 700 ? "flex-start" : "center",
-                    gap: "8px",
-                    fontSize: "1.6rem",
-                    color: "#fbbf24",
-                    fontWeight: "700"
-                  }}>
-                    ⭐ {topSong.average_rating.toFixed(1)}
-                  </div>
-                </div>
               </div>
-            </motion.div>
-          );
-        })()}
 
-        {/* Bottom Section: Next + QR */}
+              <motion.div 
+                initial={{ y: 30, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.4 }}
+                style={{ 
+                  fontSize: "clamp(3rem, 8vw, 6rem)", 
+                  fontWeight: "900", 
+                  marginBottom: "30px",
+                  color: "#ffffff",
+                  textShadow: "0 0 50px rgba(0, 202, 255, 0.6), 0 5px 30px rgba(0, 0, 0, 0.8)",
+                  lineHeight: "1.1"
+                }}
+              >
+                {current.singer_name}
+              </motion.div>
+
+              <motion.div 
+                initial={{ y: 30, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.5 }}
+                style={{ 
+                  fontSize: "clamp(2rem, 5vw, 3.5rem)", 
+                  color: "#e2e8f0",
+                  fontWeight: "700",
+                  marginBottom: "15px",
+                  textShadow: "0 3px 15px rgba(0, 0, 0, 0.5)"
+                }}
+              >
+                {current.song_title}
+              </motion.div>
+
+              {current.song_artist && (
+                <motion.div 
+                  initial={{ y: 30, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.6 }}
+                  style={{ 
+                    fontSize: "clamp(1.5rem, 3vw, 2.5rem)", 
+                    color: "#94a3b8",
+                    fontWeight: "600"
+                  }}
+                >
+                  {current.song_artist}
+                </motion.div>
+              )}
+
+              <div style={{ marginTop: "40px" }}>
+                <AudioWave isPlaying={true} />
+              </div>
+            </div>
+          </motion.div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            style={{
+              background: "rgba(15, 23, 42, 0.6)",
+              borderRadius: "40px",
+              padding: "100px 60px",
+              marginBottom: "60px",
+              border: "3px dashed rgba(0, 202, 255, 0.5)",
+              textAlign: "center",
+              backdropFilter: "blur(20px)",
+              maxWidth: "800px",
+              width: "100%"
+            }}
+          >
+            <motion.div
+              animate={{ scale: [1, 1.2, 1], rotate: [0, 10, -10, 0] }}
+              transition={{ duration: 3, repeat: Infinity }}
+              style={{ fontSize: "5rem", marginBottom: "30px" }}
+            >
+              🎵
+            </motion.div>
+            <div style={{ 
+              fontSize: "clamp(2rem, 4vw, 3rem)", 
+              color: "#00caff", 
+              fontWeight: "800",
+              textShadow: "0 0 30px rgba(0, 202, 255, 0.8)"
+            }}>
+              מתכוננים לזמר הבא...
+            </div>
+          </motion.div>
+        )}
+
+        {/* Next + QR in a compact row */}
         <div style={{ 
           display: "grid", 
           gridTemplateColumns: window.innerWidth > 900 ? "1fr 1fr" : "1fr", 
-          gap: "40px" 
+          gap: "40px",
+          width: "100%",
+          maxWidth: "1000px"
         }}>
-          
           {/* Next Singer */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.4 }}
+            transition={{ delay: 0.7 }}
             style={{
-              background: "rgba(15, 23, 42, 0.9)",
+              background: "rgba(15, 23, 42, 0.6)",
               borderRadius: "30px",
-              padding: "50px 40px",
+              padding: "40px 30px",
               border: "2px solid rgba(0, 202, 255, 0.5)",
               textAlign: "center",
-              boxShadow: "0 10px 40px rgba(0, 202, 255, 0.2)"
+              boxShadow: "0 10px 40px rgba(0, 202, 255, 0.2)",
+              backdropFilter: "blur(20px)"
             }}
           >
             <div style={{ 
-              fontSize: "2.2rem", 
+              fontSize: "1.8rem", 
               color: "#00caff", 
-              marginBottom: "35px",
+              marginBottom: "25px",
               fontWeight: "800",
               textShadow: "0 0 20px rgba(0, 202, 255, 0.6)"
             }}>
               ⏭️ הבא בתור
             </div>
-            
+
             {next ? (
               <>
                 {next.photo_url && (
-                  <img 
+                  <motion.img
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring" }}
                     src={next.photo_url} 
                     alt={next.singer_name}
                     style={{
-                      width: "180px",
-                      height: "180px",
+                      width: "150px",
+                      height: "150px",
                       borderRadius: "50%",
                       objectFit: "cover",
-                      marginBottom: "25px",
+                      marginBottom: "20px",
                       border: "5px solid #00caff",
                       boxShadow: "0 0 30px rgba(0, 202, 255, 0.4)"
                     }}
                   />
                 )}
                 <div style={{ 
-                  fontSize: "2.5rem", 
+                  fontSize: "2rem", 
                   fontWeight: "900", 
-                  marginBottom: "15px",
+                  marginBottom: "12px",
                   color: "#ffffff"
                 }}>
                   {next.singer_name}
                 </div>
                 <div style={{ 
-                  fontSize: "1.8rem", 
+                  fontSize: "1.5rem", 
                   color: "#cbd5e1",
                   fontWeight: "600"
                 }}>
@@ -489,9 +370,9 @@ export default function Audience() {
                 </div>
                 {next.song_artist && (
                   <div style={{ 
-                    fontSize: "1.4rem", 
+                    fontSize: "1.2rem", 
                     color: "#94a3b8", 
-                    marginTop: "10px" 
+                    marginTop: "8px" 
                   }}>
                     {next.song_artist}
                   </div>
@@ -500,8 +381,8 @@ export default function Audience() {
             ) : (
               <div style={{ 
                 color: "#64748b", 
-                fontSize: "1.8rem", 
-                padding: "60px 20px",
+                fontSize: "1.4rem", 
+                padding: "40px 20px",
                 fontWeight: "600"
               }}>
                 אין ממתינים כרגע
@@ -513,66 +394,67 @@ export default function Audience() {
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.5 }}
+            transition={{ delay: 0.8 }}
             style={{
-              background: "rgba(15, 23, 42, 0.9)",
+              background: "rgba(15, 23, 42, 0.6)",
               borderRadius: "30px",
-              padding: "50px 40px",
+              padding: "40px 30px",
               border: "2px solid rgba(0, 202, 255, 0.5)",
               textAlign: "center",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              boxShadow: "0 10px 40px rgba(0, 202, 255, 0.2)"
+              boxShadow: "0 10px 40px rgba(0, 202, 255, 0.2)",
+              backdropFilter: "blur(20px)"
             }}
           >
             <div style={{ 
-              fontSize: "2.2rem", 
+              fontSize: "1.8rem", 
               color: "#00caff", 
-              marginBottom: "30px",
+              marginBottom: "25px",
               fontWeight: "800",
               textShadow: "0 0 20px rgba(0, 202, 255, 0.6)"
             }}>
-              💬 הצטרפו לקבוצת הווצאפ
+              💬 הצטרפו לקבוצה
             </div>
-            
+
             <div style={{
-              width: "280px",
-              height: "280px",
+              width: "220px",
+              height: "220px",
               background: "#fff",
               borderRadius: "20px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              marginBottom: "25px",
-              boxShadow: "0 0 40px rgba(0, 202, 255, 0.3)",
+              marginBottom: "20px",
+              boxShadow: "0 0 30px rgba(0, 202, 255, 0.3)",
               border: "4px solid #00caff"
             }}>
               <img 
-                src="https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15"
+                src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15"
                 alt="QR Code WhatsApp"
-                style={{ width: "260px", height: "260px" }}
+                style={{ width: "200px", height: "200px" }}
               />
             </div>
-            
+
             <div style={{ 
-              fontSize: "1.6rem", 
+              fontSize: "1.3rem", 
               color: "#cbd5e1",
               fontWeight: "700",
-              marginBottom: "15px"
+              marginBottom: "10px"
             }}>
-              סרקו להצטרפות מהירה
+              סרקו להצטרפות
             </div>
             <div style={{
-              fontSize: "1.2rem",
+              fontSize: "1rem",
               color: "#94a3b8",
               fontWeight: "600"
             }}>
-              התעדכנו בכל ערבי הקריוקי!
+              עדכונים על ערבי קריוקי
             </div>
           </motion.div>
-        </div>
+          </div>
       </div>
     </div>
   );
