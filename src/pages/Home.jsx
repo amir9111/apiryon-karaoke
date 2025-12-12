@@ -7,6 +7,7 @@ import TermsModal from "../components/TermsModal";
 import MenuButton from "../components/MenuButton";
 import AudienceRating from "../components/AudienceRating";
 import AudioWave from "../components/AudioWave";
+import MyQueueStatus from "../components/MyQueueStatus";
 import PWAInstallPrompt from "../components/PWAInstallPrompt";
 import PWASetup from "../components/PWASetup";
 import ServiceWorkerRegistration from "../components/ServiceWorkerRegistration";
@@ -164,12 +165,14 @@ export default function Home() {
       song_title: formData.song_title.trim().substring(0, 200),
       song_artist: formData.song_artist?.trim().substring(0, 200) || "",
       status: "waiting",
-      photo_url: photoUrl
+      photo_url: photoUrl,
+      email: formData.singer_name.trim() + '@queue.local'
     };
     
     await base44.entities.KaraokeRequest.create(sanitizedData);
 
     localStorage.setItem('apiryon_user_name', formData.singer_name);
+    localStorage.setItem('apiryon_user_email', sanitizedData.email);
     if (capturedPhoto) {
       localStorage.setItem('apiryon_user_photo', capturedPhoto);
     }
@@ -351,6 +354,16 @@ export default function Home() {
         <div className="flex justify-center mb-6">
           <ApyironLogo size="medium" showCircle={true} />
         </div>
+
+        {/* My Queue Status */}
+        <MyQueueStatus 
+          requests={requests}
+          onRequestDeleted={() => {
+            queryClient.invalidateQueries({ queryKey: ['karaoke-requests'] });
+            setStatus({ type: "ok", message: "התור בוטל בהצלחה" });
+            setTimeout(() => setStatus({ type: null, message: "" }), 3000);
+          }}
+        />
 
         {/* Now Playing Section */}
         {currentSong && !hasUserRatedCurrentSong() && (
