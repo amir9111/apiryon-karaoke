@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Play, Check, SkipForward, UserPlus, Settings, Trophy } from "lucide-react";
+
+import { Play, Check, SkipForward, UserPlus, Settings } from "lucide-react";
 import ApyironLogo from "../components/ApyironLogo";
-import TopSingers from "../components/TopSingers";
 
 
 export default function Admin() {
@@ -25,15 +24,6 @@ export default function Admin() {
       }
     }
     checkAuth();
-
-    // Check if URL has hash and switch to leaderboard tab
-    const hash = window.location.hash.replace('#', '');
-    if (hash === 'leaderboard') {
-      setTimeout(() => {
-        const tab = document.querySelector(`[value="${hash}"]`);
-        if (tab) tab.click();
-      }, 100);
-    }
   }, []);
 
   const { data: requests = [], isLoading } = useQuery({
@@ -129,19 +119,7 @@ export default function Admin() {
           </div>
         </div>
 
-        <Tabs defaultValue="control" dir="rtl" style={{ width: "100%" }}>
-          <TabsList style={{ display: "flex", gap: "8px", background: "rgba(15,23,42,0.8)", padding: "6px", borderRadius: "16px", border: "1px solid rgba(0, 202, 255, 0.2)", marginBottom: "20px", width: "100%", justifyContent: "center", boxShadow: "0 0 20px rgba(0, 202, 255, 0.1)", flexWrap: "wrap" }}>
-            <TabsTrigger value="control" style={{ flex: "0 1 auto", minWidth: "140px", display: "flex", alignItems: "center", gap: "8px", fontSize: "0.95rem", padding: "10px 20px", borderRadius: "12px" }}>
-              <Settings className="w-4 h-4" />
-              מסך ניהול
-            </TabsTrigger>
-            <TabsTrigger value="leaderboard" style={{ flex: "0 1 auto", minWidth: "140px", display: "flex", alignItems: "center", gap: "8px", fontSize: "0.95rem", padding: "10px 20px", borderRadius: "12px" }}>
-              <Trophy className="w-4 h-4" />
-              זמרים מובילים
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="control">
+        <div>
             <div style={{ display: "grid", gridTemplateColumns: window.innerWidth > 900 ? "minmax(0, 2fr) minmax(0, 1fr)" : "minmax(0, 1fr)", gap: "20px" }}>
               {/* Current Song Control */}
               <div style={{ background: "rgba(15,23,42,0.5)", borderRadius: "20px", padding: "20px", border: "1px solid rgba(0, 202, 255, 0.2)", backdropFilter: "blur(10px)", boxShadow: "0 0 30px rgba(0, 202, 255, 0.1)" }}>
@@ -400,52 +378,7 @@ export default function Admin() {
                 </div>
               </div>
             </div>
-          </TabsContent>
-
-              <TabsContent value="leaderboard">
-                {/* Open in New Window Button - only show if not opened via hash */}
-                {!window.location.hash && (
-                  <div style={{ 
-                    textAlign: "center", 
-                    padding: "24px",
-                    background: "rgba(251, 191, 36, 0.1)",
-                    border: "2px solid rgba(251, 191, 36, 0.3)",
-                    borderRadius: "20px",
-                    marginBottom: "20px",
-                    boxShadow: "0 0 40px rgba(251, 191, 36, 0.2)"
-                  }}>
-                    <div style={{ fontSize: "1.5rem", fontWeight: "700", color: "#fbbf24", marginBottom: "12px" }}>
-                      🏆 מסך הזמרים המובילים
-                    </div>
-                    <p style={{ fontSize: "1rem", color: "#cbd5e1", marginBottom: "16px", lineHeight: "1.6" }}>
-                      פתח מסך זה על טלוויזיה נוספת ליצירת תחרות!
-                    </p>
-                    <button
-                      onClick={() => window.open(window.location.origin + window.location.pathname + '#leaderboard', '_blank')}
-                      style={{
-                        padding: "14px 28px",
-                        fontSize: "1.1rem",
-                        fontWeight: "700",
-                        background: "linear-gradient(135deg, #fbbf24, #f59e0b)",
-                        color: "#0f172a",
-                        border: "none",
-                        borderRadius: "16px",
-                        cursor: "pointer",
-                        boxShadow: "0 0 30px rgba(251, 191, 36, 0.5)",
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: "10px"
-                      }}
-                    >
-                      <Trophy className="w-6 h-6" />
-                      פתח לוח הזמרים בחלון נפרד
-                    </button>
-                  </div>
-                )}
-
-              <TopSingers requests={requests} />
-            </TabsContent>
-          </Tabs>
+            </div>
 
 
         </div>
