@@ -380,10 +380,10 @@ export default function Audience() {
         {/* Next + QR in a compact row */}
         <div style={{ 
           display: "grid", 
-          gridTemplateColumns: window.innerWidth > 900 ? "1fr 1fr" : "1fr", 
+          gridTemplateColumns: window.innerWidth > 900 ? "1fr 1fr 1fr" : "1fr", 
           gap: "40px",
           width: "100%",
-          maxWidth: "1000px"
+          maxWidth: "1400px"
         }}>
           {/* Next Singer */}
           <motion.div
@@ -468,69 +468,134 @@ export default function Audience() {
           </motion.div>
 
           {/* QR Code for WhatsApp */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.8 }}
-            style={{
-              background: "rgba(15, 23, 42, 0.3)",
-              borderRadius: "30px",
-              padding: "40px 30px",
-              border: "2px solid rgba(0, 202, 255, 0.3)",
-              textAlign: "center",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              boxShadow: "0 10px 40px rgba(0, 202, 255, 0.15)",
-              backdropFilter: "blur(30px)"
-            }}
-          >
-            <div style={{ 
-              fontSize: "1.8rem", 
-              color: "#00caff", 
-              marginBottom: "25px",
-              fontWeight: "800",
-              textShadow: "0 0 20px rgba(0, 202, 255, 0.6)"
-            }}>
-              💬 הצטרפו לקבוצה
-            </div>
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.8 }}
+              style={{
+                background: "rgba(15, 23, 42, 0.3)",
+                borderRadius: "30px",
+                padding: "40px 30px",
+                border: "2px solid rgba(0, 202, 255, 0.3)",
+                textAlign: "center",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                boxShadow: "0 10px 40px rgba(0, 202, 255, 0.15)",
+                backdropFilter: "blur(30px)"
+              }}
+            >
+              <div style={{ 
+                fontSize: "1.8rem", 
+                color: "#00caff", 
+                marginBottom: "25px",
+                fontWeight: "800",
+                textShadow: "0 0 20px rgba(0, 202, 255, 0.6)"
+              }}>
+                💬 הצטרפו לקבוצה
+              </div>
 
-            <div style={{
-              width: "220px",
-              height: "220px",
-              background: "#fff",
-              borderRadius: "20px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              marginBottom: "20px",
-              boxShadow: "0 0 30px rgba(0, 202, 255, 0.3)",
-              border: "4px solid #00caff"
-            }}>
-              <img 
-                src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15"
-                alt="QR Code WhatsApp"
-                style={{ width: "200px", height: "200px" }}
-              />
-            </div>
+              <div style={{
+                width: "220px",
+                height: "220px",
+                background: "#fff",
+                borderRadius: "20px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginBottom: "20px",
+                boxShadow: "0 0 30px rgba(0, 202, 255, 0.3)",
+                border: "4px solid #00caff"
+              }}>
+                <img 
+                  src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15"
+                  alt="QR Code WhatsApp"
+                  style={{ width: "200px", height: "200px" }}
+                />
+              </div>
 
-            <div style={{ 
-              fontSize: "1.3rem", 
-              color: "#cbd5e1",
-              fontWeight: "700",
-              marginBottom: "10px"
-            }}>
-              סרקו להצטרפות
-            </div>
-            <div style={{
-              fontSize: "1rem",
-              color: "#94a3b8",
-              fontWeight: "600"
-            }}>
-              עדכונים על ערבי קריוקי
-            </div>
-          </motion.div>
+              <div style={{ 
+                fontSize: "1.3rem", 
+                color: "#cbd5e1",
+                fontWeight: "700",
+                marginBottom: "10px"
+              }}>
+                סרקו להצטרפות
+              </div>
+              <div style={{
+                fontSize: "1rem",
+                color: "#94a3b8",
+                fontWeight: "600"
+              }}>
+                עדכונים על ערבי קריוקי
+              </div>
+            </motion.div>
+
+            {/* QR Code for Website */}
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.9 }}
+              style={{
+                background: "rgba(15, 23, 42, 0.3)",
+                borderRadius: "30px",
+                padding: "40px 30px",
+                border: "2px solid rgba(139, 92, 246, 0.3)",
+                textAlign: "center",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                boxShadow: "0 10px 40px rgba(139, 92, 246, 0.15)",
+                backdropFilter: "blur(30px)"
+              }}
+            >
+              <div style={{ 
+                fontSize: "1.8rem", 
+                color: "#a78bfa", 
+                marginBottom: "25px",
+                fontWeight: "800",
+                textShadow: "0 0 20px rgba(139, 92, 246, 0.6)"
+              }}>
+                🎤 הירשמו לתור
+              </div>
+
+              <div style={{
+                width: "220px",
+                height: "220px",
+                background: "#fff",
+                borderRadius: "20px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginBottom: "20px",
+                boxShadow: "0 0 30px rgba(139, 92, 246, 0.3)",
+                border: "4px solid #a78bfa"
+              }}>
+                <img 
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(window.location.origin)}`}
+                  alt="QR Code Website"
+                  style={{ width: "200px", height: "200px" }}
+                />
+              </div>
+
+              <div style={{ 
+                fontSize: "1.3rem", 
+                color: "#cbd5e1",
+                fontWeight: "700",
+                marginBottom: "10px"
+              }}>
+                סרקו להרשמה
+              </div>
+              <div style={{
+                fontSize: "1rem",
+                color: "#94a3b8",
+                fontWeight: "600"
+              }}>
+                כניסה ישירה לאתר
+              </div>
+            </motion.div>
           </div>
       </div>
     </div>
