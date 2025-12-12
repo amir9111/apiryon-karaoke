@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import ApyironLogo from "../components/ApyironLogo";
-import { QrCode } from "lucide-react";
+import Logo from "../components/Logo";
+import QRCode from "../components/QRCode";
 
 export default function Home() {
   const [formData, setFormData] = useState({
@@ -51,31 +51,27 @@ export default function Home() {
     <div 
       dir="rtl"
       className="min-h-screen w-full flex justify-center p-4 md:p-8"
-      style={{ background: "linear-gradient(135deg, #020617 0%, #0a1929 50%, #020617 100%)", color: "#f9fafb" }}
+      style={{ background: "#050816", color: "#f9fafb" }}
     >
       <div className="w-full max-w-[480px]">
-        {/* Logo Section */}
-        <div className="flex justify-center mb-6">
-          <ApyironLogo size="medium" showCircle={true} />
-        </div>
-
         <div
           className="rounded-[18px] p-5 md:p-6"
           style={{
             background: "rgba(15, 23, 42, 0.95)",
-            boxShadow: "0 10px 30px rgba(0, 202, 255, 0.2), 0 0 80px rgba(0, 136, 255, 0.1)",
+            boxShadow: "0 10px 30px rgba(0, 202, 255, 0.2)",
             backdropFilter: "blur(12px)",
             border: "1px solid rgba(0, 202, 255, 0.2)"
           }}
         >
-          <h1 className="text-[1.6rem] md:text-[1.9rem] font-bold text-center mb-2" style={{
-            color: "#00caff",
-            textShadow: "0 0 20px rgba(0, 202, 255, 0.5)"
-          }}>
-            תור קריוקי 🎤
+          <div className="mb-4">
+            <Logo size="medium" showCircle={true} />
+          </div>
+          
+          <h1 className="text-[1.6rem] md:text-[1.9rem] font-bold text-center mb-2">
+            תור קריוקי
           </h1>
-          <p className="text-[0.9rem] text-center mb-4" style={{ color: "#cbd5f5" }}>
-            ממלאים, מצטרפים לתור – ומחכים שיקראו לכם
+          <p className="text-[0.9rem] text-center mb-4" style={{ color: "#00caff" }}>
+            ממלאים, מצטרפים לתור – ומחכים שיקראו לכם 🎤
           </p>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-2.5 mt-2">
@@ -97,8 +93,8 @@ export default function Home() {
                   color: "#f9fafb"
                 }}
                 onFocus={(e) => {
-                  e.target.style.borderColor = "#22c55e";
-                  e.target.style.boxShadow = "0 0 0 1px rgba(34,197,94,0.5)";
+                  e.target.style.borderColor = "#00caff";
+                  e.target.style.boxShadow = "0 0 0 1px rgba(0, 202, 255, 0.5)";
                 }}
                 onBlur={(e) => {
                   e.target.style.borderColor = "#1f2937";
@@ -125,8 +121,8 @@ export default function Home() {
                   color: "#f9fafb"
                 }}
                 onFocus={(e) => {
-                  e.target.style.borderColor = "#22c55e";
-                  e.target.style.boxShadow = "0 0 0 1px rgba(34,197,94,0.5)";
+                  e.target.style.borderColor = "#00caff";
+                  e.target.style.boxShadow = "0 0 0 1px rgba(0, 202, 255, 0.5)";
                 }}
                 onBlur={(e) => {
                   e.target.style.borderColor = "#1f2937";
@@ -152,8 +148,8 @@ export default function Home() {
                   color: "#f9fafb"
                 }}
                 onFocus={(e) => {
-                  e.target.style.borderColor = "#22c55e";
-                  e.target.style.boxShadow = "0 0 0 1px rgba(34,197,94,0.5)";
+                  e.target.style.borderColor = "#00caff";
+                  e.target.style.boxShadow = "0 0 0 1px rgba(0, 202, 255, 0.5)";
                 }}
                 onBlur={(e) => {
                   e.target.style.borderColor = "#1f2937";
@@ -169,8 +165,7 @@ export default function Home() {
               style={{
                 background: "linear-gradient(135deg, #00caff, #0088ff)",
                 color: "#001a2e",
-                opacity: isSubmitting ? 0.7 : 1,
-                boxShadow: "0 0 20px rgba(0, 202, 255, 0.4)"
+                opacity: isSubmitting ? 0.7 : 1
               }}
               onMouseDown={(e) => e.currentTarget.style.transform = "scale(0.98)"}
               onMouseUp={(e) => e.currentTarget.style.transform = "scale(1)"}
@@ -187,42 +182,35 @@ export default function Home() {
                 {status.message}
               </div>
             )}
-          </form>
+            </form>
 
-          <hr 
+            <hr 
             className="my-[18px] md:my-3 h-px border-0"
-            style={{ background: "radial-gradient(circle, #4b5563 0, transparent 70%)" }}
-          />
+            style={{ background: "radial-gradient(circle, #00caff 0, transparent 70%)" }}
+            />
 
-          <div className="flex flex-col items-center gap-3 text-[0.9rem]">
-            <div className="text-center">
-              <div className="mb-2">רוצים להתעדכן בכל ערבי הקריוקי?</div>
+            <div className="flex flex-col md:flex-row items-center justify-center gap-6 text-[0.9rem]">
+            <div className="flex flex-col items-center gap-1.5">
+              <div className="text-center mb-1">הצטרפו לקבוצת הווטסאפ:</div>
               <a
                 href="https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15?mode=hqrt3"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 py-[9px] px-[14px] rounded-full no-underline font-semibold text-[0.9rem] whitespace-nowrap"
                 style={{
-                  background: "linear-gradient(135deg, #00caff, #0088ff)",
-                  color: "#001a2e",
-                  boxShadow: "0 0 15px rgba(0, 202, 255, 0.3)"
+                  background: "#00caff",
+                  color: "#001a2e"
                 }}
               >
                 <span className="text-[1.1rem]">💬</span>
-                <span>להצטרפות לקבוצת הווטסאפ</span>
+                <span>קבוצת ווטסאפ</span>
               </a>
             </div>
 
-            <div className="flex flex-col items-center gap-2 p-4 rounded-xl" style={{
-              background: "rgba(0, 202, 255, 0.05)",
-              border: "1px solid rgba(0, 202, 255, 0.2)"
-            }}>
-              <QrCode className="w-16 h-16" style={{ color: "#00caff" }} />
-              <div className="text-center text-[0.85rem]" style={{ color: "#94a3b8" }}>
-                סרקו להצטרפות מהירה לתור
-              </div>
+            <div className="flex flex-col items-center">
+              <QRCode url={window.location.origin + window.location.pathname} size={120} />
             </div>
-          </div>
+            </div>
         </div>
 
         <Link 
