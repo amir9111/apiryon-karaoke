@@ -28,12 +28,13 @@ export default function Audience() {
       minHeight: "100vh",
       background: "linear-gradient(135deg, #020617 0%, #0a1929 50%, #020617 100%)",
       color: "#fff",
-      position: "relative",
-      overflow: "auto"
+      position: "relative"
     }}>
       <FloatingParticles />
       <NavigationMenu />
-      <LiveClock />
+      <div style={{ position: "fixed", top: 0, left: 0, zIndex: 100, pointerEvents: "none" }}>
+        <LiveClock />
+      </div>
       
       {/* APIRYON Logo - Center Top */}
       <div style={{

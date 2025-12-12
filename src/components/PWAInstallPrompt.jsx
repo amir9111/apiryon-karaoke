@@ -12,17 +12,44 @@ export default function PWAInstallPrompt() {
       
       const dismissed = localStorage.getItem('pwa_install_dismissed');
       if (!dismissed) {
-        setShowPrompt(true);
+        setTimeout(() => setShowPrompt(true), 2000);
       }
     };
 
     window.addEventListener('beforeinstallprompt', handler);
+    
+    // Fallback manual trigger after 5 seconds if no prompt
+    const fallbackTimer = setTimeout(() => {
+      if (!deferredPrompt && !localStorage.getItem('pwa_install_dismissed')) {
+        // Show custom install instructions
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+        
+        if (!isStandalone) {
+          setShowPrompt(true);
+        }
+      }
+    }, 5000);
 
-    return () => window.removeEventListener('beforeinstallprompt', handler);
-  }, []);
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handler);
+      clearTimeout(fallbackTimer);
+    };
+  }, [deferredPrompt]);
 
   const handleInstall = async () => {
-    if (!deferredPrompt) return;
+    if (!deferredPrompt) {
+      // Show instructions for iOS or browsers without auto-prompt
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      if (isIOS) {
+        alert('להתקנה באייפון: לחץ על כפתור "שיתוף" ובחר "הוסף למסך הבית"');
+      } else {
+        alert('לחץ על תפריט הדפדפן (⋮) ובחר "התקן אפליקציה" או "הוסף למסך הבית"');
+      }
+      setShowPrompt(false);
+      localStorage.setItem('pwa_install_dismissed', 'true');
+      return;
+    }
 
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
