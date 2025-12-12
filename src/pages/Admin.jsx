@@ -5,6 +5,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Play, Check, SkipForward, UserPlus, Settings } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import ApyironLogo from "../components/ApyironLogo";
+import NavigationMenu from "../components/NavigationMenu";
 
 
 export default function Admin() {
@@ -80,6 +81,7 @@ export default function Admin() {
   if (loading) {
     return (
       <div dir="rtl" style={{ background: "#020617", color: "#e5e7eb", minHeight: "100vh", padding: "12px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <NavigationMenu />
         <div style={{ fontSize: "1.2rem" }}>טוען...</div>
       </div>
     );
@@ -88,6 +90,7 @@ export default function Admin() {
   if (!user || (user.email !== "amir.abu300@gmail.com" && user.email !== "amit595959@gmail.com")) {
     return (
       <div dir="rtl" style={{ background: "#020617", color: "#e5e7eb", minHeight: "100vh", padding: "12px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <NavigationMenu />
         <div style={{ textAlign: "center" }}>
           <div style={{ fontSize: "1.5rem", marginBottom: "10px" }}>🚫</div>
           <div style={{ fontSize: "1.2rem", fontWeight: "600", marginBottom: "8px" }}>אין לך הרשאה</div>
@@ -99,6 +102,7 @@ export default function Admin() {
 
   return (
     <div dir="rtl" style={{ background: "linear-gradient(135deg, #020617 0%, #0a1929 50%, #020617 100%)", color: "#f1f5f9", minHeight: "100vh", padding: "20px" }}>
+      <NavigationMenu />
       <div style={{ maxWidth: "1400px", margin: "0 auto" }}>
         {/* Header */}
         <div style={{ marginBottom: "24px", textAlign: "center" }}>

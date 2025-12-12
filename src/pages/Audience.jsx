@@ -1,4 +1,5 @@
 import React from "react";
+import NavigationMenu from "../components/NavigationMenu";
 
 export default function Audience() {
   const [requests, setRequests] = React.useState([]);
@@ -26,6 +27,7 @@ export default function Audience() {
       color: "#fff",
       padding: "40px 20px"
     }}>
+      <NavigationMenu />
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
         
         <h1 style={{ textAlign: "center", fontSize: "3rem", color: "#00caff", marginBottom: "60px" }}>
