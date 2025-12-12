@@ -5,6 +5,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Play, Check, SkipForward, UserPlus, Monitor, Settings } from "lucide-react";
 import ApyironLogo from "../components/ApyironLogo";
 import AudioWave from "../components/AudioWave";
+import AudienceRating from "../components/AudienceRating";
+import StarRating from "../components/StarRating";
 
 export default function Admin() {
   const [user, setUser] = useState(null);
@@ -214,7 +216,8 @@ export default function Admin() {
                             <td style={{ padding: "14px 12px", borderBottom: "1px solid rgba(51,65,85,0.5)", color: "#e2e8f0" }}>{req.song_title}</td>
                             <td style={{ padding: "14px 12px", borderBottom: "1px solid rgba(51,65,85,0.5)", color: "#94a3b8" }}>{req.song_artist || "-"}</td>
                             <td style={{ padding: "14px 12px", borderBottom: "1px solid rgba(51,65,85,0.5)", textAlign: "center" }}>
-                              <span style={{
+                              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "4px" }}>
+                                <span style={{
                                 display: "inline-flex",
                                 padding: "6px 12px",
                                 borderRadius: "8px",
@@ -223,9 +226,15 @@ export default function Admin() {
                                 background: req.status === "waiting" ? "rgba(59,130,246,0.15)" : req.status === "performing" ? "rgba(0, 202, 255, 0.2)" : req.status === "done" ? "rgba(100,116,139,0.15)" : "rgba(248,113,113,0.15)",
                                 color: req.status === "waiting" ? "#60a5fa" : req.status === "performing" ? "#00caff" : req.status === "done" ? "#94a3b8" : "#f87171",
                                 border: `1px solid ${req.status === "waiting" ? "rgba(59,130,246,0.3)" : req.status === "performing" ? "rgba(0, 202, 255, 0.4)" : req.status === "done" ? "rgba(100,116,139,0.3)" : "rgba(248,113,113,0.3)"}`
-                              }}>
-                                {req.status === "waiting" ? "⏳ ממתין" : req.status === "performing" ? "🎤 שר עכשיו" : req.status === "done" ? "✅ הסתיים" : "⏭️ דולג"}
-                              </span>
+                                }}>
+                                  {req.status === "waiting" ? "⏳ ממתין" : req.status === "performing" ? "🎤 שר עכשיו" : req.status === "done" ? "✅ הסתיים" : "⏭️ דולג"}
+                                </span>
+                                {req.status === "done" && req.average_rating > 0 && (
+                                  <div style={{ fontSize: "0.75rem", color: "#fbbf24", display: "flex", alignItems: "center", gap: "2px" }}>
+                                    ⭐ {req.average_rating.toFixed(1)}
+                                  </div>
+                                )}
+                              </div>
                             </td>
                             <td style={{ padding: "14px 12px", borderBottom: "1px solid rgba(51,65,85,0.5)", textAlign: "center" }}>
                               <div style={{ display: "flex", gap: "6px", justifyContent: "center" }}>
@@ -428,7 +437,7 @@ export default function Admin() {
               </div>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: window.innerWidth > 850 ? "minmax(0, 2.2fr) minmax(0, 1.2fr)" : "minmax(0, 1fr)", gap: "16px", alignItems: "stretch" }}>
+            <div style={{ display: "grid", gridTemplateColumns: window.innerWidth > 850 ? "minmax(0, 2fr) minmax(0, 1fr)" : "minmax(0, 1fr)", gap: "16px", alignItems: "start" }}>
               {/* Now Playing */}
               <div style={{
                 background: "radial-gradient(ellipse at top left, rgba(0, 202, 255, 0.15), rgba(2, 6, 23, 0.95) 60%)",
@@ -486,8 +495,27 @@ export default function Admin() {
                         {currentSong.song_title}
                       </div>
                       {currentSong.song_artist && (
-                        <div style={{ fontSize: "clamp(1rem, 1.8vw, 1.3rem)", color: "#94a3b8", textAlign: "center" }}>
+                        <div style={{ fontSize: "clamp(1rem, 1.8vw, 1.3rem)", color: "#94a3b8", textAlign: "center", marginBottom: "16px" }}>
                           {currentSong.song_artist}
+                        </div>
+                      )}
+                      {/* Display current rating */}
+                      {currentSong.average_rating > 0 && (
+                        <div style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          gap: "12px",
+                          marginTop: "16px",
+                          padding: "12px 20px",
+                          background: "rgba(251, 191, 36, 0.1)",
+                          borderRadius: "16px",
+                          border: "1px solid rgba(251, 191, 36, 0.3)"
+                        }}>
+                          <StarRating rating={currentSong.average_rating} readonly size="medium" />
+                          <span style={{ fontSize: "0.9rem", color: "#94a3b8" }}>
+                            ({currentSong.ratings?.length || 0} דירוגים)
+                          </span>
                         </div>
                       )}
                     </>
@@ -495,14 +523,23 @@ export default function Admin() {
                 </div>
               </div>
 
-              {/* Up Next */}
-              <div style={{ 
-                background: "rgba(15,23,42,0.96)", 
-                borderRadius: "20px", 
-                padding: "16px 14px", 
-                border: "1px solid rgba(0, 202, 255, 0.3)", 
-                boxShadow: "0 0 30px rgba(0, 202, 255, 0.15), 0 12px 40px rgba(0,0,0,0.5)" 
-              }}>
+              {/* Sidebar - Up Next & Rating */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                {/* Audience Rating Component */}
+                {currentSong && (
+                  <AudienceRating 
+                    currentSong={currentSong}
+                    onRatingSubmitted={() => queryClient.invalidateQueries({ queryKey: ['karaoke-requests'] })}
+                  />
+                )}
+
+                <div style={{ 
+                  background: "rgba(15,23,42,0.96)", 
+                  borderRadius: "20px", 
+                  padding: "16px 14px", 
+                  border: "1px solid rgba(0, 202, 255, 0.3)", 
+                  boxShadow: "0 0 30px rgba(0, 202, 255, 0.15), 0 12px 40px rgba(0,0,0,0.5)" 
+                }}>
                 <div style={{ 
                   fontSize: "clamp(1rem, 1.8vw, 1.2rem)", 
                   fontWeight: "700", 
@@ -595,11 +632,12 @@ export default function Admin() {
                   <span style={{ color: "#00caff", fontWeight: "600" }}>
                     https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15
                   </span>
+                  </div>
                 </div>
               </div>
             </div>
 
-              <div style={{ 
+            <div style={{ 
                 marginTop: "16px", 
                 fontSize: "0.8rem", 
                 color: "#94a3b8", 
