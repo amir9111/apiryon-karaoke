@@ -4,26 +4,75 @@ import { useQuery } from "@tanstack/react-query";
 
 export default function Display() {
   const [isMobile, setIsMobile] = React.useState(false);
+  const [debugMode, setDebugMode] = React.useState(false);
+  const [debugLogs, setDebugLogs] = React.useState(["🚀 Display page loaded"]);
+
+  const addLog = (msg) => {
+    console.log(msg);
+    setDebugLogs(prev => [...prev, `[${new Date().toLocaleTimeString()}] ${msg}`]);
+  };
 
   React.useEffect(() => {
+    addLog("✅ useEffect started");
     const checkWidth = () => setIsMobile(window.innerWidth <= 850);
     checkWidth();
+    addLog(`✅ Screen width checked: ${window.innerWidth}px`);
     window.addEventListener('resize', checkWidth);
     return () => window.removeEventListener('resize', checkWidth);
   }, []);
 
-  const { data: requests = [], isLoading } = useQuery({
+  React.useEffect(() => {
+    addLog("🔍 Checking base44...");
+    if (base44) addLog("✅ base44 exists");
+    if (base44?.entities) addLog("✅ base44.entities exists");
+    if (base44?.entities?.KaraokeRequest) addLog("✅ KaraokeRequest entity exists");
+  }, []);
+
+  const { data: requests = [], isLoading, error } = useQuery({
     queryKey: ['karaoke-requests'],
-    queryFn: () => base44.entities.KaraokeRequest.list('-created_date', 100),
+    queryFn: () => {
+      addLog("🔄 Fetching data...");
+      return base44.entities.KaraokeRequest.list('-created_date', 100)
+        .then(result => {
+          addLog(`✅ Data fetched: ${result.length} items`);
+          return result;
+        })
+        .catch(err => {
+          addLog(`❌ Fetch error: ${err.message}`);
+          throw err;
+        });
+    },
     refetchInterval: 3000,
   });
 
   if (isLoading) {
+    addLog("⏳ Loading data...");
     return (
       <div dir="rtl" style={{ background: "linear-gradient(135deg, #020617 0%, #0a1929 50%, #020617 100%)", color: "#f1f5f9", minHeight: "100vh", padding: "20px", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <div style={{ fontSize: "1.5rem", fontWeight: "700", color: "#00caff" }}>טוען...</div>
+        <button
+          onClick={() => setDebugMode(true)}
+          style={{
+            position: "fixed",
+            bottom: "20px",
+            left: "20px",
+            padding: "10px 20px",
+            background: "#fbbf24",
+            color: "#000",
+            border: "none",
+            borderRadius: "8px",
+            cursor: "pointer",
+            fontWeight: "700"
+          }}
+        >
+          🔧 Debug
+        </button>
       </div>
     );
+  }
+
+  if (error) {
+    addLog(`❌ Query error: ${error.message}`);
   }
 
   const now = requests.filter(r => r.status === "performing");
@@ -33,8 +82,113 @@ export default function Display() {
   const currentSong = requests.find(r => r.status === "performing");
   const waitingList = requests.filter(r => r.status === "waiting");
 
+  addLog(`✅ Rendering main view with ${requests.length} requests`);
+
   return (
     <div dir="rtl" style={{ background: "linear-gradient(135deg, #020617 0%, #0a1929 50%, #020617 100%)", color: "#f1f5f9", minHeight: "100vh", padding: "20px" }}>
+      {/* Debug Button */}
+      <button
+        onClick={() => setDebugMode(!debugMode)}
+        style={{
+          position: "fixed",
+          bottom: "20px",
+          left: "20px",
+          padding: "10px 20px",
+          background: "#fbbf24",
+          color: "#000",
+          border: "none",
+          borderRadius: "8px",
+          cursor: "pointer",
+          fontWeight: "700",
+          zIndex: 99998
+        }}
+      >
+        🔧 {debugMode ? 'סגור' : 'Debug'}
+      </button>
+
+      {/* Debug Panel */}
+      {debugMode && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: "rgba(0, 0, 0, 0.98)",
+          zIndex: 99999,
+          padding: "20px",
+          overflow: "auto"
+        }}>
+          <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
+            <div style={{
+              background: "rgba(0, 202, 255, 0.2)",
+              border: "3px solid #00caff",
+              borderRadius: "16px",
+              padding: "20px",
+              marginBottom: "20px"
+            }}>
+              <h1 style={{ color: "#00caff", fontSize: "2rem", margin: 0 }}>🔧 Display Debug Panel</h1>
+              <p style={{ color: "#94a3b8", margin: "5px 0 0 0" }}>בדיקת דף התצוגה</p>
+            </div>
+
+            <div style={{
+              background: "rgba(0, 202, 255, 0.1)",
+              border: "2px solid #00caff",
+              borderRadius: "12px",
+              padding: "20px"
+            }}>
+              <h2 style={{ fontSize: "1.5rem", color: "#00caff", marginBottom: "15px" }}>
+                📋 Logs ({debugLogs.length}):
+              </h2>
+              <div style={{ maxHeight: "500px", overflow: "auto" }}>
+                {debugLogs.map((log, i) => (
+                  <div key={i} style={{
+                    padding: "10px",
+                    background: i % 2 === 0 ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.02)",
+                    marginBottom: "3px",
+                    borderRadius: "6px",
+                    fontFamily: "monospace",
+                    fontSize: "0.9rem",
+                    borderLeft: "3px solid #00caff",
+                    color: "#fff"
+                  }}>
+                    {log}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {error && (
+              <div style={{
+                background: "rgba(248, 113, 113, 0.2)",
+                border: "3px solid #f87171",
+                borderRadius: "12px",
+                padding: "20px",
+                marginTop: "20px"
+              }}>
+                <h2 style={{ fontSize: "1.5rem", color: "#f87171" }}>❌ Error:</h2>
+                <pre style={{ color: "#fff", whiteSpace: "pre-wrap" }}>{error.message}</pre>
+              </div>
+            )}
+
+            <div style={{
+              background: "rgba(16, 185, 129, 0.2)",
+              border: "3px solid #10b981",
+              borderRadius: "12px",
+              padding: "20px",
+              marginTop: "20px"
+            }}>
+              <h2 style={{ fontSize: "1.5rem", color: "#10b981" }}>✅ Data Status:</h2>
+              <div style={{ color: "#fff", fontFamily: "monospace" }}>
+                <div>Total Requests: {requests.length}</div>
+                <div>Is Loading: {isLoading ? 'Yes' : 'No'}</div>
+                <div>Has Error: {error ? 'Yes' : 'No'}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div style={{ maxWidth: "1400px", margin: "0 auto" }}>
         <div style={{ minHeight: "80vh", display: "flex", flexDirection: "column", gap: "16px" }}>
           {/* Header */}
