@@ -20,6 +20,14 @@ export default function Admin() {
       setLoading(false);
     }
     checkAuth();
+
+    // Check if URL has #display and switch to display tab
+    if (window.location.hash === '#display') {
+      setTimeout(() => {
+        const displayTab = document.querySelector('[value="display"]');
+        if (displayTab) displayTab.click();
+      }, 100);
+    }
   }, []);
 
   const { data: requests = [], isLoading } = useQuery({
@@ -389,6 +397,45 @@ export default function Admin() {
           </TabsContent>
 
           <TabsContent value="display">
+            {/* Open in New Window Button */}
+            <div style={{ 
+              textAlign: "center", 
+              padding: "24px",
+              background: "rgba(0, 202, 255, 0.1)",
+              border: "2px solid rgba(0, 202, 255, 0.3)",
+              borderRadius: "20px",
+              marginBottom: "20px",
+              boxShadow: "0 0 40px rgba(0, 202, 255, 0.2)"
+            }}>
+              <div style={{ fontSize: "1.5rem", fontWeight: "700", color: "#00caff", marginBottom: "12px" }}>
+                💡 טיפ למנהל
+              </div>
+              <p style={{ fontSize: "1rem", color: "#cbd5e1", marginBottom: "16px", lineHeight: "1.6" }}>
+                פתח את מסך התצוגה בחלון נפרד (למשל על מסך טלוויזיה),<br />
+                והשאר את מסך הניהול פתוח אצלך במחשב
+              </p>
+              <button
+                onClick={() => window.open(window.location.origin + window.location.pathname + '#display', '_blank')}
+                style={{
+                  padding: "14px 28px",
+                  fontSize: "1.1rem",
+                  fontWeight: "700",
+                  background: "linear-gradient(135deg, #00caff, #0088ff)",
+                  color: "#001a2e",
+                  border: "none",
+                  borderRadius: "16px",
+                  cursor: "pointer",
+                  boxShadow: "0 0 30px rgba(0, 202, 255, 0.5)",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "10px"
+                }}
+              >
+                <Monitor className="w-6 h-6" />
+                פתח מסך תצוגה לקהל בחלון נפרד
+              </button>
+            </div>
+
             <div style={{ minHeight: "80vh", display: "flex", flexDirection: "column", gap: "16px" }}>
             {/* Logo and Header */}
             <div style={{ textAlign: "center", marginBottom: "8px" }}>
