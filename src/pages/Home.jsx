@@ -408,6 +408,44 @@ export default function Home() {
         </div>
 
         <div style={{ textAlign: "center", marginTop: "16px" }}>
+          <button
+            onClick={() => {
+              localStorage.removeItem('apiryon_user_id');
+              localStorage.removeItem('apiryon_visited');
+              localStorage.removeItem('apiryon_terms_accepted');
+              window.location.reload();
+            }}
+            className="block w-full text-[0.8rem] mb-3 py-2 px-4 rounded-lg"
+            style={{ 
+              background: "rgba(248, 113, 113, 0.1)",
+              border: "1px solid rgba(248, 113, 113, 0.3)",
+              color: "#f87171",
+              cursor: "pointer"
+            }}
+          >
+            🚪 התנתק מהמערכת
+          </button>
+
+          <div style={{
+            background: "rgba(15, 23, 42, 0.8)",
+            border: "1px solid rgba(0, 202, 255, 0.2)",
+            borderRadius: "12px",
+            padding: "16px",
+            marginBottom: "12px"
+          }}>
+            <div style={{ fontSize: "0.9rem", fontWeight: "700", color: "#00caff", marginBottom: "12px" }}>
+              📞 צור קשר
+            </div>
+            <div style={{ fontSize: "0.85rem", color: "#cbd5e1", lineHeight: "1.8" }}>
+              <div style={{ marginBottom: "6px" }}>
+                <strong>הבעלים - יהושע דבוש:</strong> <a href="tel:0525400396" style={{ color: "#00caff", textDecoration: "none" }}>0525400396</a>
+              </div>
+              <div>
+                <strong>בעל האתר - אמיר:</strong> <a href="tel:0546238130" style={{ color: "#00caff", textDecoration: "none" }}>0546238130</a>
+              </div>
+            </div>
+          </div>
+
           <Link 
             to={createPageUrl("Admin")}
             className="block text-[0.75rem] mb-2"
