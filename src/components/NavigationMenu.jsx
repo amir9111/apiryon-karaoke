@@ -1,10 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Menu, X, Tv, Shield } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+import { base44 } from "@/api/base44Client";
 
 export default function NavigationMenu() {
   const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const currentUser = await base44.auth.me();
+        setUser(currentUser);
+      } catch (error) {
+        setUser(null);
+      }
+    };
+    fetchUser();
+  }, []);
 
   return (
     <>
@@ -67,35 +81,37 @@ export default function NavigationMenu() {
         }}
       >
         <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-          <Link
-            to={createPageUrl("Admin")}
-            onClick={() => setIsOpen(false)}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "12px",
-              padding: "16px 20px",
-              borderRadius: "12px",
-              background: "rgba(0, 202, 255, 0.1)",
-              border: "1px solid rgba(0, 202, 255, 0.3)",
-              color: "#00caff",
-              textDecoration: "none",
-              fontSize: "1.1rem",
-              fontWeight: "600",
-              transition: "all 0.2s"
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "rgba(0, 202, 255, 0.2)";
-              e.currentTarget.style.transform = "translateX(-5px)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "rgba(0, 202, 255, 0.1)";
-              e.currentTarget.style.transform = "translateX(0)";
-            }}
-          >
-            <Shield className="w-5 h-5" />
-            <span>ניהול קריוקי</span>
-          </Link>
+          {user?.role === 'admin' && (
+            <Link
+              to={createPageUrl("Admin")}
+              onClick={() => setIsOpen(false)}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "12px",
+                padding: "16px 20px",
+                borderRadius: "12px",
+                background: "rgba(0, 202, 255, 0.1)",
+                border: "1px solid rgba(0, 202, 255, 0.3)",
+                color: "#00caff",
+                textDecoration: "none",
+                fontSize: "1.1rem",
+                fontWeight: "600",
+                transition: "all 0.2s"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "rgba(0, 202, 255, 0.2)";
+                e.currentTarget.style.transform = "translateX(-5px)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "rgba(0, 202, 255, 0.1)";
+                e.currentTarget.style.transform = "translateX(0)";
+              }}
+            >
+              <Shield className="w-5 h-5" />
+              <span>ניהול קריוקי</span>
+            </Link>
+          )}
 
           <Link
             to={createPageUrl("Audience")}
