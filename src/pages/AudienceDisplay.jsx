@@ -1,13 +1,8 @@
 import React from "react";
-import ApyironLogo from "../components/ApyironLogo";
-import AudioWave from "../components/AudioWave";
-import { QrCode } from "lucide-react";
 
 export default function AudienceDisplay() {
-  const [currentSong, setCurrentSong] = React.useState(null);
-  const [nextSong, setNextSong] = React.useState(null);
+  const [data, setData] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState(null);
 
   React.useEffect(() => {
     loadData();
@@ -17,60 +12,31 @@ export default function AudienceDisplay() {
 
   function loadData() {
     fetch('/api/entities/KaraokeRequest?sort=-created_date&limit=50')
-      .then(response => {
-        if (!response.ok) throw new Error('Failed to fetch');
-        return response.json();
-      })
+      .then(res => res.json())
       .then(requests => {
         const performing = requests.find(r => r.status === "performing");
         const waiting = requests.filter(r => r.status === "waiting");
-        
-        setCurrentSong(performing || null);
-        setNextSong(waiting.length > 0 ? waiting[0] : null);
+        setData({ performing, next: waiting[0] });
         setLoading(false);
-        setError(null);
       })
       .catch(err => {
-        console.error("Error loading data:", err);
-        setError(err.message);
+        console.error(err);
         setLoading(false);
       });
   }
 
   if (loading) {
     return (
-      <div dir="rtl" style={{
+      <div style={{
         minHeight: "100vh",
-        background: "linear-gradient(135deg, #020617 0%, #0a1929 50%, #020617 100%)",
+        background: "#020617",
+        color: "#fff",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        color: "#f1f5f9"
+        fontSize: "2rem"
       }}>
-        <div style={{ textAlign: "center" }}>
-          <ApyironLogo size="large" showCircle={true} />
-          <div style={{ fontSize: "1.5rem", marginTop: "20px" }}>טוען...</div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div dir="rtl" style={{
-        minHeight: "100vh",
-        background: "linear-gradient(135deg, #020617 0%, #0a1929 50%, #020617 100%)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        color: "#f1f5f9",
-        padding: "20px"
-      }}>
-        <div style={{ textAlign: "center" }}>
-          <ApyironLogo size="medium" showCircle={true} />
-          <div style={{ fontSize: "1.5rem", marginTop: "20px", color: "#f87171" }}>שגיאה בטעינת הנתונים</div>
-          <div style={{ fontSize: "1rem", marginTop: "10px", color: "#94a3b8" }}>{error}</div>
-        </div>
+        טוען...
       </div>
     );
   }
@@ -82,23 +48,20 @@ export default function AudienceDisplay() {
       color: "#f1f5f9",
       padding: "40px 20px"
     }}>
-      <div style={{ maxWidth: "1400px", margin: "0 auto" }}>
-        {/* Logo */}
-        <div style={{ textAlign: "center", marginBottom: "40px" }}>
-          <ApyironLogo size="large" showCircle={true} />
-          <div style={{
-            fontSize: "2rem",
-            fontWeight: "700",
-            color: "#00caff",
-            marginTop: "20px",
-            textShadow: "0 0 30px rgba(0, 202, 255, 0.6)"
-          }}>
-            🎤 תצוגת קריוקי לקהל
-          </div>
-        </div>
+      <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+        
+        <h1 style={{
+          textAlign: "center",
+          fontSize: "3rem",
+          color: "#00caff",
+          marginBottom: "40px",
+          textShadow: "0 0 30px rgba(0, 202, 255, 0.6)"
+        }}>
+          🎤 APIRYON - תצוגת קריוקי
+        </h1>
 
         {/* Current Song */}
-        {currentSong ? (
+        {data?.performing ? (
           <div style={{
             background: "rgba(15, 23, 42, 0.95)",
             borderRadius: "30px",
@@ -108,14 +71,8 @@ export default function AudienceDisplay() {
             boxShadow: "0 0 60px rgba(0, 202, 255, 0.3)",
             textAlign: "center"
           }}>
-            <div style={{ display: "flex", justifyContent: "center", marginBottom: "20px" }}>
-              <AudioWave isPlaying={true} />
-            </div>
-            
             <div style={{
               fontSize: "1.5rem",
-              textTransform: "uppercase",
-              letterSpacing: "0.2em",
               color: "#00caff",
               marginBottom: "20px",
               textShadow: "0 0 20px rgba(0, 202, 255, 0.8)"
@@ -123,49 +80,44 @@ export default function AudienceDisplay() {
               🎤 שר עכשיו על הבמה
             </div>
 
-            {currentSong.photo_url && (
-              <div style={{ marginBottom: "30px" }}>
-                <img 
-                  src={currentSong.photo_url} 
-                  alt={currentSong.singer_name}
-                  style={{
-                    width: "200px",
-                    height: "200px",
-                    borderRadius: "50%",
-                    objectFit: "cover",
-                    border: "5px solid rgba(0, 202, 255, 0.5)",
-                    boxShadow: "0 0 40px rgba(0, 202, 255, 0.4)"
-                  }}
-                />
-              </div>
+            {data.performing.photo_url && (
+              <img 
+                src={data.performing.photo_url} 
+                alt={data.performing.singer_name}
+                style={{
+                  width: "200px",
+                  height: "200px",
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                  border: "5px solid rgba(0, 202, 255, 0.5)",
+                  marginBottom: "30px"
+                }}
+              />
             )}
 
             <div style={{
               fontSize: "4rem",
               fontWeight: "900",
               marginBottom: "20px",
-              color: "#ffffff",
-              textShadow: "0 0 30px rgba(0, 202, 255, 0.5)"
+              color: "#ffffff"
             }}>
-              {currentSong.singer_name}
+              {data.performing.singer_name}
             </div>
 
             <div style={{
               fontSize: "2.5rem",
               color: "#e2e8f0",
-              marginBottom: "10px",
-              fontWeight: "700"
+              marginBottom: "10px"
             }}>
-              {currentSong.song_title}
+              {data.performing.song_title}
             </div>
 
-            {currentSong.song_artist && (
+            {data.performing.song_artist && (
               <div style={{
                 fontSize: "1.8rem",
-                color: "#94a3b8",
-                fontWeight: "500"
+                color: "#94a3b8"
               }}>
-                {currentSong.song_artist}
+                {data.performing.song_artist}
               </div>
             )}
           </div>
@@ -183,48 +135,45 @@ export default function AudienceDisplay() {
           </div>
         )}
 
-        {/* Grid Layout for Next Singer and QR Code */}
+        {/* Next Singer and QR */}
         <div style={{
           display: "grid",
           gridTemplateColumns: window.innerWidth > 900 ? "1fr 1fr" : "1fr",
           gap: "30px"
         }}>
+          
           {/* Next Singer */}
           <div style={{
             background: "rgba(15, 23, 42, 0.95)",
             borderRadius: "25px",
             padding: "40px 30px",
             border: "2px solid rgba(0, 202, 255, 0.3)",
-            boxShadow: "0 0 40px rgba(0, 202, 255, 0.2)"
+            textAlign: "center"
           }}>
             <div style={{
               fontSize: "1.8rem",
               fontWeight: "700",
               color: "#00caff",
-              marginBottom: "30px",
-              textAlign: "center",
-              textShadow: "0 0 15px rgba(0, 202, 255, 0.5)"
+              marginBottom: "30px"
             }}>
               ⏭️ הבא בתור
             </div>
 
-            {nextSong ? (
-              <div style={{ textAlign: "center" }}>
-                {nextSong.photo_url && (
-                  <div style={{ marginBottom: "20px" }}>
-                    <img 
-                      src={nextSong.photo_url} 
-                      alt={nextSong.singer_name}
-                      style={{
-                        width: "150px",
-                        height: "150px",
-                        borderRadius: "50%",
-                        objectFit: "cover",
-                        border: "4px solid rgba(0, 202, 255, 0.4)",
-                        boxShadow: "0 0 30px rgba(0, 202, 255, 0.3)"
-                      }}
-                    />
-                  </div>
+            {data?.next ? (
+              <div>
+                {data.next.photo_url && (
+                  <img 
+                    src={data.next.photo_url} 
+                    alt={data.next.singer_name}
+                    style={{
+                      width: "150px",
+                      height: "150px",
+                      borderRadius: "50%",
+                      objectFit: "cover",
+                      border: "4px solid rgba(0, 202, 255, 0.4)",
+                      marginBottom: "20px"
+                    }}
+                  />
                 )}
 
                 <div style={{
@@ -233,30 +182,28 @@ export default function AudienceDisplay() {
                   color: "#f1f5f9",
                   marginBottom: "15px"
                 }}>
-                  {nextSong.singer_name}
+                  {data.next.singer_name}
                 </div>
 
                 <div style={{
                   fontSize: "1.6rem",
                   color: "#cbd5e1",
-                  marginBottom: "8px",
-                  fontWeight: "600"
+                  marginBottom: "8px"
                 }}>
-                  {nextSong.song_title}
+                  {data.next.song_title}
                 </div>
 
-                {nextSong.song_artist && (
+                {data.next.song_artist && (
                   <div style={{
                     fontSize: "1.3rem",
                     color: "#94a3b8"
                   }}>
-                    {nextSong.song_artist}
+                    {data.next.song_artist}
                   </div>
                 )}
               </div>
             ) : (
               <div style={{
-                textAlign: "center",
                 color: "#64748b",
                 fontSize: "1.5rem",
                 padding: "40px 20px"
@@ -272,19 +219,17 @@ export default function AudienceDisplay() {
             borderRadius: "25px",
             padding: "40px 30px",
             border: "2px solid rgba(0, 202, 255, 0.3)",
-            boxShadow: "0 0 40px rgba(0, 202, 255, 0.2)",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            justifyContent: "center"
+            justifyContent: "center",
+            textAlign: "center"
           }}>
             <div style={{
               fontSize: "1.8rem",
               fontWeight: "700",
               color: "#00caff",
-              marginBottom: "30px",
-              textAlign: "center",
-              textShadow: "0 0 15px rgba(0, 202, 255, 0.5)"
+              marginBottom: "30px"
             }}>
               💬 הצטרפו לקבוצת הווצאפ
             </div>
@@ -293,16 +238,30 @@ export default function AudienceDisplay() {
               background: "white",
               padding: "30px",
               borderRadius: "20px",
-              boxShadow: "0 0 40px rgba(0, 202, 255, 0.3)"
+              width: "260px",
+              height: "260px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center"
             }}>
-              <QrCode style={{ width: "200px", height: "200px", color: "#020617" }} />
+              <div style={{
+                width: "200px",
+                height: "200px",
+                background: "#020617",
+                borderRadius: "10px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "3rem"
+              }}>
+                📱
+              </div>
             </div>
 
             <div style={{
               marginTop: "30px",
               fontSize: "1.3rem",
               color: "#cbd5e1",
-              textAlign: "center",
               lineHeight: "1.6"
             }}>
               סרקו להצטרפות מהירה<br />
