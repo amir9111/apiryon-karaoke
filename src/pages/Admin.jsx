@@ -128,7 +128,7 @@ export default function Admin() {
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="control">(
+          <TabsContent value="control">
             <div style={{ display: "grid", gridTemplateColumns: window.innerWidth > 900 ? "minmax(0, 2fr) minmax(0, 1fr)" : "minmax(0, 1fr)", gap: "20px" }}>
               {/* Queue Table */}
               <div style={{ background: "rgba(15,23,42,0.5)", borderRadius: "20px", padding: "20px", border: "1px solid rgba(34,197,94,0.2)", backdropFilter: "blur(10px)" }}>
@@ -364,8 +364,8 @@ export default function Admin() {
             </div>
           </TabsContent>
 
-          <TabsContent value="display">(
-          <div style={{ minHeight: "80vh", display: "flex", flexDirection: "column", gap: "12px" }}>
+          <TabsContent value="display">
+            <div style={{ minHeight: "80vh", display: "flex", flexDirection: "column", gap: "12px" }}>
             <div style={{ textAlign: "center", marginBottom: "4px" }}>
               <h1 style={{ margin: 0, fontSize: "clamp(1.6rem, 3vw, 2.1rem)" }}>ערב קריוקי</h1>
               <p style={{ margin: "4px 0 0", fontSize: "clamp(0.8rem, 1.4vw, 0.95rem)", color: "#9ca3af" }}>
@@ -446,8 +446,8 @@ export default function Admin() {
               </div>
             </div>
 
-            <div style={{ marginTop: "10px", fontSize: "0.75rem", color: "#9ca3af", textAlign: "center" }}>
-              להצגה על מסך גדול: לחץ F11 למצב מסך מלא, והשאר על "מסך תצוגה לקהל".
+              <div style={{ marginTop: "10px", fontSize: "0.75rem", color: "#9ca3af", textAlign: "center" }}>
+                להצגה על מסך גדול: לחץ F11 למצב מסך מלא, והשאר על "מסך תצוגה לקהל".
               </div>
             </div>
           </TabsContent>
