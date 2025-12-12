@@ -13,6 +13,21 @@ export default function Home() {
   });
   const [status, setStatus] = useState({ type: null, message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
+
+  React.useEffect(() => {
+    const hasVisited = localStorage.getItem('apiryon_visited');
+    if (!hasVisited) {
+      setShowWelcome(true);
+      localStorage.setItem('apiryon_visited', 'true');
+      
+      const timer = setTimeout(() => {
+        setShowWelcome(false);
+      }, 5000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -53,6 +68,149 @@ export default function Home() {
       className="min-h-screen w-full flex justify-center p-4 md:p-8"
       style={{ background: "linear-gradient(135deg, #020617 0%, #0a1929 50%, #020617 100%)", color: "#f9fafb" }}
     >
+      {/* Welcome Modal */}
+      {showWelcome && (
+        <div 
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0, 0, 0, 0.85)",
+            backdropFilter: "blur(8px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 9999,
+            padding: "20px",
+            animation: "fadeIn 0.4s ease-out"
+          }}
+          onClick={() => setShowWelcome(false)}
+        >
+          <div 
+            style={{
+              background: "rgba(15, 23, 42, 0.98)",
+              borderRadius: "24px",
+              padding: "32px 24px",
+              maxWidth: "500px",
+              width: "100%",
+              border: "2px solid rgba(0, 202, 255, 0.5)",
+              boxShadow: "0 0 80px rgba(0, 202, 255, 0.4), 0 20px 60px rgba(0, 0, 0, 0.7)",
+              textAlign: "center",
+              animation: "slideUp 0.5s ease-out",
+              position: "relative"
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Animated glow effect */}
+            <div style={{
+              position: "absolute",
+              top: "-2px",
+              left: "-2px",
+              right: "-2px",
+              bottom: "-2px",
+              background: "linear-gradient(45deg, #00caff, #0088ff, #00caff)",
+              borderRadius: "24px",
+              opacity: 0.3,
+              filter: "blur(8px)",
+              animation: "glow 2s ease-in-out infinite",
+              zIndex: -1
+            }}></div>
+
+            <div style={{ marginBottom: "20px" }}>
+              <ApyironLogo size="medium" showCircle={true} />
+            </div>
+
+            <h2 style={{
+              fontSize: "clamp(1.5rem, 4vw, 2rem)",
+              fontWeight: "800",
+              color: "#00caff",
+              textShadow: "0 0 30px rgba(0, 202, 255, 0.6)",
+              marginBottom: "16px",
+              letterSpacing: "0.02em"
+            }}>
+              🎉 ברוכים הבאים! 🎉
+            </h2>
+
+            <p style={{
+              fontSize: "clamp(1rem, 2vw, 1.15rem)",
+              color: "#e2e8f0",
+              marginBottom: "12px",
+              lineHeight: "1.6"
+            }}>
+              למועדון <span style={{ color: "#00caff", fontWeight: "700" }}>האפריון</span>
+            </p>
+
+            <p style={{
+              fontSize: "clamp(0.9rem, 1.8vw, 1rem)",
+              color: "#cbd5e1",
+              marginBottom: "24px",
+              lineHeight: "1.7"
+            }}>
+              המקום שבו תוכלו לשיר, לרקוד<br />
+              וליהנות מערבי קריוקי מדהימים! 🎤✨
+            </p>
+
+            <button
+              onClick={() => setShowWelcome(false)}
+              style={{
+                background: "linear-gradient(135deg, #00caff, #0088ff)",
+                color: "#001a2e",
+                border: "none",
+                borderRadius: "16px",
+                padding: "14px 32px",
+                fontSize: "1rem",
+                fontWeight: "700",
+                cursor: "pointer",
+                boxShadow: "0 0 30px rgba(0, 202, 255, 0.5)",
+                transition: "transform 0.2s, box-shadow 0.2s",
+                width: "100%"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "scale(1.05)";
+                e.currentTarget.style.boxShadow = "0 0 40px rgba(0, 202, 255, 0.7)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "scale(1)";
+                e.currentTarget.style.boxShadow = "0 0 30px rgba(0, 202, 255, 0.5)";
+              }}
+            >
+              בואו נתחיל! 🚀
+            </button>
+
+            <p style={{
+              fontSize: "0.8rem",
+              color: "#64748b",
+              marginTop: "16px"
+            }}>
+              החלון ייסגר אוטומטית בעוד רגעים...
+            </p>
+          </div>
+        </div>
+      )}
+
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes slideUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+        @keyframes glow {
+          0%, 100% { opacity: 0.3; }
+          50% { opacity: 0.6; }
+        }
+      `}</style>
+
       <div className="w-full max-w-[480px]">
         {/* Logo Section */}
         <div className="flex justify-center mb-6">
