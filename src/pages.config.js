@@ -1,14 +1,14 @@
 import Home from './pages/Home';
 import Admin from './pages/Admin';
 import Terms from './pages/Terms';
-import AudienceDisplay from './pages/AudienceDisplay';
+import Audience from './pages/Audience';
 
 
 export const PAGES = {
     "Home": Home,
     "Admin": Admin,
     "Terms": Terms,
-    "AudienceDisplay": AudienceDisplay,
+    "Audience": Audience,
 }
 
 export const pagesConfig = {
