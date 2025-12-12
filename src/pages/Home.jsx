@@ -45,15 +45,21 @@ export default function Home() {
   const currentSong = requests.find(r => r.status === "performing");
   
   const hasUserRatedCurrentSong = () => {
-    if (!currentSong) return false;
-    const userId = localStorage.getItem('apiryon_user_id');
-    if (!userId) return false;
-    return currentSong.ratings?.some(r => r.user_id === userId) || false;
+    try {
+      if (!currentSong) return false;
+      if (typeof window === 'undefined') return false;
+      const userId = localStorage.getItem('apiryon_user_id');
+      if (!userId) return false;
+      return currentSong.ratings?.some(r => r.user_id === userId) || false;
+    } catch (e) {
+      return false;
+    }
   };
 
   React.useEffect(() => {
     let timer;
     try {
+      if (typeof window === 'undefined') return;
       const hasAcceptedTerms = localStorage.getItem('apiryon_terms_accepted');
       const hasVisited = localStorage.getItem('apiryon_visited');
       
@@ -71,18 +77,20 @@ export default function Home() {
         }
       }
     } catch (e) {
-      // localStorage not available
       setTermsAccepted(true);
     }
     
     return () => {
       if (timer) clearTimeout(timer);
+      stopCamera();
     };
   }, []);
 
   const handleAcceptTerms = () => {
     try {
-      localStorage.setItem('apiryon_terms_accepted', 'true');
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('apiryon_terms_accepted', 'true');
+      }
     } catch (e) {
       // Silent fail
     }
@@ -103,11 +111,20 @@ export default function Home() {
   const startCamera = async () => {
     setShowCamera(true);
     try {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        setStatus({ type: "error", message: "המצלמה לא נתמכת בדפדפן זה" });
+        setShowCamera(false);
+        return;
+      }
       const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
       } else {
-        stream.getTracks().forEach(track => track.stop());
+        stream.getTracks().forEach(track => {
+          try {
+            track.stop();
+          } catch (e) {}
+        });
         setShowCamera(false);
       }
     } catch (err) {
@@ -117,25 +134,44 @@ export default function Home() {
   };
 
   const capturePhoto = () => {
-    const video = videoRef.current;
-    const canvas = canvasRef.current;
-    if (video && canvas) {
+    try {
+      const video = videoRef.current;
+      const canvas = canvasRef.current;
+      if (!video || !canvas || !video.videoWidth || !video.videoHeight) {
+        setStatus({ type: "error", message: "נא להמתין עד שהמצלמה תהיה מוכנה" });
+        return;
+      }
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        setStatus({ type: "error", message: "שגיאה בצילום התמונה" });
+        return;
+      }
       ctx.drawImage(video, 0, 0);
       const photoData = canvas.toDataURL('image/jpeg', 0.8);
       setCapturedPhoto(photoData);
       setPhotoUploaded(true);
+      stopCamera();
+    } catch (e) {
+      setStatus({ type: "error", message: "שגיאה בצילום התמונה" });
       stopCamera();
     }
   };
 
   const stopCamera = () => {
     try {
-      if (videoRef.current?.srcObject) {
-        const tracks = videoRef.current.srcObject.getTracks();
-        tracks.forEach(track => track.stop());
+      if (videoRef.current && videoRef.current.srcObject) {
+        const stream = videoRef.current.srcObject;
+        const tracks = stream.getTracks();
+        tracks.forEach(track => {
+          try {
+            track.stop();
+          } catch (e) {
+            // Silent fail per track
+          }
+        });
+        videoRef.current.srcObject = null;
       }
     } catch (e) {
       // Silent cleanup
@@ -147,6 +183,7 @@ export default function Home() {
 
   React.useEffect(() => {
     try {
+      if (typeof window === 'undefined') return;
       const savedName = localStorage.getItem('apiryon_user_name');
       const savedPhoto = localStorage.getItem('apiryon_user_photo');
       
@@ -177,47 +214,54 @@ export default function Home() {
 
     setIsSubmitting(true);
     
-    let photoUrl = null;
-    if (capturedPhoto) {
-      const blob = await fetch(capturedPhoto).then(r => r.blob());
-      const file = new File([blob], 'singer.jpg', { type: 'image/jpeg' });
-      const uploadResult = await base44.integrations.Core.UploadFile({ file });
-      photoUrl = uploadResult.file_url;
-    }
-    
-    const sanitizedData = {
-      singer_name: formData.singer_name.trim().substring(0, 100),
-      song_title: formData.song_title.trim().substring(0, 200),
-      song_artist: formData.song_artist?.trim().substring(0, 200) || "",
-      status: "waiting",
-      photo_url: photoUrl,
-      email: formData.singer_name.trim() + '@queue.local'
-    };
-    
-    await base44.entities.KaraokeRequest.create(sanitizedData);
-
     try {
-      localStorage.setItem('apiryon_user_name', formData.singer_name);
-      localStorage.setItem('apiryon_user_email', sanitizedData.email);
+      let photoUrl = null;
       if (capturedPhoto) {
-        localStorage.setItem('apiryon_user_photo', capturedPhoto);
+        const blob = await fetch(capturedPhoto).then(r => r.blob());
+        const file = new File([blob], 'singer.jpg', { type: 'image/jpeg' });
+        const uploadResult = await base44.integrations.Core.UploadFile({ file });
+        photoUrl = uploadResult.file_url;
       }
-    } catch (e) {
-      // localStorage full or unavailable
+      
+      const sanitizedData = {
+        singer_name: formData.singer_name.trim().substring(0, 100),
+        song_title: formData.song_title.trim().substring(0, 200),
+        song_artist: formData.song_artist?.trim().substring(0, 200) || "",
+        status: "waiting",
+        photo_url: photoUrl,
+        email: formData.singer_name.trim() + '@queue.local'
+      };
+      
+      await base44.entities.KaraokeRequest.create(sanitizedData);
+
+      try {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('apiryon_user_name', formData.singer_name);
+          localStorage.setItem('apiryon_user_email', sanitizedData.email);
+          if (capturedPhoto) {
+            localStorage.setItem('apiryon_user_photo', capturedPhoto);
+          }
+        }
+      } catch (e) {
+        // localStorage full or unavailable
+      }
+
+      setStatus({ type: "ok", message: "הבקשה נרשמה! בהצלחה 🎤" });
+      setFormData({
+        singer_name: "",
+        song_title: "",
+        song_artist: ""
+      });
+      setCapturedPhoto(null);
+      setIsSubmitting(false);
+
+      setTimeout(() => {
+        setStatus({ type: null, message: "" });
+      }, 3500);
+    } catch (error) {
+      setStatus({ type: "error", message: "שגיאה בשליחת הבקשה, נסה שוב" });
+      setIsSubmitting(false);
     }
-
-    setStatus({ type: "ok", message: "הבקשה נרשמה! בהצלחה 🎤" });
-    setFormData({
-      singer_name: "",
-      song_title: "",
-      song_artist: ""
-    });
-    setCapturedPhoto(null);
-    setIsSubmitting(false);
-
-    setTimeout(() => {
-      setStatus({ type: null, message: "" });
-    }, 3500);
   };
 
   return (
