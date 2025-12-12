@@ -30,17 +30,17 @@ export default function Display() {
 
   const { data: requests = [], isLoading, error } = useQuery({
     queryKey: ['karaoke-requests'],
-    queryFn: () => {
+    queryFn: async () => {
       addLog("🔄 Fetching data...");
-      return base44.entities.KaraokeRequest.list('-created_date', 100)
-        .then(result => {
-          addLog(`✅ Data fetched: ${result.length} items`);
-          return result;
-        })
-        .catch(err => {
-          addLog(`❌ Fetch error: ${err.message}`);
-          throw err;
-        });
+      try {
+        // Use asPublic to avoid authentication requirement
+        const result = await base44.asPublic.entities.KaraokeRequest.list('-created_date', 100);
+        addLog(`✅ Data fetched: ${result.length} items`);
+        return result;
+      } catch (err) {
+        addLog(`❌ Fetch error: ${err.message}`);
+        throw err;
+      }
     },
     refetchInterval: 3000,
   });
