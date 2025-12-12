@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "./utils";
 
 export default function Home() {
   const [formData, setFormData] = useState({
@@ -197,6 +199,14 @@ export default function Home() {
             </a>
           </div>
         </div>
+
+        <Link 
+          to={createPageUrl("Admin")}
+          className="block text-center mt-4 text-[0.75rem]"
+          style={{ color: "#4b5563" }}
+        >
+          🎛️ כניסה למסך ניהול
+        </Link>
       </div>
     </div>
   );
