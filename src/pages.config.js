@@ -1,10 +1,10 @@
 import Home from './pages/Home';
-import QueueManager from './pages/QueueManager';
+import Admin from './pages/Admin';
 
 
 export const PAGES = {
     "Home": Home,
-    "QueueManager": QueueManager,
+    "Admin": Admin,
 }
 
 export const pagesConfig = {
