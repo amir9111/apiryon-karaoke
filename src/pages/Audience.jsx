@@ -208,6 +208,222 @@ export default function Audience() {
           </div>
         )}
 
+        {/* Top Stars of the Night */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          style={{
+            background: "rgba(15, 23, 42, 0.9)",
+            borderRadius: "30px",
+            padding: "40px",
+            marginBottom: "40px",
+            border: "2px solid rgba(251, 191, 36, 0.5)",
+            boxShadow: "0 10px 40px rgba(251, 191, 36, 0.2)"
+          }}
+        >
+          <div style={{
+            fontSize: "2.2rem",
+            color: "#fbbf24",
+            textAlign: "center",
+            marginBottom: "30px",
+            fontWeight: "800",
+            textShadow: "0 0 20px rgba(251, 191, 36, 0.6)"
+          }}>
+            🌟 כוכבי הערב 🌟
+          </div>
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: window.innerWidth > 700 ? "repeat(3, 1fr)" : "1fr",
+            gap: "25px"
+          }}>
+            {requests
+              .filter(r => r.status === "done" && r.average_rating > 0)
+              .sort((a, b) => b.average_rating - a.average_rating)
+              .slice(0, 3)
+              .map((singer, index) => (
+                <div
+                  key={singer.id}
+                  style={{
+                    background: index === 0 
+                      ? "linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(245, 158, 11, 0.2))"
+                      : "rgba(30, 41, 59, 0.5)",
+                    borderRadius: "20px",
+                    padding: "25px",
+                    textAlign: "center",
+                    border: index === 0 ? "3px solid #fbbf24" : "2px solid rgba(251, 191, 36, 0.3)",
+                    position: "relative"
+                  }}
+                >
+                  {index === 0 && (
+                    <div style={{
+                      position: "absolute",
+                      top: "-15px",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      fontSize: "2.5rem"
+                    }}>
+                      👑
+                    </div>
+                  )}
+                  <div style={{
+                    fontSize: "1.8rem",
+                    fontWeight: "900",
+                    color: "#fbbf24",
+                    marginBottom: "10px"
+                  }}>
+                    #{index + 1}
+                  </div>
+                  {singer.photo_url && (
+                    <img
+                      src={singer.photo_url}
+                      alt={singer.singer_name}
+                      style={{
+                        width: "100px",
+                        height: "100px",
+                        borderRadius: "50%",
+                        objectFit: "cover",
+                        marginBottom: "15px",
+                        border: "4px solid #fbbf24",
+                        boxShadow: "0 0 20px rgba(251, 191, 36, 0.4)"
+                      }}
+                    />
+                  )}
+                  <div style={{
+                    fontSize: "1.5rem",
+                    fontWeight: "800",
+                    color: "#ffffff",
+                    marginBottom: "8px"
+                  }}>
+                    {singer.singer_name}
+                  </div>
+                  <div style={{
+                    fontSize: "1.1rem",
+                    color: "#cbd5e1",
+                    marginBottom: "10px"
+                  }}>
+                    {singer.song_title}
+                  </div>
+                  <div style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "8px",
+                    fontSize: "1.4rem",
+                    color: "#fbbf24",
+                    fontWeight: "700"
+                  }}>
+                    ⭐ {singer.average_rating.toFixed(1)}
+                  </div>
+                </div>
+              ))}
+          </div>
+          {requests.filter(r => r.status === "done" && r.average_rating > 0).length === 0 && (
+            <div style={{
+              textAlign: "center",
+              color: "#64748b",
+              fontSize: "1.4rem",
+              padding: "40px"
+            }}>
+              הערב עדיין מתחיל... כוכבים בדרך! ⭐
+            </div>
+          )}
+        </motion.div>
+
+        {/* Song of the Night */}
+        {(() => {
+          const topSong = requests
+            .filter(r => r.status === "done" && r.average_rating > 0)
+            .sort((a, b) => b.average_rating - a.average_rating)[0];
+          
+          return topSong && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3 }}
+              style={{
+                background: "linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(167, 139, 250, 0.2))",
+                borderRadius: "30px",
+                padding: "40px",
+                marginBottom: "40px",
+                border: "3px solid #a78bfa",
+                textAlign: "center",
+                boxShadow: "0 10px 40px rgba(139, 92, 246, 0.3)"
+              }}
+            >
+              <div style={{
+                fontSize: "2.2rem",
+                color: "#a78bfa",
+                marginBottom: "25px",
+                fontWeight: "800",
+                textShadow: "0 0 20px rgba(139, 92, 246, 0.6)"
+              }}>
+                🎯 שיר האהוב של הערב 🎯
+              </div>
+              <div style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "30px",
+                flexWrap: "wrap"
+              }}>
+                {topSong.photo_url && (
+                  <img
+                    src={topSong.photo_url}
+                    alt={topSong.singer_name}
+                    style={{
+                      width: "120px",
+                      height: "120px",
+                      borderRadius: "50%",
+                      objectFit: "cover",
+                      border: "5px solid #a78bfa",
+                      boxShadow: "0 0 30px rgba(139, 92, 246, 0.5)"
+                    }}
+                  />
+                )}
+                <div style={{ textAlign: window.innerWidth > 700 ? "right" : "center" }}>
+                  <div style={{
+                    fontSize: "2rem",
+                    fontWeight: "900",
+                    color: "#ffffff",
+                    marginBottom: "8px"
+                  }}>
+                    {topSong.song_title}
+                  </div>
+                  {topSong.song_artist && (
+                    <div style={{
+                      fontSize: "1.5rem",
+                      color: "#cbd5e1",
+                      marginBottom: "8px"
+                    }}>
+                      {topSong.song_artist}
+                    </div>
+                  )}
+                  <div style={{
+                    fontSize: "1.3rem",
+                    color: "#a78bfa",
+                    fontWeight: "700",
+                    marginBottom: "10px"
+                  }}>
+                    ביצוע: {topSong.singer_name}
+                  </div>
+                  <div style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: window.innerWidth > 700 ? "flex-start" : "center",
+                    gap: "8px",
+                    fontSize: "1.6rem",
+                    color: "#fbbf24",
+                    fontWeight: "700"
+                  }}>
+                    ⭐ {topSong.average_rating.toFixed(1)}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          );
+        })()}
+
         {/* Bottom Section: Next + QR */}
         <div style={{ 
           display: "grid", 
@@ -219,7 +435,7 @@ export default function Audience() {
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
+            transition={{ delay: 0.4 }}
             style={{
               background: "rgba(15, 23, 42, 0.9)",
               borderRadius: "30px",
@@ -297,7 +513,7 @@ export default function Audience() {
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.4 }}
+            transition={{ delay: 0.5 }}
             style={{
               background: "rgba(15, 23, 42, 0.9)",
               borderRadius: "30px",
