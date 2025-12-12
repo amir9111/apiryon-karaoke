@@ -41,10 +41,13 @@ export default function Audience() {
         transition={{ duration: 1, type: "spring" }}
         style={{
           position: "fixed",
-          top: "100px",
+          top: "20px",
           left: "50%",
           transform: "translateX(-50%)",
-          zIndex: 50
+          zIndex: 50,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center"
         }}
       >
         <motion.div
@@ -58,7 +61,7 @@ export default function Audience() {
             ease: "easeInOut"
           }}
         >
-          <ApyironLogo size="medium" showCircle={true} />
+          <ApyironLogo size="small" showCircle={true} />
         </motion.div>
       </motion.div>
       
@@ -149,14 +152,14 @@ export default function Audience() {
 
             {/* Main content */}
             <div style={{
-              background: "rgba(15, 23, 42, 0.6)",
+              background: "rgba(15, 23, 42, 0.3)",
               borderRadius: "50px",
               padding: "60px 40px",
               textAlign: "center",
               position: "relative",
-              backdropFilter: "blur(20px)",
-              border: "3px solid rgba(0, 202, 255, 0.5)",
-              boxShadow: "0 0 100px rgba(0, 202, 255, 0.4), inset 0 0 50px rgba(0, 202, 255, 0.1)"
+              backdropFilter: "blur(30px)",
+              border: "2px solid rgba(0, 202, 255, 0.3)",
+              boxShadow: "0 0 80px rgba(0, 202, 255, 0.3), inset 0 0 30px rgba(0, 202, 255, 0.05)"
             }}>
               <motion.div
                 animate={{ scale: [1, 1.05, 1] }}
@@ -299,13 +302,13 @@ export default function Audience() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             style={{
-              background: "rgba(15, 23, 42, 0.6)",
+              background: "rgba(15, 23, 42, 0.3)",
               borderRadius: "40px",
               padding: "100px 60px",
               marginBottom: "60px",
-              border: "3px dashed rgba(0, 202, 255, 0.5)",
+              border: "2px dashed rgba(0, 202, 255, 0.3)",
               textAlign: "center",
-              backdropFilter: "blur(20px)",
+              backdropFilter: "blur(30px)",
               maxWidth: "800px",
               width: "100%"
             }}
@@ -342,13 +345,13 @@ export default function Audience() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.7 }}
             style={{
-              background: "rgba(15, 23, 42, 0.6)",
+              background: "rgba(15, 23, 42, 0.3)",
               borderRadius: "30px",
               padding: "40px 30px",
-              border: "2px solid rgba(0, 202, 255, 0.5)",
+              border: "2px solid rgba(0, 202, 255, 0.3)",
               textAlign: "center",
-              boxShadow: "0 10px 40px rgba(0, 202, 255, 0.2)",
-              backdropFilter: "blur(20px)"
+              boxShadow: "0 10px 40px rgba(0, 202, 255, 0.15)",
+              backdropFilter: "blur(30px)"
             }}
           >
             <div style={{ 
@@ -424,17 +427,17 @@ export default function Audience() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.8 }}
             style={{
-              background: "rgba(15, 23, 42, 0.6)",
+              background: "rgba(15, 23, 42, 0.3)",
               borderRadius: "30px",
               padding: "40px 30px",
-              border: "2px solid rgba(0, 202, 255, 0.5)",
+              border: "2px solid rgba(0, 202, 255, 0.3)",
               textAlign: "center",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              boxShadow: "0 10px 40px rgba(0, 202, 255, 0.2)",
-              backdropFilter: "blur(20px)"
+              boxShadow: "0 10px 40px rgba(0, 202, 255, 0.15)",
+              backdropFilter: "blur(30px)"
             }}
           >
             <div style={{ 
