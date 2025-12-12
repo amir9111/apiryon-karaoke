@@ -1,15 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Trophy, Star } from "lucide-react";
-import confetti from "canvas-confetti";
 
 export default function EventSummaryModal({ isOpen, onClose, requests }) {
-  React.useEffect(() => {
-    if (isOpen) {
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 }
+  useEffect(() => {
+    if (isOpen && typeof window !== 'undefined') {
+      import('canvas-confetti').then(confetti => {
+        confetti.default({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
       });
     }
   }, [isOpen]);
