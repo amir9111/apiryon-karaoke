@@ -1,39 +1,40 @@
-import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import React from "react";
 import ApyironLogo from "../components/ApyironLogo";
 import AudioWave from "../components/AudioWave";
 import { QrCode } from "lucide-react";
 
-// Mark this page as public
-function AudienceDisplay() {
-  const [currentSong, setCurrentSong] = useState(null);
-  const [nextSong, setNextSong] = useState(null);
-  const [loading, setLoading] = useState(true);
+export default function AudienceDisplay() {
+  const [currentSong, setCurrentSong] = React.useState(null);
+  const [nextSong, setNextSong] = React.useState(null);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState(null);
 
-  useEffect(() => {
-    // Initial load
+  React.useEffect(() => {
     loadData();
-
-    // Refresh every 3 seconds
     const interval = setInterval(loadData, 3000);
-
     return () => clearInterval(interval);
   }, []);
 
-  async function loadData() {
-    try {
-      const requests = await base44.asPublic.entities.KaraokeRequest.list('-created_date', 50);
-      
-      const performing = requests.find(r => r.status === "performing");
-      const waiting = requests.filter(r => r.status === "waiting");
-      
-      setCurrentSong(performing || null);
-      setNextSong(waiting.length > 0 ? waiting[0] : null);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error loading data:", error);
-      setLoading(false);
-    }
+  function loadData() {
+    fetch('/api/entities/KaraokeRequest?sort=-created_date&limit=50')
+      .then(response => {
+        if (!response.ok) throw new Error('Failed to fetch');
+        return response.json();
+      })
+      .then(requests => {
+        const performing = requests.find(r => r.status === "performing");
+        const waiting = requests.filter(r => r.status === "waiting");
+        
+        setCurrentSong(performing || null);
+        setNextSong(waiting.length > 0 ? waiting[0] : null);
+        setLoading(false);
+        setError(null);
+      })
+      .catch(err => {
+        console.error("Error loading data:", err);
+        setError(err.message);
+        setLoading(false);
+      });
   }
 
   if (loading) {
@@ -49,6 +50,26 @@ function AudienceDisplay() {
         <div style={{ textAlign: "center" }}>
           <ApyironLogo size="large" showCircle={true} />
           <div style={{ fontSize: "1.5rem", marginTop: "20px" }}>טוען...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div dir="rtl" style={{
+        minHeight: "100vh",
+        background: "linear-gradient(135deg, #020617 0%, #0a1929 50%, #020617 100%)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        color: "#f1f5f9",
+        padding: "20px"
+      }}>
+        <div style={{ textAlign: "center" }}>
+          <ApyironLogo size="medium" showCircle={true} />
+          <div style={{ fontSize: "1.5rem", marginTop: "20px", color: "#f87171" }}>שגיאה בטעינת הנתונים</div>
+          <div style={{ fontSize: "1rem", marginTop: "10px", color: "#94a3b8" }}>{error}</div>
         </div>
       </div>
     );
@@ -294,7 +315,4 @@ function AudienceDisplay() {
   );
 }
 
-// CRITICAL: Mark page as public
 AudienceDisplay.isPublic = true;
-
-export default AudienceDisplay;
