@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { motion, AnimatePresence } from "framer-motion";
-import { Music, Mic2, Sparkles, MessageCircle } from "lucide-react";
 
 export default function Home() {
   const [formData, setFormData] = useState({
@@ -51,43 +49,29 @@ export default function Home() {
 
   return (
     <div 
-      className="min-h-screen w-full flex justify-center px-4 py-6 md:py-10"
-      style={{ background: "#050816" }}
+      dir="rtl"
+      className="min-h-screen w-full flex justify-center p-4 md:p-8"
+      style={{ background: "#050816", color: "#f9fafb" }}
     >
-      <div className="w-full max-w-md">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="rounded-[22px] p-6 md:p-7"
+      <div className="w-full max-w-[480px]">
+        <div
+          className="rounded-[18px] p-5 md:p-6"
           style={{
             background: "rgba(15, 23, 42, 0.95)",
-            boxShadow: "0 10px 40px rgba(0,0,0,0.4)",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
             backdropFilter: "blur(12px)"
           }}
         >
-          {/* Header */}
-          <div className="text-center mb-6">
-            <motion.div 
-              className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4"
-              style={{ background: "linear-gradient(135deg, #22c55e, #16a34a)" }}
-              animate={{ scale: [1, 1.05, 1] }}
-              transition={{ repeat: Infinity, duration: 2 }}
-            >
-              <Mic2 className="w-8 h-8 text-[#022c22]" />
-            </motion.div>
-            <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">
-              תור קריוקי
-            </h1>
-            <p className="text-[#cbd5f5] text-sm md:text-base">
-              ממלאים, מצטרפים לתור – ומחכים שיקראו לכם 🎤
-            </p>
-          </div>
+          <h1 className="text-[1.6rem] md:text-[1.9rem] font-bold text-center mb-2">
+            תור קריוקי
+          </h1>
+          <p className="text-[0.9rem] text-center mb-4" style={{ color: "#cbd5f5" }}>
+            ממלאים, מצטרפים לתור – ומחכים שיקראו לכם 🎤
+          </p>
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-2.5 mt-2">
             <div>
-              <label className="block text-sm text-[#cbd5f5] mb-1.5">
+              <label className="block text-[0.9rem] mb-0.5">
                 שם מלא / שם במה
               </label>
               <input
@@ -95,13 +79,27 @@ export default function Home() {
                 name="singer_name"
                 value={formData.singer_name}
                 onChange={handleChange}
+                required
                 placeholder="לדוגמה: אמיר אבו אסמאעיל"
-                className="w-full px-4 py-3 rounded-xl border border-[#1f2937] bg-[rgba(15,23,42,0.9)] text-white placeholder-gray-500 outline-none transition-all focus:border-[#22c55e] focus:ring-1 focus:ring-[#22c55e]/50"
+                className="w-full px-3 py-2.5 rounded-xl border outline-none text-[0.95rem]"
+                style={{
+                  borderColor: "#1f2937",
+                  background: "rgba(15,23,42,0.9)",
+                  color: "#f9fafb"
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = "#22c55e";
+                  e.target.style.boxShadow = "0 0 0 1px rgba(34,197,94,0.5)";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = "#1f2937";
+                  e.target.style.boxShadow = "none";
+                }}
               />
             </div>
 
             <div>
-              <label className="block text-sm text-[#cbd5f5] mb-1.5">
+              <label className="block text-[0.9rem] mb-0.5">
                 מייל (לא חובה)
               </label>
               <input
@@ -110,12 +108,25 @@ export default function Home() {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="אם תרצה שניצור קשר"
-                className="w-full px-4 py-3 rounded-xl border border-[#1f2937] bg-[rgba(15,23,42,0.9)] text-white placeholder-gray-500 outline-none transition-all focus:border-[#22c55e] focus:ring-1 focus:ring-[#22c55e]/50"
+                className="w-full px-3 py-2.5 rounded-xl border outline-none text-[0.95rem]"
+                style={{
+                  borderColor: "#1f2937",
+                  background: "rgba(15,23,42,0.9)",
+                  color: "#f9fafb"
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = "#22c55e";
+                  e.target.style.boxShadow = "0 0 0 1px rgba(34,197,94,0.5)";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = "#1f2937";
+                  e.target.style.boxShadow = "none";
+                }}
               />
             </div>
 
             <div>
-              <label className="block text-sm text-[#cbd5f5] mb-1.5">
+              <label className="block text-[0.9rem] mb-0.5">
                 שם השיר
               </label>
               <input
@@ -123,13 +134,27 @@ export default function Home() {
                 name="song_title"
                 value={formData.song_title}
                 onChange={handleChange}
+                required
                 placeholder="לדוגמה: הנה זה בא"
-                className="w-full px-4 py-3 rounded-xl border border-[#1f2937] bg-[rgba(15,23,42,0.9)] text-white placeholder-gray-500 outline-none transition-all focus:border-[#22c55e] focus:ring-1 focus:ring-[#22c55e]/50"
+                className="w-full px-3 py-2.5 rounded-xl border outline-none text-[0.95rem]"
+                style={{
+                  borderColor: "#1f2937",
+                  background: "rgba(15,23,42,0.9)",
+                  color: "#f9fafb"
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = "#22c55e";
+                  e.target.style.boxShadow = "0 0 0 1px rgba(34,197,94,0.5)";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = "#1f2937";
+                  e.target.style.boxShadow = "none";
+                }}
               />
             </div>
 
             <div>
-              <label className="block text-sm text-[#cbd5f5] mb-1.5">
+              <label className="block text-[0.9rem] mb-0.5">
                 שם האמן (לא חובה)
               </label>
               <input
@@ -138,12 +163,25 @@ export default function Home() {
                 value={formData.song_artist}
                 onChange={handleChange}
                 placeholder="לדוגמה: חדווה ודוד"
-                className="w-full px-4 py-3 rounded-xl border border-[#1f2937] bg-[rgba(15,23,42,0.9)] text-white placeholder-gray-500 outline-none transition-all focus:border-[#22c55e] focus:ring-1 focus:ring-[#22c55e]/50"
+                className="w-full px-3 py-2.5 rounded-xl border outline-none text-[0.95rem]"
+                style={{
+                  borderColor: "#1f2937",
+                  background: "rgba(15,23,42,0.9)",
+                  color: "#f9fafb"
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = "#22c55e";
+                  e.target.style.boxShadow = "0 0 0 1px rgba(34,197,94,0.5)";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = "#1f2937";
+                  e.target.style.boxShadow = "none";
+                }}
               />
             </div>
 
             <div>
-              <label className="block text-sm text-[#cbd5f5] mb-1.5">
+              <label className="block text-[0.9rem] mb-0.5">
                 הקדשה / הערות לדי׳גיי
               </label>
               <textarea
@@ -151,85 +189,71 @@ export default function Home() {
                 value={formData.notes}
                 onChange={handleChange}
                 placeholder="לדוגמה: להנמיך טון, שרים לשרית"
-                rows={3}
-                className="w-full px-4 py-3 rounded-xl border border-[#1f2937] bg-[rgba(15,23,42,0.9)] text-white placeholder-gray-500 outline-none transition-all focus:border-[#22c55e] focus:ring-1 focus:ring-[#22c55e]/50 resize-none"
+                className="w-full px-3 py-2.5 rounded-xl border outline-none text-[0.95rem] min-h-[70px] resize-y"
+                style={{
+                  borderColor: "#1f2937",
+                  background: "rgba(15,23,42,0.9)",
+                  color: "#f9fafb"
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = "#22c55e";
+                  e.target.style.boxShadow = "0 0 0 1px rgba(34,197,94,0.5)";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = "#1f2937";
+                  e.target.style.boxShadow = "none";
+                }}
               />
             </div>
 
-            <motion.button
+            <button
               type="submit"
               disabled={isSubmitting}
-              whileTap={{ scale: 0.98 }}
-              className="w-full py-3.5 rounded-full font-semibold text-base flex items-center justify-center gap-2 disabled:opacity-70"
+              className="w-full mt-2 py-[11px] px-[14px] rounded-full border-none cursor-pointer font-semibold text-base"
               style={{
                 background: "linear-gradient(135deg, #22c55e, #16a34a)",
-                color: "#022c22"
+                color: "#022c22",
+                opacity: isSubmitting ? 0.7 : 1
               }}
+              onMouseDown={(e) => e.currentTarget.style.transform = "scale(0.98)"}
+              onMouseUp={(e) => e.currentTarget.style.transform = "scale(1)"}
+              onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
             >
-              {isSubmitting ? (
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                >
-                  <Sparkles className="w-5 h-5" />
-                </motion.div>
-              ) : (
-                <>
-                  <Music className="w-5 h-5" />
-                  שלחו אותי לתור 🎵
-                </>
-              )}
-            </motion.button>
+              שלחו אותי לתור 🎵
+            </button>
 
-            <AnimatePresence>
-              {status.type && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className={`text-center text-sm py-2 ${
-                    status.type === "ok" ? "text-[#4ade80]" : "text-[#f97373]"
-                  }`}
-                >
-                  {status.message}
-                </motion.div>
-              )}
-            </AnimatePresence>
+            {status.type && (
+              <div 
+                className="mt-2.5 text-[0.9rem] text-center"
+                style={{ color: status.type === "ok" ? "#4ade80" : "#f97373" }}
+              >
+                {status.message}
+              </div>
+            )}
           </form>
 
-          {/* Divider */}
-          <div 
-            className="my-6 h-px"
-            style={{ background: "radial-gradient(circle, #4b5563 0%, transparent 70%)" }}
+          <hr 
+            className="my-[18px] md:my-3 h-px border-0"
+            style={{ background: "radial-gradient(circle, #4b5563 0, transparent 70%)" }}
           />
 
-          {/* WhatsApp Box */}
-          <div className="text-center">
-            <p className="text-[#cbd5f5] text-sm mb-3">
-              רוצים להתעדכן בכל ערבי הקריוקי?
-            </p>
-            <motion.a
+          <div className="flex flex-col items-center gap-1.5 text-[0.9rem]">
+            <div>רוצים להתעדכן בכל ערבי הקריוקי?</div>
+            <a
               href="https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15?mode=hqrt3"
               target="_blank"
               rel="noopener noreferrer"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-semibold text-sm"
+              className="inline-flex items-center gap-1.5 mt-1 py-[9px] px-[14px] rounded-full no-underline font-semibold text-[0.9rem] whitespace-nowrap"
               style={{
                 background: "#22c55e",
                 color: "#022c22"
               }}
             >
-              <MessageCircle className="w-4 h-4" />
-              להצטרפות לקבוצת הווטסאפ
-            </motion.a>
+              <span className="text-[1.1rem]">💬</span>
+              <span>להצטרפות לקבוצת הווטסאפ</span>
+            </a>
           </div>
-        </motion.div>
-
-        {/* Footer */}
-        <p className="text-center text-[#4b5563] text-xs mt-6">
-          🎤 בהצלחה על הבמה!
-        </p>
+        </div>
       </div>
     </div>
   );
