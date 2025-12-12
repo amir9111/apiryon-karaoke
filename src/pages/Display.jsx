@@ -2,9 +2,6 @@ import React from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { QrCode } from "lucide-react";
-import ApyironLogo from "../components/ApyironLogo";
-import AudioWave from "../components/AudioWave";
-import StarRating from "../components/StarRating";
 
 export default function Display() {
   const [isMobile, setIsMobile] = React.useState(false);
@@ -16,11 +13,19 @@ export default function Display() {
     return () => window.removeEventListener('resize', checkWidth);
   }, []);
 
-  const { data: requests = [] } = useQuery({
+  const { data: requests = [], isLoading } = useQuery({
     queryKey: ['karaoke-requests'],
     queryFn: () => base44.entities.KaraokeRequest.list('-created_date', 100),
     refetchInterval: 3000,
   });
+
+  if (isLoading) {
+    return (
+      <div dir="rtl" style={{ background: "linear-gradient(135deg, #020617 0%, #0a1929 50%, #020617 100%)", color: "#f1f5f9", minHeight: "100vh", padding: "20px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ fontSize: "1.5rem", fontWeight: "700", color: "#00caff" }}>טוען...</div>
+      </div>
+    );
+  }
 
   const now = requests.filter(r => r.status === "performing");
   const waiting = requests.filter(r => r.status === "waiting");
@@ -35,8 +40,27 @@ export default function Display() {
         <div style={{ minHeight: "80vh", display: "flex", flexDirection: "column", gap: "16px" }}>
           {/* Logo and Header */}
           <div style={{ textAlign: "center", marginBottom: "8px" }}>
-            <div style={{ display: "flex", justifyContent: "center", marginBottom: "12px" }}>
-              <ApyironLogo size="large" showCircle={true} />
+            <div style={{ 
+              width: "120px", 
+              height: "120px", 
+              margin: "0 auto 16px",
+              borderRadius: "50%", 
+              display: "flex", 
+              alignItems: "center", 
+              justifyContent: "center",
+              border: "8px solid #00caff",
+              boxShadow: "0 0 10px rgba(0, 202, 255, 0.8), 0 0 20px rgba(0, 202, 255, 0.6)",
+              backgroundColor: "rgba(0, 202, 255, 0.1)"
+            }}>
+              <h1 style={{
+                fontSize: "2rem",
+                fontWeight: "800",
+                color: "#ffffff",
+                textShadow: "0 0 7px #00caff, 0 0 10px #00caff, 0 0 21px #00caff",
+                margin: 0
+              }}>
+                APIRYON
+              </h1>
             </div>
             <h1 style={{ margin: 0, fontSize: "clamp(2rem, 4vw, 3rem)", color: "#00caff", textShadow: "0 0 40px rgba(0, 202, 255, 0.8)", fontWeight: "900", letterSpacing: "0.05em" }}>
               🎤 מועדון האפריון 🎤
@@ -116,9 +140,6 @@ export default function Display() {
               <div style={{ position: "relative", zIndex: 1 }}>
                 {!currentSong ? (
                   <>
-                    <div style={{ display: "flex", justifyContent: "center", marginBottom: "12px" }}>
-                      <AudioWave isPlaying={false} />
-                    </div>
                     <div style={{ fontSize: "clamp(0.9rem, 1.5vw, 1.1rem)", textTransform: "uppercase", letterSpacing: "0.1em", color: "#00caff", marginBottom: "12px", textAlign: "center", textShadow: "0 0 10px rgba(0, 202, 255, 0.5)" }}>
                       ⏳ ממתינים לזמר הראשון
                     </div>
@@ -131,9 +152,6 @@ export default function Display() {
                   </>
                 ) : (
                   <>
-                    <div style={{ display: "flex", justifyContent: "center", marginBottom: "16px" }}>
-                      <AudioWave isPlaying={true} />
-                    </div>
                     <div style={{ fontSize: "clamp(0.9rem, 1.5vw, 1.1rem)", textTransform: "uppercase", letterSpacing: "0.1em", color: "#00caff", marginBottom: "12px", textAlign: "center", textShadow: "0 0 15px rgba(0, 202, 255, 0.6)" }}>
                       🎤 כרגע על הבמה
                     </div>
@@ -161,7 +179,10 @@ export default function Display() {
                         borderRadius: "16px",
                         border: "1px solid rgba(251, 191, 36, 0.3)"
                       }}>
-                        <StarRating rating={currentSong.average_rating} readonly size="medium" />
+                        <div style={{ fontSize: "2rem", color: "#fbbf24" }}>⭐</div>
+                        <div style={{ fontSize: "1.5rem", fontWeight: "700", color: "#fbbf24" }}>
+                          {currentSong.average_rating.toFixed(1)}
+                        </div>
                         <span style={{ fontSize: "0.9rem", color: "#94a3b8" }}>
                           ({currentSong.ratings?.length || 0} דירוגים)
                         </span>
