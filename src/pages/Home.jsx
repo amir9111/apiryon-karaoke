@@ -117,6 +117,11 @@ export default function Home() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    if (!capturedPhoto) {
+      setStatus({ type: "error", message: "נא לצלם תמונה לפני השליחה 📸" });
+      return;
+    }
+    
     if (!formData.singer_name.trim() || !formData.song_title.trim()) {
       setStatus({ type: "error", message: "נא למלא שם ושם שיר 🙂" });
       return;
@@ -390,99 +395,116 @@ export default function Home() {
             ממלאים, מצטרפים לתור – ומחכים שיקראו לכם
           </p>
 
-          <form onSubmit={handleSubmit} className="flex flex-col gap-2.5 mt-2">
-            {/* Camera Section */}
+          {!capturedPhoto ? (
             <div style={{
-              padding: "16px",
-              background: "rgba(0, 202, 255, 0.05)",
-              border: "1px solid rgba(0, 202, 255, 0.2)",
-              borderRadius: "12px",
+              padding: "40px 20px",
+              background: "rgba(0, 202, 255, 0.1)",
+              border: "2px solid rgba(0, 202, 255, 0.4)",
+              borderRadius: "18px",
               textAlign: "center"
             }}>
-              <div style={{ fontSize: "0.9rem", fontWeight: "600", color: "#00caff", marginBottom: "8px" }}>
-                📸 צלם תמונה להתחרות
-              </div>
-              {!capturedPhoto ? (
-                <>
-                  {!showCamera ? (
+              <div style={{ fontSize: "3rem", marginBottom: "16px" }}>📸</div>
+              <h2 style={{ fontSize: "1.5rem", fontWeight: "800", color: "#00caff", marginBottom: "12px", textShadow: "0 0 20px rgba(0, 202, 255, 0.5)" }}>
+                קודם כל - סלפי!
+              </h2>
+              <p style={{ fontSize: "0.95rem", color: "#cbd5e1", marginBottom: "24px", lineHeight: "1.6" }}>
+                לפני שנרשום אותך לתור,<br />
+                בואו נצלם תמונה יפה שתוצג על המסכים 🌟
+              </p>
+              
+              {!showCamera ? (
+                <button
+                  type="button"
+                  onClick={startCamera}
+                  style={{
+                    padding: "16px 32px",
+                    background: "linear-gradient(135deg, #00caff, #0088ff)",
+                    color: "#001a2e",
+                    border: "none",
+                    borderRadius: "12px",
+                    fontSize: "1.1rem",
+                    fontWeight: "700",
+                    cursor: "pointer",
+                    boxShadow: "0 0 30px rgba(0, 202, 255, 0.5)",
+                    width: "100%",
+                    maxWidth: "300px"
+                  }}
+                >
+                  📸 פתח מצלמה
+                </button>
+              ) : (
+                <div>
+                  <video ref={videoRef} autoPlay playsInline style={{ width: "100%", maxWidth: "400px", borderRadius: "16px", marginBottom: "16px", border: "3px solid #00caff", boxShadow: "0 0 30px rgba(0, 202, 255, 0.3)" }} />
+                  <canvas ref={canvasRef} style={{ display: "none" }} />
+                  <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}>
                     <button
                       type="button"
-                      onClick={startCamera}
+                      onClick={capturePhoto}
                       style={{
-                        padding: "10px 20px",
-                        background: "linear-gradient(135deg, #00caff, #0088ff)",
-                        color: "#001a2e",
+                        padding: "14px 28px",
+                        background: "linear-gradient(135deg, #10b981, #059669)",
+                        color: "#fff",
                         border: "none",
-                        borderRadius: "10px",
-                        fontSize: "0.9rem",
-                        fontWeight: "600",
+                        borderRadius: "12px",
+                        fontSize: "1rem",
+                        fontWeight: "700",
+                        cursor: "pointer",
+                        boxShadow: "0 0 20px rgba(16, 185, 129, 0.4)"
+                      }}
+                    >
+                      ✓ צלם תמונה
+                    </button>
+                    <button
+                      type="button"
+                      onClick={stopCamera}
+                      style={{
+                        padding: "14px 28px",
+                        background: "rgba(248, 113, 113, 0.2)",
+                        color: "#f87171",
+                        border: "2px solid rgba(248, 113, 113, 0.4)",
+                        borderRadius: "12px",
+                        fontSize: "1rem",
+                        fontWeight: "700",
                         cursor: "pointer"
                       }}
                     >
-                      פתח מצלמה
+                      ביטול
                     </button>
-                  ) : (
-                    <div>
-                      <video ref={videoRef} autoPlay playsInline style={{ width: "100%", borderRadius: "12px", marginBottom: "8px" }} />
-                      <canvas ref={canvasRef} style={{ display: "none" }} />
-                      <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
-                        <button
-                          type="button"
-                          onClick={capturePhoto}
-                          style={{
-                            padding: "10px 20px",
-                            background: "linear-gradient(135deg, #10b981, #059669)",
-                            color: "#fff",
-                            border: "none",
-                            borderRadius: "10px",
-                            fontSize: "0.9rem",
-                            fontWeight: "600",
-                            cursor: "pointer"
-                          }}
-                        >
-                          צלם תמונה
-                        </button>
-                        <button
-                          type="button"
-                          onClick={stopCamera}
-                          style={{
-                            padding: "10px 20px",
-                            background: "rgba(248, 113, 113, 0.2)",
-                            color: "#f87171",
-                            border: "1px solid rgba(248, 113, 113, 0.3)",
-                            borderRadius: "10px",
-                            fontSize: "0.9rem",
-                            fontWeight: "600",
-                            cursor: "pointer"
-                          }}
-                        >
-                          ביטול
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </>
-              ) : (
-                <div>
-                  <img src={capturedPhoto} alt="Captured" style={{ width: "100%", maxWidth: "200px", borderRadius: "12px", marginBottom: "8px" }} />
-                  <button
-                    type="button"
-                    onClick={() => setCapturedPhoto(null)}
-                    style={{
-                      padding: "8px 16px",
-                      background: "rgba(248, 113, 113, 0.2)",
-                      color: "#f87171",
-                      border: "1px solid rgba(248, 113, 113, 0.3)",
-                      borderRadius: "8px",
-                      fontSize: "0.85rem",
-                      cursor: "pointer"
-                    }}
-                  >
-                    צלם מחדש
-                  </button>
+                  </div>
                 </div>
               )}
             </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="flex flex-col gap-2.5 mt-2">
+              {/* Photo Preview */}
+              <div style={{
+                padding: "16px",
+                background: "rgba(0, 202, 255, 0.1)",
+                border: "2px solid rgba(0, 202, 255, 0.3)",
+                borderRadius: "12px",
+                textAlign: "center"
+              }}>
+                <div style={{ fontSize: "0.9rem", fontWeight: "600", color: "#00caff", marginBottom: "12px" }}>
+                  ✓ תמונה צולמה בהצלחה!
+                </div>
+                <img src={capturedPhoto} alt="Captured" style={{ width: "100%", maxWidth: "250px", borderRadius: "16px", marginBottom: "12px", border: "3px solid #00caff", boxShadow: "0 0 20px rgba(0, 202, 255, 0.3)" }} />
+                <button
+                  type="button"
+                  onClick={() => setCapturedPhoto(null)}
+                  style={{
+                    padding: "10px 20px",
+                    background: "rgba(248, 113, 113, 0.2)",
+                    color: "#f87171",
+                    border: "2px solid rgba(248, 113, 113, 0.4)",
+                    borderRadius: "10px",
+                    fontSize: "0.9rem",
+                    fontWeight: "600",
+                    cursor: "pointer"
+                  }}
+                >
+                  📸 צלם מחדש
+                </button>
+              </div>
 
             <div>
               <label className="block text-[0.9rem] mb-0.5">
@@ -584,15 +606,16 @@ export default function Home() {
               שלחו אותי לתור 🎵
             </button>
 
-            {status.type && (
-              <div 
-                className="mt-2.5 text-[0.9rem] text-center"
-                style={{ color: status.type === "ok" ? "#00caff" : "#f97373" }}
-              >
-                {status.message}
-              </div>
-            )}
-          </form>
+              {status.type && (
+                <div 
+                  className="mt-2.5 text-[0.9rem] text-center"
+                  style={{ color: status.type === "ok" ? "#00caff" : "#f97373" }}
+                >
+                  {status.message}
+                </div>
+              )}
+            </form>
+          )}
 
           <hr 
             className="my-[18px] md:my-3 h-px border-0"
