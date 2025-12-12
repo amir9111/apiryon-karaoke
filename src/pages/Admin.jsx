@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Play, Check, SkipForward, UserPlus, Monitor, Settings, Music2, Users, TrendingUp } from "lucide-react";
-import Logo from "../components/Logo";
+import { Play, Check, SkipForward, UserPlus, Monitor, Settings } from "lucide-react";
+import ApyironLogo from "../components/ApyironLogo";
+import AudioWave from "../components/AudioWave";
 
 export default function Admin() {
   const [user, setUser] = useState(null);
@@ -100,28 +101,30 @@ export default function Admin() {
   }
 
   return (
-    <div dir="rtl" style={{ background: "linear-gradient(to bottom, #0f172a, #020617)", color: "#f1f5f9", minHeight: "100vh", padding: "20px" }}>
+    <div dir="rtl" style={{ background: "linear-gradient(135deg, #020617 0%, #0a1929 50%, #020617 100%)", color: "#f1f5f9", minHeight: "100vh", padding: "20px" }}>
       <div style={{ maxWidth: "1400px", margin: "0 auto" }}>
         {/* Header */}
         <div style={{ marginBottom: "24px", textAlign: "center" }}>
-          <div style={{ marginBottom: "16px" }}>
-            <Logo size="medium" showCircle={true} />
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: "16px" }}>
+            <ApyironLogo size="small" showCircle={false} />
           </div>
-          <h1 style={{ fontSize: "2rem", fontWeight: "700", margin: "0 0 8px 0", background: "linear-gradient(135deg, #00caff, #0088ff)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+          <h1 style={{ fontSize: "2rem", fontWeight: "700", margin: "0 0 8px 0", color: "#00caff", textShadow: "0 0 20px rgba(0, 202, 255, 0.5)" }}>
             🎤 ניהול קריוקי
           </h1>
           <p style={{ color: "#94a3b8", fontSize: "0.95rem", margin: 0 }}>
             ניהול מתקדם של תור השירים והזמרים
           </p>
-          <div style={{ display: "inline-flex", gap: "12px", marginTop: "12px", padding: "8px 16px", background: "rgba(15,23,42,0.6)", borderRadius: "999px", border: "1px solid rgba(0,202,255,0.2)" }}>
-            <span style={{ fontSize: "0.9rem" }}>⏳ {waiting.length} ממתינים</span>
+          <div style={{ display: "inline-flex", gap: "12px", marginTop: "12px", padding: "8px 16px", background: "rgba(15,23,42,0.6)", borderRadius: "999px", border: "1px solid rgba(0, 202, 255, 0.3)", boxShadow: "0 0 20px rgba(0, 202, 255, 0.2)" }}>
+            <span style={{ fontSize: "0.9rem", color: "#00caff" }}>⏳ {waiting.length} ממתינים</span>
             <span style={{ fontSize: "0.9rem", color: "#64748b" }}>•</span>
-            <span style={{ fontSize: "0.9rem" }}>✅ {done.length} בוצעו</span>
+            <span style={{ fontSize: "0.9rem", color: "#00caff" }}>✅ {done.length} בוצעו</span>
+            <span style={{ fontSize: "0.9rem", color: "#64748b" }}>•</span>
+            <span style={{ fontSize: "0.9rem", color: "#00caff" }}>🎵 {requests.length} סה"כ</span>
           </div>
         </div>
 
         <Tabs defaultValue="control" dir="rtl" style={{ width: "100%" }}>
-          <TabsList style={{ display: "flex", gap: "8px", background: "rgba(15,23,42,0.8)", padding: "6px", borderRadius: "16px", border: "1px solid rgba(148,163,184,0.1)", marginBottom: "20px", width: "100%", justifyContent: "center" }}>
+          <TabsList style={{ display: "flex", gap: "8px", background: "rgba(15,23,42,0.8)", padding: "6px", borderRadius: "16px", border: "1px solid rgba(0, 202, 255, 0.2)", marginBottom: "20px", width: "100%", justifyContent: "center", boxShadow: "0 0 20px rgba(0, 202, 255, 0.1)" }}>
             <TabsTrigger value="control" style={{ flex: "0 1 auto", minWidth: "140px", display: "flex", alignItems: "center", gap: "8px", fontSize: "0.95rem", padding: "10px 20px", borderRadius: "12px" }}>
               <Settings className="w-4 h-4" />
               מסך ניהול
@@ -135,7 +138,7 @@ export default function Admin() {
           <TabsContent value="control">
             <div style={{ display: "grid", gridTemplateColumns: window.innerWidth > 900 ? "minmax(0, 2fr) minmax(0, 1fr)" : "minmax(0, 1fr)", gap: "20px" }}>
               {/* Queue Table */}
-              <div style={{ background: "rgba(15,23,42,0.5)", borderRadius: "20px", padding: "20px", border: "1px solid rgba(0,202,255,0.2)", backdropFilter: "blur(10px)" }}>
+              <div style={{ background: "rgba(15,23,42,0.5)", borderRadius: "20px", padding: "20px", border: "1px solid rgba(0, 202, 255, 0.2)", backdropFilter: "blur(10px)", boxShadow: "0 0 30px rgba(0, 202, 255, 0.1)" }}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px", marginBottom: "16px" }}>
                   <div>
                     <div style={{ fontSize: "1.2rem", fontWeight: "700", color: "#f1f5f9" }}>🎵 תור השירים</div>
@@ -156,7 +159,7 @@ export default function Admin() {
                         display: "flex",
                         alignItems: "center",
                         gap: "6px",
-                        boxShadow: "0 4px 12px rgba(34,197,94,0.3)"
+                        boxShadow: "0 0 20px rgba(0, 202, 255, 0.4)"
                       }}
                     >
                       <Play className="w-4 h-4" />
@@ -187,12 +190,12 @@ export default function Admin() {
                   <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.9rem" }}>
                     <thead style={{ position: "sticky", top: 0, background: "rgba(15,23,42,0.95)", backdropFilter: "blur(10px)", zIndex: 1 }}>
                       <tr>
-                        <th style={{ padding: "12px", textAlign: "right", borderBottom: "2px solid rgba(0,202,255,0.2)", fontWeight: "600", color: "#94a3b8", fontSize: "0.85rem" }}>#</th>
-                        <th style={{ padding: "12px", textAlign: "right", borderBottom: "2px solid rgba(0,202,255,0.2)", fontWeight: "600", color: "#94a3b8", fontSize: "0.85rem" }}>זמר/ת</th>
-                        <th style={{ padding: "12px", textAlign: "right", borderBottom: "2px solid rgba(0,202,255,0.2)", fontWeight: "600", color: "#94a3b8", fontSize: "0.85rem" }}>שם השיר</th>
-                        <th style={{ padding: "12px", textAlign: "right", borderBottom: "2px solid rgba(0,202,255,0.2)", fontWeight: "600", color: "#94a3b8", fontSize: "0.85rem" }}>אמן</th>
-                        <th style={{ padding: "12px", textAlign: "center", borderBottom: "2px solid rgba(0,202,255,0.2)", fontWeight: "600", color: "#94a3b8", fontSize: "0.85rem" }}>סטטוס</th>
-                        <th style={{ padding: "12px", textAlign: "center", borderBottom: "2px solid rgba(0,202,255,0.2)", fontWeight: "600", color: "#94a3b8", fontSize: "0.85rem" }}>פעולות</th>
+                        <th style={{ padding: "12px", textAlign: "right", borderBottom: "2px solid rgba(0, 202, 255, 0.2)", fontWeight: "600", color: "#94a3b8", fontSize: "0.85rem" }}>#</th>
+                        <th style={{ padding: "12px", textAlign: "right", borderBottom: "2px solid rgba(0, 202, 255, 0.2)", fontWeight: "600", color: "#94a3b8", fontSize: "0.85rem" }}>זמר/ת</th>
+                        <th style={{ padding: "12px", textAlign: "right", borderBottom: "2px solid rgba(0, 202, 255, 0.2)", fontWeight: "600", color: "#94a3b8", fontSize: "0.85rem" }}>שם השיר</th>
+                        <th style={{ padding: "12px", textAlign: "right", borderBottom: "2px solid rgba(0, 202, 255, 0.2)", fontWeight: "600", color: "#94a3b8", fontSize: "0.85rem" }}>אמן</th>
+                        <th style={{ padding: "12px", textAlign: "center", borderBottom: "2px solid rgba(0, 202, 255, 0.2)", fontWeight: "600", color: "#94a3b8", fontSize: "0.85rem" }}>סטטוס</th>
+                        <th style={{ padding: "12px", textAlign: "center", borderBottom: "2px solid rgba(0, 202, 255, 0.2)", fontWeight: "600", color: "#94a3b8", fontSize: "0.85rem" }}>פעולות</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -203,7 +206,7 @@ export default function Admin() {
                       ) : (
                         ordered.map((req, index) => (
                           <tr key={req.id} style={{ 
-                            background: req.status === "performing" ? "rgba(0,202,255,0.08)" : index % 2 === 0 ? "rgba(30,41,59,0.3)" : "rgba(30,41,59,0.5)",
+                            background: req.status === "performing" ? "rgba(0, 202, 255, 0.1)" : index % 2 === 0 ? "rgba(30,41,59,0.3)" : "rgba(30,41,59,0.5)",
                             transition: "all 0.2s"
                           }}>
                             <td style={{ padding: "14px 12px", borderBottom: "1px solid rgba(51,65,85,0.5)", fontWeight: "500", color: "#cbd5e1" }}>{index + 1}</td>
@@ -217,9 +220,9 @@ export default function Admin() {
                                 borderRadius: "8px",
                                 fontSize: "0.8rem",
                                 fontWeight: "600",
-                                background: req.status === "waiting" ? "rgba(59,130,246,0.15)" : req.status === "performing" ? "rgba(0,202,255,0.2)" : req.status === "done" ? "rgba(100,116,139,0.15)" : "rgba(248,113,113,0.15)",
+                                background: req.status === "waiting" ? "rgba(59,130,246,0.15)" : req.status === "performing" ? "rgba(0, 202, 255, 0.2)" : req.status === "done" ? "rgba(100,116,139,0.15)" : "rgba(248,113,113,0.15)",
                                 color: req.status === "waiting" ? "#60a5fa" : req.status === "performing" ? "#00caff" : req.status === "done" ? "#94a3b8" : "#f87171",
-                                border: `1px solid ${req.status === "waiting" ? "rgba(59,130,246,0.3)" : req.status === "performing" ? "rgba(0,202,255,0.4)" : req.status === "done" ? "rgba(100,116,139,0.3)" : "rgba(248,113,113,0.3)"}`
+                                border: `1px solid ${req.status === "waiting" ? "rgba(59,130,246,0.3)" : req.status === "performing" ? "rgba(0, 202, 255, 0.4)" : req.status === "done" ? "rgba(100,116,139,0.3)" : "rgba(248,113,113,0.3)"}`
                               }}>
                                 {req.status === "waiting" ? "⏳ ממתין" : req.status === "performing" ? "🎤 שר עכשיו" : req.status === "done" ? "✅ הסתיים" : "⏭️ דולג"}
                               </span>
@@ -229,12 +232,12 @@ export default function Admin() {
                                 <button 
                                   onClick={() => setStatus(req.id, "performing")} 
                                   style={{ 
-                                    border: "1px solid rgba(0,202,255,0.3)", 
+                                    border: "1px solid rgba(0, 202, 255, 0.3)", 
                                     borderRadius: "8px", 
                                     padding: "6px 12px", 
                                     fontSize: "0.8rem", 
                                     cursor: "pointer", 
-                                    background: "rgba(0,202,255,0.1)", 
+                                    background: "rgba(0, 202, 255, 0.1)", 
                                     color: "#00caff",
                                     display: "flex",
                                     alignItems: "center",
@@ -275,7 +278,7 @@ export default function Admin() {
               </div>
 
               {/* Summary */}
-              <div style={{ background: "rgba(15,23,42,0.5)", borderRadius: "20px", padding: "20px", border: "1px solid rgba(0,202,255,0.2)", backdropFilter: "blur(10px)" }}>
+              <div style={{ background: "rgba(15,23,42,0.5)", borderRadius: "20px", padding: "20px", border: "1px solid rgba(0, 202, 255, 0.2)", backdropFilter: "blur(10px)", boxShadow: "0 0 30px rgba(0, 202, 255, 0.1)" }}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px", marginBottom: "16px" }}>
                   <div>
                     <div style={{ fontSize: "1.2rem", fontWeight: "700", color: "#f1f5f9" }}>⚡ כרגע</div>
@@ -302,11 +305,12 @@ export default function Admin() {
                 </div>
                 
                 <div style={{ 
-                  background: "rgba(0,202,255,0.05)", 
-                  border: "1px solid rgba(0,202,255,0.2)", 
+                  background: "rgba(0, 202, 255, 0.08)", 
+                  border: "1px solid rgba(0, 202, 255, 0.3)", 
                   borderRadius: "14px", 
                   padding: "16px",
-                  marginBottom: "16px"
+                  marginBottom: "16px",
+                  boxShadow: "0 0 20px rgba(0, 202, 255, 0.15)"
                 }}>
                   {!currentSong ? (
                     <div style={{ color: "#94a3b8", fontSize: "0.9rem", textAlign: "center" }}>
@@ -315,7 +319,7 @@ export default function Admin() {
                     </div>
                   ) : (
                     <>
-                      <div style={{ fontSize: "0.8rem", color: "#00caff", marginBottom: "6px", fontWeight: "600" }}>🎵 שר עכשיו</div>
+                      <div style={{ fontSize: "0.8rem", color: "#00caff", marginBottom: "6px", fontWeight: "600", textShadow: "0 0 10px rgba(0, 202, 255, 0.4)" }}>🎵 שר עכשיו</div>
                       <div style={{ fontWeight: "700", fontSize: "1.1rem", color: "#f1f5f9", marginBottom: "4px" }}>{currentSong.singer_name}</div>
                       <div style={{ color: "#cbd5e1", fontSize: "0.9rem" }}>
                         {currentSong.song_title}
@@ -345,12 +349,13 @@ export default function Admin() {
                         >
                           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                             <span style={{ 
-                              background: "rgba(0,202,255,0.2)", 
+                              background: "rgba(0, 202, 255, 0.2)", 
                               color: "#00caff", 
                               borderRadius: "6px", 
                               padding: "2px 8px", 
                               fontSize: "0.75rem", 
-                              fontWeight: "600" 
+                              fontWeight: "600",
+                              boxShadow: "0 0 10px rgba(0, 202, 255, 0.2)"
                             }}>
                               #{i + 1}
                             </span>
@@ -370,150 +375,203 @@ export default function Admin() {
 
           <TabsContent value="display">
             <div style={{ minHeight: "80vh", display: "flex", flexDirection: "column", gap: "16px" }}>
+            {/* Logo and Header */}
             <div style={{ textAlign: "center", marginBottom: "8px" }}>
-              <div style={{ marginBottom: "12px" }}>
-                <Logo size="large" showCircle={true} />
+              <div style={{ display: "flex", justifyContent: "center", marginBottom: "12px" }}>
+                <ApyironLogo size="medium" showCircle={true} />
               </div>
-              <h1 style={{ margin: 0, fontSize: "clamp(1.8rem, 3.5vw, 2.5rem)", fontWeight: "800" }}>ערב קריוקי באפריון</h1>
-              <p style={{ margin: "8px 0 0", fontSize: "clamp(0.85rem, 1.5vw, 1rem)", color: "#9ca3af" }}>
+              <h1 style={{ margin: 0, fontSize: "clamp(1.8rem, 3.5vw, 2.5rem)", color: "#00caff", textShadow: "0 0 30px rgba(0, 202, 255, 0.6)" }}>
+                ערב קריוקי 🎤
+              </h1>
+              <p style={{ margin: "8px 0 0", fontSize: "clamp(0.85rem, 1.5vw, 1rem)", color: "#94a3b8" }}>
                 המסך מציג מי שר עכשיו ומי הבא בתור
               </p>
             </div>
 
-            {/* סטטיסטיקות */}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "10px", maxWidth: "900px", margin: "0 auto", width: "100%" }}>
-              <div style={{ background: "rgba(0,202,255,0.1)", border: "1px solid rgba(0,202,255,0.3)", borderRadius: "14px", padding: "12px", textAlign: "center" }}>
-                <Users className="w-6 h-6 mx-auto mb-1" style={{ color: "#00caff" }} />
-                <div style={{ fontSize: "1.6rem", fontWeight: "800", color: "#00caff" }}>{requests.length}</div>
-                <div style={{ fontSize: "0.8rem", color: "#9ca3af" }}>זמרים הערב</div>
+            {/* Stats Bar */}
+            <div style={{ 
+              display: "flex", 
+              justifyContent: "center", 
+              gap: "16px", 
+              flexWrap: "wrap",
+              marginBottom: "8px"
+            }}>
+              <div style={{
+                background: "rgba(0, 202, 255, 0.1)",
+                border: "1px solid rgba(0, 202, 255, 0.3)",
+                borderRadius: "12px",
+                padding: "8px 16px",
+                boxShadow: "0 0 20px rgba(0, 202, 255, 0.2)"
+              }}>
+                <div style={{ fontSize: "0.8rem", color: "#94a3b8" }}>זמרים הערב</div>
+                <div style={{ fontSize: "1.4rem", fontWeight: "700", color: "#00caff" }}>{done.length + now.length}</div>
               </div>
-              <div style={{ background: "rgba(0,202,255,0.1)", border: "1px solid rgba(0,202,255,0.3)", borderRadius: "14px", padding: "12px", textAlign: "center" }}>
-                <Music2 className="w-6 h-6 mx-auto mb-1" style={{ color: "#00caff" }} />
-                <div style={{ fontSize: "1.6rem", fontWeight: "800", color: "#00caff" }}>{waiting.length}</div>
-                <div style={{ fontSize: "0.8rem", color: "#9ca3af" }}>ממתינים</div>
+              <div style={{
+                background: "rgba(0, 202, 255, 0.1)",
+                border: "1px solid rgba(0, 202, 255, 0.3)",
+                borderRadius: "12px",
+                padding: "8px 16px",
+                boxShadow: "0 0 20px rgba(0, 202, 255, 0.2)"
+              }}>
+                <div style={{ fontSize: "0.8rem", color: "#94a3b8" }}>ממתינים</div>
+                <div style={{ fontSize: "1.4rem", fontWeight: "700", color: "#00caff" }}>{waiting.length}</div>
               </div>
-              <div style={{ background: "rgba(0,202,255,0.1)", border: "1px solid rgba(0,202,255,0.3)", borderRadius: "14px", padding: "12px", textAlign: "center" }}>
-                <TrendingUp className="w-6 h-6 mx-auto mb-1" style={{ color: "#00caff" }} />
-                <div style={{ fontSize: "1.6rem", fontWeight: "800", color: "#00caff" }}>{done.length}</div>
-                <div style={{ fontSize: "0.8rem", color: "#9ca3af" }}>השלימו</div>
+              <div style={{
+                background: "rgba(0, 202, 255, 0.1)",
+                border: "1px solid rgba(0, 202, 255, 0.3)",
+                borderRadius: "12px",
+                padding: "8px 16px",
+                boxShadow: "0 0 20px rgba(0, 202, 255, 0.2)"
+              }}>
+                <div style={{ fontSize: "0.8rem", color: "#94a3b8" }}>סה"כ שירים</div>
+                <div style={{ fontSize: "1.4rem", fontWeight: "700", color: "#00caff" }}>{requests.length}</div>
               </div>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: window.innerWidth > 850 ? "minmax(0, 2.2fr) minmax(0, 1.2fr)" : "minmax(0, 1fr)", gap: "14px", alignItems: "stretch" }}>
-              {/* Now Playing - עם אנימציה */}
+            <div style={{ display: "grid", gridTemplateColumns: window.innerWidth > 850 ? "minmax(0, 2.2fr) minmax(0, 1.2fr)" : "minmax(0, 1fr)", gap: "16px", alignItems: "stretch" }}>
+              {/* Now Playing */}
               <div style={{
-                background: "radial-gradient(ellipse at top left, rgba(0,202,255,0.15), #020617 60%)",
+                background: "radial-gradient(ellipse at top left, rgba(0, 202, 255, 0.15), rgba(2, 6, 23, 0.95) 60%)",
                 borderRadius: "24px",
-                padding: "clamp(20px, 3vw, 28px)",
-                border: "2px solid #00caff",
-                boxShadow: "0 0 40px rgba(0,202,255,0.4), 0 20px 60px rgba(0,0,0,0.7)",
+                padding: "clamp(20px, 3vw, 32px)",
+                border: "2px solid rgba(0, 202, 255, 0.4)",
+                boxShadow: "0 0 60px rgba(0, 202, 255, 0.3), 0 20px 50px rgba(0,0,0,0.6)",
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
-                minHeight: "240px",
+                minHeight: "280px",
                 position: "relative",
                 overflow: "hidden"
               }}>
-                <style>{`
-                  @keyframes pulse-border {
-                    0%, 100% { box-shadow: 0 0 40px rgba(0,202,255,0.4), 0 20px 60px rgba(0,0,0,0.7); }
-                    50% { box-shadow: 0 0 60px rgba(0,202,255,0.6), 0 20px 60px rgba(0,0,0,0.7); }
-                  }
-                  @keyframes wave {
-                    0% { transform: translateX(-100%); }
-                    100% { transform: translateX(100%); }
-                  }
-                  .performing-card {
-                    animation: pulse-border 2s ease-in-out infinite;
-                  }
-                `}</style>
+                {/* Animated background effect */}
+                <div style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  background: "radial-gradient(circle at 50% 50%, rgba(0, 202, 255, 0.1) 0%, transparent 50%)",
+                  animation: "pulse 3s ease-in-out infinite",
+                  pointerEvents: "none"
+                }}></div>
 
-                {/* אפקט גלים */}
-                {currentSong && (
-                  <div style={{
-                    position: "absolute",
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    height: "4px",
-                    background: "linear-gradient(90deg, transparent, #00caff, transparent)",
-                    animation: "wave 2s linear infinite"
-                  }} />
-                )}
-
-                {!currentSong ? (
-                  <>
-                    <div style={{ fontSize: "clamp(0.9rem, 1.5vw, 1.1rem)", textTransform: "uppercase", letterSpacing: "0.12em", color: "#00caff", marginBottom: "10px", fontWeight: "600" }}>
-                      🎤 כרגע על הבמה
-                    </div>
-                    <div style={{ fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)", fontWeight: "900", marginBottom: "10px", color: "#f1f5f9" }}>
-                      ממתינים לזמר הראשון
-                    </div>
-                    <div style={{ fontSize: "clamp(1.1rem, 2.2vw, 1.6rem)", color: "#cbd5e1", lineHeight: "1.4" }}>
-                      המפעיל יפעיל את השיר הראשון בקרוב…
-                    </div>
-                  </>
-                ) : (
-                  <div className="performing-card">
-                    <div style={{ fontSize: "clamp(0.9rem, 1.5vw, 1.1rem)", textTransform: "uppercase", letterSpacing: "0.12em", color: "#00caff", marginBottom: "10px", fontWeight: "600" }}>
-                      🎤 כרגע על הבמה
-                    </div>
-                    <div style={{ fontSize: "clamp(2rem, 4vw, 3.2rem)", fontWeight: "900", marginBottom: "10px", color: "#ffffff", textShadow: "0 0 20px rgba(0,202,255,0.5)" }}>
-                      {currentSong.singer_name}
-                    </div>
-                    <div style={{ fontSize: "clamp(1.2rem, 2.5vw, 1.9rem)", color: "#e2e8f0", marginBottom: "6px", fontWeight: "600" }}>
-                      {currentSong.song_title}
-                    </div>
-                    {currentSong.song_artist && (
-                      <div style={{ fontSize: "clamp(1rem, 1.8vw, 1.2rem)", color: "#94a3b8" }}>
-                        {currentSong.song_artist}
+                <div style={{ position: "relative", zIndex: 1 }}>
+                  {!currentSong ? (
+                    <>
+                      <div style={{ display: "flex", justifyContent: "center", marginBottom: "12px" }}>
+                        <AudioWave isPlaying={false} />
                       </div>
-                    )}
-                  </div>
-                )}
+                      <div style={{ fontSize: "clamp(0.9rem, 1.5vw, 1.1rem)", textTransform: "uppercase", letterSpacing: "0.1em", color: "#00caff", marginBottom: "12px", textAlign: "center", textShadow: "0 0 10px rgba(0, 202, 255, 0.5)" }}>
+                        ⏳ ממתינים לזמר הראשון
+                      </div>
+                      <div style={{ fontSize: "clamp(1.4rem, 2.8vw, 2rem)", fontWeight: "700", marginBottom: "8px", textAlign: "center", color: "#f1f5f9" }}>
+                        הבמה מחכה לכם!
+                      </div>
+                      <div style={{ fontSize: "clamp(1rem, 2vw, 1.4rem)", color: "#cbd5e1", textAlign: "center" }}>
+                        לחצו "הבא בתור" להתחיל את המופע 🎭
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div style={{ display: "flex", justifyContent: "center", marginBottom: "16px" }}>
+                        <AudioWave isPlaying={true} />
+                      </div>
+                      <div style={{ fontSize: "clamp(0.9rem, 1.5vw, 1.1rem)", textTransform: "uppercase", letterSpacing: "0.1em", color: "#00caff", marginBottom: "12px", textAlign: "center", textShadow: "0 0 15px rgba(0, 202, 255, 0.6)" }}>
+                        🎤 כרגע על הבמה
+                      </div>
+                      <div style={{ fontSize: "clamp(2rem, 4vw, 3.2rem)", fontWeight: "800", marginBottom: "12px", textAlign: "center", color: "#ffffff", textShadow: "0 0 20px rgba(0, 202, 255, 0.4)" }}>
+                        {currentSong.singer_name}
+                      </div>
+                      <div style={{ fontSize: "clamp(1.3rem, 2.6vw, 2rem)", color: "#e2e8f0", marginBottom: "8px", textAlign: "center", fontWeight: "600" }}>
+                        {currentSong.song_title}
+                      </div>
+                      {currentSong.song_artist && (
+                        <div style={{ fontSize: "clamp(1rem, 1.8vw, 1.3rem)", color: "#94a3b8", textAlign: "center" }}>
+                          {currentSong.song_artist}
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
               </div>
 
-              {/* Up Next - משודרג */}
-              <div style={{ background: "rgba(15,23,42,0.96)", borderRadius: "20px", padding: "16px 14px", border: "1px solid rgba(0,202,255,0.3)", boxShadow: "0 12px 40px rgba(0,0,0,0.5)" }}>
-                <div style={{ fontSize: "clamp(1rem, 1.8vw, 1.2rem)", fontWeight: "700", marginBottom: "12px", color: "#00caff", display: "flex", alignItems: "center", gap: "8px" }}>
-                  <Music2 className="w-5 h-5" />
-                  הבאים בתור
+              {/* Up Next */}
+              <div style={{ 
+                background: "rgba(15,23,42,0.96)", 
+                borderRadius: "20px", 
+                padding: "16px 14px", 
+                border: "1px solid rgba(0, 202, 255, 0.3)", 
+                boxShadow: "0 0 30px rgba(0, 202, 255, 0.15), 0 12px 40px rgba(0,0,0,0.5)" 
+              }}>
+                <div style={{ 
+                  fontSize: "clamp(1rem, 1.8vw, 1.2rem)", 
+                  fontWeight: "700", 
+                  marginBottom: "12px",
+                  color: "#00caff",
+                  textShadow: "0 0 10px rgba(0, 202, 255, 0.4)"
+                }}>
+                  📋 הבאים בתור
                 </div>
                 {waitingList.length === 0 ? (
-                  <div style={{ padding: "16px 0", textAlign: "center", background: "rgba(30,41,59,0.4)", borderRadius: "12px", border: "1px dashed rgba(0,202,255,0.3)" }}>
-                    <div style={{ fontSize: "1rem", fontWeight: "600", marginBottom: "6px" }}>אין כרגע ממתינים</div>
-                    <div style={{ fontSize: "0.85rem", color: "#9ca3af" }}>הצטרפו לתור דרך הטופס 📱</div>
+                  <div style={{ 
+                    padding: "16px", 
+                    borderRadius: "12px",
+                    background: "rgba(0, 202, 255, 0.05)",
+                    border: "1px dashed rgba(0, 202, 255, 0.3)",
+                    textAlign: "center"
+                  }}>
+                    <div style={{ fontSize: "1.1rem", fontWeight: "600", marginBottom: "6px" }}>אין כרגע שירים ממתינים</div>
+                    <div style={{ fontSize: "0.85rem", color: "#94a3b8" }}>הצטרפו לתור דרך הטופס 📱</div>
                   </div>
                 ) : (
                   <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                     {waitingList.slice(0, 7).map((r, i) => (
                       <div key={r.id} style={{ 
-                        padding: "10px 12px", 
-                        background: i === 0 ? "rgba(0,202,255,0.15)" : "rgba(30,41,59,0.4)", 
+                        padding: "10px 12px",
                         borderRadius: "12px",
-                        border: i === 0 ? "1px solid rgba(0,202,255,0.4)" : "1px solid rgba(51,65,85,0.4)",
-                        transition: "all 0.3s"
+                        background: i === 0 ? "rgba(0, 202, 255, 0.15)" : "rgba(30, 41, 59, 0.5)",
+                        border: i === 0 ? "1px solid rgba(0, 202, 255, 0.4)" : "1px solid rgba(51, 65, 85, 0.5)",
+                        boxShadow: i === 0 ? "0 0 20px rgba(0, 202, 255, 0.2)" : "none"
                       }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                          <div style={{ 
+                        <div style={{ 
+                          display: "flex", 
+                          alignItems: "center", 
+                          gap: "10px"
+                        }}>
+                          <div style={{
                             minWidth: "28px",
                             height: "28px",
                             borderRadius: "8px",
-                            background: i === 0 ? "linear-gradient(135deg, #00caff, #0088ff)" : "rgba(51,65,85,0.6)",
+                            background: i === 0 ? "linear-gradient(135deg, #00caff, #0088ff)" : "rgba(51, 65, 85, 0.8)",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
                             fontWeight: "700",
                             fontSize: "0.85rem",
-                            color: i === 0 ? "#001a2e" : "#94a3b8"
+                            color: i === 0 ? "#001a2e" : "#94a3b8",
+                            boxShadow: i === 0 ? "0 0 15px rgba(0, 202, 255, 0.4)" : "none"
                           }}>
                             {i + 1}
                           </div>
-                          <div style={{ flex: 1 }}>
-                            <div style={{ fontSize: "0.95rem", fontWeight: "700", color: i === 0 ? "#00caff" : "#f1f5f9", marginBottom: "2px" }}>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ 
+                              fontSize: "0.95rem", 
+                              fontWeight: "700",
+                              color: i === 0 ? "#00caff" : "#f1f5f9",
+                              textShadow: i === 0 ? "0 0 10px rgba(0, 202, 255, 0.3)" : "none",
+                              whiteSpace: "nowrap",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis"
+                            }}>
                               {r.singer_name}
                             </div>
-                            <div style={{ fontSize: "0.8rem", color: "#94a3b8" }}>
+                            <div style={{ 
+                              fontSize: "0.8rem", 
+                              color: "#94a3b8",
+                              whiteSpace: "nowrap",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis"
+                            }}>
                               {r.song_title}{r.song_artist ? ` · ${r.song_artist}` : ""}
                             </div>
                           </div>
@@ -522,24 +580,44 @@ export default function Admin() {
                     ))}
                   </div>
                 )}
-
-                <div style={{ marginTop: "14px", padding: "10px", background: "rgba(0,202,255,0.05)", borderRadius: "10px", border: "1px solid rgba(0,202,255,0.2)" }}>
-                  <div style={{ fontSize: "0.75rem", color: "#9ca3af", marginBottom: "4px" }}>קבוצת ווטסאפ:</div>
-                  <a 
-                    href="https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ fontSize: "0.75rem", color: "#00caff", wordBreak: "break-all", textDecoration: "none" }}
-                  >
-                    הצטרפו לעדכונים →
-                  </a>
+                <div style={{ 
+                  marginTop: "16px", 
+                  padding: "12px",
+                  borderRadius: "12px",
+                  background: "rgba(0, 202, 255, 0.05)",
+                  border: "1px solid rgba(0, 202, 255, 0.2)",
+                  fontSize: "0.8rem", 
+                  color: "#94a3b8",
+                  textAlign: "center"
+                }}>
+                  להצטרפות לקבוצת הווטסאפ:
+                  <br />
+                  <span style={{ color: "#00caff", fontWeight: "600" }}>
+                    https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15
+                  </span>
                 </div>
               </div>
             </div>
 
-              <div style={{ marginTop: "10px", fontSize: "0.75rem", color: "#9ca3af", textAlign: "center" }}>
-                להצגה על מסך גדול: לחץ F11 למצב מסך מלא, והשאר על "מסך תצוגה לקהל".
+              <div style={{ 
+                marginTop: "16px", 
+                fontSize: "0.8rem", 
+                color: "#94a3b8", 
+                textAlign: "center",
+                padding: "12px",
+                background: "rgba(0, 202, 255, 0.05)",
+                borderRadius: "12px",
+                border: "1px solid rgba(0, 202, 255, 0.2)"
+              }}>
+                💡 טיפ: לחץ F11 למצב מסך מלא והשאר על "מסך תצוגה לקהל" להצגה מושלמת
               </div>
+
+              <style>{`
+                @keyframes pulse {
+                  0%, 100% { opacity: 0.3; }
+                  50% { opacity: 0.6; }
+                }
+              `}</style>
             </div>
           </TabsContent>
         </Tabs>
