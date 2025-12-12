@@ -80,7 +80,7 @@ export default function Admin() {
     );
   }
 
-  if (!user || user.email !== "amir.abu300@gmail.com") {
+  if (!user || (user.email !== "amir.abu300@gmail.com" && user.email !== "amit595959@gmail.com")) {
     return (
       <div dir="rtl" style={{ background: "#020617", color: "#e5e7eb", minHeight: "100vh", padding: "12px", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <div style={{ textAlign: "center" }}>
