@@ -91,22 +91,22 @@ export default function TermsModal({ onAccept }) {
             transition: "all 0.4s ease"
           }}
         >
-          <div style={{ color: "#e2e8f0", fontSize: "0.9rem", lineHeight: "1.7" }}>
-            <h3 style={{ color: "#00caff", fontSize: "1.1rem", marginBottom: "12px", fontWeight: "700" }}>
+          <div style={{ color: "#e2e8f0", fontSize: "1rem", lineHeight: "1.8" }}>
+            <h3 style={{ color: "#00caff", fontSize: "1.3rem", marginBottom: "16px", fontWeight: "800" }}>
               הסכם רישיון שימוש באפליקציה
             </h3>
             
-            <div style={{ marginBottom: "16px" }}>
-              <strong style={{ color: "#00caff" }}>בעלות ורישיון:</strong>
-              <p style={{ marginTop: "6px", color: "#cbd5e1" }}>
+            <div style={{ marginBottom: "20px" }}>
+              <strong style={{ color: "#00caff", fontSize: "1.05rem" }}>בעלות ורישיון:</strong>
+              <p style={{ marginTop: "8px", color: "#cbd5e1", fontSize: "0.95rem" }}>
                 אפליקציה זו ("האפריון - מערכת קריוקי") הנה קניינו הבלעדי של אמיר (ת.ז. 203687355) ("הבעלים"). 
                 כל הזכויות, כולל זכויות יוצרים, סימני מסחר, עיצוב, קוד מקור, וקניין רוחני אחר שמורות לבעלים.
               </p>
             </div>
 
-            <div style={{ marginBottom: "16px" }}>
-              <strong style={{ color: "#00caff" }}>תנאי השימוש:</strong>
-              <ul style={{ marginTop: "6px", paddingRight: "20px", color: "#cbd5e1" }}>
+            <div style={{ marginBottom: "20px" }}>
+              <strong style={{ color: "#00caff", fontSize: "1.05rem" }}>תנאי השימוש:</strong>
+              <ul style={{ marginTop: "8px", paddingRight: "20px", color: "#cbd5e1", fontSize: "0.95rem" }}>
                 <li>השימוש באפליקציה מותר אך ורק למטרות חוקיות ובהתאם לתנאים אלה</li>
                 <li>אסור להעתיק, לשכפל, להפיץ, למכור או לנצל את האפליקציה או חלקים ממנה</li>
                 <li>אסור לבצע הנדסה לאחור, לפרק או לנסות לחלץ קוד מקור מהאפליקציה</li>
@@ -114,9 +114,9 @@ export default function TermsModal({ onAccept }) {
               </ul>
             </div>
 
-            <div style={{ marginBottom: "16px" }}>
-              <strong style={{ color: "#00caff" }}>פרטיות ואבטחת מידע:</strong>
-              <ul style={{ marginTop: "6px", paddingRight: "20px", color: "#cbd5e1" }}>
+            <div style={{ marginBottom: "20px" }}>
+              <strong style={{ color: "#00caff", fontSize: "1.05rem" }}>פרטיות ואבטחת מידע:</strong>
+              <ul style={{ marginTop: "8px", paddingRight: "20px", color: "#cbd5e1", fontSize: "0.95rem" }}>
                 <li>האפליקציה אוספת מידע שאתה מספק בטפסים (שם, אימייל, שם שיר)</li>
                 <li>המידע נשמר באופן מאובטח במערכות Base44</li>
                 <li>המידע משמש אך ורק לצורך הפעלת מערכת הקריוקי</li>
@@ -125,18 +125,18 @@ export default function TermsModal({ onAccept }) {
               </ul>
             </div>
 
-            <div style={{ marginBottom: "16px" }}>
-              <strong style={{ color: "#00caff" }}>הגבלת אחריות:</strong>
-              <p style={{ marginTop: "6px", color: "#cbd5e1" }}>
+            <div style={{ marginBottom: "20px" }}>
+              <strong style={{ color: "#00caff", fontSize: "1.05rem" }}>הגבלת אחריות:</strong>
+              <p style={{ marginTop: "8px", color: "#cbd5e1", fontSize: "0.95rem" }}>
                 האפליקציה מסופקת "כמות שהיא" ללא אחריות מכל סוג. הבעלים לא יהיה אחראי לכל נזק ישיר, 
                 עקיף, מקרי, מיוחד או תוצאתי הנובע משימוש או מחוסר יכולת להשתמש באפליקציה. 
                 הבעלים אינו אחראי לאובדן מידע, הפסקת שירות, או כל בעיה טכנית אחרת.
               </p>
             </div>
 
-            <div style={{ marginBottom: "16px" }}>
-              <strong style={{ color: "#00caff" }}>שימוש אחראי:</strong>
-              <ul style={{ marginTop: "6px", paddingRight: "20px", color: "#cbd5e1" }}>
+            <div style={{ marginBottom: "20px" }}>
+              <strong style={{ color: "#00caff", fontSize: "1.05rem" }}>שימוש אחראי:</strong>
+              <ul style={{ marginTop: "8px", paddingRight: "20px", color: "#cbd5e1", fontSize: "0.95rem" }}>
                 <li>אתה מתחייב שלא להעלות תוכן פוגעני, בלתי חוקי, או פוגע בזכויות אחרים</li>
                 <li>אתה מתחייב שלא להשתמש באפליקציה לצורך ספאם או הטרדה</li>
                 <li>אתה מתחייב שלא לנסות לפגוע בפעילות התקינה של האפליקציה</li>
@@ -144,40 +144,40 @@ export default function TermsModal({ onAccept }) {
               </ul>
             </div>
 
-            <div style={{ marginBottom: "16px" }}>
-              <strong style={{ color: "#00caff" }}>זכויות יוצרים וקניין רוחני:</strong>
-              <p style={{ marginTop: "6px", color: "#cbd5e1" }}>
+            <div style={{ marginBottom: "20px" }}>
+              <strong style={{ color: "#00caff", fontSize: "1.05rem" }}>זכויות יוצרים וקניין רוחני:</strong>
+              <p style={{ marginTop: "8px", color: "#cbd5e1", fontSize: "0.95rem" }}>
                 כל התוכן באפליקציה, לרבות טקסט, גרפיקה, לוגו ("APIRYON"), עיצוב ממשק, 
                 קוד תוכנה ופונקציונליות, מוגנים בזכויות יוצרים וחוקי קניין רוחני. 
                 © 2025 אמיר (ת.ז. 203687355). כל הזכויות שמורות.
               </p>
             </div>
 
-            <div style={{ marginBottom: "16px" }}>
-              <strong style={{ color: "#00caff" }}>שינויים בתנאי השימוש:</strong>
-              <p style={{ marginTop: "6px", color: "#cbd5e1" }}>
+            <div style={{ marginBottom: "20px" }}>
+              <strong style={{ color: "#00caff", fontSize: "1.05rem" }}>שינויים בתנאי השימוש:</strong>
+              <p style={{ marginTop: "8px", color: "#cbd5e1", fontSize: "0.95rem" }}>
                 הבעלים רשאי לעדכן תנאים אלה בכל עת. המשך שימוש באפליקציה לאחר שינויים 
                 מהווה הסכמה לתנאים המעודכנים.
               </p>
             </div>
 
-            <div style={{ marginBottom: "16px" }}>
-              <strong style={{ color: "#00caff" }}>סמכות שיפוט:</strong>
-              <p style={{ marginTop: "6px", color: "#cbd5e1" }}>
+            <div style={{ marginBottom: "20px" }}>
+              <strong style={{ color: "#00caff", fontSize: "1.05rem" }}>סמכות שיפוט:</strong>
+              <p style={{ marginTop: "8px", color: "#cbd5e1", fontSize: "0.95rem" }}>
                 כל סכסוך הנובע מתנאים אלה יהיה נתון לסמכות השיפוט הבלעדית של בתי המשפט בישראל, 
                 ויחולו עליו דיני מדינת ישראל.
               </p>
             </div>
 
             <div style={{ 
-              padding: "16px", 
+              padding: "18px", 
               background: "rgba(0, 202, 255, 0.1)", 
               borderRadius: "12px",
               border: "1px solid rgba(0, 202, 255, 0.3)",
               marginTop: "20px"
             }}>
-              <strong style={{ color: "#00caff", fontSize: "1rem" }}>יצירת קשר:</strong>
-              <p style={{ marginTop: "6px", color: "#cbd5e1", fontSize: "0.9rem" }}>
+              <strong style={{ color: "#00caff", fontSize: "1.1rem" }}>יצירת קשר:</strong>
+              <p style={{ marginTop: "8px", color: "#cbd5e1", fontSize: "1rem" }}>
                 לשאלות, בקשות למחיקת מידע, או כל נושא משפטי אחר,<br />
                 ניתן ליצור קשר עם הבעלים דרך פרטי הקשר שבמועדון.
               </p>
@@ -185,11 +185,11 @@ export default function TermsModal({ onAccept }) {
 
             <div style={{
               marginTop: "20px",
-              padding: "12px",
+              padding: "16px",
               background: "rgba(248, 113, 113, 0.1)",
               border: "1px solid rgba(248, 113, 113, 0.3)",
               borderRadius: "8px",
-              fontSize: "0.85rem",
+              fontSize: "0.95rem",
               color: "#fca5a5"
             }}>
               ⚠️ <strong>חשוב:</strong> אי עמידה בתנאים אלה עלולה להוביל לחסימה מהאפליקציה ולנקיטת הליכים משפטיים.
