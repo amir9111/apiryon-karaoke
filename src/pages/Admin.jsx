@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Play, Check, SkipForward, UserPlus, Monitor, Settings } from "lucide-react";
 
 export default function Admin() {
-  const [viewMode, setViewMode] = useState("admin");
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const queryClient = useQueryClient();
@@ -98,171 +99,272 @@ export default function Admin() {
   }
 
   return (
-    <div dir="rtl" style={{ background: "#020617", color: "#e5e7eb", minHeight: "100vh", padding: "12px" }}>
-      <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-        {/* Top Bar */}
-        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "10px", marginBottom: "14px" }}>
-          <div>
-            <div style={{ fontSize: "1.2rem", fontWeight: "600" }}>ניהול תור קריוקי</div>
-            <div style={{ fontSize: "0.8rem", color: "#9ca3af" }}>בחר מצב תצוגה: ניהול למפעיל / מסך גדול לקהל</div>
-          </div>
-          <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-            <div style={{ display: "inline-flex", background: "#020617", border: "1px solid #111827", borderRadius: "999px", padding: "2px" }}>
-              <button
-                onClick={() => setViewMode("admin")}
-                style={{
-                  border: "none",
-                  background: viewMode === "admin" ? "#22c55e" : "transparent",
-                  color: viewMode === "admin" ? "#022c22" : "#9ca3af",
-                  padding: "6px 12px",
-                  borderRadius: "999px",
-                  cursor: "pointer",
-                  fontSize: "0.9rem",
-                  fontWeight: viewMode === "admin" ? "600" : "normal"
-                }}
-              >
-                מסך ניהול
-              </button>
-              <button
-                onClick={() => setViewMode("display")}
-                style={{
-                  border: "none",
-                  background: viewMode === "display" ? "#22c55e" : "transparent",
-                  color: viewMode === "display" ? "#022c22" : "#9ca3af",
-                  padding: "6px 12px",
-                  borderRadius: "999px",
-                  cursor: "pointer",
-                  fontSize: "0.9rem",
-                  fontWeight: viewMode === "display" ? "600" : "normal"
-                }}
-              >
-                מסך תצוגה לקהל
-              </button>
-            </div>
-            <div style={{ fontSize: "0.8rem", padding: "4px 10px", borderRadius: "999px", background: "rgba(15,23,42,0.9)", border: "1px solid #111827", color: "#9ca3af" }}>
-              תור: {waiting.length} ממתינים · {done.length} בוצעו
-            </div>
+    <div dir="rtl" style={{ background: "linear-gradient(to bottom, #0f172a, #020617)", color: "#f1f5f9", minHeight: "100vh", padding: "20px" }}>
+      <div style={{ maxWidth: "1400px", margin: "0 auto" }}>
+        {/* Header */}
+        <div style={{ marginBottom: "24px", textAlign: "center" }}>
+          <h1 style={{ fontSize: "2rem", fontWeight: "700", margin: "0 0 8px 0", background: "linear-gradient(135deg, #22c55e, #10b981)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+            🎤 ניהול קריוקי
+          </h1>
+          <p style={{ color: "#94a3b8", fontSize: "0.95rem", margin: 0 }}>
+            ניהול מתקדם של תור השירים והזמרים
+          </p>
+          <div style={{ display: "inline-flex", gap: "12px", marginTop: "12px", padding: "8px 16px", background: "rgba(15,23,42,0.6)", borderRadius: "999px", border: "1px solid rgba(34,197,94,0.2)" }}>
+            <span style={{ fontSize: "0.9rem" }}>⏳ {waiting.length} ממתינים</span>
+            <span style={{ fontSize: "0.9rem", color: "#64748b" }}>•</span>
+            <span style={{ fontSize: "0.9rem" }}>✅ {done.length} בוצעו</span>
           </div>
         </div>
 
-        {/* Admin Panel */}
-        {viewMode === "admin" && (
-          <div style={{ display: "grid", gridTemplateColumns: window.innerWidth > 900 ? "minmax(0, 2.2fr) minmax(0, 1.3fr)" : "minmax(0, 1fr)", gap: "12px" }}>
-            {/* Queue Table */}
-            <div style={{ background: "rgba(15,23,42,0.96)", borderRadius: "16px", padding: "12px 10px", border: "1px solid #111827", boxShadow: "0 10px 30px rgba(0,0,0,0.35)" }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px", marginBottom: "8px" }}>
-                <div>
-                  <div style={{ fontSize: "1rem", fontWeight: "600" }}>תור שירים</div>
-                  <div style={{ fontSize: "0.8rem", color: "#9ca3af" }}>מכאן אתה שולט על מי שר עכשיו, הבא בתור, ודילוגים.</div>
+        <Tabs defaultValue="control" dir="rtl" style={{ width: "100%" }}>
+          <TabsList style={{ display: "flex", gap: "8px", background: "rgba(15,23,42,0.8)", padding: "6px", borderRadius: "16px", border: "1px solid rgba(148,163,184,0.1)", marginBottom: "20px", width: "100%", justifyContent: "center" }}>
+            <TabsTrigger value="control" style={{ flex: "0 1 auto", minWidth: "140px", display: "flex", alignItems: "center", gap: "8px", fontSize: "0.95rem", padding: "10px 20px", borderRadius: "12px" }}>
+              <Settings className="w-4 h-4" />
+              מסך ניהול
+            </TabsTrigger>
+            <TabsTrigger value="display" style={{ flex: "0 1 auto", minWidth: "140px", display: "flex", alignItems: "center", gap: "8px", fontSize: "0.95rem", padding: "10px 20px", borderRadius: "12px" }}>
+              <Monitor className="w-4 h-4" />
+              תצוגה לקהל
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="control">(
+            <div style={{ display: "grid", gridTemplateColumns: window.innerWidth > 900 ? "minmax(0, 2fr) minmax(0, 1fr)" : "minmax(0, 1fr)", gap: "20px" }}>
+              {/* Queue Table */}
+              <div style={{ background: "rgba(15,23,42,0.5)", borderRadius: "20px", padding: "20px", border: "1px solid rgba(34,197,94,0.2)", backdropFilter: "blur(10px)" }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px", marginBottom: "16px" }}>
+                  <div>
+                    <div style={{ fontSize: "1.2rem", fontWeight: "700", color: "#f1f5f9" }}>🎵 תור השירים</div>
+                    <div style={{ fontSize: "0.85rem", color: "#94a3b8", marginTop: "4px" }}>שלוט על התור בקלות</div>
+                  </div>
+                  <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                    <button 
+                      onClick={goNextAuto} 
+                      style={{ 
+                        border: "none", 
+                        borderRadius: "12px", 
+                        padding: "10px 16px", 
+                        fontSize: "0.9rem", 
+                        cursor: "pointer", 
+                        background: "linear-gradient(135deg, #22c55e, #16a34a)", 
+                        color: "#022c22", 
+                        fontWeight: "600",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        boxShadow: "0 4px 12px rgba(34,197,94,0.3)"
+                      }}
+                    >
+                      <Play className="w-4 h-4" />
+                      הבא בתור
+                    </button>
+                    <button 
+                      onClick={markCurrentDone} 
+                      style={{ 
+                        border: "1px solid rgba(148,163,184,0.3)", 
+                        borderRadius: "12px", 
+                        padding: "10px 16px", 
+                        fontSize: "0.9rem", 
+                        cursor: "pointer", 
+                        background: "rgba(30,41,59,0.5)", 
+                        color: "#e2e8f0",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px"
+                      }}
+                    >
+                      <Check className="w-4 h-4" />
+                      סיים נוכחי
+                    </button>
+                  </div>
                 </div>
-                <div style={{ display: "flex", gap: "6px" }}>
-                  <button onClick={goNextAuto} style={{ border: "none", borderRadius: "999px", padding: "4px 10px", fontSize: "0.8rem", cursor: "pointer", background: "linear-gradient(135deg, #22c55e, #16a34a)", color: "#022c22", fontWeight: "600" }}>
-                    הבא בתור ▶️
-                  </button>
-                  <button onClick={markCurrentDone} style={{ border: "none", borderRadius: "999px", padding: "4px 10px", fontSize: "0.8rem", cursor: "pointer", background: "transparent", color: "#e5e7eb", border: "1px solid #374151" }}>
-                    סמן בוצע ✅
-                  </button>
+
+                <div style={{ maxHeight: "65vh", overflow: "auto", borderRadius: "16px", background: "rgba(15,23,42,0.3)" }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.9rem" }}>
+                    <thead style={{ position: "sticky", top: 0, background: "rgba(15,23,42,0.95)", backdropFilter: "blur(10px)", zIndex: 1 }}>
+                      <tr>
+                        <th style={{ padding: "12px", textAlign: "right", borderBottom: "2px solid rgba(34,197,94,0.2)", fontWeight: "600", color: "#94a3b8", fontSize: "0.85rem" }}>#</th>
+                        <th style={{ padding: "12px", textAlign: "right", borderBottom: "2px solid rgba(34,197,94,0.2)", fontWeight: "600", color: "#94a3b8", fontSize: "0.85rem" }}>זמר/ת</th>
+                        <th style={{ padding: "12px", textAlign: "right", borderBottom: "2px solid rgba(34,197,94,0.2)", fontWeight: "600", color: "#94a3b8", fontSize: "0.85rem" }}>שם השיר</th>
+                        <th style={{ padding: "12px", textAlign: "right", borderBottom: "2px solid rgba(34,197,94,0.2)", fontWeight: "600", color: "#94a3b8", fontSize: "0.85rem" }}>אמן</th>
+                        <th style={{ padding: "12px", textAlign: "center", borderBottom: "2px solid rgba(34,197,94,0.2)", fontWeight: "600", color: "#94a3b8", fontSize: "0.85rem" }}>סטטוס</th>
+                        <th style={{ padding: "12px", textAlign: "center", borderBottom: "2px solid rgba(34,197,94,0.2)", fontWeight: "600", color: "#94a3b8", fontSize: "0.85rem" }}>פעולות</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {isLoading ? (
+                        <tr><td colSpan={6} style={{ padding: "40px", textAlign: "center", color: "#64748b" }}>טוען...</td></tr>
+                      ) : ordered.length === 0 ? (
+                        <tr><td colSpan={6} style={{ padding: "40px", textAlign: "center", color: "#64748b" }}>אין בקשות בתור כרגע</td></tr>
+                      ) : (
+                        ordered.map((req, index) => (
+                          <tr key={req.id} style={{ 
+                            background: req.status === "performing" ? "rgba(34,197,94,0.08)" : index % 2 === 0 ? "rgba(30,41,59,0.3)" : "rgba(30,41,59,0.5)",
+                            transition: "all 0.2s"
+                          }}>
+                            <td style={{ padding: "14px 12px", borderBottom: "1px solid rgba(51,65,85,0.5)", fontWeight: "500", color: "#cbd5e1" }}>{index + 1}</td>
+                            <td style={{ padding: "14px 12px", borderBottom: "1px solid rgba(51,65,85,0.5)", fontWeight: "600", color: "#f1f5f9" }}>{req.singer_name}</td>
+                            <td style={{ padding: "14px 12px", borderBottom: "1px solid rgba(51,65,85,0.5)", color: "#e2e8f0" }}>{req.song_title}</td>
+                            <td style={{ padding: "14px 12px", borderBottom: "1px solid rgba(51,65,85,0.5)", color: "#94a3b8" }}>{req.song_artist || "-"}</td>
+                            <td style={{ padding: "14px 12px", borderBottom: "1px solid rgba(51,65,85,0.5)", textAlign: "center" }}>
+                              <span style={{
+                                display: "inline-flex",
+                                padding: "6px 12px",
+                                borderRadius: "8px",
+                                fontSize: "0.8rem",
+                                fontWeight: "600",
+                                background: req.status === "waiting" ? "rgba(59,130,246,0.15)" : req.status === "performing" ? "rgba(34,197,94,0.2)" : req.status === "done" ? "rgba(100,116,139,0.15)" : "rgba(248,113,113,0.15)",
+                                color: req.status === "waiting" ? "#60a5fa" : req.status === "performing" ? "#22c55e" : req.status === "done" ? "#94a3b8" : "#f87171",
+                                border: `1px solid ${req.status === "waiting" ? "rgba(59,130,246,0.3)" : req.status === "performing" ? "rgba(34,197,94,0.4)" : req.status === "done" ? "rgba(100,116,139,0.3)" : "rgba(248,113,113,0.3)"}`
+                              }}>
+                                {req.status === "waiting" ? "⏳ ממתין" : req.status === "performing" ? "🎤 שר עכשיו" : req.status === "done" ? "✅ הסתיים" : "⏭️ דולג"}
+                              </span>
+                            </td>
+                            <td style={{ padding: "14px 12px", borderBottom: "1px solid rgba(51,65,85,0.5)", textAlign: "center" }}>
+                              <div style={{ display: "flex", gap: "6px", justifyContent: "center" }}>
+                                <button 
+                                  onClick={() => setStatus(req.id, "performing")} 
+                                  style={{ 
+                                    border: "1px solid rgba(34,197,94,0.3)", 
+                                    borderRadius: "8px", 
+                                    padding: "6px 12px", 
+                                    fontSize: "0.8rem", 
+                                    cursor: "pointer", 
+                                    background: "rgba(34,197,94,0.1)", 
+                                    color: "#22c55e",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "4px",
+                                    fontWeight: "500"
+                                  }}
+                                >
+                                  <Play className="w-3 h-3" />
+                                  שיר
+                                </button>
+                                <button 
+                                  onClick={() => setStatus(req.id, "skipped")} 
+                                  style={{ 
+                                    border: "1px solid rgba(148,163,184,0.3)", 
+                                    borderRadius: "8px", 
+                                    padding: "6px 12px", 
+                                    fontSize: "0.8rem", 
+                                    cursor: "pointer", 
+                                    background: "rgba(51,65,85,0.3)", 
+                                    color: "#cbd5e1",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "4px",
+                                    fontWeight: "500"
+                                  }}
+                                >
+                                  <SkipForward className="w-3 h-3" />
+                                  דלג
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
                 </div>
               </div>
 
-              <div style={{ maxHeight: "60vh", overflow: "auto", borderRadius: "12px", border: "1px solid #1f2937" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem" }}>
-                  <thead style={{ position: "sticky", top: 0, background: "#020617", zIndex: 1 }}>
-                    <tr>
-                      <th style={{ padding: "6px 8px", textAlign: "right", borderBottom: "1px solid #111827", fontWeight: "600", color: "#9ca3af", fontSize: "0.8rem" }}>#</th>
-                      <th style={{ padding: "6px 8px", textAlign: "right", borderBottom: "1px solid #111827", fontWeight: "600", color: "#9ca3af", fontSize: "0.8rem" }}>שם זמר</th>
-                      <th style={{ padding: "6px 8px", textAlign: "right", borderBottom: "1px solid #111827", fontWeight: "600", color: "#9ca3af", fontSize: "0.8rem" }}>שם השיר</th>
-                      <th style={{ padding: "6px 8px", textAlign: "right", borderBottom: "1px solid #111827", fontWeight: "600", color: "#9ca3af", fontSize: "0.8rem" }}>אמן</th>
-                      <th style={{ padding: "6px 8px", textAlign: "right", borderBottom: "1px solid #111827", fontWeight: "600", color: "#9ca3af", fontSize: "0.8rem" }}>סטטוס</th>
-                      <th style={{ padding: "6px 8px", textAlign: "right", borderBottom: "1px solid #111827", fontWeight: "600", color: "#9ca3af", fontSize: "0.8rem" }}>פעולות</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {isLoading ? (
-                      <tr><td colSpan={6} style={{ padding: "20px", textAlign: "center", color: "#9ca3af" }}>טוען...</td></tr>
-                    ) : ordered.length === 0 ? (
-                      <tr><td colSpan={6} style={{ padding: "20px", textAlign: "center", color: "#9ca3af" }}>אין בקשות בתור</td></tr>
-                    ) : (
-                      ordered.map((req, index) => (
-                        <tr key={req.id} style={{ background: index % 2 === 0 ? "rgba(15,23,42,0.9)" : "rgba(15,23,42,0.8)" }}>
-                          <td style={{ padding: "6px 8px", borderBottom: "1px solid #111827" }}>{index + 1}</td>
-                          <td style={{ padding: "6px 8px", borderBottom: "1px solid #111827" }}>{req.singer_name}</td>
-                          <td style={{ padding: "6px 8px", borderBottom: "1px solid #111827" }}>{req.song_title}</td>
-                          <td style={{ padding: "6px 8px", borderBottom: "1px solid #111827" }}>{req.song_artist || "-"}</td>
-                          <td style={{ padding: "6px 8px", borderBottom: "1px solid #111827" }}>
-                            <span style={{
-                              display: "inline-flex",
-                              padding: "2px 8px",
-                              borderRadius: "999px",
-                              fontSize: "0.7rem",
-                              fontWeight: "500",
-                              background: req.status === "waiting" ? "rgba(59,130,246,0.1)" : req.status === "performing" ? "rgba(34,197,94,0.12)" : req.status === "done" ? "rgba(148,163,184,0.14)" : "rgba(248,113,113,0.12)",
-                              color: req.status === "waiting" ? "#93c5fd" : req.status === "performing" ? "#86efac" : req.status === "done" ? "#cbd5f5" : "#fecaca"
+              {/* Summary */}
+              <div style={{ background: "rgba(15,23,42,0.5)", borderRadius: "20px", padding: "20px", border: "1px solid rgba(34,197,94,0.2)", backdropFilter: "blur(10px)" }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px", marginBottom: "16px" }}>
+                  <div>
+                    <div style={{ fontSize: "1.2rem", fontWeight: "700", color: "#f1f5f9" }}>⚡ כרגע</div>
+                    <div style={{ fontSize: "0.85rem", color: "#94a3b8", marginTop: "4px" }}>מה קורה עכשיו</div>
+                  </div>
+                  <button 
+                    onClick={addDemoSong} 
+                    style={{ 
+                      border: "1px solid rgba(148,163,184,0.3)", 
+                      borderRadius: "10px", 
+                      padding: "8px 14px", 
+                      fontSize: "0.85rem", 
+                      cursor: "pointer", 
+                      background: "rgba(30,41,59,0.5)", 
+                      color: "#e2e8f0",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "6px"
+                    }}
+                  >
+                    <UserPlus className="w-4 h-4" />
+                    הוסף לדוגמה
+                  </button>
+                </div>
+                
+                <div style={{ 
+                  background: "rgba(34,197,94,0.05)", 
+                  border: "1px solid rgba(34,197,94,0.2)", 
+                  borderRadius: "14px", 
+                  padding: "16px",
+                  marginBottom: "16px"
+                }}>
+                  {!currentSong ? (
+                    <div style={{ color: "#94a3b8", fontSize: "0.9rem", textAlign: "center" }}>
+                      🎤 אין שיר מתנגן כרגע
+                      <div style={{ fontSize: "0.8rem", marginTop: "4px" }}>לחץ "הבא בתור" להתחיל</div>
+                    </div>
+                  ) : (
+                    <>
+                      <div style={{ fontSize: "0.8rem", color: "#22c55e", marginBottom: "6px", fontWeight: "600" }}>🎵 שר עכשיו</div>
+                      <div style={{ fontWeight: "700", fontSize: "1.1rem", color: "#f1f5f9", marginBottom: "4px" }}>{currentSong.singer_name}</div>
+                      <div style={{ color: "#cbd5e1", fontSize: "0.9rem" }}>
+                        {currentSong.song_title}
+                        {currentSong.song_artist && <span style={{ color: "#94a3b8" }}> • {currentSong.song_artist}</span>}
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                <div style={{ borderTop: "1px solid rgba(51,65,85,0.5)", paddingTop: "16px" }}>
+                  <div style={{ fontSize: "0.9rem", color: "#94a3b8", marginBottom: "12px", fontWeight: "600" }}>📋 הבאים בתור</div>
+                  {waitingList.length === 0 ? (
+                    <div style={{ color: "#64748b", fontSize: "0.85rem", padding: "12px", background: "rgba(30,41,59,0.3)", borderRadius: "10px", textAlign: "center" }}>
+                      אין ממתינים כרגע
+                    </div>
+                  ) : (
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      {waitingList.slice(0, 5).map((r, i) => (
+                        <div 
+                          key={r.id} 
+                          style={{ 
+                            padding: "10px 12px", 
+                            background: "rgba(30,41,59,0.4)", 
+                            borderRadius: "10px",
+                            border: "1px solid rgba(51,65,85,0.5)"
+                          }}
+                        >
+                          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                            <span style={{ 
+                              background: "rgba(34,197,94,0.2)", 
+                              color: "#22c55e", 
+                              borderRadius: "6px", 
+                              padding: "2px 8px", 
+                              fontSize: "0.75rem", 
+                              fontWeight: "600" 
                             }}>
-                              {req.status === "waiting" ? "ממתין" : req.status === "performing" ? "מתנגן עכשיו" : req.status === "done" ? "בוצע" : "דילגת"}
+                              #{i + 1}
                             </span>
-                          </td>
-                          <td style={{ padding: "6px 8px", borderBottom: "1px solid #111827", whiteSpace: "nowrap" }}>
-                            <button onClick={() => setStatus(req.id, "performing")} style={{ border: "1px solid #374151", borderRadius: "999px", padding: "4px 10px", fontSize: "0.8rem", cursor: "pointer", background: "transparent", color: "#e5e7eb", marginLeft: "4px" }}>
-                              שיר זה עכשיו
-                            </button>
-                            <button onClick={() => setStatus(req.id, "skipped")} style={{ border: "1px solid #374151", borderRadius: "999px", padding: "4px 10px", fontSize: "0.8rem", cursor: "pointer", background: "transparent", color: "#e5e7eb" }}>
-                              דלג
-                            </button>
-                          </td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            {/* Summary */}
-            <div style={{ background: "rgba(15,23,42,0.96)", borderRadius: "16px", padding: "12px 10px", border: "1px solid #111827", boxShadow: "0 10px 30px rgba(0,0,0,0.35)" }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px", marginBottom: "8px" }}>
-                <div>
-                  <div style={{ fontSize: "1rem", fontWeight: "600" }}>כאן ועכשיו</div>
-                  <div style={{ fontSize: "0.8rem", color: "#9ca3af" }}>תקציר מהיר למה שקורה במועדון.</div>
+                            <div style={{ flex: 1 }}>
+                              <div style={{ fontSize: "0.9rem", fontWeight: "600", color: "#f1f5f9" }}>{r.singer_name}</div>
+                              <div style={{ fontSize: "0.8rem", color: "#94a3b8" }}>{r.song_title}</div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
-                <button onClick={addDemoSong} style={{ border: "1px solid #374151", borderRadius: "999px", padding: "4px 10px", fontSize: "0.8rem", cursor: "pointer", background: "transparent", color: "#e5e7eb" }}>
-                  הוסף שיר לדוגמה
-                </button>
-              </div>
-              
-              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                {!currentSong ? (
-                  <div style={{ color: "#9ca3af", fontSize: "0.8rem" }}>כרגע אין שיר שמתנגן. לחץ "הבא בתור" כדי להתחיל.</div>
-                ) : (
-                  <>
-                    <div style={{ fontWeight: "600" }}>עכשיו שר: {currentSong.singer_name}</div>
-                    <div style={{ color: "#9ca3af", fontSize: "0.8rem" }}>
-                      השיר: {currentSong.song_title}{currentSong.song_artist ? ` · ${currentSong.song_artist}` : ""}
-                    </div>
-                  </>
-                )}
-              </div>
-
-              <hr style={{ border: "none", borderTop: "1px solid #111827", margin: "10px 0" }} />
-
-              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                <div style={{ fontSize: "0.8rem", color: "#9ca3af" }}>הבאים בתור:</div>
-                {waitingList.length === 0 ? (
-                  <div style={{ color: "#9ca3af", fontSize: "0.8rem" }}>אין שירים ממתינים כרגע.</div>
-                ) : (
-                  waitingList.slice(0, 5).map((r, i) => (
-                    <div key={r.id} style={{ color: "#9ca3af", fontSize: "0.8rem" }}>
-                      {i + 1}. {r.singer_name} – {r.song_title}
-                    </div>
-                  ))
-                )}
               </div>
             </div>
-          </div>
-        )}
+          </TabsContent>
 
-        {/* Display Panel */}
-        {viewMode === "display" && (
+          <TabsContent value="display">(
           <div style={{ minHeight: "80vh", display: "flex", flexDirection: "column", gap: "12px" }}>
             <div style={{ textAlign: "center", marginBottom: "4px" }}>
               <h1 style={{ margin: 0, fontSize: "clamp(1.6rem, 3vw, 2.1rem)" }}>ערב קריוקי</h1>
@@ -346,9 +448,10 @@ export default function Admin() {
 
             <div style={{ marginTop: "10px", fontSize: "0.75rem", color: "#9ca3af", textAlign: "center" }}>
               להצגה על מסך גדול: לחץ F11 למצב מסך מלא, והשאר על "מסך תצוגה לקהל".
+              </div>
             </div>
-          </div>
-        )}
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
