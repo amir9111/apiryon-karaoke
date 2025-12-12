@@ -103,6 +103,7 @@ export default function Home() {
       ctx.drawImage(video, 0, 0);
       const photoData = canvas.toDataURL('image/jpeg', 0.8);
       setCapturedPhoto(photoData);
+      setPhotoUploaded(true);
       stopCamera();
     }
   };
@@ -114,6 +115,8 @@ export default function Home() {
     setShowCamera(false);
   };
 
+  const [photoUploaded, setPhotoUploaded] = React.useState(false);
+
   React.useEffect(() => {
     const savedName = localStorage.getItem('apiryon_user_name');
     const savedPhoto = localStorage.getItem('apiryon_user_photo');
@@ -123,6 +126,7 @@ export default function Home() {
     }
     if (savedPhoto) {
       setCapturedPhoto(savedPhoto);
+      setPhotoUploaded(true);
     }
   }, []);
 
@@ -412,7 +416,7 @@ export default function Home() {
             ממלאים, מצטרפים לתור – ומחכים שיקראו לכם
           </p>
 
-          {!capturedPhoto ? (
+          {!capturedPhoto && !photoUploaded ? (
             <div style={{
               padding: "40px 20px",
               background: "rgba(0, 202, 255, 0.1)",
@@ -479,6 +483,7 @@ export default function Home() {
                           const reader = new FileReader();
                           reader.onloadend = () => {
                             setCapturedPhoto(reader.result);
+                            setPhotoUploaded(true);
                           };
                           reader.readAsDataURL(file);
                         }
@@ -530,35 +535,36 @@ export default function Home() {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="flex flex-col gap-2.5 mt-2">
-              {/* Photo Preview */}
-              <div style={{
-                padding: "16px",
-                background: "rgba(0, 202, 255, 0.1)",
-                border: "2px solid rgba(0, 202, 255, 0.3)",
-                borderRadius: "12px",
-                textAlign: "center"
-              }}>
-                <div style={{ fontSize: "0.9rem", fontWeight: "600", color: "#00caff", marginBottom: "12px" }}>
-                  ✓ תמונה צולמה בהצלחה!
+              {!photoUploaded && capturedPhoto && (
+                <div style={{
+                  padding: "16px",
+                  background: "rgba(0, 202, 255, 0.1)",
+                  border: "2px solid rgba(0, 202, 255, 0.3)",
+                  borderRadius: "12px",
+                  textAlign: "center"
+                }}>
+                  <div style={{ fontSize: "0.9rem", fontWeight: "600", color: "#00caff", marginBottom: "12px" }}>
+                    ✓ תמונה צולמה בהצלחה!
+                  </div>
+                  <img src={capturedPhoto} alt="Captured" style={{ width: "100%", maxWidth: "250px", borderRadius: "16px", marginBottom: "12px", border: "3px solid #00caff", boxShadow: "0 0 20px rgba(0, 202, 255, 0.3)" }} />
+                  <button
+                    type="button"
+                    onClick={() => setCapturedPhoto(null)}
+                    style={{
+                      padding: "10px 20px",
+                      background: "rgba(248, 113, 113, 0.2)",
+                      color: "#f87171",
+                      border: "2px solid rgba(248, 113, 113, 0.4)",
+                      borderRadius: "10px",
+                      fontSize: "0.9rem",
+                      fontWeight: "600",
+                      cursor: "pointer"
+                    }}
+                  >
+                    📸 צלם מחדש
+                  </button>
                 </div>
-                <img src={capturedPhoto} alt="Captured" style={{ width: "100%", maxWidth: "250px", borderRadius: "16px", marginBottom: "12px", border: "3px solid #00caff", boxShadow: "0 0 20px rgba(0, 202, 255, 0.3)" }} />
-                <button
-                  type="button"
-                  onClick={() => setCapturedPhoto(null)}
-                  style={{
-                    padding: "10px 20px",
-                    background: "rgba(248, 113, 113, 0.2)",
-                    color: "#f87171",
-                    border: "2px solid rgba(248, 113, 113, 0.4)",
-                    borderRadius: "10px",
-                    fontSize: "0.9rem",
-                    fontWeight: "600",
-                    cursor: "pointer"
-                  }}
-                >
-                  📸 צלם מחדש
-                </button>
-              </div>
+              )}
 
             <div>
               <label className="block text-[0.9rem] mb-0.5">
