@@ -113,14 +113,31 @@ export default function ServiceWorkerRegistration() {
     const blob = new Blob([swCode], { type: 'application/javascript' });
     const swUrl = URL.createObjectURL(blob);
 
-    navigator.serviceWorker.register(swUrl, { scope: '/' })
+    navigator.serviceWorker.register(swUrl, { 
+      scope: '/',
+      updateViaCache: 'none'
+    })
       .then(reg => {
-        console.log('✅ Service Worker registered successfully!');
-        console.log('📍 Scope:', reg.scope);
+        console.log('✅ [PWA] Service Worker registered!');
+        console.log('📍 [PWA] Scope:', reg.scope);
+        console.log('🔄 [PWA] Updating...');
+        
+        // Force update
         reg.update();
+        
+        // Log manifest URL after SW is ready
+        setTimeout(() => {
+          fetch('/manifest.json')
+            .then(r => r.json())
+            .then(m => {
+              console.log('✅ [PWA] Manifest loaded:', m);
+              console.log('🎯 [PWA] Icons count:', m.icons?.length);
+            })
+            .catch(e => console.error('❌ [PWA] Manifest error:', e));
+        }, 1000);
       })
       .catch(err => {
-        console.error('❌ Service Worker registration failed:', err);
+        console.error('❌ [PWA] SW registration failed:', err);
       });
   }, []);
 
