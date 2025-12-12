@@ -118,7 +118,53 @@ export default function Audience() {
         >
           <ApyironLogo size="large" showCircle={true} />
         </motion.div>
+        
+        {/* Tagline */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.8 }}
+          style={{
+            marginTop: "20px",
+            textAlign: "center"
+          }}
+        >
+          <motion.div
+            animate={{
+              textShadow: [
+                "0 0 20px rgba(0, 202, 255, 0.8), 0 0 40px rgba(0, 202, 255, 0.5)",
+                "0 0 30px rgba(0, 202, 255, 1), 0 0 60px rgba(0, 202, 255, 0.7)",
+                "0 0 20px rgba(0, 202, 255, 0.8), 0 0 40px rgba(0, 202, 255, 0.5)"
+              ]
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+            style={{
+              fontSize: "clamp(1.5rem, 3vw, 2.5rem)",
+              fontWeight: "900",
+              background: "linear-gradient(135deg, #00caff, #ffffff, #00caff)",
+              backgroundSize: "200% auto",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+              letterSpacing: "0.1em",
+              animation: "gradient 3s ease infinite"
+            }}
+          >
+            המוזיקה שלנו, הקול שלך 🎵
+          </motion.div>
+        </motion.div>
       </motion.div>
+      
+      <style>{`
+        @keyframes gradient {
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+        }
+      `}</style>
       
       {/* Edit Logo Button */}
       <motion.button
