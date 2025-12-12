@@ -34,6 +34,34 @@ export default function Audience() {
       <NavigationMenu />
       <LiveStats requests={requests} />
       
+      {/* APIRYON Logo - Center Top */}
+      <motion.div
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, type: "spring" }}
+        style={{
+          position: "fixed",
+          top: "100px",
+          left: "50%",
+          transform: "translateX(-50%)",
+          zIndex: 50
+        }}
+      >
+        <motion.div
+          animate={{ 
+            scale: [1, 1.05, 1],
+            rotate: [0, 2, -2, 0]
+          }}
+          transition={{ 
+            duration: 4, 
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        >
+          <ApyironLogo size="medium" showCircle={true} />
+        </motion.div>
+      </motion.div>
+      
       {/* Summary Button */}
       <motion.button
         initial={{ scale: 0 }}
