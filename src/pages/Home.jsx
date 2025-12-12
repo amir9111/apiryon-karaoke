@@ -31,6 +31,7 @@ export default function Home() {
   const canvasRef = React.useRef(null);
   const [showTerms, setShowTerms] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [namePlaceholder, setNamePlaceholder] = useState("לדוגמה: יהושע דבוש");
 
   const queryClient = useQueryClient();
 
@@ -129,7 +130,7 @@ export default function Home() {
     const savedPhoto = localStorage.getItem('apiryon_user_photo');
     
     if (savedName) {
-      setFormData(prev => ({ ...prev, singer_name: savedName }));
+      setNamePlaceholder(savedName);
     }
     if (savedPhoto) {
       setCapturedPhoto(savedPhoto);
@@ -616,7 +617,7 @@ export default function Home() {
                 required
                 aria-required="true"
                 aria-label="הכנס את שמך המלא או שם הבמה שלך"
-                placeholder="לדוגמה: יהושע דבוש"
+                placeholder={namePlaceholder}
                 className="w-full px-3 py-2.5 rounded-xl border outline-none text-[0.95rem]"
                 style={{
                   borderColor: "#1f2937",
