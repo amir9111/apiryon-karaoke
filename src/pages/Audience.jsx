@@ -3,7 +3,7 @@ import NavigationMenu from "../components/NavigationMenu";
 import ApyironLogo from "../components/ApyironLogo";
 import AudioWave from "../components/AudioWave";
 import FloatingParticles from "../components/FloatingParticles";
-
+import LiveClock from "../components/LiveClock";
 import EventSummaryModal from "../components/EventSummaryModal";
 import { motion } from "framer-motion";
 import { base44 } from "@/api/base44Client";
@@ -28,10 +28,11 @@ export default function Audience() {
       background: "linear-gradient(135deg, #020617 0%, #0a1929 50%, #020617 100%)",
       color: "#fff",
       position: "relative",
-      overflow: "hidden"
+      overflow: "auto"
     }}>
       <FloatingParticles />
       <NavigationMenu />
+      <LiveClock />
       
       {/* APIRYON Logo - Center Top */}
       <div style={{
