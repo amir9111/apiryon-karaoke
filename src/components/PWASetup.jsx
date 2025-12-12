@@ -1,99 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Helmet } from "react-helmet";
 
 export default function PWASetup() {
-  const [manifestURL, setManifestURL] = useState("");
-  const [iconURL, setIconURL] = useState("");
-  
   const siteUrl = typeof window !== 'undefined' ? window.location.origin : '';
   const siteName = "Apiryon - מערכת קריוקי";
   const siteDescription = "מערכת ניהול קריוקי מתקדמת עם מסך קהל חי, דירוגים ואנליטיקס";
-  const siteImage = `${siteUrl}/og-image.png`;
-
-  useEffect(() => {
-    if (typeof window === 'undefined' || !document) return;
-    
-    // Create icon
-    const canvas = document.createElement('canvas');
-    canvas.width = 512;
-    canvas.height = 512;
-    const ctx = canvas.getContext('2d');
-    
-    if (!ctx) return;
-    
-    // Background gradient
-    const gradient = ctx.createRadialGradient(256, 256, 0, 256, 256, 256);
-    gradient.addColorStop(0, '#0a1929');
-    gradient.addColorStop(1, '#020617');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, 512, 512);
-    
-    // Glow circle
-    ctx.shadowColor = '#00caff';
-    ctx.shadowBlur = 40;
-    ctx.strokeStyle = '#00caff';
-    ctx.lineWidth = 16;
-    ctx.beginPath();
-    ctx.arc(256, 256, 200, 0, Math.PI * 2);
-    ctx.stroke();
-    
-    // Text - APIRYON
-    ctx.shadowBlur = 20;
-    ctx.font = 'bold 80px Arial';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillStyle = '#ffffff';
-    ctx.fillText('APIRYON', 256, 256);
-    
-    canvas.toBlob((blob) => {
-      if (!blob) return;
-      
-      const url = URL.createObjectURL(blob);
-      setIconURL(url);
-      
-      // Create manifest with all required fields
-      const manifest = {
-        name: "Apiryon - מערכת קריוקי",
-        short_name: "Apiryon",
-        description: "מערכת ניהול קריוקי מתקדמת עם מסך קהל חי",
-        start_url: "/",
-        scope: "/",
-        display: "standalone",
-        background_color: "#020617",
-        theme_color: "#00caff",
-        orientation: "portrait-primary",
-        dir: "rtl",
-        lang: "he",
-        categories: ["entertainment", "music"],
-        icons: [
-          {
-            src: url,
-            sizes: "512x512",
-            type: "image/png",
-            purpose: "any"
-          },
-          {
-            src: url,
-            sizes: "192x192",
-            type: "image/png",
-            purpose: "any"
-          },
-          {
-            src: url,
-            sizes: "512x512",
-            type: "image/png",
-            purpose: "maskable"
-          }
-        ]
-      };
-      
-      const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
-      const manifestUrl = URL.createObjectURL(manifestBlob);
-      setManifestURL(manifestUrl);
-    }, 'image/png', 0.95);
-  }, []);
-
-  if (!manifestURL) return null;
+  
+  const iconSvg = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3CradialGradient id='bg'%3E%3Cstop offset='0%25' style='stop-color:%230a1929'/%3E%3Cstop offset='100%25' style='stop-color:%23020617'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect fill='url(%23bg)' width='512' height='512'/%3E%3Ccircle cx='256' cy='256' r='200' fill='none' stroke='%2300caff' stroke-width='16' filter='drop-shadow(0 0 20px %2300caff)'/%3E%3Ctext x='256' y='280' font-family='Arial' font-size='80' font-weight='bold' text-anchor='middle' fill='%23ffffff' filter='drop-shadow(0 0 10px %2300caff)'%3EAPIRYON%3C/text%3E%3C/svg%3E`;
 
   return (
     <Helmet>
@@ -103,12 +16,13 @@ export default function PWASetup() {
       <link rel="canonical" href={siteUrl} />
       
       {/* PWA */}
-      <link rel="manifest" href={manifestURL} />
+      <link rel="manifest" href="/manifest.json" />
       <meta name="theme-color" content="#00caff" />
       <meta name="apple-mobile-web-app-capable" content="yes" />
       <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       <meta name="apple-mobile-web-app-title" content="Apiryon" />
-      <link rel="apple-touch-icon" href={iconURL} />
+      <link rel="apple-touch-icon" href={iconSvg} />
+      <link rel="icon" type="image/svg+xml" href={iconSvg} />
       <meta name="mobile-web-app-capable" content="yes" />
       
       {/* Open Graph / Facebook */}
@@ -116,7 +30,7 @@ export default function PWASetup() {
       <meta property="og:url" content={siteUrl} />
       <meta property="og:title" content={siteName} />
       <meta property="og:description" content={siteDescription} />
-      <meta property="og:image" content={iconURL} />
+      <meta property="og:image" content={iconSvg} />
       <meta property="og:site_name" content="Apiryon" />
       <meta property="og:locale" content="he_IL" />
       
@@ -125,7 +39,7 @@ export default function PWASetup() {
       <meta name="twitter:url" content={siteUrl} />
       <meta name="twitter:title" content={siteName} />
       <meta name="twitter:description" content={siteDescription} />
-      <meta name="twitter:image" content={iconURL} />
+      <meta name="twitter:image" content={iconSvg} />
       
       {/* TikTok */}
       <meta name="tiktok:app:name" content="Apiryon" />
