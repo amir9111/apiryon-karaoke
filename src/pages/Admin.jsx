@@ -16,9 +16,14 @@ export default function Admin() {
 
   React.useEffect(() => {
     async function checkAuth() {
-      const currentUser = await base44.auth.me();
-      setUser(currentUser);
-      setLoading(false);
+      try {
+        const currentUser = await base44.auth.me();
+        setUser(currentUser);
+        setLoading(false);
+      } catch (error) {
+        console.error("Auth error:", error);
+        setLoading(false);
+      }
     }
     checkAuth();
 
