@@ -399,25 +399,35 @@ export default function Audience() {
               background: "rgba(15, 23, 42, 0.3)",
               borderRadius: "30px",
               padding: "40px 30px",
-              border: "2px solid rgba(0, 202, 255, 0.3)",
+              border: "2px solid rgba(251, 191, 36, 0.4)",
               textAlign: "center",
-              boxShadow: "0 10px 40px rgba(0, 202, 255, 0.15)",
+              boxShadow: "0 10px 40px rgba(251, 191, 36, 0.2)",
               backdropFilter: "blur(30px)"
             }}
           >
-            <div style={{ 
-              fontSize: "1.8rem", 
-              color: "#00caff", 
-              marginBottom: "25px",
-              fontWeight: "800",
-              textShadow: "0 0 20px rgba(0, 202, 255, 0.6)"
-            }}>
+            <motion.div 
+              animate={{ 
+                scale: [1, 1.1, 1],
+              }}
+              transition={{ 
+                duration: 2, 
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              style={{ 
+                fontSize: "1.8rem", 
+                color: "#fbbf24", 
+                marginBottom: "25px",
+                fontWeight: "800",
+                textShadow: "0 0 20px rgba(251, 191, 36, 0.6)"
+              }}
+            >
               ⏭️ הבא בתור
-            </div>
+            </motion.div>
 
             {next ? (
               <>
-                {next.photo_url && (
+                {next.photo_url ? (
                   <motion.img
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
@@ -425,16 +435,54 @@ export default function Audience() {
                     src={next.photo_url} 
                     alt={next.singer_name}
                     style={{
-                      width: "150px",
-                      height: "150px",
+                      width: "180px",
+                      height: "180px",
                       borderRadius: "50%",
                       objectFit: "cover",
                       marginBottom: "20px",
-                      border: "5px solid #00caff",
-                      boxShadow: "0 0 30px rgba(0, 202, 255, 0.4)"
+                      border: "5px solid #fbbf24",
+                      boxShadow: "0 0 40px rgba(251, 191, 36, 0.5)"
                     }}
                   />
+                ) : (
+                  <div style={{
+                    width: "180px",
+                    height: "180px",
+                    borderRadius: "50%",
+                    background: "linear-gradient(135deg, #fbbf24, #f59e0b)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "5rem",
+                    marginBottom: "20px",
+                    margin: "0 auto 20px",
+                    border: "5px solid #fbbf24",
+                    boxShadow: "0 0 40px rgba(251, 191, 36, 0.5)"
+                  }}>
+                    🎤
+                  </div>
                 )}
+
+                <motion.div
+                  animate={{ 
+                    opacity: [0.8, 1, 0.8],
+                  }}
+                  transition={{ 
+                    duration: 1.5, 
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                  style={{
+                    fontSize: "1.3rem",
+                    color: "#fbbf24",
+                    fontWeight: "700",
+                    marginBottom: "16px",
+                    textShadow: "0 0 15px rgba(251, 191, 36, 0.6)"
+                  }}
+                >
+                  👋 תתחיל לחמם את הקול! 🎵
+                </motion.div>
+
                 <div style={{ 
                   fontSize: "2rem", 
                   fontWeight: "900", 
