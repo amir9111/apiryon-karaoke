@@ -37,14 +37,14 @@ export default function Audience() {
       {/* APIRYON Logo - Center Top */}
       <div style={{
         position: "fixed",
-        top: "80px",
+        top: "15px",
         left: "50%",
         transform: "translateX(-50%)",
         zIndex: 50,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        gap: "20px"
+        gap: "8px"
       }}>
         <motion.div
           initial={{ opacity: 0, scale: 0.5 }}
@@ -53,8 +53,8 @@ export default function Audience() {
         >
           <motion.div
             animate={{ 
-              scale: [1, 1.08, 1],
-              rotate: [0, 3, -3, 0]
+              scale: [1, 1.05, 1],
+              rotate: [0, 2, -2, 0]
             }}
             transition={{ 
               duration: 5, 
@@ -62,7 +62,7 @@ export default function Audience() {
               ease: "easeInOut"
             }}
           >
-            <ApyironLogo size="large" showCircle={true} />
+            <ApyironLogo size="small" showCircle={true} />
           </motion.div>
         </motion.div>
         
@@ -78,9 +78,9 @@ export default function Audience() {
           <motion.div
             animate={{
               textShadow: [
-                "0 0 20px rgba(0, 202, 255, 0.8), 0 0 40px rgba(0, 202, 255, 0.5)",
-                "0 0 30px rgba(0, 202, 255, 1), 0 0 60px rgba(0, 202, 255, 0.7)",
-                "0 0 20px rgba(0, 202, 255, 0.8), 0 0 40px rgba(0, 202, 255, 0.5)"
+                "0 0 15px rgba(0, 202, 255, 0.8), 0 0 30px rgba(0, 202, 255, 0.5)",
+                "0 0 20px rgba(0, 202, 255, 1), 0 0 40px rgba(0, 202, 255, 0.7)",
+                "0 0 15px rgba(0, 202, 255, 0.8), 0 0 30px rgba(0, 202, 255, 0.5)"
               ]
             }}
             transition={{
@@ -89,14 +89,14 @@ export default function Audience() {
               ease: "easeInOut"
             }}
             style={{
-              fontSize: "clamp(1.5rem, 3vw, 2.5rem)",
-              fontWeight: "900",
+              fontSize: "clamp(0.9rem, 2vw, 1.3rem)",
+              fontWeight: "800",
               background: "linear-gradient(135deg, #00caff, #ffffff, #00caff)",
               backgroundSize: "200% auto",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",
-              letterSpacing: "0.1em",
+              letterSpacing: "0.08em",
               animation: "gradient 3s ease infinite"
             }}
           >
@@ -167,7 +167,7 @@ export default function Audience() {
         }
       `}</style>
 
-      <div style={{ position: "relative", zIndex: 1, minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "320px 20px 40px 20px" }}>
+      <div style={{ position: "relative", zIndex: 1, minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "140px 20px 40px 20px" }}>
         {/* Current Song - HERO SECTION */}
         {current ? (
           <motion.div
@@ -179,7 +179,7 @@ export default function Audience() {
             style={{
               width: "100%",
               maxWidth: "1000px",
-              marginBottom: "60px",
+              marginBottom: "40px",
               position: "relative"
             }}
           >
@@ -200,8 +200,8 @@ export default function Audience() {
             {/* Main content */}
             <div style={{
               background: "rgba(15, 23, 42, 0.3)",
-              borderRadius: "50px",
-              padding: "60px 40px",
+              borderRadius: "40px",
+              padding: "40px 30px",
               textAlign: "center",
               position: "relative",
               backdropFilter: "blur(30px)",
@@ -212,9 +212,9 @@ export default function Audience() {
                 animate={{ scale: [1, 1.05, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
                 style={{ 
-                  fontSize: "2.5rem", 
+                  fontSize: "2rem", 
                   color: "#00caff", 
-                  marginBottom: "40px",
+                  marginBottom: "30px",
                   textTransform: "uppercase",
                   letterSpacing: "0.3em",
                   fontWeight: "900",
@@ -228,7 +228,7 @@ export default function Audience() {
               <div style={{ 
                 position: "relative",
                 display: "inline-block",
-                marginBottom: "50px"
+                marginBottom: "30px"
               }}>
                 {/* Multiple animated rings */}
                 {[1, 2, 3].map((ring) => (
@@ -248,10 +248,10 @@ export default function Audience() {
                       top: "50%",
                       left: "50%",
                       transform: "translate(-50%, -50%)",
-                      width: "350px",
-                      height: "350px",
+                      width: "280px",
+                      height: "280px",
                       borderRadius: "50%",
-                      border: "4px solid #00caff",
+                      border: "3px solid #00caff",
                       pointerEvents: "none"
                     }}
                   />
@@ -265,28 +265,28 @@ export default function Audience() {
                     src={current.photo_url} 
                     alt={current.singer_name}
                     style={{
-                      width: "320px",
-                      height: "320px",
+                      width: "250px",
+                      height: "250px",
                       borderRadius: "50%",
                       objectFit: "cover",
-                      border: "10px solid #00caff",
-                      boxShadow: "0 0 80px rgba(0, 202, 255, 0.8), inset 0 0 30px rgba(0, 202, 255, 0.3)",
+                      border: "8px solid #00caff",
+                      boxShadow: "0 0 60px rgba(0, 202, 255, 0.8), inset 0 0 20px rgba(0, 202, 255, 0.3)",
                       position: "relative",
                       zIndex: 1
                     }}
                   />
                 ) : (
                   <div style={{
-                    width: "320px",
-                    height: "320px",
+                    width: "250px",
+                    height: "250px",
                     borderRadius: "50%",
                     background: "linear-gradient(135deg, #00caff, #0088ff)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontSize: "8rem",
-                    border: "10px solid #00caff",
-                    boxShadow: "0 0 80px rgba(0, 202, 255, 0.8)"
+                    fontSize: "6rem",
+                    border: "8px solid #00caff",
+                    boxShadow: "0 0 60px rgba(0, 202, 255, 0.8)"
                   }}>
                     🎤
                   </div>
@@ -298,11 +298,11 @@ export default function Audience() {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.4 }}
                 style={{ 
-                  fontSize: "clamp(3rem, 8vw, 6rem)", 
+                  fontSize: "clamp(2.5rem, 6vw, 4.5rem)", 
                   fontWeight: "900", 
-                  marginBottom: "30px",
+                  marginBottom: "20px",
                   color: "#ffffff",
-                  textShadow: "0 0 50px rgba(0, 202, 255, 0.6), 0 5px 30px rgba(0, 0, 0, 0.8)",
+                  textShadow: "0 0 40px rgba(0, 202, 255, 0.6), 0 5px 25px rgba(0, 0, 0, 0.8)",
                   lineHeight: "1.1"
                 }}
               >
@@ -314,11 +314,11 @@ export default function Audience() {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.5 }}
                 style={{ 
-                  fontSize: "clamp(2rem, 5vw, 3.5rem)", 
+                  fontSize: "clamp(1.6rem, 4vw, 2.8rem)", 
                   color: "#e2e8f0",
                   fontWeight: "700",
-                  marginBottom: "15px",
-                  textShadow: "0 3px 15px rgba(0, 0, 0, 0.5)"
+                  marginBottom: "12px",
+                  textShadow: "0 3px 12px rgba(0, 0, 0, 0.5)"
                 }}
               >
                 {current.song_title}
@@ -330,7 +330,7 @@ export default function Audience() {
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.6 }}
                   style={{ 
-                    fontSize: "clamp(1.5rem, 3vw, 2.5rem)", 
+                    fontSize: "clamp(1.2rem, 2.5vw, 2rem)", 
                     color: "#94a3b8",
                     fontWeight: "600"
                   }}
@@ -339,7 +339,7 @@ export default function Audience() {
                 </motion.div>
               )}
 
-              <div style={{ marginTop: "40px" }}>
+              <div style={{ marginTop: "30px" }}>
                 <AudioWave isPlaying={true} />
               </div>
             </div>
@@ -350,28 +350,28 @@ export default function Audience() {
             animate={{ opacity: 1 }}
             style={{
               background: "rgba(15, 23, 42, 0.3)",
-              borderRadius: "40px",
-              padding: "100px 60px",
-              marginBottom: "60px",
+              borderRadius: "30px",
+              padding: "60px 40px",
+              marginBottom: "40px",
               border: "2px dashed rgba(0, 202, 255, 0.3)",
               textAlign: "center",
               backdropFilter: "blur(30px)",
-              maxWidth: "800px",
+              maxWidth: "700px",
               width: "100%"
             }}
           >
             <motion.div
               animate={{ scale: [1, 1.2, 1], rotate: [0, 10, -10, 0] }}
               transition={{ duration: 3, repeat: Infinity }}
-              style={{ fontSize: "5rem", marginBottom: "30px" }}
+              style={{ fontSize: "4rem", marginBottom: "20px" }}
             >
               🎵
             </motion.div>
             <div style={{ 
-              fontSize: "clamp(2rem, 4vw, 3rem)", 
+              fontSize: "clamp(1.6rem, 3.5vw, 2.5rem)", 
               color: "#00caff", 
               fontWeight: "800",
-              textShadow: "0 0 30px rgba(0, 202, 255, 0.8)"
+              textShadow: "0 0 25px rgba(0, 202, 255, 0.8)"
             }}>
               מתכוננים לזמר הבא...
             </div>
