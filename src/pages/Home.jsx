@@ -5,7 +5,10 @@ import { createPageUrl } from "@/utils";
 import ApyironLogo from "../components/ApyironLogo";
 import TermsModal from "../components/TermsModal";
 import MenuButton from "../components/MenuButton";
+import AudienceRating from "../components/AudienceRating";
+import AudioWave from "../components/AudioWave";
 import { QrCode } from "lucide-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 export default function Home() {
   const [formData, setFormData] = useState({
@@ -18,6 +21,16 @@ export default function Home() {
   const [showWelcome, setShowWelcome] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
+
+  const queryClient = useQueryClient();
+
+  const { data: requests = [] } = useQuery({
+    queryKey: ['karaoke-requests'],
+    queryFn: () => base44.entities.KaraokeRequest.list('-created_date', 100),
+    refetchInterval: 3000,
+  });
+
+  const currentSong = requests.find(r => r.status === "performing");
 
   React.useEffect(() => {
     const hasAcceptedTerms = localStorage.getItem('apiryon_terms_accepted');
@@ -241,6 +254,67 @@ export default function Home() {
         <div className="flex justify-center mb-6">
           <ApyironLogo size="medium" showCircle={true} />
         </div>
+
+        {/* Now Playing Section */}
+        {currentSong && (
+          <div style={{
+            background: "rgba(15, 23, 42, 0.95)",
+            borderRadius: "20px",
+            padding: "20px",
+            marginBottom: "20px",
+            border: "2px solid rgba(0, 202, 255, 0.3)",
+            boxShadow: "0 0 40px rgba(0, 202, 255, 0.2)"
+          }}>
+            <div style={{ display: "flex", justifyContent: "center", marginBottom: "12px" }}>
+              <AudioWave isPlaying={true} />
+            </div>
+            <div style={{
+              fontSize: "1rem",
+              textTransform: "uppercase",
+              letterSpacing: "0.1em",
+              color: "#00caff",
+              marginBottom: "8px",
+              textAlign: "center",
+              textShadow: "0 0 15px rgba(0, 202, 255, 0.6)"
+            }}>
+              🎤 שר עכשיו על הבמה
+            </div>
+            <div style={{
+              fontSize: "1.8rem",
+              fontWeight: "800",
+              marginBottom: "8px",
+              textAlign: "center",
+              color: "#ffffff",
+              textShadow: "0 0 20px rgba(0, 202, 255, 0.4)"
+            }}>
+              {currentSong.singer_name}
+            </div>
+            <div style={{
+              fontSize: "1.2rem",
+              color: "#e2e8f0",
+              marginBottom: "4px",
+              textAlign: "center",
+              fontWeight: "600"
+            }}>
+              {currentSong.song_title}
+            </div>
+            {currentSong.song_artist && (
+              <div style={{
+                fontSize: "1rem",
+                color: "#94a3b8",
+                textAlign: "center",
+                marginBottom: "16px"
+              }}>
+                {currentSong.song_artist}
+              </div>
+            )}
+            
+            <AudienceRating 
+              currentSong={currentSong}
+              onRatingSubmitted={() => queryClient.invalidateQueries({ queryKey: ['karaoke-requests'] })}
+            />
+          </div>
+        )}
 
         <div
           className="rounded-[18px] p-5 md:p-6"
