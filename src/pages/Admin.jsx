@@ -2,18 +2,15 @@ import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Play, Check, SkipForward, UserPlus, Monitor, Settings, Trophy } from "lucide-react";
+import { Play, Check, SkipForward, UserPlus, Settings, Trophy } from "lucide-react";
 import ApyironLogo from "../components/ApyironLogo";
 import TopSingers from "../components/TopSingers";
-import { createPageUrl } from "@/utils";
+
 
 export default function Admin() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [showDebugger, setShowDebugger] = useState(false);
-  const [debugLogs, setDebugLogs] = useState([]);
-  const [debugError, setDebugError] = useState(null);
-  const [debugData, setDebugData] = useState(null);
+
   const queryClient = useQueryClient();
 
   React.useEffect(() => {
@@ -78,62 +75,6 @@ export default function Admin() {
       notes: "",
       status: "waiting"
     });
-  };
-
-  const addDebugLog = (message) => {
-    console.log(message);
-    setDebugLogs(prev => [...prev, `[${new Date().toLocaleTimeString()}] ${message}`]);
-  };
-
-  const startDebugger = () => {
-    setShowDebugger(true);
-    setDebugLogs(["🚀 התחלת בדיקה..."]);
-    setDebugError(null);
-    setDebugData(null);
-
-    addDebugLog("✅ פונקציית בדיקה התחילה");
-    addDebugLog("🔍 בודק אם base44 זמין...");
-
-    if (!base44) {
-      addDebugLog("❌ base44 לא זמין!");
-      setDebugError("base44 object is undefined");
-      return;
-    }
-
-    addDebugLog("✅ base44 קיים");
-    addDebugLog("🔍 בודק base44.entities...");
-
-    if (!base44.entities) {
-      addDebugLog("❌ base44.entities לא זמין!");
-      setDebugError("base44.entities is undefined");
-      return;
-    }
-
-    addDebugLog("✅ base44.entities קיים");
-    addDebugLog("🔍 בודק KaraokeRequest entity...");
-
-    if (!base44.entities.KaraokeRequest) {
-      addDebugLog("❌ KaraokeRequest entity לא נמצא!");
-      setDebugError("KaraokeRequest entity not found");
-      return;
-    }
-
-    addDebugLog("✅ KaraokeRequest entity קיים");
-    addDebugLog("🔄 מנסה לטעון 5 רשומות...");
-
-    base44.entities.KaraokeRequest.list('-created_date', 5)
-      .then(result => {
-        addDebugLog(`✅ הצלחה! נטענו ${result.length} רשומות`);
-        setDebugData(result);
-      })
-      .catch(err => {
-        addDebugLog(`❌ שגיאה בטעינת נתונים: ${err.message}`);
-        setDebugError({
-          message: err.message,
-          stack: err.stack,
-          name: err.name
-        });
-      });
   };
 
   const now = requests.filter(r => r.status === "performing");
@@ -506,221 +447,7 @@ export default function Admin() {
             </TabsContent>
           </Tabs>
 
-          {/* Floating Display Button */}
-          <button
-            onClick={() => window.open(createPageUrl('Display'), '_blank')}
-            style={{
-              position: "fixed",
-              bottom: "30px",
-              left: "30px",
-              width: "70px",
-              height: "70px",
-              borderRadius: "50%",
-              border: "none",
-              background: "linear-gradient(135deg, #00caff, #0088ff)",
-              color: "#001a2e",
-              fontSize: "0.9rem",
-              fontWeight: "700",
-              cursor: "pointer",
-              boxShadow: "0 0 40px rgba(0, 202, 255, 0.6), 0 4px 20px rgba(0, 0, 0, 0.4)",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "4px",
-              zIndex: 9999,
-              transition: "transform 0.2s, box-shadow 0.2s"
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "scale(1.1)";
-              e.currentTarget.style.boxShadow = "0 0 60px rgba(0, 202, 255, 0.8), 0 6px 30px rgba(0, 0, 0, 0.5)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "scale(1)";
-              e.currentTarget.style.boxShadow = "0 0 40px rgba(0, 202, 255, 0.6), 0 4px 20px rgba(0, 0, 0, 0.4)";
-            }}
-          >
-            <Monitor className="w-6 h-6" />
-            <span>הצג</span>
-          </button>
 
-          {/* Debug Button */}
-          <button
-            onClick={startDebugger}
-            style={{
-              position: "fixed",
-              bottom: "110px",
-              left: "30px",
-              width: "70px",
-              height: "70px",
-              borderRadius: "50%",
-              border: "none",
-              background: "linear-gradient(135deg, #fbbf24, #f59e0b)",
-              color: "#001a2e",
-              fontSize: "0.9rem",
-              fontWeight: "700",
-              cursor: "pointer",
-              boxShadow: "0 0 40px rgba(251, 191, 36, 0.6), 0 4px 20px rgba(0, 0, 0, 0.4)",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "4px",
-              zIndex: 9999,
-              transition: "transform 0.2s, box-shadow 0.2s"
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "scale(1.1)";
-              e.currentTarget.style.boxShadow = "0 0 60px rgba(251, 191, 36, 0.8), 0 6px 30px rgba(0, 0, 0, 0.5)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "scale(1)";
-              e.currentTarget.style.boxShadow = "0 0 40px rgba(251, 191, 36, 0.6), 0 4px 20px rgba(0, 0, 0, 0.4)";
-            }}
-          >
-            <span style={{ fontSize: "1.5rem" }}>🔧</span>
-            <span>בדיקה</span>
-          </button>
-
-          {/* Debug Modal */}
-          {showDebugger && (
-            <div style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: "rgba(0, 0, 0, 0.95)",
-              zIndex: 99999,
-              padding: "20px",
-              overflow: "auto"
-            }}>
-              <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-                <div style={{
-                  background: "rgba(0, 202, 255, 0.2)",
-                  border: "3px solid #00caff",
-                  borderRadius: "16px",
-                  padding: "20px",
-                  marginBottom: "20px",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center"
-                }}>
-                  <div>
-                    <h1 style={{ fontSize: "2rem", color: "#00caff", margin: 0 }}>🔧 מסך בדיקה מפורט</h1>
-                    <p style={{ fontSize: "0.9rem", color: "#94a3b8", margin: "5px 0 0 0" }}>כל הפעולות והשגיאות כאן</p>
-                  </div>
-                  <button
-                    onClick={() => setShowDebugger(false)}
-                    style={{
-                      background: "rgba(248, 113, 113, 0.3)",
-                      border: "2px solid #f87171",
-                      borderRadius: "12px",
-                      padding: "12px 24px",
-                      color: "#fff",
-                      fontSize: "1rem",
-                      fontWeight: "700",
-                      cursor: "pointer"
-                    }}
-                  >
-                    ✕ סגור
-                  </button>
-                </div>
-
-                <div style={{
-                  background: "rgba(0, 202, 255, 0.1)",
-                  border: "2px solid #00caff",
-                  borderRadius: "12px",
-                  padding: "20px",
-                  marginBottom: "20px"
-                }}>
-                  <h2 style={{ fontSize: "1.5rem", marginBottom: "15px", color: "#00caff" }}>📋 לוג פעולות ({debugLogs.length}):</h2>
-                  <div style={{ maxHeight: "400px", overflow: "auto" }}>
-                    {debugLogs.map((log, i) => (
-                      <div key={i} style={{
-                        padding: "10px",
-                        background: i % 2 === 0 ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.02)",
-                        marginBottom: "3px",
-                        borderRadius: "6px",
-                        fontFamily: "monospace",
-                        fontSize: "0.9rem",
-                        borderLeft: "3px solid #00caff",
-                        color: "#fff"
-                      }}>
-                        {log}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {debugError && (
-                  <div style={{
-                    background: "rgba(248, 113, 113, 0.2)",
-                    border: "3px solid #f87171",
-                    borderRadius: "12px",
-                    padding: "20px",
-                    marginBottom: "20px"
-                  }}>
-                    <h2 style={{ fontSize: "1.5rem", marginBottom: "10px", color: "#f87171" }}>❌ שגיאה שנתפסה:</h2>
-                    <div style={{
-                      background: "rgba(0,0,0,0.3)",
-                      padding: "15px",
-                      borderRadius: "8px",
-                      fontFamily: "monospace",
-                      fontSize: "0.85rem"
-                    }}>
-                      {typeof debugError === 'string' ? (
-                        <div style={{ color: "#fff" }}>{debugError}</div>
-                      ) : (
-                        <>
-                          <div style={{ color: "#fca5a5", marginBottom: "10px" }}>
-                            <strong>Message:</strong> {debugError.message}
-                          </div>
-                          {debugError.name && (
-                            <div style={{ color: "#fca5a5", marginBottom: "10px" }}>
-                              <strong>Name:</strong> {debugError.name}
-                            </div>
-                          )}
-                          {debugError.stack && (
-                            <div style={{ color: "#94a3b8" }}>
-                              <strong>Stack:</strong>
-                              <pre style={{ whiteSpace: "pre-wrap", wordBreak: "break-word", marginTop: "5px" }}>
-                                {debugError.stack}
-                              </pre>
-                            </div>
-                          )}
-                        </>
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                {debugData && (
-                  <div style={{
-                    background: "rgba(16, 185, 129, 0.2)",
-                    border: "3px solid #10b981",
-                    borderRadius: "12px",
-                    padding: "20px"
-                  }}>
-                    <h2 style={{ fontSize: "1.5rem", marginBottom: "10px", color: "#10b981" }}>✅ נתונים שהתקבלו:</h2>
-                    <div style={{
-                      background: "rgba(0,0,0,0.3)",
-                      padding: "15px",
-                      borderRadius: "8px",
-                      fontFamily: "monospace",
-                      fontSize: "0.85rem",
-                      maxHeight: "300px",
-                      overflow: "auto"
-                    }}>
-                      <pre style={{ whiteSpace: "pre-wrap", wordBreak: "break-word", color: "#10b981" }}>
-                        {JSON.stringify(debugData, null, 2)}
-                      </pre>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
         </div>
       </div>
     );
