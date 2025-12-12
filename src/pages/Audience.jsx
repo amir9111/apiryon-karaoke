@@ -78,45 +78,48 @@ export default function Audience() {
       )}
 
       {/* APIRYON Logo - Center Top */}
-      <motion.div
-        drag={editMode}
-        dragMomentum={false}
-        onDragStart={() => setIsDragging(true)}
-        onDragEnd={(e, info) => {
-          setIsDragging(false);
-          const rect = e.target.getBoundingClientRect();
-          const newTop = rect.top;
-          const newLeft = (rect.left + rect.width / 2) / window.innerWidth * 100;
-          setLogoPosition({ top: Math.round(newTop), left: Math.round(newLeft) });
-        }}
-        initial={{ opacity: 0, scale: 0.5 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1.2, type: "spring", bounce: 0.4 }}
-        style={{
-          position: "fixed",
-          top: `${logoPosition.top}px`,
-          left: `${logoPosition.left}%`,
-          transform: "translateX(-50%)",
-          zIndex: 50,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          cursor: editMode ? "move" : "default",
-          opacity: isDragging ? 0.7 : 1
-        }}
-      >
+      <div style={{
+        position: "fixed",
+        top: `${logoPosition.top}px`,
+        left: "50%",
+        transform: "translateX(-50%)",
+        zIndex: 50,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: "20px"
+      }}>
         <motion.div
-          animate={{ 
-            scale: [1, 1.08, 1],
-            rotate: [0, 3, -3, 0]
+          drag={editMode}
+          dragMomentum={false}
+          onDragStart={() => setIsDragging(true)}
+          onDragEnd={(e, info) => {
+            setIsDragging(false);
+            const rect = e.currentTarget.getBoundingClientRect();
+            const newTop = rect.top;
+            setLogoPosition({ top: Math.round(newTop), left: logoPosition.left });
           }}
-          transition={{ 
-            duration: 5, 
-            repeat: Infinity,
-            ease: "easeInOut"
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.2, type: "spring", bounce: 0.4 }}
+          style={{
+            cursor: editMode ? "move" : "default",
+            opacity: isDragging ? 0.7 : 1
           }}
         >
-          <ApyironLogo size="large" showCircle={true} />
+          <motion.div
+            animate={{ 
+              scale: [1, 1.08, 1],
+              rotate: [0, 3, -3, 0]
+            }}
+            transition={{ 
+              duration: 5, 
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          >
+            <ApyironLogo size="large" showCircle={true} />
+          </motion.div>
         </motion.div>
         
         {/* Tagline */}
@@ -125,7 +128,6 @@ export default function Audience() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.8 }}
           style={{
-            marginTop: "20px",
             textAlign: "center"
           }}
         >
@@ -157,7 +159,7 @@ export default function Audience() {
             המוזיקה שלנו, הקול שלך 🎵
           </motion.div>
         </motion.div>
-      </motion.div>
+      </div>
       
       <style>{`
         @keyframes gradient {
