@@ -8,24 +8,36 @@ export default function PWAInstallPrompt() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     
-    // Check if already dismissed or installed
     const isDismissed = localStorage.getItem('pwa_install_dismissed');
     const isInstalled = window.matchMedia('(display-mode: standalone)').matches;
+    
+    console.log('🔍 PWA Check - Dismissed:', isDismissed, 'Installed:', isInstalled);
     
     if (isDismissed || isInstalled) return;
     
     const handler = (e) => {
+      console.log('🎉 beforeinstallprompt event fired!');
       e.preventDefault();
       setDeferredPrompt(e);
       setTimeout(() => setShowPrompt(true), 2000);
     };
 
     window.addEventListener('beforeinstallprompt', handler);
+    
+    setTimeout(() => {
+      if (!deferredPrompt) {
+        console.log('⚠️ No beforeinstallprompt event after 10s - PWA criteria not met');
+        console.log('🔍 Check:');
+        console.log('  - HTTPS enabled?', window.location.protocol === 'https:');
+        console.log('  - Service Worker registered?', 'serviceWorker' in navigator);
+        console.log('  - Manifest linked?', !!document.querySelector('link[rel="manifest"]'));
+      }
+    }, 10000);
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handler);
     };
-  }, []);
+  }, [deferredPrompt]);
 
   const handleInstall = async () => {
     if (!deferredPrompt) {

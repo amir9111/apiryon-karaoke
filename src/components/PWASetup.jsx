@@ -17,14 +17,12 @@ export default function PWASetup() {
       name: "Apiryon - מערכת קריוקי",
       short_name: "Apiryon",
       description: "מערכת ניהול קריוקי מתקדמת",
-      start_url: window.location.origin + "/",
+      start_url: "/",
       scope: "/",
       display: "standalone",
       background_color: "#020617",
       theme_color: "#00caff",
       orientation: "portrait",
-      dir: "rtl",
-      lang: "he",
       icons: [
         {
           src: iconSvg,
@@ -35,7 +33,8 @@ export default function PWASetup() {
         {
           src: iconSvg,
           sizes: "192x192",
-          type: "image/svg+xml"
+          type: "image/svg+xml",
+          purpose: "any"
         }
       ]
     };
@@ -46,11 +45,9 @@ export default function PWASetup() {
     const url = URL.createObjectURL(manifestBlob);
     setManifestUrl(url);
     
-    // Cleanup
-    return () => {
-      if (url) URL.revokeObjectURL(url);
-    };
-  }, [iconSvg, siteUrl]);
+    console.log('✅ PWA Manifest URL:', url);
+    console.log('📄 Manifest Content:', manifest);
+  }, [iconSvg]);
 
   if (!manifestUrl) return null;
 

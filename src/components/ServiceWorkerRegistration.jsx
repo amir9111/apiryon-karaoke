@@ -51,9 +51,13 @@ export default function ServiceWorkerRegistration() {
 
     navigator.serviceWorker.register(swUrl)
       .then(reg => {
+        console.log('✅ Service Worker registered successfully!');
+        console.log('📍 Scope:', reg.scope);
         reg.update();
       })
-      .catch(() => {});
+      .catch(err => {
+        console.error('❌ Service Worker registration failed:', err);
+      });
   }, []);
 
   return null;
