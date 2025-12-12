@@ -6,6 +6,9 @@ function Display() {
   const [isMobile, setIsMobile] = React.useState(false);
   const [debugMode, setDebugMode] = React.useState(false);
   const [debugLogs, setDebugLogs] = React.useState(["🚀 Display page loaded"]);
+  const [requests, setRequests] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [error, setError] = React.useState(null);
 
   const addLog = (msg) => {
     console.log(msg);
@@ -28,22 +31,37 @@ function Display() {
     if (base44?.entities?.KaraokeRequest) addLog("✅ KaraokeRequest entity exists");
   }, []);
 
-  const { data: requests = [], isLoading, error } = useQuery({
-    queryKey: ['karaoke-requests'],
-    queryFn: async () => {
+  // Load data with manual state management
+  React.useEffect(() => {
+    let mounted = true;
+    
+    const fetchData = async () => {
       addLog("🔄 Fetching data...");
       try {
-        // Use asPublic to avoid authentication requirement
         const result = await base44.asPublic.entities.KaraokeRequest.list('-created_date', 100);
-        addLog(`✅ Data fetched: ${result.length} items`);
-        return result;
+        if (mounted) {
+          addLog(`✅ Data fetched: ${result.length} items`);
+          setRequests(result);
+          setIsLoading(false);
+          setError(null);
+        }
       } catch (err) {
-        addLog(`❌ Fetch error: ${err.message}`);
-        throw err;
+        if (mounted) {
+          addLog(`❌ Fetch error: ${err.message}`);
+          setError(err);
+          setIsLoading(false);
+        }
       }
-    },
-    refetchInterval: 3000,
-  });
+    };
+
+    fetchData();
+    const interval = setInterval(fetchData, 3000);
+
+    return () => {
+      mounted = false;
+      clearInterval(interval);
+    };
+  }, []);
 
   if (isLoading) {
     addLog("⏳ Loading data...");
