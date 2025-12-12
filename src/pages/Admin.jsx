@@ -382,8 +382,10 @@ export default function Admin() {
             </div>
 
             {/* Floating Audience Display Button */}
-            <button
-            onClick={() => window.open(createPageUrl('AudienceDisplay'), '_blank')}
+            <a
+            href={createPageUrl('AudienceDisplay')}
+            target="_blank"
+            rel="noopener noreferrer"
             style={{
               position: "fixed",
               bottom: "30px",
@@ -404,7 +406,8 @@ export default function Admin() {
               justifyContent: "center",
               gap: "6px",
               zIndex: 9999,
-              transition: "transform 0.2s, box-shadow 0.2s"
+              transition: "transform 0.2s, box-shadow 0.2s",
+              textDecoration: "none"
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = "scale(1.1)";
@@ -417,7 +420,7 @@ export default function Admin() {
             >
             <Tv className="w-7 h-7" />
             <span>תצוגה לקהל</span>
-            </button>
+            </a>
 
             </div>
             </div>
