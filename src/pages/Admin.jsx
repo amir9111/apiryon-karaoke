@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { Play, Check, SkipForward, UserPlus, Settings } from "lucide-react";
+import { Play, Check, SkipForward, UserPlus, Settings, Tv } from "lucide-react";
+import { createPageUrl } from "@/utils";
 import ApyironLogo from "../components/ApyironLogo";
 
 
@@ -380,8 +381,45 @@ export default function Admin() {
             </div>
             </div>
 
+            {/* Floating Audience Display Button */}
+            <button
+            onClick={() => window.open(createPageUrl('AudienceDisplay'), '_blank')}
+            style={{
+              position: "fixed",
+              bottom: "30px",
+              left: "30px",
+              width: "80px",
+              height: "80px",
+              borderRadius: "50%",
+              border: "none",
+              background: "linear-gradient(135deg, #00caff, #0088ff)",
+              color: "#001a2e",
+              fontSize: "0.85rem",
+              fontWeight: "700",
+              cursor: "pointer",
+              boxShadow: "0 0 40px rgba(0, 202, 255, 0.6), 0 4px 20px rgba(0, 0, 0, 0.4)",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "6px",
+              zIndex: 9999,
+              transition: "transform 0.2s, box-shadow 0.2s"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "scale(1.1)";
+              e.currentTarget.style.boxShadow = "0 0 60px rgba(0, 202, 255, 0.8), 0 6px 30px rgba(0, 0, 0, 0.5)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "scale(1)";
+              e.currentTarget.style.boxShadow = "0 0 40px rgba(0, 202, 255, 0.6), 0 4px 20px rgba(0, 0, 0, 0.4)";
+            }}
+            >
+            <Tv className="w-7 h-7" />
+            <span>תצוגה לקהל</span>
+            </button>
 
-        </div>
-      </div>
-    );
-  }
+            </div>
+            </div>
+            );
+            }
