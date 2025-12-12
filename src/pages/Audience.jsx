@@ -12,6 +12,9 @@ import { BarChart3 } from "lucide-react";
 
 export default function Audience() {
   const [showSummary, setShowSummary] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [logoPosition, setLogoPosition] = useState({ top: 80, left: 48 });
+  const [isDragging, setIsDragging] = useState(false);
 
   const { data: requests = [] } = useQuery({
     queryKey: ['karaoke-requests'],
@@ -33,20 +36,73 @@ export default function Audience() {
       <FloatingParticles />
       <NavigationMenu />
       
+      {/* Edit Mode Toggle */}
+      {editMode && (
+        <div style={{
+          position: "fixed",
+          bottom: "20px",
+          left: "50%",
+          transform: "translateX(-50%)",
+          background: "rgba(0, 202, 255, 0.95)",
+          color: "#001a2e",
+          padding: "20px 30px",
+          borderRadius: "20px",
+          zIndex: 200,
+          fontWeight: "700",
+          fontSize: "1rem",
+          boxShadow: "0 0 30px rgba(0, 202, 255, 0.6)",
+          textAlign: "center"
+        }}>
+          <div style={{ marginBottom: "10px" }}>גרור את הלוגו למיקום הרצוי</div>
+          <div style={{ fontSize: "0.9rem", marginBottom: "15px" }}>
+            Top: {logoPosition.top}px, Left: {logoPosition.left}%
+          </div>
+          <button
+            onClick={() => {
+              setEditMode(false);
+              alert(`שמור את הערכים:\ntop: "${logoPosition.top}px"\nleft: "${logoPosition.left}%"`);
+            }}
+            style={{
+              background: "#001a2e",
+              color: "#00caff",
+              border: "none",
+              padding: "10px 20px",
+              borderRadius: "10px",
+              cursor: "pointer",
+              fontWeight: "700"
+            }}
+          >
+            שמור מיקום
+          </button>
+        </div>
+      )}
+
       {/* APIRYON Logo - Center Top */}
       <motion.div
+        drag={editMode}
+        dragMomentum={false}
+        onDragStart={() => setIsDragging(true)}
+        onDragEnd={(e, info) => {
+          setIsDragging(false);
+          const rect = e.target.getBoundingClientRect();
+          const newTop = rect.top;
+          const newLeft = (rect.left + rect.width / 2) / window.innerWidth * 100;
+          setLogoPosition({ top: Math.round(newTop), left: Math.round(newLeft) });
+        }}
         initial={{ opacity: 0, scale: 0.5 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.2, type: "spring", bounce: 0.4 }}
         style={{
           position: "fixed",
-          top: "80px",
-          left: "48%",
+          top: `${logoPosition.top}px`,
+          left: `${logoPosition.left}%`,
           transform: "translateX(-50%)",
           zIndex: 50,
           display: "flex",
           justifyContent: "center",
-          alignItems: "center"
+          alignItems: "center",
+          cursor: editMode ? "move" : "default",
+          opacity: isDragging ? 0.7 : 1
         }}
       >
         <motion.div
@@ -64,6 +120,36 @@ export default function Audience() {
         </motion.div>
       </motion.div>
       
+      {/* Edit Logo Button */}
+      <motion.button
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={() => setEditMode(!editMode)}
+        style={{
+          position: "fixed",
+          top: "20px",
+          left: "20px",
+          background: editMode ? "linear-gradient(135deg, #f87171, #ef4444)" : "linear-gradient(135deg, #00caff, #0088ff)",
+          border: "none",
+          borderRadius: "50%",
+          width: "60px",
+          height: "60px",
+          cursor: "pointer",
+          zIndex: 100,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          boxShadow: editMode ? "0 0 30px rgba(248, 113, 113, 0.5)" : "0 0 30px rgba(0, 202, 255, 0.5)",
+          color: "#fff",
+          fontSize: "1.5rem",
+          fontWeight: "800"
+        }}
+      >
+        {editMode ? "✓" : "✏️"}
+      </motion.button>
+
       {/* Summary Button */}
       <motion.button
         initial={{ scale: 0 }}
