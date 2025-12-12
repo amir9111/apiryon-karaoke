@@ -3,22 +3,15 @@ import NavigationMenu from "../components/NavigationMenu";
 import ApyironLogo from "../components/ApyironLogo";
 import AudioWave from "../components/AudioWave";
 import { motion } from "framer-motion";
+import { base44 } from "@/api/base44Client";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Audience() {
-  const [requests, setRequests] = React.useState([]);
-
-  React.useEffect(() => {
-    function loadData() {
-      fetch('/api/entities/KaraokeRequest?sort=-created_date&limit=50')
-        .then(res => res.json())
-        .then(data => setRequests(data || []))
-        .catch(err => console.error(err));
-    }
-    
-    loadData();
-    const timer = setInterval(loadData, 3000);
-    return () => clearInterval(timer);
-  }, []);
+  const { data: requests = [] } = useQuery({
+    queryKey: ['karaoke-requests'],
+    queryFn: () => base44.entities.KaraokeRequest.list('-created_date', 100),
+    refetchInterval: 2000,
+  });
 
   const current = requests.find(r => r.status === "performing");
   const next = requests.filter(r => r.status === "waiting")[0];
