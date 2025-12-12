@@ -6,62 +6,53 @@ export default function PWAInstallPrompt() {
   const [showPrompt, setShowPrompt] = useState(false);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
+    // Check if already dismissed or installed
+    const isDismissed = localStorage.getItem('pwa_install_dismissed');
+    const isInstalled = window.matchMedia('(display-mode: standalone)').matches;
+    
+    if (isDismissed || isInstalled) return;
+    
     const handler = (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
-      
-      const dismissed = localStorage.getItem('pwa_install_dismissed');
-      if (!dismissed) {
-        setTimeout(() => setShowPrompt(true), 2000);
-      }
+      setTimeout(() => setShowPrompt(true), 2000);
     };
 
     window.addEventListener('beforeinstallprompt', handler);
-    
-    // Fallback manual trigger after 5 seconds if no prompt
-    const fallbackTimer = setTimeout(() => {
-      if (!deferredPrompt && !localStorage.getItem('pwa_install_dismissed')) {
-        // Show custom install instructions
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-        
-        if (!isStandalone) {
-          setShowPrompt(true);
-        }
-      }
-    }, 5000);
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handler);
-      clearTimeout(fallbackTimer);
     };
-  }, [deferredPrompt]);
+  }, []);
 
   const handleInstall = async () => {
     if (!deferredPrompt) {
-      // Show instructions for iOS or browsers without auto-prompt
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-      if (isIOS) {
-        alert('להתקנה באייפון: לחץ על כפתור "שיתוף" ובחר "הוסף למסך הבית"');
-      } else {
-        alert('לחץ על תפריט הדפדפן (⋮) ובחר "התקן אפליקציה" או "הוסף למסך הבית"');
-      }
       setShowPrompt(false);
-      localStorage.setItem('pwa_install_dismissed', 'true');
+      try {
+        localStorage.setItem('pwa_install_dismissed', 'true');
+      } catch (e) {}
       return;
     }
 
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    
-    setDeferredPrompt(null);
-    setShowPrompt(false);
-    localStorage.setItem('pwa_install_dismissed', 'true');
+    try {
+      await deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      
+      setDeferredPrompt(null);
+      setShowPrompt(false);
+      localStorage.setItem('pwa_install_dismissed', 'true');
+    } catch (e) {
+      setShowPrompt(false);
+    }
   };
 
   const handleDismiss = () => {
     setShowPrompt(false);
-    localStorage.setItem('pwa_install_dismissed', 'true');
+    try {
+      localStorage.setItem('pwa_install_dismissed', 'true');
+    } catch (e) {}
   };
 
   if (!showPrompt) return null;
