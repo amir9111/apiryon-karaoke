@@ -2,14 +2,10 @@ import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Play, Check, SkipForward, UserPlus, Monitor, Settings, Trophy, Eye } from "lucide-react";
-import { Link } from "react-router-dom";
-import { createPageUrl } from "@/utils";
+import { Play, Check, SkipForward, UserPlus, Monitor, Settings, Trophy } from "lucide-react";
 import ApyironLogo from "../components/ApyironLogo";
-import AudioWave from "../components/AudioWave";
-import AudienceRating from "../components/AudienceRating";
-import StarRating from "../components/StarRating";
 import TopSingers from "../components/TopSingers";
+import { createPageUrl } from "@/utils";
 
 export default function Admin() {
   const [user, setUser] = useState(null);
@@ -29,9 +25,9 @@ export default function Admin() {
     }
     checkAuth();
 
-    // Check if URL has hash and switch to appropriate tab
+    // Check if URL has hash and switch to leaderboard tab
     const hash = window.location.hash.replace('#', '');
-    if (hash === 'display' || hash === 'leaderboard') {
+    if (hash === 'leaderboard') {
       setTimeout(() => {
         const tab = document.querySelector(`[value="${hash}"]`);
         if (tab) tab.click();
@@ -110,43 +106,7 @@ export default function Admin() {
   }
 
   return (
-    <div dir="rtl" style={{ background: "linear-gradient(135deg, #020617 0%, #0a1929 50%, #020617 100%)", color: "#f1f5f9", minHeight: "100vh", padding: "20px", position: "relative" }}>
-      {/* Floating Display Button */}
-      <Link
-        to={createPageUrl("Display")}
-        target="_blank"
-        style={{
-          position: "fixed",
-          bottom: "30px",
-          left: "30px",
-          width: "70px",
-          height: "70px",
-          borderRadius: "50%",
-          background: "linear-gradient(135deg, #00caff, #0088ff)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexDirection: "column",
-          gap: "4px",
-          boxShadow: "0 0 40px rgba(0, 202, 255, 0.6), 0 8px 20px rgba(0, 0, 0, 0.4)",
-          cursor: "pointer",
-          textDecoration: "none",
-          zIndex: 1000,
-          transition: "transform 0.2s, box-shadow 0.2s"
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.transform = "scale(1.1)";
-          e.currentTarget.style.boxShadow = "0 0 50px rgba(0, 202, 255, 0.8), 0 12px 30px rgba(0, 0, 0, 0.5)";
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.transform = "scale(1)";
-          e.currentTarget.style.boxShadow = "0 0 40px rgba(0, 202, 255, 0.6), 0 8px 20px rgba(0, 0, 0, 0.4)";
-        }}
-      >
-        <Eye className="w-8 h-8" style={{ color: "#001a2e" }} />
-        <span style={{ fontSize: "0.7rem", fontWeight: "700", color: "#001a2e" }}>הצג</span>
-      </Link>
-
+    <div dir="rtl" style={{ background: "linear-gradient(135deg, #020617 0%, #0a1929 50%, #020617 100%)", color: "#f1f5f9", minHeight: "100vh", padding: "20px" }}>
       <div style={{ maxWidth: "1400px", margin: "0 auto" }}>
         {/* Header */}
         <div style={{ marginBottom: "24px", textAlign: "center" }}>
@@ -441,8 +401,6 @@ export default function Admin() {
             </div>
           </TabsContent>
 
-
-
               <TabsContent value="leaderboard">
                 {/* Open in New Window Button - only show if not opened via hash */}
                 {!window.location.hash && (
@@ -485,9 +443,47 @@ export default function Admin() {
                 )}
 
               <TopSingers requests={requests} />
-              </TabsContent>
-              </Tabs>
+            </TabsContent>
+          </Tabs>
+
+          {/* Floating Display Button */}
+          <button
+            onClick={() => window.open(createPageUrl('Display'), '_blank')}
+            style={{
+              position: "fixed",
+              bottom: "30px",
+              left: "30px",
+              width: "70px",
+              height: "70px",
+              borderRadius: "50%",
+              border: "none",
+              background: "linear-gradient(135deg, #00caff, #0088ff)",
+              color: "#001a2e",
+              fontSize: "0.9rem",
+              fontWeight: "700",
+              cursor: "pointer",
+              boxShadow: "0 0 40px rgba(0, 202, 255, 0.6), 0 4px 20px rgba(0, 0, 0, 0.4)",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "4px",
+              zIndex: 9999,
+              transition: "transform 0.2s, box-shadow 0.2s"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "scale(1.1)";
+              e.currentTarget.style.boxShadow = "0 0 60px rgba(0, 202, 255, 0.8), 0 6px 30px rgba(0, 0, 0, 0.5)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "scale(1)";
+              e.currentTarget.style.boxShadow = "0 0 40px rgba(0, 202, 255, 0.6), 0 4px 20px rgba(0, 0, 0, 0.4)";
+            }}
+          >
+            <Monitor className="w-6 h-6" />
+            <span>הצג</span>
+          </button>
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  }

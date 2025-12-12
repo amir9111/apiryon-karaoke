@@ -1,11 +1,11 @@
 import React from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { QrCode } from "lucide-react";
 import ApyironLogo from "../components/ApyironLogo";
 import AudioWave from "../components/AudioWave";
 import AudienceRating from "../components/AudienceRating";
 import StarRating from "../components/StarRating";
-import { QrCode } from "lucide-react";
 
 export default function Display() {
   const queryClient = useQueryClient();
@@ -19,7 +19,7 @@ export default function Display() {
   const now = requests.filter(r => r.status === "performing");
   const waiting = requests.filter(r => r.status === "waiting");
   const done = requests.filter(r => r.status === "done");
-
+  
   const currentSong = requests.find(r => r.status === "performing");
   const waitingList = requests.filter(r => r.status === "waiting");
 
