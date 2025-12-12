@@ -271,7 +271,7 @@ export default function Home() {
                 value={formData.singer_name}
                 onChange={handleChange}
                 required
-                placeholder="לדוגמה: אמיר אבו אסמאעיל"
+                placeholder="לדוגמה: יהושע דבוש"
                 className="w-full px-3 py-2.5 rounded-xl border outline-none text-[0.95rem]"
                 style={{
                   borderColor: "#1f2937",
