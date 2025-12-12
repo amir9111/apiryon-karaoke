@@ -15,15 +15,17 @@ export default function PWASetup() {
       <meta name="description" content={siteDescription} />
       <link rel="canonical" href={siteUrl} />
       
-      {/* PWA */}
-      <link rel="manifest" href="/manifest.json" />
+      {/* PWA - Critical for Chrome PWA detection */}
+      <link rel="manifest" href="/manifest.json" crossOrigin="use-credentials" />
       <meta name="theme-color" content="#00caff" />
+      <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#020617" />
       <meta name="apple-mobile-web-app-capable" content="yes" />
       <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       <meta name="apple-mobile-web-app-title" content="Apiryon" />
       <link rel="apple-touch-icon" href={iconSvg} />
       <link rel="icon" type="image/svg+xml" href={iconSvg} />
       <meta name="mobile-web-app-capable" content="yes" />
+      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
       
       {/* Open Graph / Facebook */}
       <meta property="og:type" content="website" />
