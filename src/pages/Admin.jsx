@@ -33,7 +33,8 @@ export default function Admin() {
   const { data: requests = [], isLoading } = useQuery({
     queryKey: ['karaoke-requests'],
     queryFn: () => base44.entities.KaraokeRequest.list('-created_date', 200),
-    refetchInterval: 1000,
+    refetchInterval: 2000,
+    staleTime: 1000,
   });
 
   const updateMutation = useMutation({
@@ -191,7 +192,7 @@ export default function Admin() {
         {/* Stats Dashboard */}
         <div style={{ 
           display: "grid", 
-          gridTemplateColumns: window.innerWidth > 1200 ? "repeat(6, 1fr)" : window.innerWidth > 768 ? "repeat(3, 1fr)" : "repeat(2, 1fr)",
+          gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
           gap: "16px",
           marginBottom: "24px"
         }}>
@@ -242,7 +243,7 @@ export default function Admin() {
         {/* Main Content */}
         <div style={{ 
           display: "grid", 
-          gridTemplateColumns: window.innerWidth > 1200 ? "minmax(0, 2fr) minmax(0, 1fr)" : "minmax(0, 1fr)",
+          gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 400px), 1fr))",
           gap: "20px"
         }}>
           {/* Left Column - Current & Queue */}

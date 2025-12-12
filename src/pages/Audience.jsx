@@ -16,7 +16,8 @@ export default function Audience() {
   const { data: requests = [] } = useQuery({
     queryKey: ['karaoke-requests'],
     queryFn: () => base44.entities.KaraokeRequest.list('-created_date', 100),
-    refetchInterval: 1000,
+    refetchInterval: 2000,
+    staleTime: 1000,
   });
 
   const current = requests.find(r => r.status === "performing");

@@ -32,6 +32,7 @@ export default function Home() {
     queryKey: ['karaoke-requests'],
     queryFn: () => base44.entities.KaraokeRequest.list('-created_date', 100),
     refetchInterval: 3000,
+    staleTime: 2000,
   });
 
   const currentSong = requests.find(r => r.status === "performing");
@@ -153,11 +154,15 @@ export default function Home() {
       photoUrl = uploadResult.file_url;
     }
     
-    await base44.entities.KaraokeRequest.create({
-      ...formData,
+    const sanitizedData = {
+      singer_name: formData.singer_name.trim().substring(0, 100),
+      song_title: formData.song_title.trim().substring(0, 200),
+      song_artist: formData.song_artist?.trim().substring(0, 200) || "",
       status: "waiting",
       photo_url: photoUrl
-    });
+    };
+    
+    await base44.entities.KaraokeRequest.create(sanitizedData);
 
     localStorage.setItem('apiryon_user_name', formData.singer_name);
     if (capturedPhoto) {
