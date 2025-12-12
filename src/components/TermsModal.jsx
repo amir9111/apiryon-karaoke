@@ -79,9 +79,11 @@ export default function TermsModal({ onAccept }) {
             padding: "20px",
             background: "rgba(30, 41, 59, 0.5)",
             borderRadius: "16px",
-            border: "1px solid rgba(0, 202, 255, 0.2)",
+            border: "2px solid rgba(0, 202, 255, 0.4)",
             marginBottom: "20px",
-            maxHeight: "50vh"
+            maxHeight: "50vh",
+            position: "relative",
+            boxShadow: "inset 0 0 20px rgba(0, 202, 255, 0.1)"
           }}
         >
           <div style={{ color: "#e2e8f0", fontSize: "0.9rem", lineHeight: "1.7" }}>
@@ -193,12 +195,31 @@ export default function TermsModal({ onAccept }) {
         {!scrolledToBottom && (
           <div style={{
             textAlign: "center",
-            fontSize: "0.85rem",
-            color: "#00caff",
-            marginBottom: "12px",
-            animation: "pulse 2s infinite"
+            marginBottom: "12px"
           }}>
-            ⬇️ יש לגלול למטה כדי להמשיך
+            <div style={{
+              fontSize: "3rem",
+              marginBottom: "8px",
+              animation: "bounce 1.5s infinite"
+            }}>
+              👇
+            </div>
+            <div style={{
+              fontSize: "1rem",
+              fontWeight: "700",
+              color: "#00caff",
+              textShadow: "0 0 15px rgba(0, 202, 255, 0.8)",
+              animation: "pulse 2s infinite"
+            }}>
+              ⚠️ גלול למטה לקריאת כל התנאים ⚠️
+            </div>
+            <div style={{
+              fontSize: "0.85rem",
+              color: "#94a3b8",
+              marginTop: "6px"
+            }}>
+              החלק את האצבע כלפי מעלה בתיבה הכחולה
+            </div>
           </div>
         )}
 
@@ -268,6 +289,15 @@ export default function TermsModal({ onAccept }) {
           @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
+          }
+          
+          @keyframes bounce {
+            0%, 100% { 
+              transform: translateY(0); 
+            }
+            50% { 
+              transform: translateY(-15px); 
+            }
           }
         `}</style>
       </div>
