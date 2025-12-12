@@ -8,6 +8,8 @@ import MenuButton from "../components/MenuButton";
 import AudienceRating from "../components/AudienceRating";
 import AudioWave from "../components/AudioWave";
 import PWAInstallPrompt from "../components/PWAInstallPrompt";
+import PWASetup from "../components/PWASetup";
+import ServiceWorkerRegistration from "../components/ServiceWorkerRegistration";
 import { QrCode } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -190,6 +192,9 @@ export default function Home() {
       className="min-h-screen w-full flex justify-center p-4 md:p-8"
       style={{ background: "linear-gradient(135deg, #020617 0%, #0a1929 50%, #020617 100%)", color: "#f9fafb" }}
     >
+      <PWASetup />
+      <ServiceWorkerRegistration />
+      
       {/* Terms Modal - Must accept first */}
       {showTerms && <TermsModal onAccept={handleAcceptTerms} />}
 
