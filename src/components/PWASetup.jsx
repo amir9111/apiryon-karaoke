@@ -11,70 +11,86 @@ export default function PWASetup() {
   const siteImage = `${siteUrl}/og-image.png`;
 
   useEffect(() => {
+    if (typeof window === 'undefined' || !document) return;
+    
     // Create icon
     const canvas = document.createElement('canvas');
     canvas.width = 512;
     canvas.height = 512;
     const ctx = canvas.getContext('2d');
     
-    // Background
-    ctx.fillStyle = '#020617';
+    if (!ctx) return;
+    
+    // Background gradient
+    const gradient = ctx.createRadialGradient(256, 256, 0, 256, 256, 256);
+    gradient.addColorStop(0, '#0a1929');
+    gradient.addColorStop(1, '#020617');
+    ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, 512, 512);
     
-    // Circle
+    // Glow circle
+    ctx.shadowColor = '#00caff';
+    ctx.shadowBlur = 40;
     ctx.strokeStyle = '#00caff';
-    ctx.lineWidth = 20;
+    ctx.lineWidth = 16;
     ctx.beginPath();
-    ctx.arc(256, 256, 180, 0, Math.PI * 2);
+    ctx.arc(256, 256, 200, 0, Math.PI * 2);
     ctx.stroke();
     
-    // Emoji (approximate with text)
-    ctx.font = 'bold 200px Arial';
+    // Text - APIRYON
+    ctx.shadowBlur = 20;
+    ctx.font = 'bold 80px Arial';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillStyle = '#00caff';
-    ctx.fillText('🎤', 256, 256);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText('APIRYON', 256, 256);
     
     canvas.toBlob((blob) => {
+      if (!blob) return;
+      
       const url = URL.createObjectURL(blob);
       setIconURL(url);
       
-      // Create manifest
+      // Create manifest with all required fields
       const manifest = {
         name: "Apiryon - מערכת קריוקי",
         short_name: "Apiryon",
-        description: "מערכת ניהול קריוקי מתקדמת",
-        start_url: window.location.origin + "/",
+        description: "מערכת ניהול קריוקי מתקדמת עם מסך קהל חי",
+        start_url: "/",
         scope: "/",
         display: "standalone",
         background_color: "#020617",
         theme_color: "#00caff",
-        orientation: "any",
+        orientation: "portrait-primary",
+        dir: "rtl",
+        lang: "he",
+        categories: ["entertainment", "music"],
         icons: [
           {
             src: url,
             sizes: "512x512",
             type: "image/png",
-            purpose: "any maskable"
+            purpose: "any"
           },
           {
             src: url,
             sizes: "192x192",
             type: "image/png",
             purpose: "any"
+          },
+          {
+            src: url,
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "maskable"
           }
         ]
       };
       
-      const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+      const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
       const manifestUrl = URL.createObjectURL(manifestBlob);
       setManifestURL(manifestUrl);
-    }, 'image/png');
-
-    // Service Worker
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(() => {});
-    }
+    }, 'image/png', 0.95);
   }, []);
 
   if (!manifestURL) return null;
