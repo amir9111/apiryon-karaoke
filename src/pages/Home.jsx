@@ -31,6 +31,13 @@ export default function Home() {
   });
 
   const currentSong = requests.find(r => r.status === "performing");
+  
+  const hasUserRatedCurrentSong = () => {
+    if (!currentSong) return false;
+    const userId = localStorage.getItem('apiryon_user_id');
+    if (!userId) return false;
+    return currentSong.ratings?.some(r => r.user_id === userId) || false;
+  };
 
   React.useEffect(() => {
     const hasAcceptedTerms = localStorage.getItem('apiryon_terms_accepted');
@@ -256,7 +263,7 @@ export default function Home() {
         </div>
 
         {/* Now Playing Section */}
-        {currentSong && (
+        {currentSong && !hasUserRatedCurrentSong() && (
           <div style={{
             background: "rgba(15, 23, 42, 0.95)",
             borderRadius: "20px",
