@@ -7,6 +7,15 @@ import AudioWave from "../components/AudioWave";
 import StarRating from "../components/StarRating";
 
 export default function Display() {
+  const [isMobile, setIsMobile] = React.useState(false);
+
+  React.useEffect(() => {
+    const checkWidth = () => setIsMobile(window.innerWidth <= 850);
+    checkWidth();
+    window.addEventListener('resize', checkWidth);
+    return () => window.removeEventListener('resize', checkWidth);
+  }, []);
+
   const { data: requests = [] } = useQuery({
     queryKey: ['karaoke-requests'],
     queryFn: () => base44.entities.KaraokeRequest.list('-created_date', 100),
@@ -77,7 +86,7 @@ export default function Display() {
             </div>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: window.innerWidth > 850 ? "minmax(0, 2fr) minmax(0, 1fr)" : "minmax(0, 1fr)", gap: "16px", alignItems: "start" }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "minmax(0, 1fr)" : "minmax(0, 2fr) minmax(0, 1fr)", gap: "16px", alignItems: "start" }}>
             {/* Now Playing */}
             <div style={{
               background: "radial-gradient(ellipse at top left, rgba(0, 202, 255, 0.15), rgba(2, 6, 23, 0.95) 60%)",
