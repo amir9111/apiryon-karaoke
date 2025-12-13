@@ -716,10 +716,10 @@ export default function Audience() {
               </div>
             </motion.div>
           </div>
-      </main>
 
-      {/* Messages Feed at Bottom */}
-      <MessagesFeed messages={requests} />
+          {/* Messages Feed */}
+          <MessagesFeed messages={requests} />
+      </main>
     </div>
   );
 }
