@@ -5,9 +5,21 @@ import { Send } from "lucide-react";
 
 export default function SendMessageToScreen() {
   const [message, setMessage] = useState("");
-  const [userName, setUserName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState({ type: null, message: "" });
+  const [userName, setUserName] = useState("");
+
+  // Get user name from localStorage
+  React.useEffect(() => {
+    try {
+      const savedName = localStorage.getItem('singerName');
+      if (savedName) {
+        setUserName(savedName);
+      }
+    } catch (error) {
+      console.error("Error reading localStorage:", error);
+    }
+  }, []);
 
   const { data: messages = [] } = useQuery({
     queryKey: ['messages'],
@@ -38,7 +50,7 @@ export default function SendMessageToScreen() {
     if (isSubmitting) return;
     
     if (!userName.trim()) {
-      setStatus({ type: "error", message: "נא למלא שם 📝" });
+      setStatus({ type: "error", message: "נא להירשם למערכת תחילה 📝" });
       return;
     }
     
@@ -101,22 +113,17 @@ export default function SendMessageToScreen() {
         ההודעה תרוץ על המסך 30 שניות בזמן שזמר מבצע!
       </div>
 
+      {!userName && (
+        <div className="text-center p-3 rounded-xl mb-4" style={{
+          background: "rgba(251, 191, 36, 0.1)",
+          border: "1px solid rgba(251, 191, 36, 0.3)",
+          color: "#fbbf24"
+        }}>
+          💡 נא להירשם למערכת תחילה כדי לשלוח הודעות
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} className="space-y-3">
-        <input
-          type="text"
-          value={userName}
-          onChange={(e) => setUserName(e.target.value)}
-          maxLength={50}
-          placeholder="השם שלך..."
-          disabled={isSubmitting}
-          className="w-full px-3 py-2.5 rounded-xl border outline-none text-[0.95rem]"
-          style={{
-            borderColor: "#8b5cf6",
-            background: "rgba(15,23,42,0.9)",
-            color: "#f9fafb"
-          }}
-        />
-        
         <input
           type="text"
           value={message}
