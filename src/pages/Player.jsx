@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "@/utils";
 import { 
   Music, 
   Volume2, 
@@ -12,7 +14,8 @@ import {
   Maximize,
   Settings,
   Sparkles,
-  Waves
+  Waves,
+  ArrowRight
 } from "lucide-react";
 
 export default function Player() {
@@ -237,9 +240,28 @@ export default function Player() {
 
 
 
+          {/* Back Button */}
+          <Link
+            to={createPageUrl("Admin")}
+            className="absolute top-6 right-6 p-3 rounded-full flex items-center gap-2"
+            style={{
+              background: "rgba(0, 0, 0, 0.8)",
+              backdropFilter: "blur(10px)",
+              border: "2px solid rgba(0, 202, 255, 0.5)",
+              boxShadow: "0 0 20px rgba(0, 202, 255, 0.3)",
+              color: "#00caff",
+              textDecoration: "none",
+              opacity: showControls ? 1 : 0,
+              transition: "opacity 0.3s"
+            }}
+          >
+            <ArrowRight className="w-5 h-5" />
+            <span className="font-bold">חזרה לניהול</span>
+          </Link>
+
           {/* Info Overlay */}
           <div 
-            className="absolute top-6 right-6 p-4 rounded-2xl max-w-sm"
+            className="absolute top-6 left-6 p-4 rounded-2xl max-w-sm"
             style={{
               background: "rgba(0, 0, 0, 0.8)",
               backdropFilter: "blur(10px)",
