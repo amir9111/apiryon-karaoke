@@ -6,8 +6,14 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 
 export default function SongManager() {
-  const [isUploading, setIsUploading] = useState(false);
-  const [uploadStatus, setUploadStatus] = useState(null);
+  const [isAdding, setIsAdding] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [formData, setFormData] = useState({
+    title: '',
+    artist: '',
+    video_url: '',
+    thumbnail_url: ''
+  });
   const [searchTerm, setSearchTerm] = useState("");
   const queryClient = useQueryClient();
 
@@ -24,76 +30,34 @@ export default function SongManager() {
     },
   });
 
-  const handleFileUpload = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    // תומך בכל סוגי קבצי וידאו - mp4, avi, mov, mkv, webm וכו'
-    const videoExtensions = ['.mp4', '.avi', '.mov', '.mkv', '.webm', '.flv', '.wmv', '.m4v', '.mpg', '.mpeg'];
-    const fileName = file.name.toLowerCase();
-    const isVideo = file.type.startsWith('video/') || videoExtensions.some(ext => fileName.endsWith(ext));
+  const handleAddSong = async (e) => {
+    e.preventDefault();
     
-    if (!isVideo) {
-      setUploadStatus({ type: 'error', message: 'יש להעלות קובץ וידאו בלבד' });
+    if (!formData.title || !formData.artist || !formData.video_url) {
+      alert('נא למלא את כל השדות החובה');
       return;
     }
 
-    setIsUploading(true);
-    setUploadStatus({ type: 'loading', message: 'מעלה ווידאו...' });
+    setIsAdding(true);
 
     try {
-      // העלאת הווידאו
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
-      
-      setUploadStatus({ type: 'loading', message: 'מנתח את השיר עם AI...' });
-
-      // ניתוח השיר עם AI
-      const analysisResult = await base44.integrations.Core.InvokeLLM({
-        prompt: `זהה את השיר הזה מהווידאו. החזר JSON עם: title (שם השיר), artist (שם האמן), search_keywords (מילות חיפוש רלוונטיות). 
-        אם לא ניתן לזהות - נחש לפי השם של הקובץ: ${file.name}`,
-        response_json_schema: {
-          type: "object",
-          properties: {
-            title: { type: "string" },
-            artist: { type: "string" },
-            search_keywords: { type: "string" }
-          }
-        },
-        file_urls: file_url
-      });
-
-      setUploadStatus({ type: 'loading', message: 'מחפש תמונה לשיר...' });
-
-      // חיפוש תמונה לשיר
-      const imageResult = await base44.integrations.Core.InvokeLLM({
-        prompt: `מצא תמונה מתאימה לשיר "${analysisResult.title}" של ${analysisResult.artist}. החזר רק URL של תמונה איכותית.`,
-        add_context_from_internet: true,
-        response_json_schema: {
-          type: "object",
-          properties: {
-            thumbnail_url: { type: "string" }
-          }
-        }
-      });
-
-      // יצירת השיר במאגר
       await base44.entities.Song.create({
-        title: analysisResult.title || file.name,
-        artist: analysisResult.artist || "לא ידוע",
-        video_url: file_url,
-        thumbnail_url: imageResult.thumbnail_url || "",
-        search_keywords: analysisResult.search_keywords || "",
+        title: formData.title,
+        artist: formData.artist,
+        video_url: formData.video_url,
+        thumbnail_url: formData.thumbnail_url || "",
+        search_keywords: `${formData.title} ${formData.artist}`,
         is_active: true
       });
 
-      setUploadStatus({ type: 'success', message: '✅ השיר נוסף בהצלחה!' });
       queryClient.invalidateQueries({ queryKey: ['songs'] });
-      
-      setTimeout(() => setUploadStatus(null), 3000);
+      setShowForm(false);
+      setFormData({ title: '', artist: '', video_url: '', thumbnail_url: '' });
+      alert('✅ השיר נוסף בהצלחה!');
     } catch (error) {
-      setUploadStatus({ type: 'error', message: 'שגיאה בהעלאת השיר: ' + error.message });
+      alert('שגיאה בהוספת השיר: ' + error.message);
     } finally {
-      setIsUploading(false);
+      setIsAdding(false);
     }
   };
 
@@ -134,7 +98,7 @@ export default function SongManager() {
           </Link>
         </div>
 
-        {/* Upload Section */}
+        {/* Add Song Section */}
         <div 
           className="rounded-2xl p-8 mb-8"
           style={{
@@ -143,56 +107,116 @@ export default function SongManager() {
             boxShadow: "0 0 40px rgba(0, 202, 255, 0.2)"
           }}
         >
-          <h2 className="text-2xl font-bold mb-4" style={{ color: "#00caff" }}>
-            העלאת פלייבק חדש
-          </h2>
-          
-          <label
-            htmlFor="video-upload"
-            className="flex flex-col items-center justify-center p-12 border-2 border-dashed rounded-xl cursor-pointer transition-all"
-            style={{
-              borderColor: isUploading ? "#00caff" : "#334155",
-              background: isUploading ? "rgba(0, 202, 255, 0.05)" : "rgba(30, 41, 59, 0.5)"
-            }}
-          >
-            {isUploading ? (
-              <Loader className="w-16 h-16 animate-spin mb-4" style={{ color: "#00caff" }} />
-            ) : (
-              <Upload className="w-16 h-16 mb-4" style={{ color: "#00caff" }} />
-            )}
-            
-            <div className="text-xl font-bold mb-2" style={{ color: "#e2e8f0" }}>
-              {isUploading ? "מעלה ומנתח..." : "לחץ להעלאת וידאו"}
-            </div>
-            
-            <div className="text-sm" style={{ color: "#94a3b8" }}>
-              {isUploading ? "המערכת מזהה את השיר אוטומטית" : "תומך בכל פורמטי וידאו"}
-            </div>
-            
-            <input
-              id="video-upload"
-              type="file"
-              accept="video/*,.mp4,.avi,.mov,.mkv,.webm,.flv,.wmv,.m4v,.mpg,.mpeg"
-              onChange={handleFileUpload}
-              disabled={isUploading}
-              className="hidden"
-            />
-          </label>
-
-          {uploadStatus && (
-            <div 
-              className="mt-4 p-4 rounded-xl text-center font-bold"
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold" style={{ color: "#00caff" }}>
+              הוספת פלייבק חדש
+            </h2>
+            <button
+              onClick={() => setShowForm(!showForm)}
+              className="px-6 py-2 rounded-xl font-bold transition-all"
               style={{
-                background: uploadStatus.type === 'success' ? 'rgba(16, 185, 129, 0.2)' :
-                           uploadStatus.type === 'error' ? 'rgba(239, 68, 68, 0.2)' :
-                           'rgba(0, 202, 255, 0.2)',
-                color: uploadStatus.type === 'success' ? '#10b981' :
-                       uploadStatus.type === 'error' ? '#ef4444' :
-                       '#00caff'
+                background: showForm ? "rgba(239, 68, 68, 0.2)" : "linear-gradient(135deg, #00caff, #0088ff)",
+                color: showForm ? "#ef4444" : "#001a2e",
+                border: showForm ? "1px solid rgba(239, 68, 68, 0.3)" : "none"
               }}
             >
-              {uploadStatus.message}
-            </div>
+              {showForm ? "✕ ביטול" : "+ הוסף שיר"}
+            </button>
+          </div>
+
+          {showForm && (
+            <form onSubmit={handleAddSong} className="space-y-4">
+              <div>
+                <label className="block mb-2 font-bold" style={{ color: "#e2e8f0" }}>שם השיר *</label>
+                <input
+                  type="text"
+                  value={formData.title}
+                  onChange={(e) => setFormData({...formData, title: e.target.value})}
+                  className="w-full px-4 py-3 rounded-xl border outline-none"
+                  style={{
+                    background: "rgba(30, 41, 59, 0.5)",
+                    borderColor: "#334155",
+                    color: "#f9fafb"
+                  }}
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block mb-2 font-bold" style={{ color: "#e2e8f0" }}>שם האמן *</label>
+                <input
+                  type="text"
+                  value={formData.artist}
+                  onChange={(e) => setFormData({...formData, artist: e.target.value})}
+                  className="w-full px-4 py-3 rounded-xl border outline-none"
+                  style={{
+                    background: "rgba(30, 41, 59, 0.5)",
+                    borderColor: "#334155",
+                    color: "#f9fafb"
+                  }}
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block mb-2 font-bold" style={{ color: "#e2e8f0" }}>קישור לווידאו *</label>
+                <input
+                  type="url"
+                  value={formData.video_url}
+                  onChange={(e) => setFormData({...formData, video_url: e.target.value})}
+                  placeholder="https://..."
+                  className="w-full px-4 py-3 rounded-xl border outline-none"
+                  style={{
+                    background: "rgba(30, 41, 59, 0.5)",
+                    borderColor: "#334155",
+                    color: "#f9fafb"
+                  }}
+                  required
+                />
+                <p className="mt-1 text-sm" style={{ color: "#64748b" }}>
+                  הדבק קישור לוידאו מיוטיוב, Google Drive, או כל מקור אחר
+                </p>
+              </div>
+
+              <div>
+                <label className="block mb-2 font-bold" style={{ color: "#e2e8f0" }}>קישור לתמונה (אופציונלי)</label>
+                <input
+                  type="url"
+                  value={formData.thumbnail_url}
+                  onChange={(e) => setFormData({...formData, thumbnail_url: e.target.value})}
+                  placeholder="https://..."
+                  className="w-full px-4 py-3 rounded-xl border outline-none"
+                  style={{
+                    background: "rgba(30, 41, 59, 0.5)",
+                    borderColor: "#334155",
+                    color: "#f9fafb"
+                  }}
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={isAdding}
+                className="w-full py-4 rounded-xl font-bold text-lg transition-all flex items-center justify-center gap-2"
+                style={{
+                  background: isAdding ? "rgba(100, 116, 139, 0.3)" : "linear-gradient(135deg, #10b981, #059669)",
+                  color: "#fff",
+                  cursor: isAdding ? "not-allowed" : "pointer"
+                }}
+              >
+                {isAdding ? (
+                  <>
+                    <Loader className="w-5 h-5 animate-spin" />
+                    מוסיף...
+                  </>
+                ) : (
+                  <>
+                    <Music className="w-5 h-5" />
+                    הוסף שיר למאגר
+                  </>
+                )}
+              </button>
+            </form>
           )}
         </div>
 
