@@ -12,7 +12,7 @@ export default function SendMessageToScreen() {
   // Get user name from localStorage
   React.useEffect(() => {
     try {
-      const savedName = localStorage.getItem('singerName');
+      const savedName = localStorage.getItem('apiryon_user_name');
       if (savedName) {
         setUserName(savedName);
       }
