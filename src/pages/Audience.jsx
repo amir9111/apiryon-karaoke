@@ -535,7 +535,7 @@ export default function Audience() {
                 border: "3px solid #10b981"
               }}>
                 <img 
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${window.location.origin}`}
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${window.location.origin}/Home`}
                   alt="QR Code להצטרפות לתור"
                   style={{ width: "clamp(130px, 13vw, 150px)", height: "clamp(130px, 13vw, 150px)" }}
                 />
