@@ -114,8 +114,8 @@ export default function Audience() {
         <div style={{
           position: "relative",
           width: "100%",
-          padding: "25px 30px 30px",
-          marginBottom: "25px",
+          padding: "15px 20px 15px",
+          marginBottom: "15px",
           overflow: "hidden",
           background: "linear-gradient(180deg, rgba(0, 202, 255, 0.05) 0%, transparent 100%)"
         }}>
@@ -158,15 +158,15 @@ export default function Audience() {
               }}
               style={{
                 display: "inline-block",
-                fontSize: "clamp(3rem, 6vw, 5rem)",
-                marginBottom: "15px"
+                fontSize: "clamp(2rem, 4vw, 3rem)",
+                marginBottom: "8px"
               }}
             >
               🎵
             </motion.div>
             
             <div style={{
-              fontSize: "clamp(2.5rem, 5vw, 4.5rem)",
+              fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)",
               fontWeight: "900",
               background: "linear-gradient(90deg, #00caff 0%, #0088ff 25%, #00d4ff 50%, #0088ff 75%, #00caff 100%)",
               backgroundSize: "200% auto",
@@ -193,8 +193,8 @@ export default function Audience() {
               }}
               style={{
                 display: "inline-block",
-                fontSize: "clamp(3rem, 6vw, 5rem)",
-                marginTop: "10px"
+                fontSize: "clamp(2rem, 4vw, 3rem)",
+                marginTop: "5px"
               }}
             >
               🎤
@@ -207,8 +207,10 @@ export default function Audience() {
           flexDirection: "column", 
           alignItems: "center", 
           justifyContent: "flex-start",
-          padding: "0 30px 30px",
-          width: "100%"
+          padding: "0 20px 20px",
+          width: "100%",
+          maxHeight: "calc(100vh - 150px)",
+          overflow: "visible"
         }}>
 
           {/* Current Song - HERO SECTION */}
@@ -222,19 +224,19 @@ export default function Audience() {
               style={{
                 width: "100%",
                 maxWidth: "1200px",
-                marginBottom: "30px",
+                marginBottom: "15px",
                 position: "relative"
               }}
             >
               <div style={{
                 background: "rgba(15, 23, 42, 0.3)",
-                borderRadius: "30px",
-                padding: "40px 30px",
+                borderRadius: "24px",
+                padding: "25px 20px",
                 textAlign: "center",
                 position: "relative",
                 backdropFilter: "blur(30px)",
                 border: "3px solid rgba(0, 202, 255, 0.4)",
-                boxShadow: "0 0 80px rgba(0, 202, 255, 0.4), inset 0 0 40px rgba(0, 202, 255, 0.05)",
+                boxShadow: "0 0 60px rgba(0, 202, 255, 0.4), inset 0 0 30px rgba(0, 202, 255, 0.05)",
                 overflow: "hidden"
               }}>
                 <FloatingMessages messages={requests} isPerforming={!!current} />
@@ -242,13 +244,13 @@ export default function Audience() {
                   animate={{ scale: [1, 1.05, 1] }}
                   transition={{ duration: 2, repeat: Infinity }}
                   style={{ 
-                    fontSize: "2.5rem", 
+                    fontSize: "1.8rem", 
                     color: "#00caff", 
-                    marginBottom: "25px",
+                    marginBottom: "15px",
                     textTransform: "uppercase",
                     letterSpacing: "0.3em",
                     fontWeight: "900",
-                    textShadow: "0 0 40px rgba(0, 202, 255, 1), 0 0 80px rgba(0, 202, 255, 0.6)",
+                    textShadow: "0 0 35px rgba(0, 202, 255, 1), 0 0 70px rgba(0, 202, 255, 0.6)",
                     position: "relative",
                     zIndex: 10
                   }}
@@ -259,7 +261,7 @@ export default function Audience() {
                 <div style={{ 
                   position: "relative",
                   display: "inline-block",
-                  marginBottom: "25px",
+                  marginBottom: "15px",
                   zIndex: 10
                 }}>
                   {current.photo_url ? (
@@ -269,11 +271,11 @@ export default function Audience() {
                       role="img"
                       aria-label={`${current.singer_name} מבצע כעת על הבמה`}
                       style={{
-                        width: "220px",
-                        height: "220px",
+                        width: "160px",
+                        height: "160px",
                         borderRadius: "50%",
                         objectFit: "cover",
-                        border: "6px solid #00caff",
+                        border: "5px solid #00caff",
                         animation: "glow 2s ease-in-out infinite",
                         position: "relative",
                         zIndex: 1
@@ -281,15 +283,15 @@ export default function Audience() {
                     />
                   ) : (
                     <div style={{
-                      width: "220px",
-                      height: "220px",
+                      width: "160px",
+                      height: "160px",
                       borderRadius: "50%",
                       background: "linear-gradient(135deg, #00caff, #0088ff)",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      fontSize: "7rem",
-                      border: "6px solid #00caff",
+                      fontSize: "5rem",
+                      border: "5px solid #00caff",
                       animation: "glow 2s ease-in-out infinite"
                     }}>
                       🎤
@@ -298,11 +300,11 @@ export default function Audience() {
                 </div>
 
                 <div style={{ 
-                  fontSize: "clamp(3rem, 6vw, 5rem)", 
+                  fontSize: "clamp(2.2rem, 4.5vw, 3.5rem)", 
                   fontWeight: "900", 
-                  marginBottom: "20px",
+                  marginBottom: "12px",
                   color: "#ffffff",
-                  textShadow: "0 0 40px rgba(0, 202, 255, 0.7), 0 8px 30px rgba(0, 0, 0, 0.9)",
+                  textShadow: "0 0 35px rgba(0, 202, 255, 0.7), 0 6px 25px rgba(0, 0, 0, 0.9)",
                   lineHeight: "1.1",
                   position: "relative",
                   zIndex: 10
@@ -311,11 +313,11 @@ export default function Audience() {
                 </div>
 
                 <div style={{ 
-                  fontSize: "clamp(2rem, 4vw, 3.5rem)", 
+                  fontSize: "clamp(1.6rem, 3vw, 2.5rem)", 
                   color: "#e2e8f0",
                   fontWeight: "700",
-                  marginBottom: "15px",
-                  textShadow: "0 5px 15px rgba(0, 0, 0, 0.6)",
+                  marginBottom: "10px",
+                  textShadow: "0 4px 12px rgba(0, 0, 0, 0.6)",
                   position: "relative",
                   zIndex: 10
                 }}>
@@ -324,7 +326,7 @@ export default function Audience() {
 
                 {current.song_artist && (
                   <div style={{ 
-                    fontSize: "clamp(1.5rem, 3vw, 2.5rem)", 
+                    fontSize: "clamp(1.2rem, 2.2vw, 1.8rem)", 
                     color: "#94a3b8",
                     fontWeight: "600",
                     position: "relative",
@@ -334,7 +336,7 @@ export default function Audience() {
                   </div>
                 )}
 
-                <div style={{ marginTop: "25px", position: "relative", zIndex: 10, transform: "scale(1.5)" }}>
+                <div style={{ marginTop: "15px", position: "relative", zIndex: 10, transform: "scale(1.3)" }}>
                   <AudioWave isPlaying={true} />
                 </div>
               </div>
@@ -395,23 +397,23 @@ export default function Audience() {
           <div style={{
             width: "100%",
             maxWidth: "1200px",
-            marginBottom: "30px"
+            marginBottom: "15px"
           }}>
             <div style={{
                 background: "rgba(15, 23, 42, 0.3)",
-                borderRadius: "28px",
-                padding: "35px 30px",
+                borderRadius: "22px",
+                padding: "20px 20px",
                 border: "3px solid rgba(251, 191, 36, 0.5)",
                 textAlign: "center",
-                boxShadow: "0 15px 50px rgba(251, 191, 36, 0.4)",
+                boxShadow: "0 12px 40px rgba(251, 191, 36, 0.4)",
                 backdropFilter: "blur(30px)"
               }}>
               <div style={{ 
-                fontSize: "2.5rem", 
+                fontSize: "1.8rem", 
                 color: "#fbbf24", 
-                marginBottom: "25px",
+                marginBottom: "15px",
                 fontWeight: "800",
-                textShadow: "0 0 30px rgba(251, 191, 36, 0.8)"
+                textShadow: "0 0 25px rgba(251, 191, 36, 0.8)"
               }}>
                 ⏭️ הבא בתור
               </div>
@@ -423,45 +425,45 @@ export default function Audience() {
                       src={next.photo_url} 
                       alt={next.singer_name}
                       style={{
-                        width: "180px",
-                        height: "180px",
+                        width: "130px",
+                        height: "130px",
                         borderRadius: "50%",
                         objectFit: "cover",
-                        marginBottom: "20px",
-                        border: "5px solid #fbbf24",
-                        boxShadow: "0 0 50px rgba(251, 191, 36, 0.6)"
+                        marginBottom: "12px",
+                        border: "4px solid #fbbf24",
+                        boxShadow: "0 0 40px rgba(251, 191, 36, 0.6)"
                       }}
                     />
                   ) : (
                     <div style={{
-                      width: "180px",
-                      height: "180px",
+                      width: "130px",
+                      height: "130px",
                       borderRadius: "50%",
                       background: "linear-gradient(135deg, #fbbf24, #f59e0b)",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      fontSize: "6rem",
-                      marginBottom: "20px",
-                      margin: "0 auto 20px",
-                      border: "5px solid #fbbf24",
-                      boxShadow: "0 0 50px rgba(251, 191, 36, 0.6)"
+                      fontSize: "4.5rem",
+                      marginBottom: "12px",
+                      margin: "0 auto 12px",
+                      border: "4px solid #fbbf24",
+                      boxShadow: "0 0 40px rgba(251, 191, 36, 0.6)"
                     }}>
                       🎤
                     </div>
                   )}
 
                   <div style={{ 
-                    fontSize: "clamp(2.5rem, 5vw, 4rem)", 
+                    fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)", 
                     fontWeight: "900", 
-                    marginBottom: "15px",
+                    marginBottom: "10px",
                     color: "#ffffff",
-                    textShadow: "0 0 35px rgba(251, 191, 36, 0.6)"
+                    textShadow: "0 0 30px rgba(251, 191, 36, 0.6)"
                   }}>
                     {next.singer_name}
                   </div>
                   <div style={{ 
-                    fontSize: "clamp(1.8rem, 3.5vw, 3rem)", 
+                    fontSize: "clamp(1.4rem, 2.8vw, 2.2rem)", 
                     color: "#cbd5e1",
                     fontWeight: "700"
                   }}>
@@ -469,9 +471,9 @@ export default function Audience() {
                   </div>
                   {next.song_artist && (
                     <div style={{ 
-                      fontSize: "clamp(1.4rem, 2.5vw, 2.2rem)", 
+                      fontSize: "clamp(1.1rem, 2vw, 1.6rem)", 
                       color: "#94a3b8", 
-                      marginTop: "10px" 
+                      marginTop: "8px" 
                     }}>
                       {next.song_artist}
                     </div>
@@ -480,8 +482,8 @@ export default function Audience() {
               ) : (
                 <div style={{ 
                   color: "#64748b", 
-                  fontSize: "2rem", 
-                  padding: "40px 30px",
+                  fontSize: "1.5rem", 
+                  padding: "25px 20px",
                   fontWeight: "600"
                 }}>
                   אין ממתינים כרגע
@@ -493,57 +495,57 @@ export default function Audience() {
           {/* QR Codes Row */}
           <div style={{ 
             display: "grid", 
-            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))", 
-            gap: "25px",
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 250px), 1fr))", 
+            gap: "15px",
             width: "100%",
             maxWidth: "1200px"
           }}>
             {/* QR Code for Join Queue */}
             <div style={{
                 background: "rgba(15, 23, 42, 0.3)",
-                borderRadius: "24px",
-                padding: "25px 20px",
+                borderRadius: "20px",
+                padding: "18px 15px",
                 border: "3px solid rgba(16, 185, 129, 0.4)",
                 textAlign: "center",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                boxShadow: "0 10px 40px rgba(16, 185, 129, 0.2)",
+                boxShadow: "0 8px 35px rgba(16, 185, 129, 0.2)",
                 backdropFilter: "blur(30px)"
               }}
             >
               <div style={{ 
-                fontSize: "1.8rem", 
+                fontSize: "1.4rem", 
                 color: "#10b981", 
-                marginBottom: "18px",
+                marginBottom: "12px",
                 fontWeight: "700",
-                textShadow: "0 0 20px rgba(16, 185, 129, 0.7)"
+                textShadow: "0 0 18px rgba(16, 185, 129, 0.7)"
               }}>
                 🎤 הצטרף לתור
               </div>
 
               <div style={{
-                width: "200px",
-                height: "200px",
+                width: "150px",
+                height: "150px",
                 background: "#fff",
-                borderRadius: "18px",
+                borderRadius: "16px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                marginBottom: "18px",
-                boxShadow: "0 0 30px rgba(16, 185, 129, 0.4)",
-                border: "4px solid #10b981"
+                marginBottom: "12px",
+                boxShadow: "0 0 25px rgba(16, 185, 129, 0.4)",
+                border: "3px solid #10b981"
               }}>
                 <img 
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${window.location.origin}`}
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${window.location.origin}`}
                   alt="QR Code להצטרפות לתור"
-                  style={{ width: "180px", height: "180px" }}
+                  style={{ width: "140px", height: "140px" }}
                 />
               </div>
 
               <div style={{ 
-                fontSize: "1.4rem", 
+                fontSize: "1.1rem", 
                 color: "#cbd5e1",
                 fontWeight: "600"
               }}>
@@ -554,49 +556,49 @@ export default function Audience() {
             {/* QR Code for WhatsApp */}
             <div style={{
                 background: "rgba(15, 23, 42, 0.3)",
-                borderRadius: "24px",
-                padding: "25px 20px",
+                borderRadius: "20px",
+                padding: "18px 15px",
                 border: "3px solid rgba(0, 202, 255, 0.4)",
                 textAlign: "center",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                boxShadow: "0 10px 40px rgba(0, 202, 255, 0.2)",
+                boxShadow: "0 8px 35px rgba(0, 202, 255, 0.2)",
                 backdropFilter: "blur(30px)"
               }}
             >
               <div style={{ 
-                fontSize: "1.8rem", 
+                fontSize: "1.4rem", 
                 color: "#00caff", 
-                marginBottom: "18px",
+                marginBottom: "12px",
                 fontWeight: "700",
-                textShadow: "0 0 20px rgba(0, 202, 255, 0.7)"
+                textShadow: "0 0 18px rgba(0, 202, 255, 0.7)"
               }}>
                 💬 קבוצת וואטסאפ
               </div>
 
               <div style={{
-                width: "200px",
-                height: "200px",
+                width: "150px",
+                height: "150px",
                 background: "#fff",
-                borderRadius: "18px",
+                borderRadius: "16px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                marginBottom: "18px",
-                boxShadow: "0 0 30px rgba(0, 202, 255, 0.4)",
-                border: "4px solid #00caff"
+                marginBottom: "12px",
+                boxShadow: "0 0 25px rgba(0, 202, 255, 0.4)",
+                border: "3px solid #00caff"
               }}>
                 <img 
-                  src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15"
+                  src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15"
                   alt="QR Code WhatsApp"
-                  style={{ width: "180px", height: "180px" }}
+                  style={{ width: "140px", height: "140px" }}
                 />
               </div>
 
               <div style={{ 
-                fontSize: "1.4rem", 
+                fontSize: "1.1rem", 
                 color: "#cbd5e1",
                 fontWeight: "600"
               }}>
@@ -607,49 +609,49 @@ export default function Audience() {
             {/* QR Code for TikTok */}
             <div style={{
                 background: "rgba(15, 23, 42, 0.3)",
-                borderRadius: "24px",
-                padding: "25px 20px",
+                borderRadius: "20px",
+                padding: "18px 15px",
                 border: "3px solid rgba(255, 0, 80, 0.4)",
                 textAlign: "center",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                boxShadow: "0 10px 40px rgba(255, 0, 80, 0.2)",
+                boxShadow: "0 8px 35px rgba(255, 0, 80, 0.2)",
                 backdropFilter: "blur(30px)"
               }}
             >
               <div style={{ 
-                fontSize: "1.8rem", 
+                fontSize: "1.4rem", 
                 color: "#ff0050", 
-                marginBottom: "18px",
+                marginBottom: "12px",
                 fontWeight: "700",
-                textShadow: "0 0 20px rgba(255, 0, 80, 0.7)"
+                textShadow: "0 0 18px rgba(255, 0, 80, 0.7)"
               }}>
                 🎵 טיקטוק
               </div>
 
               <div style={{
-                width: "200px",
-                height: "200px",
+                width: "150px",
+                height: "150px",
                 background: "#fff",
-                borderRadius: "18px",
+                borderRadius: "16px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                marginBottom: "18px",
-                boxShadow: "0 0 30px rgba(255, 0, 80, 0.4)",
-                border: "4px solid #ff0050"
+                marginBottom: "12px",
+                boxShadow: "0 0 25px rgba(255, 0, 80, 0.4)",
+                border: "3px solid #ff0050"
               }}>
                 <img 
-                  src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://www.tiktok.com/@apiryon.club"
+                  src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=https://www.tiktok.com/@apiryon.club"
                   alt="QR Code TikTok"
-                  style={{ width: "180px", height: "180px" }}
+                  style={{ width: "140px", height: "140px" }}
                 />
               </div>
 
               <div style={{ 
-                fontSize: "1.4rem", 
+                fontSize: "1.1rem", 
                 color: "#cbd5e1",
                 fontWeight: "600"
               }}>
