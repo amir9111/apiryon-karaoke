@@ -23,22 +23,28 @@ export default function Audience() {
   const next = requests.filter(r => r.status === "waiting")[0];
 
   return (
-    <div style={{ height: "100vh", width: "100vw", overflow: "hidden", position: "relative" }}>
-      {/* HEADER FIXED - ABSOLUTELY FIXED */}
+    <div dir="rtl" style={{
+      minHeight: "100vh",
+      background: "linear-gradient(135deg, #020617 0%, #0a1929 50%, #020617 100%)",
+      color: "#fff",
+      position: "relative"
+    }}>
+      {/* HEADER STICKY - חלק מהמסך */}
       <div style={{
-        position: "fixed",
+        position: "sticky",
         top: 0,
         left: 0,
         right: 0,
         height: "110px",
-        zIndex: 9999,
-        background: "rgba(2, 6, 23, 0.6)",
+        zIndex: 100,
+        background: "rgba(2, 6, 23, 0.95)",
         backdropFilter: "blur(14px)",
         borderBottom: "1px solid rgba(0, 202, 255, 0.2)",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        padding: "0 20px"
+        padding: "0 20px",
+        boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)"
       }}>
         {/* LEFT - Clock */}
         <div style={{ width: "200px", display: "flex", alignItems: "center" }}>
@@ -72,18 +78,8 @@ export default function Audience() {
         </div>
       </div>
 
-      {/* SCROLLABLE CONTENT */}
-      <div dir="rtl" style={{
-        position: "absolute",
-        top: "110px",
-        left: 0,
-        right: 0,
-        bottom: 0,
-        overflowY: "auto",
-        overflowX: "hidden",
-        background: "linear-gradient(135deg, #020617 0%, #0a1929 50%, #020617 100%)",
-        color: "#fff"
-      }}>
+      {/* CONTENT */}
+      <div>
         <EventSummaryModal 
           isOpen={showSummary}
           onClose={() => setShowSummary(false)}
