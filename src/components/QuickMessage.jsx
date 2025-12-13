@@ -62,12 +62,12 @@ export default function QuickMessage({ requests, userName, userPhoto, onMessageS
         song_artist: "",
         message: message.trim().substring(0, 100),
         photo_url: photoUrl,
-        status: "done"
+        status: "waiting"
       });
       
       setStatus({ type: "ok", message: "✅ ההודעה נשלחה למסך!" });
       setMessage("");
-      if (onMessageSent) onMessageSent();
+      if (onMessageSent) await onMessageSent();
       
       setTimeout(() => {
         setStatus({ type: null, message: "" });

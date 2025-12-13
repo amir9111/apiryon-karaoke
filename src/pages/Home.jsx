@@ -516,7 +516,10 @@ export default function Home() {
             requests={requests}
             userName={formData.singer_name}
             userPhoto={capturedPhoto}
-            onMessageSent={() => queryClient.invalidateQueries({ queryKey: ['karaoke-requests'] })}
+            onMessageSent={async () => {
+              await queryClient.invalidateQueries({ queryKey: ['karaoke-requests'] });
+              await queryClient.refetchQueries({ queryKey: ['karaoke-requests'] });
+            }}
           />
         )}
 
