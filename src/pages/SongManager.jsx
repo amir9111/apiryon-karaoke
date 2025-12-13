@@ -28,7 +28,12 @@ export default function SongManager() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!file.type.startsWith('video/')) {
+    // תומך בכל סוגי קבצי וידאו - mp4, avi, mov, mkv, webm וכו'
+    const videoExtensions = ['.mp4', '.avi', '.mov', '.mkv', '.webm', '.flv', '.wmv', '.m4v', '.mpg', '.mpeg'];
+    const fileName = file.name.toLowerCase();
+    const isVideo = file.type.startsWith('video/') || videoExtensions.some(ext => fileName.endsWith(ext));
+    
+    if (!isVideo) {
       setUploadStatus({ type: 'error', message: 'יש להעלות קובץ וידאו בלבד' });
       return;
     }
@@ -111,7 +116,7 @@ export default function SongManager() {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-4xl font-bold mb-2" style={{ color: "#00caff", textShadow: "0 0 20px rgba(0, 202, 255, 0.5)" }}>
-              🎵 מאגר בלייבקים
+              🎵 מאגר פלייבקים
             </h1>
             <p style={{ color: "#94a3b8" }}>ניהול והעלאת שירי קריוקי</p>
           </div>
@@ -139,7 +144,7 @@ export default function SongManager() {
           }}
         >
           <h2 className="text-2xl font-bold mb-4" style={{ color: "#00caff" }}>
-            העלאת בלייבק חדש
+            העלאת פלייבק חדש
           </h2>
           
           <label
@@ -167,7 +172,7 @@ export default function SongManager() {
             <input
               id="video-upload"
               type="file"
-              accept="video/*"
+              accept="video/*,.mp4,.avi,.mov,.mkv,.webm,.flv,.wmv,.m4v,.mpg,.mpeg"
               onChange={handleFileUpload}
               disabled={isUploading}
               className="hidden"
