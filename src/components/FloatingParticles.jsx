@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 export default function FloatingParticles() {
   const particles = useMemo(() => {
     if (typeof window === 'undefined') return [];
-    return Array.from({ length: 20 }, (_, i) => ({
+    return Array.from({ length: 8 }, (_, i) => ({
       id: i,
       x: Math.random() * window.innerWidth,
       y: Math.random() * window.innerHeight,

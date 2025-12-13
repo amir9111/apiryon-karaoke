@@ -17,8 +17,8 @@ export default function Audience() {
   const { data: requests = [] } = useQuery({
     queryKey: ['karaoke-requests'],
     queryFn: () => base44.entities.KaraokeRequest.list('-created_date', 100),
-    refetchInterval: 2000,
-    staleTime: 1000,
+    refetchInterval: 5000,
+    staleTime: 4000,
   });
 
   const current = requests.find(r => r.status === "performing");
@@ -31,15 +31,14 @@ export default function Audience() {
       color: "#fff",
       position: "relative"
     }}>
-      <FloatingParticles />
       <NavigationMenu />
-      <div style={{ position: "fixed", top: 0, left: 0, zIndex: 100, pointerEvents: "none" }}>
+      <div style={{ position: "absolute", top: 0, left: 0, zIndex: 100, pointerEvents: "none" }}>
         <LiveClock />
       </div>
       
       {/* APIRYON Logo - Center Top */}
       <div style={{
-        position: "fixed",
+        position: "absolute",
         top: "15px",
         left: "50%",
         transform: "translateX(-50%)",
@@ -49,63 +48,17 @@ export default function Audience() {
         alignItems: "center",
         gap: "8px"
       }}>
-        <motion.div
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.2, type: "spring", bounce: 0.4 }}
-        >
-          <motion.div
-            animate={{ 
-              scale: [1, 1.05, 1],
-              rotate: [0, 2, -2, 0]
-            }}
-            transition={{ 
-              duration: 5, 
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-          >
-            <ApyironLogo size="small" showCircle={true} />
-          </motion.div>
-        </motion.div>
-        
-        {/* Tagline */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.8 }}
-          style={{
-            textAlign: "center"
-          }}
-        >
-          <motion.div
-            animate={{
-              textShadow: [
-                "0 0 15px rgba(0, 202, 255, 0.8), 0 0 30px rgba(0, 202, 255, 0.5)",
-                "0 0 20px rgba(0, 202, 255, 1), 0 0 40px rgba(0, 202, 255, 0.7)",
-                "0 0 15px rgba(0, 202, 255, 0.8), 0 0 30px rgba(0, 202, 255, 0.5)"
-              ]
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-            style={{
-              fontSize: "clamp(0.9rem, 2vw, 1.3rem)",
-              fontWeight: "800",
-              background: "linear-gradient(135deg, #00caff, #ffffff, #00caff)",
-              backgroundSize: "200% auto",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-              letterSpacing: "0.08em",
-              animation: "gradient 3s ease infinite"
-            }}
-          >
-            המוזיקה שלנו, הקול שלך 🎵
-          </motion.div>
-        </motion.div>
+        <ApyironLogo size="small" showCircle={true} />
+        <div style={{
+          textAlign: "center",
+          fontSize: "clamp(0.9rem, 2vw, 1.3rem)",
+          fontWeight: "800",
+          color: "#00caff",
+          textShadow: "0 0 20px rgba(0, 202, 255, 0.8)",
+          letterSpacing: "0.08em"
+        }}>
+          המוזיקה שלנו, הקול שלך 🎵
+        </div>
       </div>
       
       <style>{`
@@ -116,11 +69,7 @@ export default function Audience() {
       `}</style>
       
       {/* Summary Button */}
-      <motion.button
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.95 }}
+      <button
         onClick={() => setShowSummary(true)}
         style={{
           position: "fixed",
@@ -143,7 +92,7 @@ export default function Audience() {
       >
         <BarChart3 className="w-6 h-6" />
         <span>סיכום הערב</span>
-      </motion.button>
+      </button>
 
       <EventSummaryModal 
         isOpen={showSummary}
@@ -186,19 +135,7 @@ export default function Audience() {
               position: "relative"
             }}
           >
-            {/* Rotating glow ring */}
-            <div style={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: "500px",
-              height: "500px",
-              borderRadius: "50%",
-              background: "radial-gradient(circle, transparent 40%, rgba(0, 202, 255, 0.3) 70%, transparent)",
-              animation: "rotate 20s linear infinite, pulse 3s ease-in-out infinite",
-              pointerEvents: "none"
-            }} />
+
 
             {/* Main content */}
             <div style={{
@@ -239,38 +176,8 @@ export default function Audience() {
                 marginBottom: "20px",
                 zIndex: 10
               }}>
-                {/* Multiple animated rings */}
-                {[1, 2, 3].map((ring) => (
-                  <motion.div
-                    key={ring}
-                    animate={{
-                      scale: [1, 1.5, 1],
-                      opacity: [0.6, 0, 0.6]
-                    }}
-                    transition={{
-                      duration: 3,
-                      repeat: Infinity,
-                      delay: ring * 0.4
-                    }}
-                    style={{
-                      position: "absolute",
-                      top: "50%",
-                      left: "50%",
-                      transform: "translate(-50%, -50%)",
-                      width: "200px",
-                      height: "200px",
-                      borderRadius: "50%",
-                      border: "2px solid #00caff",
-                      pointerEvents: "none"
-                    }}
-                  />
-                ))}
-
                 {current.photo_url ? (
-                  <motion.img 
-                    initial={{ scale: 0, rotate: -180 }}
-                    animate={{ scale: 1, rotate: 0 }}
-                    transition={{ delay: 0.2, type: "spring", damping: 10 }}
+                  <img 
                     src={current.photo_url} 
                     alt={`תמונת פרופיל של ${current.singer_name}`}
                     role="img"
@@ -281,7 +188,7 @@ export default function Audience() {
                       borderRadius: "50%",
                       objectFit: "cover",
                       border: "6px solid #00caff",
-                      boxShadow: "0 0 60px rgba(0, 202, 255, 0.8), inset 0 0 20px rgba(0, 202, 255, 0.3)",
+                      boxShadow: "0 0 60px rgba(0, 202, 255, 0.8)",
                       position: "relative",
                       zIndex: 1
                     }}
@@ -304,56 +211,41 @@ export default function Audience() {
                 )}
               </div>
 
-              <motion.div 
-                initial={{ y: 30, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.4 }}
-                style={{ 
-                  fontSize: "clamp(2rem, 5vw, 3.5rem)", 
-                  fontWeight: "900", 
-                  marginBottom: "15px",
-                  color: "#ffffff",
-                  textShadow: "0 0 40px rgba(0, 202, 255, 0.6), 0 5px 25px rgba(0, 0, 0, 0.8)",
-                  lineHeight: "1.1",
-                  position: "relative",
-                  zIndex: 10
-                }}
-              >
+              <div style={{ 
+                fontSize: "clamp(2rem, 5vw, 3.5rem)", 
+                fontWeight: "900", 
+                marginBottom: "15px",
+                color: "#ffffff",
+                textShadow: "0 0 40px rgba(0, 202, 255, 0.6), 0 5px 25px rgba(0, 0, 0, 0.8)",
+                lineHeight: "1.1",
+                position: "relative",
+                zIndex: 10
+              }}>
                 {current.singer_name}
-              </motion.div>
+              </div>
 
-              <motion.div 
-                initial={{ y: 30, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.5 }}
-                style={{ 
-                  fontSize: "clamp(1.3rem, 3.5vw, 2.3rem)", 
-                  color: "#e2e8f0",
-                  fontWeight: "700",
-                  marginBottom: "10px",
-                  textShadow: "0 3px 12px rgba(0, 0, 0, 0.5)",
-                  position: "relative",
-                  zIndex: 10
-                }}
-              >
+              <div style={{ 
+                fontSize: "clamp(1.3rem, 3.5vw, 2.3rem)", 
+                color: "#e2e8f0",
+                fontWeight: "700",
+                marginBottom: "10px",
+                textShadow: "0 3px 12px rgba(0, 0, 0, 0.5)",
+                position: "relative",
+                zIndex: 10
+              }}>
                 {current.song_title}
-              </motion.div>
+              </div>
 
               {current.song_artist && (
-                <motion.div 
-                  initial={{ y: 30, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.6 }}
-                  style={{ 
-                    fontSize: "clamp(1rem, 2vw, 1.6rem)", 
-                    color: "#94a3b8",
-                    fontWeight: "600",
-                    position: "relative",
-                    zIndex: 10
-                  }}
-                >
+                <div style={{ 
+                  fontSize: "clamp(1rem, 2vw, 1.6rem)", 
+                  color: "#94a3b8",
+                  fontWeight: "600",
+                  position: "relative",
+                  zIndex: 10
+                }}>
                   {current.song_artist}
-                </motion.div>
+                </div>
               )}
 
               <div style={{ marginTop: "20px", position: "relative", zIndex: 10 }}>
@@ -404,11 +296,7 @@ export default function Audience() {
           maxWidth: "1400px"
         }}>
           {/* Next Singer */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.7 }}
-            style={{
+          <div style={{
               background: "rgba(15, 23, 42, 0.3)",
               borderRadius: "30px",
               padding: "40px 30px",
@@ -416,35 +304,21 @@ export default function Audience() {
               textAlign: "center",
               boxShadow: "0 10px 40px rgba(251, 191, 36, 0.2)",
               backdropFilter: "blur(30px)"
-            }}
-          >
-            <motion.div 
-              animate={{ 
-                scale: [1, 1.1, 1],
-              }}
-              transition={{ 
-                duration: 2, 
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-              style={{ 
-                fontSize: "1.8rem", 
-                color: "#fbbf24", 
-                marginBottom: "25px",
-                fontWeight: "800",
-                textShadow: "0 0 20px rgba(251, 191, 36, 0.6)"
-              }}
-            >
+            }}>
+            <div style={{ 
+              fontSize: "1.8rem", 
+              color: "#fbbf24", 
+              marginBottom: "25px",
+              fontWeight: "800",
+              textShadow: "0 0 20px rgba(251, 191, 36, 0.6)"
+            }}>
               ⏭️ הבא בתור
-            </motion.div>
+            </div>
 
             {next ? (
               <>
                 {next.photo_url ? (
-                  <motion.img
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ type: "spring" }}
+                  <img
                     src={next.photo_url} 
                     alt={next.singer_name}
                     style={{
@@ -476,25 +350,15 @@ export default function Audience() {
                   </div>
                 )}
 
-                <motion.div
-                  animate={{ 
-                    opacity: [0.8, 1, 0.8],
-                  }}
-                  transition={{ 
-                    duration: 1.5, 
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                  style={{
-                    fontSize: "1.3rem",
-                    color: "#fbbf24",
-                    fontWeight: "700",
-                    marginBottom: "16px",
-                    textShadow: "0 0 15px rgba(251, 191, 36, 0.6)"
-                  }}
-                >
+                <div style={{
+                  fontSize: "1.3rem",
+                  color: "#fbbf24",
+                  fontWeight: "700",
+                  marginBottom: "16px",
+                  textShadow: "0 0 15px rgba(251, 191, 36, 0.6)"
+                }}>
                   👋 תתחיל לחמם את הקול! 🎵
-                </motion.div>
+                </div>
 
                 <div style={{ 
                   fontSize: "2rem", 
@@ -531,14 +395,10 @@ export default function Audience() {
                 אין ממתינים כרגע
               </div>
             )}
-          </motion.div>
+          </div>
 
           {/* QR Code for WhatsApp */}
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.8 }}
-              style={{
+            <div style={{
                 background: "rgba(15, 23, 42, 0.3)",
                 borderRadius: "30px",
                 padding: "40px 30px",
@@ -596,14 +456,10 @@ export default function Audience() {
               }}>
                 עדכונים על ערבי קריוקי
               </div>
-            </motion.div>
+            </div>
 
             {/* QR Code for Website */}
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.9 }}
-              style={{
+            <div style={{
                 background: "rgba(15, 23, 42, 0.3)",
                 borderRadius: "30px",
                 padding: "40px 30px",
@@ -661,14 +517,10 @@ export default function Audience() {
               }}>
                 כניסה ישירה לאתר
               </div>
-            </motion.div>
+            </div>
 
             {/* QR Code for TikTok */}
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 1.0 }}
-              style={{
+            <div style={{
                 background: "rgba(15, 23, 42, 0.3)",
                 borderRadius: "30px",
                 padding: "40px 30px",
@@ -726,7 +578,7 @@ export default function Audience() {
               }}>
                 תראו את עצמכם בסרטונים! 📸
               </div>
-            </motion.div>
+            </div>
           </div>
       </main>
     </div>
