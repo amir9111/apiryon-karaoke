@@ -962,3 +962,5 @@ export default function Home() {
       </div>
     );
 }
+
+Home.isPublic = true;
