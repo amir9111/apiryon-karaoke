@@ -334,30 +334,27 @@ export default function Audience() {
             </motion.div>
           )}
 
-          {/* Next + QR in a compact row */}
-          <div style={{ 
-            display: "grid", 
-            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))", 
-            gap: "clamp(20px, 4vw, 40px)",
+          {/* Next Singer - LARGE */}
+          <div style={{
             width: "100%",
-            maxWidth: "1400px"
+            maxWidth: "900px",
+            marginBottom: "40px"
           }}>
-            {/* Next Singer */}
             <div style={{
                 background: "rgba(15, 23, 42, 0.3)",
                 borderRadius: "30px",
-                padding: "40px 30px",
-                border: "2px solid rgba(251, 191, 36, 0.4)",
+                padding: "50px 40px",
+                border: "3px solid rgba(251, 191, 36, 0.5)",
                 textAlign: "center",
-                boxShadow: "0 10px 40px rgba(251, 191, 36, 0.2)",
+                boxShadow: "0 20px 60px rgba(251, 191, 36, 0.3)",
                 backdropFilter: "blur(30px)"
               }}>
               <div style={{ 
-                fontSize: "1.8rem", 
+                fontSize: "2.5rem", 
                 color: "#fbbf24", 
-                marginBottom: "25px",
-                fontWeight: "800",
-                textShadow: "0 0 20px rgba(251, 191, 36, 0.6)"
+                marginBottom: "30px",
+                fontWeight: "900",
+                textShadow: "0 0 30px rgba(251, 191, 36, 0.8)"
               }}>
                 ⏭️ הבא בתור
               </div>
@@ -369,64 +366,65 @@ export default function Audience() {
                       src={next.photo_url} 
                       alt={next.singer_name}
                       style={{
-                        width: "180px",
-                        height: "180px",
+                        width: "250px",
+                        height: "250px",
                         borderRadius: "50%",
                         objectFit: "cover",
-                        marginBottom: "20px",
-                        border: "5px solid #fbbf24",
-                        boxShadow: "0 0 40px rgba(251, 191, 36, 0.5)"
+                        marginBottom: "25px",
+                        border: "6px solid #fbbf24",
+                        boxShadow: "0 0 60px rgba(251, 191, 36, 0.6)"
                       }}
                     />
                   ) : (
                     <div style={{
-                      width: "180px",
-                      height: "180px",
+                      width: "250px",
+                      height: "250px",
                       borderRadius: "50%",
                       background: "linear-gradient(135deg, #fbbf24, #f59e0b)",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      fontSize: "5rem",
-                      marginBottom: "20px",
-                      margin: "0 auto 20px",
-                      border: "5px solid #fbbf24",
-                      boxShadow: "0 0 40px rgba(251, 191, 36, 0.5)"
+                      fontSize: "7rem",
+                      marginBottom: "25px",
+                      margin: "0 auto 25px",
+                      border: "6px solid #fbbf24",
+                      boxShadow: "0 0 60px rgba(251, 191, 36, 0.6)"
                     }}>
                       🎤
                     </div>
                   )}
 
                   <div style={{
-                    fontSize: "1.3rem",
+                    fontSize: "1.6rem",
                     color: "#fbbf24",
                     fontWeight: "700",
-                    marginBottom: "16px",
-                    textShadow: "0 0 15px rgba(251, 191, 36, 0.6)"
+                    marginBottom: "20px",
+                    textShadow: "0 0 20px rgba(251, 191, 36, 0.7)"
                   }}>
                     👋 תתחיל לחמם את הקול! 🎵
                   </div>
 
                   <div style={{ 
-                    fontSize: "2rem", 
+                    fontSize: "3rem", 
                     fontWeight: "900", 
-                    marginBottom: "12px",
-                    color: "#ffffff"
+                    marginBottom: "16px",
+                    color: "#ffffff",
+                    textShadow: "0 0 30px rgba(251, 191, 36, 0.5)"
                   }}>
                     {next.singer_name}
                   </div>
                   <div style={{ 
-                    fontSize: "1.5rem", 
+                    fontSize: "2rem", 
                     color: "#cbd5e1",
-                    fontWeight: "600"
+                    fontWeight: "700"
                   }}>
                     {next.song_title}
                   </div>
                   {next.song_artist && (
                     <div style={{ 
-                      fontSize: "1.2rem", 
+                      fontSize: "1.5rem", 
                       color: "#94a3b8", 
-                      marginTop: "8px" 
+                      marginTop: "12px" 
                     }}>
                       {next.song_artist}
                     </div>
@@ -443,7 +441,16 @@ export default function Audience() {
                 </div>
               )}
             </div>
+          </div>
 
+          {/* QR Codes Row */}
+          <div style={{ 
+            display: "grid", 
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))", 
+            gap: "clamp(20px, 4vw, 40px)",
+            width: "100%",
+            maxWidth: "1400px"
+          }}>
             {/* QR Code for WhatsApp */}
             <div style={{
                 background: "rgba(15, 23, 42, 0.3)",
@@ -502,67 +509,6 @@ export default function Audience() {
                 fontWeight: "600"
               }}>
                 עדכונים על ערבי קריוקי
-              </div>
-            </div>
-
-            {/* QR Code for Website */}
-            <div style={{
-                background: "rgba(15, 23, 42, 0.3)",
-                borderRadius: "30px",
-                padding: "40px 30px",
-                border: "2px solid rgba(139, 92, 246, 0.3)",
-                textAlign: "center",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                boxShadow: "0 10px 40px rgba(139, 92, 246, 0.15)",
-                backdropFilter: "blur(30px)"
-              }}
-            >
-              <div style={{ 
-                fontSize: "1.8rem", 
-                color: "#a78bfa", 
-                marginBottom: "25px",
-                fontWeight: "800",
-                textShadow: "0 0 20px rgba(139, 92, 246, 0.6)"
-              }}>
-                🎤 הירשמו לתור
-              </div>
-
-              <div style={{
-                width: "220px",
-                height: "220px",
-                background: "#fff",
-                borderRadius: "20px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                marginBottom: "20px",
-                boxShadow: "0 0 30px rgba(139, 92, 246, 0.3)",
-                border: "4px solid #a78bfa"
-              }}>
-                <img 
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(window.location.origin)}`}
-                  alt="QR Code Website"
-                  style={{ width: "200px", height: "200px" }}
-                />
-              </div>
-
-              <div style={{ 
-                fontSize: "1.3rem", 
-                color: "#cbd5e1",
-                fontWeight: "700",
-                marginBottom: "10px"
-              }}>
-                סרקו להרשמה
-              </div>
-              <div style={{
-                fontSize: "1rem",
-                color: "#94a3b8",
-                fontWeight: "600"
-              }}>
-                כניסה ישירה לאתר
               </div>
             </div>
 
