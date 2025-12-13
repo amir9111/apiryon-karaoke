@@ -7,9 +7,32 @@ import FloatingMessages from "../components/FloatingMessages";
 import { motion } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
+import { Maximize, Minimize } from "lucide-react";
 
 export default function Audience() {
   const [showSummary, setShowSummary] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(err => {
+        console.log('Error entering fullscreen:', err);
+      });
+      setIsFullscreen(true);
+    } else {
+      document.exitFullscreen();
+      setIsFullscreen(false);
+    }
+  };
+
+  React.useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
 
   const { data: requests = [] } = useQuery({
     queryKey: ['karaoke-requests'],
@@ -32,6 +55,41 @@ export default function Audience() {
       <div style={{ position: "fixed", top: "20px", right: "20px", zIndex: 10000 }}>
         <NavigationMenu onSummaryClick={() => setShowSummary(true)} />
       </div>
+
+      {/* Fullscreen Toggle Button */}
+      <button
+        onClick={toggleFullscreen}
+        style={{
+          position: "fixed",
+          bottom: "20px",
+          right: "20px",
+          width: "50px",
+          height: "50px",
+          borderRadius: "12px",
+          border: "none",
+          background: "rgba(15, 23, 42, 0.95)",
+          color: "#00caff",
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 10000,
+          boxShadow: "0 0 20px rgba(0, 202, 255, 0.3)",
+          border: "1px solid rgba(0, 202, 255, 0.3)",
+          transition: "all 0.3s"
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = "rgba(0, 202, 255, 0.2)";
+          e.currentTarget.style.transform = "scale(1.1)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = "rgba(15, 23, 42, 0.95)";
+          e.currentTarget.style.transform = "scale(1)";
+        }}
+        title={isFullscreen ? "צא ממסך מלא" : "הצג במסך מלא"}
+      >
+        {isFullscreen ? <Minimize className="w-6 h-6" /> : <Maximize className="w-6 h-6" />}
+      </button>
 
       {/* CONTENT */}
       <div>
