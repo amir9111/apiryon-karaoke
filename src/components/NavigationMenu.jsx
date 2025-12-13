@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Menu, X, Tv, Shield, Music2 } from "lucide-react";
+import { Menu, X, Tv, Shield, Music2, Play } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
@@ -124,7 +124,7 @@ export default function NavigationMenu() {
                   borderRadius: "12px",
                   background: "rgba(139, 92, 246, 0.1)",
                   border: "1px solid rgba(139, 92, 246, 0.3)",
-                  color: "#8b5cf6",
+                  color: "#a78bfa",
                   textDecoration: "none",
                   fontSize: "1.1rem",
                   fontWeight: "600",
@@ -141,6 +141,37 @@ export default function NavigationMenu() {
               >
                 <Music2 className="w-5 h-5" />
                 <span>מאגר בלייבקים</span>
+              </Link>
+
+              <Link
+                to={createPageUrl("Player")}
+                onClick={() => setIsOpen(false)}
+                target="_blank"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "12px",
+                  padding: "16px 20px",
+                  borderRadius: "12px",
+                  background: "rgba(16, 185, 129, 0.1)",
+                  border: "1px solid rgba(16, 185, 129, 0.3)",
+                  color: "#34d399",
+                  textDecoration: "none",
+                  fontSize: "1.1rem",
+                  fontWeight: "600",
+                  transition: "all 0.2s"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "rgba(16, 185, 129, 0.2)";
+                  e.currentTarget.style.transform = "translateX(-5px)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "rgba(16, 185, 129, 0.1)";
+                  e.currentTarget.style.transform = "translateX(0)";
+                }}
+              >
+                <Play className="w-5 h-5" />
+                <span>מסך נגן</span>
               </Link>
             </>
           )}
