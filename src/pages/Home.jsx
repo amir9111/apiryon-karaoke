@@ -23,7 +23,8 @@ export default function Home() {
     singer_name: "",
     song_title: "",
     song_artist: "",
-    song_id: null
+    song_id: null,
+    message: ""
   });
   const [selectedSong, setSelectedSong] = useState(null);
   const [manualSongMode, setManualSongMode] = useState(false);
@@ -287,7 +288,8 @@ export default function Home() {
         song_id: manualSongMode ? null : formData.song_id,
         status: "waiting",
         photo_url: photoUrl,
-        email: formData.singer_name.trim() + '@queue.local'
+        email: formData.singer_name.trim() + '@queue.local',
+        message: formData.message?.trim().substring(0, 100) || ""
       };
       
       await base44.entities.KaraokeRequest.create(sanitizedData);
@@ -314,7 +316,8 @@ export default function Home() {
         singer_name: formData.singer_name, // שומרים את השם
         song_title: "",
         song_artist: "",
-        song_id: null
+        song_id: null,
+        message: ""
       });
       setSelectedSong(null);
       setManualSongMode(false);
@@ -845,7 +848,7 @@ export default function Home() {
                     }}
                   />
                 </div>
-                
+
                 <div>
                   <label htmlFor="manual-song-artist" className="block text-[0.9rem] mb-0.5">
                     שם האמן *
@@ -876,6 +879,38 @@ export default function Home() {
                 </div>
               </div>
             )}
+
+            <div>
+              <label htmlFor="message-input" className="block text-[0.9rem] mb-0.5">
+                💬 הודעה למסך (אופציונלי)
+              </label>
+              <input
+                id="message-input"
+                type="text"
+                name="message"
+                value={formData.message}
+                onChange={handleChange}
+                maxLength={100}
+                placeholder="הודעה קצרה שתוצג על מסך הקהל..."
+                className="w-full px-3 py-2.5 rounded-xl border outline-none text-[0.95rem]"
+                style={{
+                  borderColor: "#1f2937",
+                  background: "rgba(15,23,42,0.9)",
+                  color: "#f9fafb"
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = "#00caff";
+                  e.target.style.boxShadow = "0 0 0 1px rgba(0, 202, 255, 0.5)";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = "#1f2937";
+                  e.target.style.boxShadow = "none";
+                }}
+              />
+              <div className="text-xs text-right mt-1" style={{ color: "#64748b" }}>
+                {formData.message?.length || 0}/100 תווים
+              </div>
+            </div>
 
             <button
               type="submit"
