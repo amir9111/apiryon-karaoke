@@ -527,6 +527,41 @@ export default function Player() {
         </div>
       ) : (
         <div className="text-center">
+          {/* Back Buttons - When No Song Playing */}
+          <div className="absolute top-4 right-4 flex gap-2 z-50">
+            <Link
+              to={createPageUrl("Home")}
+              className="p-3 rounded-full flex items-center gap-2"
+              style={{
+                background: "rgba(0, 0, 0, 0.9)",
+                backdropFilter: "blur(10px)",
+                border: "2px solid rgba(16, 185, 129, 0.5)",
+                boxShadow: "0 0 20px rgba(16, 185, 129, 0.3)",
+                color: "#10b981",
+                textDecoration: "none"
+              }}
+              title="חזרה למסך הראשי"
+            >
+              <Home className="w-5 h-5" />
+              <span className="font-bold hidden sm:inline">ראשי</span>
+            </Link>
+            <Link
+              to={createPageUrl("Admin")}
+              className="p-3 rounded-full flex items-center gap-2"
+              style={{
+                background: "rgba(0, 0, 0, 0.9)",
+                backdropFilter: "blur(10px)",
+                border: "2px solid rgba(0, 202, 255, 0.5)",
+                boxShadow: "0 0 20px rgba(0, 202, 255, 0.3)",
+                color: "#00caff",
+                textDecoration: "none"
+              }}
+            >
+              <ArrowRight className="w-5 h-5" />
+              <span className="font-bold hidden sm:inline">ניהול</span>
+            </Link>
+          </div>
+
           <div 
             className="w-32 h-32 rounded-full mx-auto mb-8 flex items-center justify-center"
             style={{
