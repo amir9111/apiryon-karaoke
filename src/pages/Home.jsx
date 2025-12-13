@@ -228,21 +228,6 @@ export default function Home() {
     e.preventDefault();
     if (isSubmitting) return;
 
-    // ===== מזהה מכשיר קבוע (במקום מייל) =====
-    let deviceId;
-    try {
-      deviceId = localStorage.getItem("apiryon_device_id");
-      if (!deviceId) {
-        deviceId =
-          crypto?.randomUUID?.() ||
-          `dev_${Date.now()}_${Math.random().toString(16).slice(2)}`;
-        localStorage.setItem("apiryon_device_id", deviceId);
-      }
-    } catch {
-      deviceId = `dev_${Date.now()}_${Math.random().toString(16).slice(2)}`;
-    }
-
-    // ===== בדיקות בסיס =====
     if (!capturedPhoto) {
       setStatus({ type: "error", message: "נא לצלם תמונה לפני השליחה 📸" });
       return;
@@ -258,33 +243,14 @@ export default function Home() {
       return;
     }
 
-    if (
-      manualSongMode &&
-      (!formData.song_title.trim() || !formData.song_artist.trim())
-    ) {
+    if (manualSongMode && (!formData.song_title.trim() || !formData.song_artist.trim())) {
       setStatus({ type: "error", message: "נא למלא שם שיר ואמן 🎵" });
-      return;
-    }
-
-    // ===== חסימת כפילות – מכשיר אחד = שיר אחד =====
-    const alreadyQueued = requests.find(
-      (r) =>
-        r.device_id === deviceId &&
-        (r.status === "waiting" || r.status === "performing")
-    );
-
-    if (alreadyQueued) {
-      setStatus({
-        type: "error",
-        message: "יש לך כבר שיר בתור 🎤 המתן עד שתסיים",
-      });
       return;
     }
 
     setIsSubmitting(true);
 
     try {
-      // ===== העלאת תמונה =====
       let photoUrl = null;
       if (capturedPhoto) {
         const blob = await fetch(capturedPhoto).then((r) => r.blob());
@@ -293,20 +259,26 @@ export default function Home() {
         photoUrl = upload.file_url;
       }
 
-      // ===== נתונים סופיים לשליחה =====
       const sanitizedData = {
         singer_name: formData.singer_name.trim().substring(0, 100),
+        email: `${formData.singer_name.trim()}@apiryon.local`,
         song_title: formData.song_title.trim().substring(0, 200),
         song_artist: formData.song_artist?.trim().substring(0, 200) || "",
         song_id: manualSongMode ? null : formData.song_id,
         status: "waiting",
         photo_url: photoUrl,
-        device_id: deviceId,
-        email: `${deviceId}@queue.local`, // טכני בלבד, לא מוצג למשתמש
         message: formData.message?.trim().substring(0, 100) || "",
       };
 
       await base44.entities.KaraokeRequest.create(sanitizedData);
+
+      try {
+        localStorage.setItem('apiryon_user_email', sanitizedData.email);
+        localStorage.setItem('apiryon_user_name', formData.singer_name);
+        localStorage.setItem('apiryon_user_photo', capturedPhoto);
+      } catch (e) {
+        // localStorage not available
+      }
 
       await queryClient.invalidateQueries({ queryKey: ["karaoke-requests"] });
 

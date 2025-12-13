@@ -5,11 +5,11 @@ import { base44 } from "@/api/base44Client";
 
 export default function MyQueueStatus({ requests, onRequestDeleted }) {
   const [isDeleting, setIsDeleting] = useState(false);
-  const deviceId = localStorage.getItem('apiryon_device_id');
+  const userEmail = localStorage.getItem('apiryon_user_email');
   
-  if (!deviceId) return null;
+  if (!userEmail) return null;
 
-  const myRequests = requests.filter(r => r.device_id === deviceId);
+  const myRequests = requests.filter(r => r.email === userEmail);
   const waitingRequests = requests.filter(r => r.status === 'waiting');
   const performingRequest = requests.find(r => r.status === 'performing');
   
@@ -35,6 +35,7 @@ export default function MyQueueStatus({ requests, onRequestDeleted }) {
     setIsDeleting(true);
     try {
       await base44.entities.KaraokeRequest.delete(myWaitingRequest.id);
+      localStorage.removeItem('apiryon_user_email');
       if (onRequestDeleted) onRequestDeleted();
     } catch (error) {
       alert('שגיאה בביטול התור, נסה שוב');
