@@ -8,14 +8,17 @@ export default function FloatingMessages({ isPerforming }) {
     queryKey: ['messages'],
     queryFn: async () => {
       try {
-        return await base44.entities.Message.list('-created_date', 20);
+        const msgs = await base44.entities.Message.list('-created_date', 20);
+        console.log('Fetched messages:', msgs);
+        return msgs || [];
       } catch (error) {
         console.error("Error fetching messages:", error);
         return [];
       }
     },
-    refetchInterval: 3000,
-    staleTime: 2000,
+    refetchInterval: 2000,
+    staleTime: 1000,
+    enabled: isPerforming
   });
 
   // Don't show messages if no one is performing
@@ -31,10 +34,13 @@ export default function FloatingMessages({ isPerforming }) {
   const now = Date.now();
   const recentMessages = messages.filter(m => {
     if (!m.message || !m.message.trim()) return false;
+    if (!m.created_date) return false;
     const created = new Date(m.created_date).getTime();
     const ageInSeconds = (now - created) / 1000;
     return ageInSeconds <= 30;
   });
+
+  console.log('Recent messages:', recentMessages.length, 'Total messages:', messages.length);
   
   if (recentMessages.length === 0) {
     return null;
