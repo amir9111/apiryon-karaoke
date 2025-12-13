@@ -922,19 +922,6 @@ export default function Home() {
           />
 
           <div className="flex flex-col items-center gap-3 text-[0.9rem]">
-            <Link
-              to={createPageUrl("SendMessage")}
-              className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl no-underline font-bold text-[1rem]"
-              style={{
-                background: "linear-gradient(135deg, #a78bfa, #8b5cf6)",
-                color: "#fff",
-                boxShadow: "0 0 20px rgba(139, 92, 246, 0.4)"
-              }}
-            >
-              <span className="text-[1.3rem]">💬</span>
-              <span>שלח הודעה למסך הקהל</span>
-            </Link>
-
             <div className="text-center">
               <div className="mb-2">רוצים להתעדכן בכל ערבי הקריוקי?</div>
               <a

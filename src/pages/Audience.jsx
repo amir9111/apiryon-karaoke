@@ -658,9 +658,6 @@ export default function Audience() {
             </div>
           </div>
         </main>
-
-        {/* Floating Messages Ticker - Always at bottom when performing */}
-        <FloatingMessages isPerforming={!!current} />
       </div>
     </div>
   );
