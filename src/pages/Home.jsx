@@ -513,12 +513,10 @@ export default function Home() {
         {/* Quick Message */}
         {capturedPhoto && formData.singer_name && (
           <QuickMessage 
-            requests={requests}
             userName={formData.singer_name}
             userPhoto={capturedPhoto}
             onMessageSent={async () => {
-              await queryClient.invalidateQueries({ queryKey: ['karaoke-requests'] });
-              await queryClient.refetchQueries({ queryKey: ['karaoke-requests'] });
+              await queryClient.invalidateQueries({ queryKey: ['messages'] });
             }}
           />
         )}

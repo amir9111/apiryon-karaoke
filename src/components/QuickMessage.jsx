@@ -1,20 +1,27 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
+import { useQuery } from "@tanstack/react-query";
 
-export default function QuickMessage({ requests, userName, userPhoto, onMessageSent }) {
+export default function QuickMessage({ userName, userPhoto, onMessageSent }) {
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState({ type: null, message: "" });
+
+  const { data: messages = [] } = base44.entities.Message.list ? 
+    useQuery({
+      queryKey: ['messages'],
+      queryFn: () => base44.entities.Message.list('-created_date', 10),
+      refetchInterval: 5000,
+      staleTime: 4000,
+    }) : { data: [] };
 
   // Check if user has active message (less than 30 seconds old)
   const hasActiveMessage = () => {
     if (!userName) return false;
     
     const now = Date.now();
-    const userMessage = requests.find(r => 
-      r.singer_name === userName && 
-      r.message && 
-      r.message.trim()
+    const userMessage = messages.find(m => 
+      m.sender_name === userName
     );
     
     if (!userMessage) return false;
@@ -56,13 +63,10 @@ export default function QuickMessage({ requests, userName, userPhoto, onMessageS
         photoUrl = uploadResult.file_url;
       }
       
-      await base44.entities.KaraokeRequest.create({
-        singer_name: userName.trim(),
-        song_title: "הודעה בלבד",
-        song_artist: "",
+      await base44.entities.Message.create({
+        sender_name: userName.trim(),
         message: message.trim().substring(0, 100),
-        photo_url: photoUrl,
-        status: "waiting"
+        photo_url: photoUrl
       });
       
       setStatus({ type: "ok", message: "✅ ההודעה נשלחה למסך!" });

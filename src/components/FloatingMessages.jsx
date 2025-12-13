@@ -1,7 +1,16 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { base44 } from "@/api/base44Client";
+import { useQuery } from "@tanstack/react-query";
 
-export default function FloatingMessages({ messages, isPerforming }) {
+export default function FloatingMessages({ isPerforming }) {
+  const { data: messages = [] } = useQuery({
+    queryKey: ['messages'],
+    queryFn: () => base44.entities.Message.list('-created_date', 20),
+    refetchInterval: 3000,
+    staleTime: 2000,
+  });
+
   // Don't show messages if no one is performing
   if (!isPerforming) {
     return null;
@@ -104,7 +113,7 @@ export default function FloatingMessages({ messages, isPerforming }) {
                     fontWeight: "800",
                     marginBottom: "2px"
                   }}>
-                    {msg.singer_name}
+                    {msg.sender_name}
                   </div>
                   <div style={{
                     fontSize: "1rem",
