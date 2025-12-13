@@ -15,7 +15,8 @@ import {
   Settings,
   Sparkles,
   Waves,
-  ArrowRight
+  ArrowRight,
+  Home
 } from "lucide-react";
 
 export default function Player() {
@@ -240,25 +241,43 @@ export default function Player() {
 
 
 
-          {/* Back Button */}
-          <Link
-            to={createPageUrl("Admin")}
-            className="absolute top-4 right-4 p-2 md:p-3 rounded-full flex items-center gap-2"
-            style={{
-              background: "rgba(0, 0, 0, 0.9)",
-              backdropFilter: "blur(10px)",
-              border: "2px solid rgba(0, 202, 255, 0.5)",
-              boxShadow: "0 0 20px rgba(0, 202, 255, 0.3)",
-              color: "#00caff",
-              textDecoration: "none",
-              opacity: showControls ? 1 : 0,
-              transition: "opacity 0.3s",
-              zIndex: 100
-            }}
-          >
-            <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
-            <span className="font-bold text-sm md:text-base hidden sm:inline">חזרה</span>
-          </Link>
+          {/* Back Buttons */}
+          <div className="absolute top-4 right-4 flex gap-2" style={{
+            opacity: showControls ? 1 : 0,
+            transition: "opacity 0.3s",
+            zIndex: 100
+          }}>
+            <Link
+              to={createPageUrl("Home")}
+              className="p-2 md:p-3 rounded-full flex items-center gap-2"
+              style={{
+                background: "rgba(0, 0, 0, 0.9)",
+                backdropFilter: "blur(10px)",
+                border: "2px solid rgba(16, 185, 129, 0.5)",
+                boxShadow: "0 0 20px rgba(16, 185, 129, 0.3)",
+                color: "#10b981",
+                textDecoration: "none"
+              }}
+              title="חזרה למסך הראשי"
+            >
+              <Home className="w-4 h-4 md:w-5 md:h-5" />
+            </Link>
+            <Link
+              to={createPageUrl("Admin")}
+              className="p-2 md:p-3 rounded-full flex items-center gap-2"
+              style={{
+                background: "rgba(0, 0, 0, 0.9)",
+                backdropFilter: "blur(10px)",
+                border: "2px solid rgba(0, 202, 255, 0.5)",
+                boxShadow: "0 0 20px rgba(0, 202, 255, 0.3)",
+                color: "#00caff",
+                textDecoration: "none"
+              }}
+            >
+              <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
+              <span className="font-bold text-sm md:text-base hidden sm:inline">ניהול</span>
+            </Link>
+          </div>
 
           {/* Bottom Controls */}
           <div 
