@@ -202,8 +202,8 @@ export default function Audience() {
             {/* Main content */}
             <div style={{
               background: "rgba(15, 23, 42, 0.3)",
-              borderRadius: "40px",
-              padding: "40px 30px",
+              borderRadius: "30px",
+              padding: "30px 20px",
               textAlign: "center",
               position: "relative",
               backdropFilter: "blur(30px)",
@@ -214,9 +214,9 @@ export default function Audience() {
                 animate={{ scale: [1, 1.05, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
                 style={{ 
-                  fontSize: "2rem", 
+                  fontSize: "1.5rem", 
                   color: "#00caff", 
-                  marginBottom: "30px",
+                  marginBottom: "20px",
                   textTransform: "uppercase",
                   letterSpacing: "0.3em",
                   fontWeight: "900",
@@ -230,7 +230,7 @@ export default function Audience() {
               <div style={{ 
                 position: "relative",
                 display: "inline-block",
-                marginBottom: "30px"
+                marginBottom: "20px"
               }}>
                 {/* Multiple animated rings */}
                 {[1, 2, 3].map((ring) => (
@@ -250,10 +250,10 @@ export default function Audience() {
                       top: "50%",
                       left: "50%",
                       transform: "translate(-50%, -50%)",
-                      width: "280px",
-                      height: "280px",
+                      width: "200px",
+                      height: "200px",
                       borderRadius: "50%",
-                      border: "3px solid #00caff",
+                      border: "2px solid #00caff",
                       pointerEvents: "none"
                     }}
                   />
@@ -269,11 +269,11 @@ export default function Audience() {
                     role="img"
                     aria-label={`${current.singer_name} מבצע כעת על הבמה`}
                     style={{
-                      width: "250px",
-                      height: "250px",
+                      width: "180px",
+                      height: "180px",
                       borderRadius: "50%",
                       objectFit: "cover",
-                      border: "8px solid #00caff",
+                      border: "6px solid #00caff",
                       boxShadow: "0 0 60px rgba(0, 202, 255, 0.8), inset 0 0 20px rgba(0, 202, 255, 0.3)",
                       position: "relative",
                       zIndex: 1
@@ -281,15 +281,15 @@ export default function Audience() {
                   />
                 ) : (
                   <div style={{
-                    width: "250px",
-                    height: "250px",
+                    width: "180px",
+                    height: "180px",
                     borderRadius: "50%",
                     background: "linear-gradient(135deg, #00caff, #0088ff)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontSize: "6rem",
-                    border: "8px solid #00caff",
+                    fontSize: "5rem",
+                    border: "6px solid #00caff",
                     boxShadow: "0 0 60px rgba(0, 202, 255, 0.8)"
                   }}>
                     🎤
@@ -302,9 +302,9 @@ export default function Audience() {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.4 }}
                 style={{ 
-                  fontSize: "clamp(2.5rem, 6vw, 4.5rem)", 
+                  fontSize: "clamp(2rem, 5vw, 3.5rem)", 
                   fontWeight: "900", 
-                  marginBottom: "20px",
+                  marginBottom: "15px",
                   color: "#ffffff",
                   textShadow: "0 0 40px rgba(0, 202, 255, 0.6), 0 5px 25px rgba(0, 0, 0, 0.8)",
                   lineHeight: "1.1"
@@ -318,10 +318,10 @@ export default function Audience() {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.5 }}
                 style={{ 
-                  fontSize: "clamp(1.6rem, 4vw, 2.8rem)", 
+                  fontSize: "clamp(1.3rem, 3.5vw, 2.3rem)", 
                   color: "#e2e8f0",
                   fontWeight: "700",
-                  marginBottom: "12px",
+                  marginBottom: "10px",
                   textShadow: "0 3px 12px rgba(0, 0, 0, 0.5)"
                 }}
               >
@@ -334,7 +334,7 @@ export default function Audience() {
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.6 }}
                   style={{ 
-                    fontSize: "clamp(1.2rem, 2.5vw, 2rem)", 
+                    fontSize: "clamp(1rem, 2vw, 1.6rem)", 
                     color: "#94a3b8",
                     fontWeight: "600"
                   }}
@@ -343,7 +343,7 @@ export default function Audience() {
                 </motion.div>
               )}
 
-              <div style={{ marginTop: "30px" }}>
+              <div style={{ marginTop: "20px" }}>
                 <AudioWave isPlaying={true} />
               </div>
             </div>
