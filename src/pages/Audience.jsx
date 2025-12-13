@@ -649,6 +649,71 @@ export default function Audience() {
                 כניסה ישירה לאתר
               </div>
             </motion.div>
+
+            {/* QR Code for TikTok */}
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 1.0 }}
+              style={{
+                background: "rgba(15, 23, 42, 0.3)",
+                borderRadius: "30px",
+                padding: "40px 30px",
+                border: "2px solid rgba(255, 0, 80, 0.3)",
+                textAlign: "center",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                boxShadow: "0 10px 40px rgba(255, 0, 80, 0.15)",
+                backdropFilter: "blur(30px)"
+              }}
+            >
+              <div style={{ 
+                fontSize: "1.8rem", 
+                color: "#ff0050", 
+                marginBottom: "25px",
+                fontWeight: "800",
+                textShadow: "0 0 20px rgba(255, 0, 80, 0.6)"
+              }}>
+                🎵 עקבו בטיקטוק
+              </div>
+
+              <div style={{
+                width: "220px",
+                height: "220px",
+                background: "#fff",
+                borderRadius: "20px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginBottom: "20px",
+                boxShadow: "0 0 30px rgba(255, 0, 80, 0.3)",
+                border: "4px solid #ff0050"
+              }}>
+                <img 
+                  src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://www.tiktok.com/@apiryon.club"
+                  alt="QR Code TikTok"
+                  style={{ width: "200px", height: "200px" }}
+                />
+              </div>
+
+              <div style={{ 
+                fontSize: "1.3rem", 
+                color: "#cbd5e1",
+                fontWeight: "700",
+                marginBottom: "10px"
+              }}>
+                סרקו למעקב
+              </div>
+              <div style={{
+                fontSize: "1rem",
+                color: "#94a3b8",
+                fontWeight: "600"
+              }}>
+                תראו את עצמכם בסרטונים! 📸
+              </div>
+            </motion.div>
           </div>
       </main>
     </div>
