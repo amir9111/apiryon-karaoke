@@ -200,35 +200,20 @@ export default function Admin() {
           <p style={{ color: "#94a3b8", fontSize: "0.95rem", margin: "0 0 12px 0" }}>
             ניהול, סטטיסטיקות וניתוח נתונים בזמן אמת
           </p>
-          <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}>
-            <Link
-              to={createPageUrl("SongManager")}
-              className="px-6 py-3 rounded-xl font-bold flex items-center gap-2"
-              style={{
-                background: "linear-gradient(135deg, #8b5cf6, #6d28d9)",
-                color: "#ffffff",
-                textDecoration: "none",
-                boxShadow: "0 0 20px rgba(139, 92, 246, 0.4)"
-              }}
-            >
-              <Music2 className="w-5 h-5" />
-              מאגר בלייבקים
-            </Link>
-            <Link
-              to={createPageUrl("Player")}
-              target="_blank"
-              className="px-6 py-3 rounded-xl font-bold flex items-center gap-2"
-              style={{
-                background: "linear-gradient(135deg, #10b981, #059669)",
-                color: "#ffffff",
-                textDecoration: "none",
-                boxShadow: "0 0 20px rgba(16, 185, 129, 0.4)"
-              }}
-            >
-              <Play className="w-5 h-5" />
-              מסך נגן
-            </Link>
-          </div>
+          <Link
+            to={createPageUrl("Player")}
+            target="_blank"
+            className="px-6 py-3 rounded-xl font-bold inline-flex items-center gap-2"
+            style={{
+              background: "linear-gradient(135deg, #10b981, #059669)",
+              color: "#ffffff",
+              textDecoration: "none",
+              boxShadow: "0 0 20px rgba(16, 185, 129, 0.4)"
+            }}
+          >
+            <Play className="w-5 h-5" />
+            מסך נגן
+          </Link>
         </div>
 
         {/* Stats Dashboard */}
