@@ -213,7 +213,7 @@ export default function Audience() {
               overflow: "hidden"
             }}>
               {/* Floating Messages in Background */}
-              <FloatingMessages messages={requests} isPerforming={true} />
+              <FloatingMessages messages={requests} isPerforming={!!current} />
               <motion.div
                 animate={{ scale: [1, 1.05, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
