@@ -400,19 +400,19 @@ export default function Audience() {
           }}>
             <div style={{
                 background: "rgba(15, 23, 42, 0.3)",
-                borderRadius: "22px",
-                padding: "2vh 20px",
-                border: "3px solid rgba(251, 191, 36, 0.5)",
+                borderRadius: "18px",
+                padding: "1.2vh 15px",
+                border: "2px solid rgba(251, 191, 36, 0.5)",
                 textAlign: "center",
-                boxShadow: "0 12px 40px rgba(251, 191, 36, 0.4)",
+                boxShadow: "0 8px 30px rgba(251, 191, 36, 0.3)",
                 backdropFilter: "blur(30px)"
               }}>
               <div style={{ 
-                fontSize: "clamp(1.5rem, 2.5vw, 2rem)", 
+                fontSize: "clamp(1.1rem, 2vw, 1.5rem)", 
                 color: "#fbbf24", 
-                marginBottom: "1.5vh",
+                marginBottom: "0.8vh",
                 fontWeight: "800",
-                textShadow: "0 0 25px rgba(251, 191, 36, 0.8)"
+                textShadow: "0 0 20px rgba(251, 191, 36, 0.8)"
               }}>
                 ⏭️ הבא בתור
               </div>
@@ -424,45 +424,45 @@ export default function Audience() {
                       src={next.photo_url} 
                       alt={next.singer_name}
                       style={{
-                        width: "clamp(120px, 13vw, 150px)",
-                        height: "clamp(120px, 13vw, 150px)",
+                        width: "clamp(80px, 10vw, 110px)",
+                        height: "clamp(80px, 10vw, 110px)",
                         borderRadius: "50%",
                         objectFit: "cover",
-                        marginBottom: "1.5vh",
-                        border: "4px solid #fbbf24",
-                        boxShadow: "0 0 40px rgba(251, 191, 36, 0.6)"
+                        marginBottom: "0.8vh",
+                        border: "3px solid #fbbf24",
+                        boxShadow: "0 0 30px rgba(251, 191, 36, 0.5)"
                       }}
                     />
                   ) : (
                     <div style={{
-                      width: "clamp(120px, 13vw, 150px)",
-                      height: "clamp(120px, 13vw, 150px)",
+                      width: "clamp(80px, 10vw, 110px)",
+                      height: "clamp(80px, 10vw, 110px)",
                       borderRadius: "50%",
                       background: "linear-gradient(135deg, #fbbf24, #f59e0b)",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      fontSize: "clamp(3.5rem, 6vw, 5rem)",
-                      marginBottom: "1.5vh",
-                      margin: "0 auto 1.5vh",
-                      border: "4px solid #fbbf24",
-                      boxShadow: "0 0 40px rgba(251, 191, 36, 0.6)"
+                      fontSize: "clamp(2.5rem, 5vw, 3.5rem)",
+                      marginBottom: "0.8vh",
+                      margin: "0 auto 0.8vh",
+                      border: "3px solid #fbbf24",
+                      boxShadow: "0 0 30px rgba(251, 191, 36, 0.5)"
                     }}>
                       🎤
                     </div>
                   )}
 
                   <div style={{ 
-                    fontSize: "clamp(2rem, 4vw, 3.2rem)", 
+                    fontSize: "clamp(1.4rem, 3vw, 2.2rem)", 
                     fontWeight: "900", 
-                    marginBottom: "1vh",
+                    marginBottom: "0.5vh",
                     color: "#ffffff",
-                    textShadow: "0 0 30px rgba(251, 191, 36, 0.6)"
+                    textShadow: "0 0 25px rgba(251, 191, 36, 0.6)"
                   }}>
                     {next.singer_name}
                   </div>
                   <div style={{ 
-                    fontSize: "clamp(1.5rem, 3vw, 2.5rem)", 
+                    fontSize: "clamp(1.1rem, 2.2vw, 1.7rem)", 
                     color: "#cbd5e1",
                     fontWeight: "700"
                   }}>
@@ -470,9 +470,9 @@ export default function Audience() {
                   </div>
                   {next.song_artist && (
                     <div style={{ 
-                      fontSize: "clamp(1.2rem, 2.2vw, 1.9rem)", 
+                      fontSize: "clamp(0.95rem, 1.8vw, 1.4rem)", 
                       color: "#94a3b8", 
-                      marginTop: "0.5vh" 
+                      marginTop: "0.3vh" 
                     }}>
                       {next.song_artist}
                     </div>
@@ -481,8 +481,8 @@ export default function Audience() {
               ) : (
                 <div style={{ 
                   color: "#64748b", 
-                  fontSize: "clamp(1.5rem, 2.5vw, 2rem)", 
-                  padding: "3vh 20px",
+                  fontSize: "clamp(1.1rem, 2vw, 1.5rem)", 
+                  padding: "1.5vh 15px",
                   fontWeight: "600"
                 }}>
                   אין ממתינים כרגע
