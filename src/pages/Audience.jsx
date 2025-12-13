@@ -31,14 +31,16 @@ export default function Audience() {
       color: "#fff",
       position: "relative"
     }}>
-      <NavigationMenu />
-      <div style={{ position: "absolute", top: 0, left: 0, zIndex: 100, pointerEvents: "none" }}>
+      <NavigationMenu onSummaryClick={() => setShowSummary(true)} />
+      
+      {/* Clock - Fixed */}
+      <div style={{ position: "fixed", top: 0, left: 0, zIndex: 100, pointerEvents: "none" }}>
         <LiveClock />
       </div>
       
-      {/* APIRYON Logo - Center Top */}
+      {/* APIRYON Logo - Fixed Center Top */}
       <div style={{
-        position: "absolute",
+        position: "fixed",
         top: "15px",
         left: "50%",
         transform: "translateX(-50%)",
@@ -60,39 +62,6 @@ export default function Audience() {
           המוזיקה שלנו, הקול שלך 🎵
         </div>
       </div>
-      
-      <style>{`
-        @keyframes gradient {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-        }
-      `}</style>
-      
-      {/* Summary Button */}
-      <button
-        onClick={() => setShowSummary(true)}
-        style={{
-          position: "fixed",
-          top: "20px",
-          right: "100px",
-          background: "linear-gradient(135deg, #fbbf24, #f59e0b)",
-          border: "none",
-          borderRadius: "20px",
-          padding: "16px 28px",
-          cursor: "pointer",
-          zIndex: 100,
-          display: "flex",
-          alignItems: "center",
-          gap: "10px",
-          boxShadow: "0 0 30px rgba(251, 191, 36, 0.5)",
-          color: "#001a2e",
-          fontSize: "1.1rem",
-          fontWeight: "800"
-        }}
-      >
-        <BarChart3 className="w-6 h-6" />
-        <span>סיכום הערב</span>
-      </button>
 
       <EventSummaryModal 
         isOpen={showSummary}
