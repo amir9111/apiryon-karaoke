@@ -6,7 +6,14 @@ import { useQuery } from "@tanstack/react-query";
 export default function FloatingMessages({ isPerforming }) {
   const { data: messages = [] } = useQuery({
     queryKey: ['messages'],
-    queryFn: () => base44.entities.Message.list('-created_date', 20),
+    queryFn: async () => {
+      try {
+        return await base44.entities.Message.list('-created_date', 20);
+      } catch (error) {
+        console.error("Error fetching messages:", error);
+        return [];
+      }
+    },
     refetchInterval: 3000,
     staleTime: 2000,
   });

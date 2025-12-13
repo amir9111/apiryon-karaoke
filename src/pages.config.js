@@ -5,6 +5,7 @@ import Audience from './pages/Audience';
 import Profile from './pages/Profile';
 import SongManager from './pages/SongManager';
 import Player from './pages/Player';
+import SendMessage from './pages/SendMessage';
 
 
 export const PAGES = {
@@ -15,6 +16,7 @@ export const PAGES = {
     "Profile": Profile,
     "SongManager": SongManager,
     "Player": Player,
+    "SendMessage": SendMessage,
 }
 
 export const pagesConfig = {

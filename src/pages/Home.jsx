@@ -9,7 +9,7 @@ import AudienceRating from "../components/AudienceRating";
 import AudioWave from "../components/AudioWave";
 import MyQueueStatus from "../components/MyQueueStatus";
 import SmartSongSearch from "../components/SmartSongSearch";
-import QuickMessage from "../components/QuickMessage";
+
 import PWAInstallPrompt from "../components/PWAInstallPrompt";
 import PWASetup from "../components/PWASetup";
 import ServiceWorkerRegistration from "../components/ServiceWorkerRegistration";
@@ -510,16 +510,7 @@ export default function Home() {
           }}
         />
 
-        {/* Quick Message */}
-        {capturedPhoto && formData.singer_name && (
-          <QuickMessage 
-            userName={formData.singer_name}
-            userPhoto={capturedPhoto}
-            onMessageSent={async () => {
-              await queryClient.invalidateQueries({ queryKey: ['messages'] });
-            }}
-          />
-        )}
+
 
         {/* Now Playing Section */}
         {currentSong && !hasUserRatedCurrentSong() && (
@@ -931,6 +922,19 @@ export default function Home() {
           />
 
           <div className="flex flex-col items-center gap-3 text-[0.9rem]">
+            <Link
+              to={createPageUrl("SendMessage")}
+              className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl no-underline font-bold text-[1rem]"
+              style={{
+                background: "linear-gradient(135deg, #a78bfa, #8b5cf6)",
+                color: "#fff",
+                boxShadow: "0 0 20px rgba(139, 92, 246, 0.4)"
+              }}
+            >
+              <span className="text-[1.3rem]">💬</span>
+              <span>שלח הודעה למסך הקהל</span>
+            </Link>
+
             <div className="text-center">
               <div className="mb-2">רוצים להתעדכן בכל ערבי הקריוקי?</div>
               <a
