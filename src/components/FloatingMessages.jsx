@@ -1,7 +1,12 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-export default function FloatingMessages({ messages }) {
+export default function FloatingMessages({ messages, isPerforming }) {
+  // Don't show messages if no one is performing
+  if (!isPerforming) {
+    return null;
+  }
+
   if (!messages || messages.length === 0) {
     return null;
   }
