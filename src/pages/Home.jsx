@@ -961,3 +961,4 @@ export default function Home() {
 }
 
 Home.isPublic = true;
+Home.isPublic = true;
