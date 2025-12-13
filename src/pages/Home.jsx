@@ -8,6 +8,7 @@ import MenuButton from "../components/MenuButton";
 import AudienceRating from "../components/AudienceRating";
 import AudioWave from "../components/AudioWave";
 import MyQueueStatus from "../components/MyQueueStatus";
+import SmartSongSearch from "../components/SmartSongSearch";
 import PWAInstallPrompt from "../components/PWAInstallPrompt";
 import PWASetup from "../components/PWASetup";
 import ServiceWorkerRegistration from "../components/ServiceWorkerRegistration";
@@ -21,8 +22,10 @@ export default function Home() {
   const [formData, setFormData] = useState({
     singer_name: "",
     song_title: "",
-    song_artist: ""
+    song_artist: "",
+    song_id: null
   });
+  const [selectedSong, setSelectedSong] = useState(null);
   const [status, setStatus] = useState({ type: null, message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
@@ -200,6 +203,25 @@ export default function Home() {
     }
   }, []);
 
+  const handleSongSelect = (song) => {
+    setSelectedSong(song);
+    if (song) {
+      setFormData(prev => ({
+        ...prev,
+        song_id: song.id,
+        song_title: song.title,
+        song_artist: song.artist
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        song_id: null,
+        song_title: "",
+        song_artist: ""
+      }));
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -208,8 +230,13 @@ export default function Home() {
       return;
     }
     
-    if (!formData.singer_name.trim() || !formData.song_title.trim()) {
-      setStatus({ type: "error", message: "נא למלא שם ושם שיר 🙂" });
+    if (!formData.singer_name.trim()) {
+      setStatus({ type: "error", message: "נא למלא את שמך 🙂" });
+      return;
+    }
+
+    if (!selectedSong) {
+      setStatus({ type: "error", message: "נא לבחור שיר מהרשימה 🎵" });
       return;
     }
 
@@ -228,6 +255,7 @@ export default function Home() {
         singer_name: formData.singer_name.trim().substring(0, 100),
         song_title: formData.song_title.trim().substring(0, 200),
         song_artist: formData.song_artist?.trim().substring(0, 200) || "",
+        song_id: formData.song_id,
         status: "waiting",
         photo_url: photoUrl,
         email: formData.singer_name.trim() + '@queue.local'
@@ -251,8 +279,10 @@ export default function Home() {
       setFormData({
         singer_name: "",
         song_title: "",
-        song_artist: ""
+        song_artist: "",
+        song_id: null
       });
+      setSelectedSong(null);
       setCapturedPhoto(null);
       setIsSubmitting(false);
 
@@ -709,65 +739,10 @@ export default function Home() {
               />
             </div>
 
-            <div>
-              <label htmlFor="song-title-input" className="block text-[0.9rem] mb-0.5">
-                שם השיר
-              </label>
-              <input
-                id="song-title-input"
-                type="text"
-                name="song_title"
-                value={formData.song_title}
-                onChange={handleChange}
-                required
-                aria-required="true"
-                aria-label="הכנס את שם השיר שאתה רוצה לשיר"
-                placeholder="לדוגמה: הנה זה בא"
-                className="w-full px-3 py-2.5 rounded-xl border outline-none text-[0.95rem]"
-                style={{
-                  borderColor: "#1f2937",
-                  background: "rgba(15,23,42,0.9)",
-                  color: "#f9fafb"
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = "#00caff";
-                  e.target.style.boxShadow = "0 0 0 1px rgba(0, 202, 255, 0.5)";
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = "#1f2937";
-                  e.target.style.boxShadow = "none";
-                }}
-              />
-            </div>
-
-            <div>
-              <label htmlFor="song-artist-input" className="block text-[0.9rem] mb-0.5">
-                שם האמן (לא חובה)
-              </label>
-              <input
-                id="song-artist-input"
-                type="text"
-                name="song_artist"
-                value={formData.song_artist}
-                onChange={handleChange}
-                aria-label="הכנס את שם האמן המקורי (אופציונלי)"
-                placeholder="לדוגמה: חדווה ודוד"
-                className="w-full px-3 py-2.5 rounded-xl border outline-none text-[0.95rem]"
-                style={{
-                  borderColor: "#1f2937",
-                  background: "rgba(15,23,42,0.9)",
-                  color: "#f9fafb"
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = "#00caff";
-                  e.target.style.boxShadow = "0 0 0 1px rgba(0, 202, 255, 0.5)";
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = "#1f2937";
-                  e.target.style.boxShadow = "none";
-                }}
-              />
-            </div>
+            <SmartSongSearch 
+              onSongSelect={handleSongSelect}
+              disabled={isSubmitting}
+            />
 
             <button
               type="submit"

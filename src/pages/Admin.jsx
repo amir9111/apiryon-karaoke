@@ -1,9 +1,11 @@
 import React, { useState, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Play, Check, SkipForward, UserPlus, Search, X } from "lucide-react";
+import { Play, Check, SkipForward, UserPlus, Search, X, Music2 } from "lucide-react";
 import ApyironLogo from "../components/ApyironLogo";
 import NavigationMenu from "../components/NavigationMenu";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "@/utils";
 import StatsCard from "../components/admin/StatsCard";
 import PerformanceTimer from "../components/admin/PerformanceTimer";
 import SongHistory from "../components/admin/SongHistory";
@@ -40,6 +42,12 @@ export default function Admin() {
     queryFn: () => base44.entities.KaraokeRequest.list('-created_date', 200),
     refetchInterval: 2000,
     staleTime: 1000,
+  });
+
+  const { data: songs = [] } = useQuery({
+    queryKey: ['songs'],
+    queryFn: () => base44.entities.Song.list('-created_date', 1000),
+    initialData: [],
   });
 
   const updateMutation = useMutation({
@@ -189,9 +197,38 @@ export default function Admin() {
           <h1 style={{ fontSize: "2rem", fontWeight: "700", margin: "0 0 8px 0", color: "#00caff", textShadow: "0 0 20px rgba(0, 202, 255, 0.5)" }}>
             🎤 מסך ניהול מקצועי
           </h1>
-          <p style={{ color: "#94a3b8", fontSize: "0.95rem", margin: 0 }}>
+          <p style={{ color: "#94a3b8", fontSize: "0.95rem", margin: "0 0 12px 0" }}>
             ניהול, סטטיסטיקות וניתוח נתונים בזמן אמת
           </p>
+          <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}>
+            <Link
+              to={createPageUrl("SongManager")}
+              className="px-6 py-3 rounded-xl font-bold flex items-center gap-2"
+              style={{
+                background: "linear-gradient(135deg, #8b5cf6, #6d28d9)",
+                color: "#ffffff",
+                textDecoration: "none",
+                boxShadow: "0 0 20px rgba(139, 92, 246, 0.4)"
+              }}
+            >
+              <Music2 className="w-5 h-5" />
+              מאגר בלייבקים
+            </Link>
+            <Link
+              to={createPageUrl("Player")}
+              target="_blank"
+              className="px-6 py-3 rounded-xl font-bold flex items-center gap-2"
+              style={{
+                background: "linear-gradient(135deg, #10b981, #059669)",
+                color: "#ffffff",
+                textDecoration: "none",
+                boxShadow: "0 0 20px rgba(16, 185, 129, 0.4)"
+              }}
+            >
+              <Play className="w-5 h-5" />
+              מסך נגן
+            </Link>
+          </div>
         </div>
 
         {/* Stats Dashboard */}
@@ -276,7 +313,25 @@ export default function Admin() {
                   <div style={{ fontSize: "1.5rem", fontWeight: "700", color: "#f1f5f9", marginBottom: "6px" }}>{currentSong.singer_name}</div>
                   <div style={{ fontSize: "1.1rem", color: "#cbd5e1", marginBottom: "4px" }}>{currentSong.song_title}</div>
                   {currentSong.song_artist && (
-                    <div style={{ fontSize: "0.9rem", color: "#94a3b8", marginBottom: "12px" }}>{currentSong.song_artist}</div>
+                    <div style={{ fontSize: "0.9rem", color: "#94a3b8", marginBottom: "4px" }}>{currentSong.song_artist}</div>
+                  )}
+                  {currentSong.song_id && (
+                    <div style={{ 
+                      fontSize: "0.75rem", 
+                      color: "#00caff", 
+                      background: "rgba(0, 202, 255, 0.1)",
+                      padding: "4px 8px",
+                      borderRadius: "6px",
+                      display: "inline-block",
+                      marginBottom: "12px"
+                    }}>
+                      🎵 בלייבק ממאגר
+                    </div>
+                  )}
+                  {!currentSong.song_id && (
+                    <div style={{ fontSize: "0.75rem", color: "#64748b", marginBottom: "12px" }}>
+                      ⚠️ שיר ידני (ללא בלייבק)
+                    </div>
                   )}
                   <button
                     onClick={markCurrentDone}
@@ -314,7 +369,25 @@ export default function Admin() {
                   <div style={{ fontSize: "1.5rem", fontWeight: "700", color: "#f1f5f9", marginBottom: "6px" }}>{waitingList[0].singer_name}</div>
                   <div style={{ fontSize: "1.1rem", color: "#cbd5e1", marginBottom: "4px" }}>{waitingList[0].song_title}</div>
                   {waitingList[0].song_artist && (
-                    <div style={{ fontSize: "0.9rem", color: "#94a3b8", marginBottom: "12px" }}>{waitingList[0].song_artist}</div>
+                    <div style={{ fontSize: "0.9rem", color: "#94a3b8", marginBottom: "4px" }}>{waitingList[0].song_artist}</div>
+                  )}
+                  {waitingList[0].song_id && (
+                    <div style={{ 
+                      fontSize: "0.75rem", 
+                      color: "#00caff", 
+                      background: "rgba(0, 202, 255, 0.1)",
+                      padding: "4px 8px",
+                      borderRadius: "6px",
+                      display: "inline-block",
+                      marginBottom: "12px"
+                    }}>
+                      🎵 בלייבק ממאגר
+                    </div>
+                  )}
+                  {!waitingList[0].song_id && (
+                    <div style={{ fontSize: "0.75rem", color: "#64748b", marginBottom: "12px" }}>
+                      ⚠️ שיר ידני (ללא בלייבק)
+                    </div>
                   )}
                   <div style={{ display: "flex", gap: "8px" }}>
                     <button
