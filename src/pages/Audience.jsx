@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import NavigationMenu from "../components/NavigationMenu";
-import ApyironLogo from "../components/ApyironLogo";
 import AudioWave from "../components/AudioWave";
-import LiveClock from "../components/LiveClock";
 import EventSummaryModal from "../components/EventSummaryModal";
 import FloatingMessages from "../components/FloatingMessages";
 import { motion } from "framer-motion";
@@ -11,27 +9,6 @@ import { useQuery } from "@tanstack/react-query";
 
 export default function Audience() {
   const [showSummary, setShowSummary] = useState(false);
-  const [editMode, setEditMode] = useState(false);
-  
-  // Clock position & size
-  const [clockPos, setClockPos] = useState(() => {
-    const saved = localStorage.getItem('audience_clock_pos');
-    return saved ? JSON.parse(saved) : { x: 20, y: 20 };
-  });
-  const [clockSize, setClockSize] = useState(() => {
-    const saved = localStorage.getItem('audience_clock_size');
-    return saved ? parseInt(saved) : 1;
-  });
-
-  // Logo position & size
-  const [logoPos, setLogoPos] = useState(() => {
-    const saved = localStorage.getItem('audience_logo_pos');
-    return saved ? JSON.parse(saved) : { x: window.innerWidth / 2 - 100, y: 20 };
-  });
-  const [logoSize, setLogoSize] = useState(() => {
-    const saved = localStorage.getItem('audience_logo_size');
-    return saved ? parseInt(saved) : 1;
-  });
 
   const { data: requests = [] } = useQuery({
     queryKey: ['karaoke-requests'],
@@ -43,32 +20,6 @@ export default function Audience() {
   const current = requests.find(r => r.status === "performing");
   const next = requests.filter(r => r.status === "waiting")[0];
 
-  const handleDrag = (type, e) => {
-    if (!editMode) return;
-    
-    const newPos = { x: e.clientX - 50, y: e.clientY - 50 };
-    
-    if (type === 'clock') {
-      setClockPos(newPos);
-      localStorage.setItem('audience_clock_pos', JSON.stringify(newPos));
-    } else if (type === 'logo') {
-      setLogoPos(newPos);
-      localStorage.setItem('audience_logo_pos', JSON.stringify(newPos));
-    }
-  };
-
-  const handleSizeChange = (type, delta) => {
-    if (type === 'clock') {
-      const newSize = Math.max(0.5, Math.min(3, clockSize + delta));
-      setClockSize(newSize);
-      localStorage.setItem('audience_clock_size', newSize.toString());
-    } else if (type === 'logo') {
-      const newSize = Math.max(0.5, Math.min(3, logoSize + delta));
-      setLogoSize(newSize);
-      localStorage.setItem('audience_logo_size', newSize.toString());
-    }
-  };
-
   return (
     <div dir="rtl" style={{
       minHeight: "100vh",
@@ -76,110 +27,6 @@ export default function Audience() {
       color: "#fff",
       position: "relative"
     }}>
-      {/* Edit Mode Toggle Button */}
-      <button
-        onClick={() => setEditMode(!editMode)}
-        style={{
-          position: "fixed",
-          bottom: "20px",
-          left: "20px",
-          zIndex: 10000,
-          padding: "12px 24px",
-          background: editMode ? "linear-gradient(135deg, #10b981, #059669)" : "linear-gradient(135deg, #00caff, #0088ff)",
-          color: "#fff",
-          border: "none",
-          borderRadius: "12px",
-          fontSize: "0.9rem",
-          fontWeight: "700",
-          cursor: "pointer",
-          boxShadow: "0 0 20px rgba(0, 202, 255, 0.5)"
-        }}
-      >
-        {editMode ? "✓ שמור מיקום" : "⚙️ ערוך תצוגה"}
-      </button>
-
-      {/* Draggable Clock */}
-      <div
-        draggable={editMode}
-        onDragEnd={(e) => handleDrag('clock', e)}
-        style={{
-          position: "fixed",
-          left: `${clockPos.x}px`,
-          top: `${clockPos.y}px`,
-          zIndex: 9999,
-          cursor: editMode ? "move" : "default",
-          transform: `scale(${clockSize})`,
-          transformOrigin: "top left",
-          border: editMode ? "2px dashed #00caff" : "none",
-          padding: editMode ? "10px" : "0",
-          borderRadius: "12px",
-          background: editMode ? "rgba(0, 202, 255, 0.1)" : "transparent"
-        }}
-      >
-        <LiveClock />
-        {editMode && (
-          <div style={{ 
-            marginTop: "8px", 
-            display: "flex", 
-            gap: "4px", 
-            justifyContent: "center",
-            background: "rgba(0, 0, 0, 0.8)",
-            padding: "4px",
-            borderRadius: "8px"
-          }}>
-            <button onClick={() => handleSizeChange('clock', -0.1)} style={{ padding: "4px 8px", background: "#1f2937", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer" }}>-</button>
-            <button onClick={() => handleSizeChange('clock', 0.1)} style={{ padding: "4px 8px", background: "#1f2937", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer" }}>+</button>
-          </div>
-        )}
-      </div>
-
-      {/* Draggable Logo */}
-      <div
-        draggable={editMode}
-        onDragEnd={(e) => handleDrag('logo', e)}
-        style={{
-          position: "fixed",
-          left: `${logoPos.x}px`,
-          top: `${logoPos.y}px`,
-          zIndex: 9998,
-          cursor: editMode ? "move" : "default",
-          transform: `scale(${logoSize})`,
-          transformOrigin: "top center",
-          border: editMode ? "2px dashed #00caff" : "none",
-          padding: editMode ? "10px" : "0",
-          borderRadius: "12px",
-          background: editMode ? "rgba(0, 202, 255, 0.1)" : "transparent",
-          textAlign: "center"
-        }}
-      >
-        <ApyironLogo size="small" showCircle={true} />
-        <div style={{
-          fontSize: "clamp(0.9rem, 2vw, 1.3rem)",
-          fontWeight: "800",
-          color: "#00caff",
-          textShadow: "0 0 20px rgba(0, 202, 255, 0.8)",
-          letterSpacing: "0.08em",
-          whiteSpace: "nowrap",
-          marginTop: "8px"
-        }}>
-          המוזיקה שלנו, הקול שלך 🎵
-        </div>
-        {editMode && (
-          <div style={{ 
-            marginTop: "8px", 
-            display: "flex", 
-            gap: "4px", 
-            justifyContent: "center",
-            background: "rgba(0, 0, 0, 0.8)",
-            padding: "4px",
-            borderRadius: "8px"
-          }}>
-            <button onClick={() => handleSizeChange('logo', -0.1)} style={{ padding: "4px 8px", background: "#1f2937", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer" }}>-</button>
-            <button onClick={() => handleSizeChange('logo', 0.1)} style={{ padding: "4px 8px", background: "#1f2937", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer" }}>+</button>
-          </div>
-        )}
-      </div>
-
       {/* Fixed Menu */}
       <div style={{ position: "fixed", top: "20px", right: "20px", zIndex: 10000 }}>
         <NavigationMenu onSummaryClick={() => setShowSummary(true)} />
