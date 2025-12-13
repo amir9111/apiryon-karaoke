@@ -5,7 +5,7 @@ import AudioWave from "../components/AudioWave";
 import FloatingParticles from "../components/FloatingParticles";
 import LiveClock from "../components/LiveClock";
 import EventSummaryModal from "../components/EventSummaryModal";
-import MessagesFeed from "../components/MessagesFeed";
+import FloatingMessages from "../components/FloatingMessages";
 import { motion } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
@@ -209,8 +209,11 @@ export default function Audience() {
               position: "relative",
               backdropFilter: "blur(30px)",
               border: "2px solid rgba(0, 202, 255, 0.3)",
-              boxShadow: "0 0 80px rgba(0, 202, 255, 0.3), inset 0 0 30px rgba(0, 202, 255, 0.05)"
+              boxShadow: "0 0 80px rgba(0, 202, 255, 0.3), inset 0 0 30px rgba(0, 202, 255, 0.05)",
+              overflow: "hidden"
             }}>
+              {/* Floating Messages in Background */}
+              <FloatingMessages messages={requests} />
               <motion.div
                 animate={{ scale: [1, 1.05, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
@@ -221,7 +224,9 @@ export default function Audience() {
                   textTransform: "uppercase",
                   letterSpacing: "0.3em",
                   fontWeight: "900",
-                  textShadow: "0 0 40px rgba(0, 202, 255, 1), 0 0 80px rgba(0, 202, 255, 0.5)"
+                  textShadow: "0 0 40px rgba(0, 202, 255, 1), 0 0 80px rgba(0, 202, 255, 0.5)",
+                  position: "relative",
+                  zIndex: 10
                 }}
               >
                 🎤 LIVE NOW 🎤
@@ -231,7 +236,8 @@ export default function Audience() {
               <div style={{ 
                 position: "relative",
                 display: "inline-block",
-                marginBottom: "20px"
+                marginBottom: "20px",
+                zIndex: 10
               }}>
                 {/* Multiple animated rings */}
                 {[1, 2, 3].map((ring) => (
@@ -308,7 +314,9 @@ export default function Audience() {
                   marginBottom: "15px",
                   color: "#ffffff",
                   textShadow: "0 0 40px rgba(0, 202, 255, 0.6), 0 5px 25px rgba(0, 0, 0, 0.8)",
-                  lineHeight: "1.1"
+                  lineHeight: "1.1",
+                  position: "relative",
+                  zIndex: 10
                 }}
               >
                 {current.singer_name}
@@ -323,7 +331,9 @@ export default function Audience() {
                   color: "#e2e8f0",
                   fontWeight: "700",
                   marginBottom: "10px",
-                  textShadow: "0 3px 12px rgba(0, 0, 0, 0.5)"
+                  textShadow: "0 3px 12px rgba(0, 0, 0, 0.5)",
+                  position: "relative",
+                  zIndex: 10
                 }}
               >
                 {current.song_title}
@@ -337,14 +347,16 @@ export default function Audience() {
                   style={{ 
                     fontSize: "clamp(1rem, 2vw, 1.6rem)", 
                     color: "#94a3b8",
-                    fontWeight: "600"
+                    fontWeight: "600",
+                    position: "relative",
+                    zIndex: 10
                   }}
                 >
                   {current.song_artist}
                 </motion.div>
               )}
 
-              <div style={{ marginTop: "20px" }}>
+              <div style={{ marginTop: "20px", position: "relative", zIndex: 10 }}>
                 <AudioWave isPlaying={true} />
               </div>
             </div>
@@ -716,9 +728,6 @@ export default function Audience() {
               </div>
             </motion.div>
           </div>
-
-          {/* Messages Feed */}
-          <MessagesFeed messages={requests} />
       </main>
     </div>
   );
