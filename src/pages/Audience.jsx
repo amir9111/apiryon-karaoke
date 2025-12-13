@@ -5,6 +5,7 @@ import AudioWave from "../components/AudioWave";
 import FloatingParticles from "../components/FloatingParticles";
 import LiveClock from "../components/LiveClock";
 import EventSummaryModal from "../components/EventSummaryModal";
+import MessagesFeed from "../components/MessagesFeed";
 import { motion } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
@@ -716,6 +717,9 @@ export default function Audience() {
             </motion.div>
           </div>
       </main>
+
+      {/* Messages Feed at Bottom */}
+      <MessagesFeed messages={requests} />
     </div>
   );
 }
