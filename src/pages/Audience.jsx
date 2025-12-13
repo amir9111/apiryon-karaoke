@@ -29,38 +29,53 @@ export default function Audience() {
       minHeight: "100vh",
       background: "linear-gradient(135deg, #020617 0%, #0a1929 50%, #020617 100%)",
       color: "#fff",
-      position: "relative"
+      position: "relative",
+      overflow: "hidden"
     }}>
-      <NavigationMenu onSummaryClick={() => setShowSummary(true)} />
-      
-      {/* Clock - Fixed */}
-      <div style={{ position: "fixed", top: 0, left: 0, zIndex: 100, pointerEvents: "none" }}>
-        <LiveClock />
-      </div>
-      
-      {/* APIRYON Logo - Fixed Center Top */}
+      {/* Fixed Header Container */}
       <div style={{
         position: "fixed",
-        top: "15px",
-        left: "50%",
-        transform: "translateX(-50%)",
-        zIndex: 50,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: "8px"
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 1000,
+        pointerEvents: "none"
       }}>
-        <ApyironLogo size="small" showCircle={true} />
-        <div style={{
-          textAlign: "center",
-          fontSize: "clamp(0.9rem, 2vw, 1.3rem)",
-          fontWeight: "800",
-          color: "#00caff",
-          textShadow: "0 0 20px rgba(0, 202, 255, 0.8)",
-          letterSpacing: "0.08em"
-        }}>
-          המוזיקה שלנו, הקול שלך 🎵
+        {/* Clock - Top Left */}
+        <div style={{ position: "absolute", top: 0, left: 0, pointerEvents: "none" }}>
+          <LiveClock />
         </div>
+        
+        {/* APIRYON Logo - Center Top */}
+        <div style={{
+          position: "absolute",
+          top: "15px",
+          left: "50%",
+          transform: "translateX(-50%)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "8px",
+          pointerEvents: "none"
+        }}>
+          <ApyironLogo size="small" showCircle={true} />
+          <div style={{
+            textAlign: "center",
+            fontSize: "clamp(0.9rem, 2vw, 1.3rem)",
+            fontWeight: "800",
+            color: "#00caff",
+            textShadow: "0 0 20px rgba(0, 202, 255, 0.8)",
+            letterSpacing: "0.08em",
+            whiteSpace: "nowrap"
+          }}>
+            המוזיקה שלנו, הקול שלך 🎵
+          </div>
+        </div>
+      </div>
+
+      {/* Navigation Menu - with pointer events */}
+      <div style={{ position: "fixed", top: 0, right: 0, zIndex: 1001 }}>
+        <NavigationMenu onSummaryClick={() => setShowSummary(true)} />
       </div>
 
       <EventSummaryModal 
