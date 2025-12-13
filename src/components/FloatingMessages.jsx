@@ -6,13 +6,13 @@ export default function FloatingMessages({ messages }) {
     return null;
   }
 
-  // Filter messages created in the last 60 seconds only
+  // Filter messages created in the last 30 seconds only
   const now = Date.now();
   const recentMessages = messages.filter(m => {
     if (!m.message || !m.message.trim()) return false;
     const created = new Date(m.created_date).getTime();
     const ageInSeconds = (now - created) / 1000;
-    return ageInSeconds <= 60;
+    return ageInSeconds <= 30;
   });
   
   if (recentMessages.length === 0) {
