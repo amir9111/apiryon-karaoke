@@ -9,6 +9,7 @@ import AudienceRating from "../components/AudienceRating";
 import AudioWave from "../components/AudioWave";
 import MyQueueStatus from "../components/MyQueueStatus";
 import SmartSongSearch from "../components/SmartSongSearch";
+import QuickMessage from "../components/QuickMessage";
 import PWAInstallPrompt from "../components/PWAInstallPrompt";
 import PWASetup from "../components/PWASetup";
 import ServiceWorkerRegistration from "../components/ServiceWorkerRegistration";
@@ -509,6 +510,16 @@ export default function Home() {
           }}
         />
 
+        {/* Quick Message */}
+        {capturedPhoto && formData.singer_name && (
+          <QuickMessage 
+            requests={requests}
+            userName={formData.singer_name}
+            userPhoto={capturedPhoto}
+            onMessageSent={() => queryClient.invalidateQueries({ queryKey: ['karaoke-requests'] })}
+          />
+        )}
+
         {/* Now Playing Section */}
         {currentSong && !hasUserRatedCurrentSong() && (
           <div style={{
@@ -880,37 +891,7 @@ export default function Home() {
               </div>
             )}
 
-            <div>
-              <label htmlFor="message-input" className="block text-[0.9rem] mb-0.5">
-                💬 הודעה למסך (אופציונלי)
-              </label>
-              <input
-                id="message-input"
-                type="text"
-                name="message"
-                value={formData.message}
-                onChange={handleChange}
-                maxLength={100}
-                placeholder="הודעה קצרה שתוצג על מסך הקהל..."
-                className="w-full px-3 py-2.5 rounded-xl border outline-none text-[0.95rem]"
-                style={{
-                  borderColor: "#1f2937",
-                  background: "rgba(15,23,42,0.9)",
-                  color: "#f9fafb"
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = "#00caff";
-                  e.target.style.boxShadow = "0 0 0 1px rgba(0, 202, 255, 0.5)";
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = "#1f2937";
-                  e.target.style.boxShadow = "none";
-                }}
-              />
-              <div className="text-xs text-right mt-1" style={{ color: "#64748b" }}>
-                {formData.message?.length || 0}/100 תווים
-              </div>
-            </div>
+
 
             <button
               type="submit"
