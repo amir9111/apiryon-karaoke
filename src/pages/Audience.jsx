@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import NavigationMenu from "../components/NavigationMenu";
+import ApyironLogo from "../components/ApyironLogo";
 import AudioWave from "../components/AudioWave";
 import EventSummaryModal from "../components/EventSummaryModal";
 import FloatingMessages from "../components/FloatingMessages";
@@ -55,6 +56,27 @@ export default function Audience() {
           justifyContent: "center",
           padding: "120px 20px 40px"
         }}>
+          {/* Header Title */}
+          <motion.div
+            initial={{ opacity: 0, y: -30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            style={{
+              fontSize: "clamp(2rem, 5vw, 4rem)",
+              fontWeight: "900",
+              textAlign: "center",
+              marginBottom: "60px",
+              background: "linear-gradient(135deg, #00caff 0%, #0088ff 50%, #00caff 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              textShadow: "0 0 60px rgba(0, 202, 255, 0.3)",
+              letterSpacing: "0.02em",
+              lineHeight: "1.2"
+            }}
+          >
+            המוזיקה שלנו, השירה שלכם 🎵
+          </motion.div>
+
           {/* Current Song - HERO SECTION */}
           {current ? (
             <motion.div
@@ -196,23 +218,41 @@ export default function Audience() {
                 textAlign: "center",
                 backdropFilter: "blur(30px)",
                 maxWidth: "700px",
-                width: "100%"
+                width: "100%",
+                position: "relative",
+                overflow: "hidden"
               }}
             >
-              <motion.div
-                animate={{ scale: [1, 1.2, 1], rotate: [0, 10, -10, 0] }}
-                transition={{ duration: 3, repeat: Infinity }}
-                style={{ fontSize: "4rem", marginBottom: "20px" }}
-              >
-                🎵
-              </motion.div>
-              <div style={{ 
-                fontSize: "clamp(1.6rem, 3.5vw, 2.5rem)", 
-                color: "#00caff", 
-                fontWeight: "800",
-                textShadow: "0 0 25px rgba(0, 202, 255, 0.8)"
+              {/* Background Logo - Transparent */}
+              <div style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                opacity: 0.08,
+                pointerEvents: "none",
+                zIndex: 0
               }}>
-                מתכוננים לזמר הבא...
+                <ApyironLogo size="large" showCircle={true} />
+              </div>
+
+              {/* Content on top */}
+              <div style={{ position: "relative", zIndex: 1 }}>
+                <motion.div
+                  animate={{ scale: [1, 1.2, 1], rotate: [0, 10, -10, 0] }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                  style={{ fontSize: "4rem", marginBottom: "20px" }}
+                >
+                  🎵
+                </motion.div>
+                <div style={{ 
+                  fontSize: "clamp(1.6rem, 3.5vw, 2.5rem)", 
+                  color: "#00caff", 
+                  fontWeight: "800",
+                  textShadow: "0 0 25px rgba(0, 202, 255, 0.8)"
+                }}>
+                  מתכוננים לזמר הבא...
+                </div>
               </div>
             </motion.div>
           )}
