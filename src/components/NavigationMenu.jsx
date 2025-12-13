@@ -146,7 +146,6 @@ export default function NavigationMenu() {
               <Link
                 to={createPageUrl("Player")}
                 onClick={() => setIsOpen(false)}
-                target="_blank"
                 style={{
                   display: "flex",
                   alignItems: "center",
