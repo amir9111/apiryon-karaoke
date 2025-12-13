@@ -46,36 +46,113 @@ export default function Audience() {
             0%, 100% { box-shadow: 0 0 60px rgba(0, 202, 255, 0.6), 0 0 120px rgba(0, 202, 255, 0.3); }
             50% { box-shadow: 0 0 100px rgba(0, 202, 255, 0.8), 0 0 180px rgba(0, 202, 255, 0.5); }
           }
+          @keyframes shimmer {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+          }
         `}</style>
 
-        <main role="main" style={{ 
-          minHeight: "100vh", 
-          display: "flex", 
-          flexDirection: "column", 
-          alignItems: "center", 
-          justifyContent: "center",
-          padding: "120px 20px 40px"
+        {/* Top Banner with Logo Background */}
+        <div style={{
+          position: "relative",
+          width: "100%",
+          padding: "40px 20px 60px",
+          marginBottom: "40px",
+          overflow: "hidden",
+          background: "linear-gradient(180deg, rgba(0, 202, 255, 0.05) 0%, transparent 100%)"
         }}>
-          {/* Header Title */}
+          {/* Stretched Logo Background */}
+          <div style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%) scale(3)",
+            opacity: 0.04,
+            pointerEvents: "none",
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            zIndex: 0
+          }}>
+            <ApyironLogo size="large" showCircle={false} />
+          </div>
+
+          {/* Animated Title */}
           <motion.div
             initial={{ opacity: 0, y: -30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             style={{
-              fontSize: "clamp(2rem, 5vw, 4rem)",
-              fontWeight: "900",
-              textAlign: "center",
-              marginBottom: "60px",
-              background: "linear-gradient(135deg, #00caff 0%, #0088ff 50%, #00caff 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              textShadow: "0 0 60px rgba(0, 202, 255, 0.3)",
-              letterSpacing: "0.02em",
-              lineHeight: "1.2"
+              position: "relative",
+              zIndex: 1,
+              textAlign: "center"
             }}
           >
-            המוזיקה שלנו, השירה שלכם 🎵
+            <motion.div
+              animate={{ 
+                scale: [1, 1.1, 1],
+                rotate: [0, -10, 10, 0]
+              }}
+              transition={{ 
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              style={{
+                display: "inline-block",
+                fontSize: "clamp(2.5rem, 6vw, 5rem)",
+                marginBottom: "20px"
+              }}
+            >
+              🎵
+            </motion.div>
+            
+            <div style={{
+              fontSize: "clamp(2rem, 5vw, 4.5rem)",
+              fontWeight: "900",
+              background: "linear-gradient(90deg, #00caff 0%, #0088ff 25%, #00d4ff 50%, #0088ff 75%, #00caff 100%)",
+              backgroundSize: "200% auto",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              animation: "shimmer 3s linear infinite",
+              letterSpacing: "0.02em",
+              lineHeight: "1.3",
+              textShadow: "0 0 80px rgba(0, 202, 255, 0.5)",
+              filter: "drop-shadow(0 0 30px rgba(0, 202, 255, 0.6))"
+            }}>
+              המוזיקה שלנו, השירה שלכם
+            </div>
+
+            <motion.div
+              animate={{ 
+                y: [0, -10, 0],
+                rotate: [-5, 5, -5]
+              }}
+              transition={{ 
+                duration: 1.5,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              style={{
+                display: "inline-block",
+                fontSize: "clamp(2.5rem, 6vw, 5rem)",
+                marginTop: "10px"
+              }}
+            >
+              🎤
+            </motion.div>
           </motion.div>
+        </div>
+
+        <main role="main" style={{ 
+          minHeight: "calc(100vh - 200px)", 
+          display: "flex", 
+          flexDirection: "column", 
+          alignItems: "center", 
+          justifyContent: "center",
+          padding: "0 20px 40px",
+          width: "100%"
+        }}>
 
           {/* Current Song - HERO SECTION */}
           {current ? (
