@@ -26,6 +26,7 @@ export default function Home() {
     song_id: null
   });
   const [selectedSong, setSelectedSong] = useState(null);
+  const [manualSongMode, setManualSongMode] = useState(false);
   const [status, setStatus] = useState({ type: null, message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
@@ -235,8 +236,13 @@ export default function Home() {
       return;
     }
 
-    if (!selectedSong) {
-      setStatus({ type: "error", message: "נא לבחור שיר מהרשימה 🎵" });
+    if (!manualSongMode && !selectedSong) {
+      setStatus({ type: "error", message: "נא לבחור שיר מהרשימה או להזין שיר ידני 🎵" });
+      return;
+    }
+
+    if (manualSongMode && (!formData.song_title.trim() || !formData.song_artist.trim())) {
+      setStatus({ type: "error", message: "נא למלא את שם השיר והאמן 🎵" });
       return;
     }
 
@@ -255,7 +261,7 @@ export default function Home() {
         singer_name: formData.singer_name.trim().substring(0, 100),
         song_title: formData.song_title.trim().substring(0, 200),
         song_artist: formData.song_artist?.trim().substring(0, 200) || "",
-        song_id: formData.song_id,
+        song_id: manualSongMode ? null : formData.song_id,
         status: "waiting",
         photo_url: photoUrl,
         email: formData.singer_name.trim() + '@queue.local'
@@ -287,6 +293,7 @@ export default function Home() {
       setSelectedSong(null);
       setCapturedPhoto(null);
       setPhotoUploaded(false);
+      setManualSongMode(false);
       setIsSubmitting(false);
 
       setTimeout(() => {
@@ -742,10 +749,107 @@ export default function Home() {
               />
             </div>
 
-            <SmartSongSearch 
-              onSongSelect={handleSongSelect}
-              disabled={isSubmitting}
-            />
+            {/* Toggle between library and manual */}
+            <div className="flex gap-2 mb-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setManualSongMode(false);
+                  setFormData(prev => ({ ...prev, song_title: "", song_artist: "" }));
+                }}
+                className="flex-1 py-2 px-4 rounded-xl font-bold text-sm"
+                style={{
+                  background: !manualSongMode ? "linear-gradient(135deg, #00caff, #0088ff)" : "rgba(51, 65, 85, 0.5)",
+                  color: !manualSongMode ? "#001a2e" : "#94a3b8",
+                  border: !manualSongMode ? "none" : "1px solid rgba(51, 65, 85, 0.5)"
+                }}
+              >
+                🎵 מהמאגר
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setManualSongMode(true);
+                  setSelectedSong(null);
+                  setFormData(prev => ({ ...prev, song_id: null }));
+                }}
+                className="flex-1 py-2 px-4 rounded-xl font-bold text-sm"
+                style={{
+                  background: manualSongMode ? "linear-gradient(135deg, #00caff, #0088ff)" : "rgba(51, 65, 85, 0.5)",
+                  color: manualSongMode ? "#001a2e" : "#94a3b8",
+                  border: manualSongMode ? "none" : "1px solid rgba(51, 65, 85, 0.5)"
+                }}
+              >
+                ✍️ שיר ידני
+              </button>
+            </div>
+
+            {!manualSongMode ? (
+              <SmartSongSearch 
+                onSongSelect={handleSongSelect}
+                disabled={isSubmitting}
+              />
+            ) : (
+              <div className="space-y-2">
+                <div>
+                  <label htmlFor="manual-song-title" className="block text-[0.9rem] mb-0.5">
+                    שם השיר *
+                  </label>
+                  <input
+                    id="manual-song-title"
+                    type="text"
+                    name="song_title"
+                    value={formData.song_title}
+                    onChange={handleChange}
+                    required
+                    placeholder="לדוגמה: אהבה ראשונה"
+                    className="w-full px-3 py-2.5 rounded-xl border outline-none text-[0.95rem]"
+                    style={{
+                      borderColor: "#1f2937",
+                      background: "rgba(15,23,42,0.9)",
+                      color: "#f9fafb"
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = "#00caff";
+                      e.target.style.boxShadow = "0 0 0 1px rgba(0, 202, 255, 0.5)";
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = "#1f2937";
+                      e.target.style.boxShadow = "none";
+                    }}
+                  />
+                </div>
+                
+                <div>
+                  <label htmlFor="manual-song-artist" className="block text-[0.9rem] mb-0.5">
+                    שם האמן *
+                  </label>
+                  <input
+                    id="manual-song-artist"
+                    type="text"
+                    name="song_artist"
+                    value={formData.song_artist}
+                    onChange={handleChange}
+                    required
+                    placeholder="לדוגמה: עומר אדם"
+                    className="w-full px-3 py-2.5 rounded-xl border outline-none text-[0.95rem]"
+                    style={{
+                      borderColor: "#1f2937",
+                      background: "rgba(15,23,42,0.9)",
+                      color: "#f9fafb"
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = "#00caff";
+                      e.target.style.boxShadow = "0 0 0 1px rgba(0, 202, 255, 0.5)";
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = "#1f2937";
+                      e.target.style.boxShadow = "none";
+                    }}
+                  />
+                </div>
+              </div>
+            )}
 
             <button
               type="submit"
