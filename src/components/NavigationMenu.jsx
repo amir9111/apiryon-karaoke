@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Menu, X, Tv, Shield, Music2, Play, BarChart3, Users } from "lucide-react";
+import { Menu, X, Tv, Shield, Music2, Play, BarChart3, UserPlus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
@@ -211,7 +211,7 @@ export default function NavigationMenu({ onSummaryClick }) {
               </Link>
 
               <Link
-                to={createPageUrl("Profile")}
+                to={createPageUrl("Home")}
                 onClick={() => setIsOpen(false)}
                 style={{
                   display: "flex",
@@ -236,8 +236,8 @@ export default function NavigationMenu({ onSummaryClick }) {
                   e.currentTarget.style.transform = "translateX(0)";
                 }}
               >
-                <Users className="w-5 h-5" />
-                <span>טופס משתמשים</span>
+                <UserPlus className="w-5 h-5" />
+                <span>טופס רישום לתור</span>
               </Link>
             </>
           )}
