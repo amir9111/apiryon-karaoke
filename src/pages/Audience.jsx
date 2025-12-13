@@ -3,7 +3,6 @@ import NavigationMenu from "../components/NavigationMenu";
 import ApyironLogo from "../components/ApyironLogo";
 import AudioWave from "../components/AudioWave";
 import EventSummaryModal from "../components/EventSummaryModal";
-import FloatingMessages from "../components/FloatingMessages";
 import { motion } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
