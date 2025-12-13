@@ -75,8 +75,8 @@ export default function Home() {
       } else {
         setTermsAccepted(true);
         if (!hasVisited) {
-          setShowWelcome(true);
           localStorage.setItem('apiryon_visited', 'true');
+          setShowWelcome(true);
           
           timer = setTimeout(() => {
             setShowWelcome(false);
@@ -89,7 +89,6 @@ export default function Home() {
     
     return () => {
       if (timer) clearTimeout(timer);
-      stopCamera();
     };
   }, []);
 
@@ -166,7 +165,7 @@ export default function Home() {
     }
   };
 
-  const stopCamera = () => {
+  const stopCamera = React.useCallback(() => {
     try {
       if (videoRef.current && videoRef.current.srcObject) {
         const stream = videoRef.current.srcObject;
@@ -184,7 +183,7 @@ export default function Home() {
       // Silent cleanup
     }
     setShowCamera(false);
-  };
+  }, []);
 
   const [photoUploaded, setPhotoUploaded] = React.useState(false);
 
