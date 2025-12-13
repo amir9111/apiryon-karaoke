@@ -226,6 +226,11 @@ export default function Home() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    // מניעת שליחות כפולות
+    if (isSubmitting) {
+      return;
+    }
+    
     if (!capturedPhoto) {
       setStatus({ type: "error", message: "נא לצלם תמונה לפני השליחה 📸" });
       return;
@@ -244,6 +249,24 @@ export default function Home() {
     if (manualSongMode && (!formData.song_title.trim() || !formData.song_artist.trim())) {
       setStatus({ type: "error", message: "נא למלא את שם השיר והאמן 🎵" });
       return;
+    }
+
+    // בדיקה אם למשתמש כבר יש שיר פעיל
+    try {
+      const savedEmail = localStorage.getItem('apiryon_user_email');
+      if (savedEmail) {
+        const existingRequest = requests.find(r => 
+          r.email === savedEmail && 
+          (r.status === "waiting" || r.status === "performing")
+        );
+        
+        if (existingRequest) {
+          setStatus({ type: "error", message: "יש לך כבר שיר בתור! המתן עד שתסיים 🎤" });
+          return;
+        }
+      }
+    } catch (e) {
+      // המשך אם אין localStorage
     }
 
     setIsSubmitting(true);
@@ -281,25 +304,28 @@ export default function Home() {
         // localStorage full or unavailable
       }
 
-      setStatus({ type: "ok", message: "הבקשה נרשמה! בהצלחה 🎤" });
+      // עדכון QueryClient לפני הצגת הודעת הצלחה
+      await queryClient.invalidateQueries({ queryKey: ['karaoke-requests'] });
       
-      // ניקוי מלא של הטופס
+      setStatus({ type: "ok", message: "✅ הבקשה נרשמה בהצלחה! בהצלחה 🎤" });
+      
+      // ניקוי הטופס אבל שמירה על התמונה
       setFormData({
-        singer_name: "",
+        singer_name: formData.singer_name, // שומרים את השם
         song_title: "",
         song_artist: "",
         song_id: null
       });
       setSelectedSong(null);
-      setCapturedPhoto(null);
-      setPhotoUploaded(false);
       setManualSongMode(false);
       setIsSubmitting(false);
+      // לא מנקים את capturedPhoto ו-photoUploaded
 
       setTimeout(() => {
         setStatus({ type: null, message: "" });
-      }, 3500);
+      }, 4000);
     } catch (error) {
+      console.error("Error submitting request:", error);
       setStatus({ type: "error", message: "שגיאה בשליחת הבקשה, נסה שוב" });
       setIsSubmitting(false);
     }
@@ -856,18 +882,19 @@ export default function Home() {
               disabled={isSubmitting}
               aria-label={isSubmitting ? "שולח את הבקשה לתור..." : "שלח בקשה להצטרפות לתור הקריוקי"}
               aria-disabled={isSubmitting}
-              className="w-full mt-2 py-[11px] px-[14px] rounded-full border-none cursor-pointer font-semibold text-base"
+              className="w-full mt-2 py-[11px] px-[14px] rounded-full border-none font-semibold text-base"
               style={{
-                background: "linear-gradient(135deg, #00caff, #0088ff)",
-                color: "#001a2e",
-                opacity: isSubmitting ? 0.7 : 1,
-                boxShadow: "0 0 20px rgba(0, 202, 255, 0.4)"
+                background: isSubmitting ? "rgba(100, 116, 139, 0.5)" : "linear-gradient(135deg, #00caff, #0088ff)",
+                color: isSubmitting ? "#64748b" : "#001a2e",
+                cursor: isSubmitting ? "not-allowed" : "pointer",
+                boxShadow: isSubmitting ? "none" : "0 0 20px rgba(0, 202, 255, 0.4)",
+                pointerEvents: isSubmitting ? "none" : "auto"
               }}
-              onMouseDown={(e) => e.currentTarget.style.transform = "scale(0.98)"}
-              onMouseUp={(e) => e.currentTarget.style.transform = "scale(1)"}
-              onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
+              onMouseDown={(e) => !isSubmitting && (e.currentTarget.style.transform = "scale(0.98)")}
+              onMouseUp={(e) => !isSubmitting && (e.currentTarget.style.transform = "scale(1)")}
+              onMouseLeave={(e) => !isSubmitting && (e.currentTarget.style.transform = "scale(1)")}
             >
-              שלחו אותי לתור 🎵
+              {isSubmitting ? "שולח..." : "שלחו אותי לתור 🎵"}
             </button>
 
               {status.type && (
