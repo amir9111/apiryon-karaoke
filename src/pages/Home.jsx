@@ -276,6 +276,8 @@ export default function Home() {
       }
 
       setStatus({ type: "ok", message: "הבקשה נרשמה! בהצלחה 🎤" });
+      
+      // ניקוי מלא של הטופס
       setFormData({
         singer_name: "",
         song_title: "",
@@ -284,6 +286,7 @@ export default function Home() {
       });
       setSelectedSong(null);
       setCapturedPhoto(null);
+      setPhotoUploaded(false);
       setIsSubmitting(false);
 
       setTimeout(() => {

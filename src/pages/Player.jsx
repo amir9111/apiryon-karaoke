@@ -25,16 +25,13 @@ export default function Player() {
   const [showControls, setShowControls] = useState(true);
   const [videoQuality, setVideoQuality] = useState("auto");
   const [aiEnhancement, setAiEnhancement] = useState(true);
-  const [bassBoost, setBassBoost] = useState(0);
-  const [trebleBoost, setTrebleBoost] = useState(0);
+  const [pitchShift, setPitchShift] = useState(0);
   const [showSettings, setShowSettings] = useState(false);
   
   const videoRef = useRef(null);
   const audioContextRef = useRef(null);
   const sourceNodeRef = useRef(null);
   const gainNodeRef = useRef(null);
-  const bassFilterRef = useRef(null);
-  const trebleFilterRef = useRef(null);
   const controlsTimeoutRef = useRef(null);
 
   const { data: requests = [] } = useQuery({
@@ -52,30 +49,16 @@ export default function Player() {
 
   const performingRequest = requests.find(r => r.status === "performing");
 
-  // Initialize Web Audio API for advanced audio processing
+  // Initialize Web Audio API
   useEffect(() => {
     if (videoRef.current && !audioContextRef.current) {
       try {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         audioContextRef.current = new AudioContext();
-        
         sourceNodeRef.current = audioContextRef.current.createMediaElementSource(videoRef.current);
         gainNodeRef.current = audioContextRef.current.createGain();
         
-        // Bass filter (low shelf)
-        bassFilterRef.current = audioContextRef.current.createBiquadFilter();
-        bassFilterRef.current.type = "lowshelf";
-        bassFilterRef.current.frequency.value = 200;
-        
-        // Treble filter (high shelf)
-        trebleFilterRef.current = audioContextRef.current.createBiquadFilter();
-        trebleFilterRef.current.type = "highshelf";
-        trebleFilterRef.current.frequency.value = 3000;
-        
-        // Connect nodes
         sourceNodeRef.current
-          .connect(bassFilterRef.current)
-          .connect(trebleFilterRef.current)
           .connect(gainNodeRef.current)
           .connect(audioContextRef.current.destination);
       } catch (error) {
@@ -84,15 +67,12 @@ export default function Player() {
     }
   }, []);
 
-  // Update audio filters
+  // Apply pitch shift
   useEffect(() => {
-    if (bassFilterRef.current) {
-      bassFilterRef.current.gain.value = bassBoost;
+    if (videoRef.current) {
+      videoRef.current.playbackRate = Math.pow(2, pitchShift / 12);
     }
-    if (trebleFilterRef.current) {
-      trebleFilterRef.current.gain.value = trebleBoost;
-    }
-  }, [bassBoost, trebleBoost]);
+  }, [pitchShift]);
 
   // Update volume
   useEffect(() => {
@@ -111,9 +91,11 @@ export default function Player() {
       if (song && song.id !== currentSong?.id) {
         setCurrentSong(song);
         setCurrentTime(0);
+        setPitchShift(0);
         
         setTimeout(() => {
           if (videoRef.current) {
+            videoRef.current.load();
             videoRef.current.play().then(() => {
               setIsPlaying(true);
               if (audioContextRef.current?.state === 'suspended') {
@@ -123,7 +105,7 @@ export default function Player() {
               console.log("Autoplay prevented:", err);
             });
           }
-        }, 500);
+        }, 100);
       }
     } else if (!performingRequest) {
       setCurrentSong(null);
@@ -202,10 +184,25 @@ export default function Player() {
   };
 
   const toggleFullscreen = () => {
-    if (document.fullscreenElement) {
-      document.exitFullscreen();
+    const elem = videoRef.current;
+    if (!elem) return;
+    
+    if (document.fullscreenElement || document.webkitFullscreenElement) {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      }
     } else {
-      document.documentElement.requestFullscreen();
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+      } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen();
+      } else if (elem.mozRequestFullScreen) {
+        elem.mozRequestFullScreen();
+      } else if (elem.msRequestFullscreen) {
+        elem.msRequestFullscreen();
+      }
     }
   };
 
@@ -238,20 +235,7 @@ export default function Player() {
             playsInline
           />
 
-          {/* AI Enhancement Indicator */}
-          {aiEnhancement && (
-            <div 
-              className="absolute top-6 left-6 px-4 py-2 rounded-full flex items-center gap-2"
-              style={{
-                background: "rgba(139, 92, 246, 0.9)",
-                backdropFilter: "blur(10px)",
-                boxShadow: "0 0 20px rgba(139, 92, 246, 0.5)"
-              }}
-            >
-              <Sparkles className="w-4 h-4 animate-pulse" />
-              <span className="text-sm font-bold">AI Audio Enhancement</span>
-            </div>
-          )}
+
 
           {/* Info Overlay */}
           <div 
@@ -431,86 +415,66 @@ export default function Player() {
                 minWidth: "320px"
               }}
             >
-              <h3 className="text-lg font-bold mb-4 flex items-center gap-2" style={{ color: "#a78bfa" }}>
-                <Waves className="w-5 h-5" />
-                הגדרות אודיו מתקדמות
+              <h3 className="text-lg font-bold mb-4 flex items-center gap-2" style={{ color: "#00caff" }}>
+                🎵 שליטה בטון
               </h3>
 
-              {/* AI Enhancement Toggle */}
-              <div className="mb-4 flex items-center justify-between">
-                <span className="text-sm" style={{ color: "#e2e8f0" }}>AI Audio Enhancement</span>
-                <button
-                  onClick={() => setAiEnhancement(!aiEnhancement)}
-                  className="px-3 py-1 rounded-full text-xs font-bold"
-                  style={{
-                    background: aiEnhancement ? "linear-gradient(135deg, #8b5cf6, #6d28d9)" : "rgba(255, 255, 255, 0.1)",
-                    color: aiEnhancement ? "#fff" : "#94a3b8"
-                  }}
-                >
-                  {aiEnhancement ? "מופעל" : "כבוי"}
-                </button>
-              </div>
-
-              {/* Bass Boost */}
+              {/* Pitch Shift */}
               <div className="mb-4">
-                <label className="text-sm block mb-2" style={{ color: "#e2e8f0" }}>
-                  Bass Boost: {bassBoost > 0 ? `+${bassBoost}dB` : `${bassBoost}dB`}
+                <label className="text-base font-bold block mb-3 text-center" style={{ color: "#e2e8f0" }}>
+                  {pitchShift === 0 ? "טון מקורי" : pitchShift > 0 ? `העלאה: +${pitchShift}` : `הורדה: ${pitchShift}`}
                 </label>
-                <input
-                  type="range"
-                  min="-12"
-                  max="12"
-                  step="1"
-                  value={bassBoost}
-                  onChange={(e) => setBassBoost(parseFloat(e.target.value))}
-                  className="w-full"
-                  style={{
-                    appearance: "none",
-                    height: "4px",
-                    background: `linear-gradient(to right, #8b5cf6 ${((bassBoost + 12) / 24) * 100}%, rgba(255,255,255,0.2) ${((bassBoost + 12) / 24) * 100}%)`,
-                    borderRadius: "2px",
-                    cursor: "pointer"
-                  }}
-                />
-              </div>
-
-              {/* Treble Boost */}
-              <div className="mb-4">
-                <label className="text-sm block mb-2" style={{ color: "#e2e8f0" }}>
-                  Treble Boost: {trebleBoost > 0 ? `+${trebleBoost}dB` : `${trebleBoost}dB`}
-                </label>
-                <input
-                  type="range"
-                  min="-12"
-                  max="12"
-                  step="1"
-                  value={trebleBoost}
-                  onChange={(e) => setTrebleBoost(parseFloat(e.target.value))}
-                  className="w-full"
-                  style={{
-                    appearance: "none",
-                    height: "4px",
-                    background: `linear-gradient(to right, #8b5cf6 ${((trebleBoost + 12) / 24) * 100}%, rgba(255,255,255,0.2) ${((trebleBoost + 12) / 24) * 100}%)`,
-                    borderRadius: "2px",
-                    cursor: "pointer"
-                  }}
-                />
+                <div className="flex items-center gap-3 mb-3">
+                  <button
+                    onClick={() => setPitchShift(Math.max(-6, pitchShift - 1))}
+                    className="px-4 py-2 rounded-lg font-bold"
+                    style={{
+                      background: "linear-gradient(135deg, #ef4444, #dc2626)",
+                      color: "#fff"
+                    }}
+                  >
+                    🔽 הורד
+                  </button>
+                  <input
+                    type="range"
+                    min="-6"
+                    max="6"
+                    step="1"
+                    value={pitchShift}
+                    onChange={(e) => setPitchShift(parseInt(e.target.value))}
+                    className="flex-1"
+                    style={{
+                      appearance: "none",
+                      height: "8px",
+                      background: `linear-gradient(to right, #ef4444 0%, #00caff ${((pitchShift + 6) / 12) * 100}%, #10b981 100%)`,
+                      borderRadius: "4px",
+                      cursor: "pointer"
+                    }}
+                  />
+                  <button
+                    onClick={() => setPitchShift(Math.min(6, pitchShift + 1))}
+                    className="px-4 py-2 rounded-lg font-bold"
+                    style={{
+                      background: "linear-gradient(135deg, #10b981, #059669)",
+                      color: "#fff"
+                    }}
+                  >
+                    🔼 העלה
+                  </button>
+                </div>
               </div>
 
               {/* Reset Button */}
               <button
-                onClick={() => {
-                  setBassBoost(0);
-                  setTrebleBoost(0);
-                }}
-                className="w-full py-2 rounded-lg text-sm font-bold"
+                onClick={() => setPitchShift(0)}
+                className="w-full py-3 rounded-lg text-base font-bold"
                 style={{
-                  background: "rgba(239, 68, 68, 0.2)",
-                  border: "1px solid rgba(239, 68, 68, 0.3)",
-                  color: "#ef4444"
+                  background: "rgba(0, 202, 255, 0.2)",
+                  border: "2px solid rgba(0, 202, 255, 0.5)",
+                  color: "#00caff"
                 }}
               >
-                איפוס הגדרות
+                🔄 איפוס לטון מקורי
               </button>
             </div>
           )}
@@ -543,15 +507,10 @@ export default function Player() {
               </p>
             </div>
             
-            <div className="grid grid-cols-2 gap-3 text-sm">
-              <div className="p-3 rounded-lg" style={{ background: "rgba(139, 92, 246, 0.1)", border: "1px solid rgba(139, 92, 246, 0.2)" }}>
-                <Sparkles className="w-5 h-5 mb-2 mx-auto" style={{ color: "#a78bfa" }} />
-                <div style={{ color: "#a78bfa" }}>AI Enhancement</div>
-              </div>
-              <div className="p-3 rounded-lg" style={{ background: "rgba(16, 185, 129, 0.1)", border: "1px solid rgba(16, 185, 129, 0.2)" }}>
-                <Waves className="w-5 h-5 mb-2 mx-auto" style={{ color: "#34d399" }} />
-                <div style={{ color: "#34d399" }}>EQ Controls</div>
-              </div>
+            <div className="p-4 rounded-lg" style={{ background: "rgba(0, 202, 255, 0.1)", border: "1px solid rgba(0, 202, 255, 0.2)" }}>
+              <Music className="w-8 h-8 mb-2 mx-auto" style={{ color: "#00caff" }} />
+              <div style={{ color: "#00caff", fontWeight: "600" }}>שליטה בטון השיר</div>
+              <div style={{ color: "#64748b", fontSize: "0.85rem", marginTop: "4px" }}>העלה או הורד עד 6 צלילים</div>
             </div>
           </div>
         </div>
