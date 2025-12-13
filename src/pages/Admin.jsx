@@ -296,12 +296,12 @@ export default function Admin() {
                       display: "inline-block",
                       marginBottom: "12px"
                     }}>
-                      🎵 בלייבק ממאגר
+                      🎵 פלייבק ממאגר
                     </div>
                   )}
                   {!currentSong.song_id && (
                     <div style={{ fontSize: "0.75rem", color: "#64748b", marginBottom: "12px" }}>
-                      ⚠️ שיר ידני (ללא בלייבק)
+                      ⚠️ שיר ידני (ללא פלייבק)
                     </div>
                   )}
                   <button
@@ -352,12 +352,12 @@ export default function Admin() {
                       display: "inline-block",
                       marginBottom: "12px"
                     }}>
-                      🎵 בלייבק ממאגר
+                      🎵 פלייבק ממאגר
                     </div>
                   )}
                   {!waitingList[0].song_id && (
                     <div style={{ fontSize: "0.75rem", color: "#64748b", marginBottom: "12px" }}>
-                      ⚠️ שיר ידני (ללא בלייבק)
+                      ⚠️ שיר ידני (ללא פלייבק)
                     </div>
                   )}
                   <div style={{ display: "flex", gap: "8px" }}>

@@ -140,7 +140,7 @@ export default function NavigationMenu() {
                 }}
               >
                 <Music2 className="w-5 h-5" />
-                <span>מאגר בלייבקים</span>
+                <span>מאגר פלייבקים</span>
               </Link>
 
               <Link
