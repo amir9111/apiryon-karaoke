@@ -25,58 +25,54 @@ export default function Audience() {
   const next = requests.filter(r => r.status === "waiting")[0];
 
   return (
-    <div dir="rtl" role="application" aria-label="מסך קהל - תצוגה חיה" style={{
-      minHeight: "100vh",
-      background: "linear-gradient(135deg, #020617 0%, #0a1929 50%, #020617 100%)",
-      color: "#fff",
-      position: "relative",
-      overflow: "hidden"
-    }}>
-      {/* Fixed Header Container */}
+    <>
+      {/* Fixed Clock - Top Left */}
+      <div style={{ 
+        position: "fixed", 
+        top: 0, 
+        left: 0, 
+        zIndex: 1000, 
+        pointerEvents: "none" 
+      }}>
+        <LiveClock />
+      </div>
+      
+      {/* Fixed Logo - Center Top */}
       <div style={{
         position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
+        top: "15px",
+        left: "50%",
+        marginLeft: "-100px",
+        width: "200px",
         zIndex: 1000,
-        pointerEvents: "none"
+        pointerEvents: "none",
+        textAlign: "center"
       }}>
-        {/* Clock - Top Left */}
-        <div style={{ position: "absolute", top: 0, left: 0, pointerEvents: "none" }}>
-          <LiveClock />
-        </div>
-        
-        {/* APIRYON Logo - Center Top */}
-        <div style={{
-          position: "absolute",
-          top: "15px",
-          left: "50%",
-          transform: "translateX(-50%)",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: "8px",
-          pointerEvents: "none"
-        }}>
+        <div style={{ marginBottom: "8px" }}>
           <ApyironLogo size="small" showCircle={true} />
-          <div style={{
-            textAlign: "center",
-            fontSize: "clamp(0.9rem, 2vw, 1.3rem)",
-            fontWeight: "800",
-            color: "#00caff",
-            textShadow: "0 0 20px rgba(0, 202, 255, 0.8)",
-            letterSpacing: "0.08em",
-            whiteSpace: "nowrap"
-          }}>
-            המוזיקה שלנו, הקול שלך 🎵
-          </div>
+        </div>
+        <div style={{
+          fontSize: "clamp(0.9rem, 2vw, 1.3rem)",
+          fontWeight: "800",
+          color: "#00caff",
+          textShadow: "0 0 20px rgba(0, 202, 255, 0.8)",
+          letterSpacing: "0.08em",
+          whiteSpace: "nowrap"
+        }}>
+          המוזיקה שלנו, הקול שלך 🎵
         </div>
       </div>
 
-      {/* Navigation Menu - with pointer events */}
+      {/* Fixed Navigation Menu */}
       <div style={{ position: "fixed", top: 0, right: 0, zIndex: 1001 }}>
         <NavigationMenu onSummaryClick={() => setShowSummary(true)} />
       </div>
+
+      <div dir="rtl" role="application" aria-label="מסך קהל - תצוגה חיה" style={{
+        minHeight: "100vh",
+        background: "linear-gradient(135deg, #020617 0%, #0a1929 50%, #020617 100%)",
+        color: "#fff"
+      }}>
 
       <EventSummaryModal 
         isOpen={showSummary}
@@ -565,7 +561,8 @@ export default function Audience() {
             </div>
           </div>
       </main>
-    </div>
+      </div>
+    </>
   );
 }
 
