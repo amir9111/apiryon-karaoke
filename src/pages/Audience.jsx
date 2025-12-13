@@ -238,7 +238,6 @@ export default function Audience() {
                 boxShadow: "0 0 60px rgba(0, 202, 255, 0.4), inset 0 0 30px rgba(0, 202, 255, 0.05)",
                 overflow: "hidden"
               }}>
-                <FloatingMessages isPerforming={!!current} />
                 <motion.div
                   animate={{ scale: [1, 1.05, 1] }}
                   transition={{ duration: 2, repeat: Infinity }}
@@ -659,6 +658,9 @@ export default function Audience() {
             </div>
           </div>
         </main>
+
+        {/* Floating Messages Ticker - Always at bottom when performing */}
+        <FloatingMessages isPerforming={!!current} />
       </div>
     </div>
   );
