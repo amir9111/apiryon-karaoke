@@ -313,54 +313,56 @@ export default function EventProducer() {
                 <div className="flex gap-3">
                   <button
                     onClick={() => setUseCustomImage(false)}
-                    className="flex-1 py-3 px-4 rounded-xl font-bold transition-all"
                     style={{
+                      flex: 1,
+                      padding: "12px 16px",
+                      borderRadius: "12px",
+                      fontWeight: "700",
+                      transition: "all 0.2s",
                       background: !useCustomImage 
                         ? "linear-gradient(135deg, #10b981, #059669)" 
                         : "rgba(51, 65, 85, 0.5)",
                       color: !useCustomImage ? "#fff" : "#94a3b8",
-                      border: !useCustomImage ? "none" : "1px solid rgba(51, 65, 85, 0.5)"
+                      border: !useCustomImage ? "none" : "1px solid rgba(51, 65, 85, 0.5)",
+                      cursor: "pointer"
                     }}
                   >
                     🤖 AI יצור
                   </button>
-                  <label 
-                    className="flex-1 py-3 px-4 rounded-xl font-bold transition-all text-center cursor-pointer"
-                    style={{
-                      background: useCustomImage 
-                        ? "linear-gradient(135deg, #10b981, #059669)" 
-                        : "rgba(51, 65, 85, 0.5)",
-                      color: useCustomImage ? "#fff" : "#94a3b8",
-                      border: useCustomImage ? "none" : "1px solid rgba(51, 65, 85, 0.5)",
-                      opacity: isUploadingImage ? 0.6 : 1,
-                      pointerEvents: isUploadingImage ? "none" : "auto"
-                    }}
-                  >
-                    {isUploadingImage ? (
-                      <span className="flex items-center justify-center gap-2">
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                        מעלה...
-                      </span>
-                    ) : (
-                      "📤 העלה תמונה"
-                    )}
+                  <div style={{ flex: 1, position: "relative" }}>
                     <input
                       type="file"
                       accept="image/*"
                       onChange={handleImageUpload}
-                      style={{ display: "none" }}
                       disabled={isUploadingImage}
+                      id="image-upload"
+                      style={{ display: "none" }}
                     />
-                  </label>
-                </div>
-                {isUploadingImage && (
-                  <div className="mt-2 text-xs text-center" style={{ color: "#00caff" }}>
-                    <Loader2 className="w-4 h-4 animate-spin inline mr-1" />
-                    מעלה תמונה...
+                    <label 
+                      htmlFor="image-upload"
+                      style={{
+                        display: "block",
+                        padding: "12px 16px",
+                        borderRadius: "12px",
+                        fontWeight: "700",
+                        textAlign: "center",
+                        cursor: isUploadingImage ? "not-allowed" : "pointer",
+                        transition: "all 0.2s",
+                        background: useCustomImage 
+                          ? "linear-gradient(135deg, #10b981, #059669)" 
+                          : "rgba(51, 65, 85, 0.5)",
+                        color: useCustomImage ? "#fff" : "#94a3b8",
+                        border: useCustomImage ? "none" : "1px solid rgba(51, 65, 85, 0.5)",
+                        opacity: isUploadingImage ? 0.6 : 1,
+                        pointerEvents: isUploadingImage ? "none" : "auto"
+                      }}
+                    >
+                      {isUploadingImage ? "⏳ מעלה..." : "📤 העלה תמונה"}
+                    </label>
                   </div>
-                )}
+                </div>
                 {customImageUrl && !isUploadingImage && (
-                  <div className="mt-2 text-xs text-center" style={{ color: "#10b981" }}>
+                  <div style={{ marginTop: "8px", fontSize: "0.75rem", textAlign: "center", color: "#10b981" }}>
                     ✓ תמונה הועלתה בהצלחה
                   </div>
                 )}
