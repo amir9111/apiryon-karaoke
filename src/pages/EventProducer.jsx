@@ -13,6 +13,7 @@ export default function EventProducer() {
   const [templateStyle, setTemplateStyle] = useState("modern");
   const [useCustomImage, setUseCustomImage] = useState(false);
   const [customImageUrl, setCustomImageUrl] = useState(null);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -52,13 +53,17 @@ export default function EventProducer() {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    setIsUploadingImage(true);
     try {
       const upload = await base44.integrations.Core.UploadFile({ file });
       setCustomImageUrl(upload.file_url);
       setUseCustomImage(true);
     } catch (error) {
-      alert("שגיאה בהעלאת התמונה");
+      console.error(error);
+      alert("שגיאה בהעלאת התמונה - נסה שוב");
+      setUseCustomImage(false);
     }
+    setIsUploadingImage(false);
   };
 
   const handleGenerate = async () => {
@@ -326,19 +331,35 @@ export default function EventProducer() {
                         ? "linear-gradient(135deg, #10b981, #059669)" 
                         : "rgba(51, 65, 85, 0.5)",
                       color: useCustomImage ? "#fff" : "#94a3b8",
-                      border: useCustomImage ? "none" : "1px solid rgba(51, 65, 85, 0.5)"
+                      border: useCustomImage ? "none" : "1px solid rgba(51, 65, 85, 0.5)",
+                      opacity: isUploadingImage ? 0.6 : 1,
+                      pointerEvents: isUploadingImage ? "none" : "auto"
                     }}
                   >
-                    📤 העלה תמונה
+                    {isUploadingImage ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        מעלה...
+                      </span>
+                    ) : (
+                      "📤 העלה תמונה"
+                    )}
                     <input
                       type="file"
                       accept="image/*"
                       onChange={handleImageUpload}
                       style={{ display: "none" }}
+                      disabled={isUploadingImage}
                     />
                   </label>
                 </div>
-                {customImageUrl && (
+                {isUploadingImage && (
+                  <div className="mt-2 text-xs text-center" style={{ color: "#00caff" }}>
+                    <Loader2 className="w-4 h-4 animate-spin inline mr-1" />
+                    מעלה תמונה...
+                  </div>
+                )}
+                {customImageUrl && !isUploadingImage && (
                   <div className="mt-2 text-xs text-center" style={{ color: "#10b981" }}>
                     ✓ תמונה הועלתה בהצלחה
                   </div>
