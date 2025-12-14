@@ -54,30 +54,24 @@ export default function EventProducer() {
     setIsGenerating(true);
     try {
       const analysisPrompt = `
-אתה מעצב אירועים מקצועי ומנתח תוכן חכם למועדון קריוקי "אפיריון".
-קרא בעיון את הטקסט הבא והבן את המהות, האווירה והנושא של האירוע:
+אתה מעצב אירועים מקצועי למועדון קריוקי בשם "אפיריון".
+המשתמש כתב את הטקסט הבא על אירוע קריוקי:
 
 "${eventText}"
 
 משימות שלך:
-1. נתח לעומק את תוכן האירוע - האם יש נושא מיוחד? זמר מסוים? ז'אנר? אווירה?
-2. חלץ פרטים: תאריך, שעה, מחיר, מיקום
-3. צור כותרת מושכת וקצרה (עד 5 מילים)
-4. צור תיאור שיווקי קצר ומרגש (2-3 שורות)
-5. **חשוב**: צור תיאור מדויק לתמונת רקע שמתאימה בדיוק לתוכן האירוע. 
-   - אם מדובר בזמר מסוים - תאר אותו
-   - אם מדובר בז'אנר מסוים - תאר סצנה מתאימה
-   - אם מדובר בנושא מיוחד - שלב אותו בתמונה
-   לדוגמה: אם כתוב "קלידן" - תאר "Klayden הזמר הישראלי על הבמה עם מיקרופון"
+1. חלץ את הפרטים החשובים: תאריך, שעה, סוג מוזיקה, מחיר כניסה, פרטים מיוחדים, אמנים או נושאים ספציפיים
+2. צור כותרת קצרה ומושכת (עד 6 מילים)
+3. צור טקסט שיווקי קצר ומרגש (3-4 שורות)
+4. נתח היטב את התוכן ותאר בדיוק מה צריך להיות ברקע - אם יש אמן ספציפי, נושא, סגנון - כלול את זה בתיאור. למשל: "קלידן", "מוזיקה מזרחית", "שירת זמר", "רוק", "דיסקו" וכו'
 
-החזר JSON:
+החזר JSON במבנה הבא:
 {
   "title": "כותרת קצרה ומושכת",
-  "description": "טקסט שיווקי עם אימוג'י מתאים",
+  "description": "טקסט שיווקי קצר",
   "date": "תאריך ושעה (אם צוין)",
   "price": "מחיר או 'כניסה חופשית'",
-  "emoji": "אימוג'י מרכזי אחד",
-  "imagePrompt": "תיאור מפורט ומדויק של תמונת הרקע בהתאם לתוכן"
+  "imagePrompt": "תיאור מדויק לתמונת רקע - אם יש אמן או נושא ספציפי, כלול אותו. אם יש סגנון מוזיקלי, כלול אותו"
 }
       `;
 
@@ -90,14 +84,13 @@ export default function EventProducer() {
             description: { type: "string" },
             date: { type: "string" },
             price: { type: "string" },
-            emoji: { type: "string" },
             imagePrompt: { type: "string" }
           },
           required: ["title", "description", "imagePrompt"]
         }
       });
 
-      const imagePrompt = `${analysisResult.imagePrompt}, vibrant happy party atmosphere, colorful celebration, karaoke event, stage lights, energetic crowd, joyful mood, professional photography, cinematic lighting, high quality, festive atmosphere, no text, no words`;
+      const imagePrompt = `${analysisResult.imagePrompt}, vibrant colorful atmosphere, karaoke party, energetic celebration, professional event photography, bright happy colors, festive mood, stage lighting, no text, high quality`;
       
       const imageResult = await base44.integrations.Core.GenerateImage({
         prompt: imagePrompt
@@ -246,7 +239,7 @@ export default function EventProducer() {
                       border: invitationType === "story" ? "none" : "1px solid rgba(51, 65, 85, 0.5)"
                     }}
                   >
-                    📸 סטורי (Instagram)
+                    📸 סטורי
                   </button>
                 </div>
               </div>
@@ -340,47 +333,40 @@ export default function EventProducer() {
                       display: "flex",
                       flexDirection: "column",
                       justifyContent: "space-between",
-                      padding: invitationType === "story" ? "36px 24px" : "32px 24px",
+                      padding: "32px 24px",
                       color: "#ffffff"
                     }}>
                       <div style={{ textAlign: "center" }}>
                         <div style={{
-                          fontSize: invitationType === "story" ? "2rem" : "2.5rem",
+                          fontSize: invitationType === "story" ? "2.5rem" : "3rem",
                           fontWeight: "900",
                           color: "#ffffff",
-                          textShadow: "0 0 30px rgba(0, 202, 255, 0.8), 0 0 60px rgba(0, 202, 255, 0.4)",
-                          letterSpacing: "0.1em"
+                          textShadow: "0 0 40px rgba(0, 202, 255, 0.9), 0 0 80px rgba(0, 202, 255, 0.5)",
+                          letterSpacing: "0.15em",
+                          fontFamily: "system-ui, -apple-system, sans-serif"
                         }}>
                           APIRYON
                         </div>
                       </div>
 
                       <div style={{ textAlign: "center" }}>
-                        {generatedContent.emoji && (
-                          <div style={{
-                            fontSize: invitationType === "story" ? "3rem" : "3.5rem",
-                            marginBottom: "12px",
-                            filter: "drop-shadow(0 0 15px rgba(255, 255, 255, 0.4))"
-                          }}>
-                            {generatedContent.emoji}
-                          </div>
-                        )}
-                        
                         <h2 style={{
-                          fontSize: invitationType === "story" ? "1.8rem" : "2.2rem",
+                          fontSize: invitationType === "story" ? "2rem" : "2.5rem",
                           fontWeight: "900",
                           marginBottom: "16px",
                           lineHeight: "1.2",
-                          textShadow: "0 2px 20px rgba(0, 0, 0, 0.8)"
+                          textShadow: "0 2px 20px rgba(0, 0, 0, 0.9)",
+                          fontFamily: "system-ui, -apple-system, sans-serif"
                         }}>
                           {generatedContent.title}
                         </h2>
                         
                         <p style={{
-                          fontSize: invitationType === "story" ? "1rem" : "1.1rem",
-                          marginBottom: "16px",
+                          fontSize: invitationType === "story" ? "1.1rem" : "1.3rem",
+                          marginBottom: "20px",
                           lineHeight: "1.6",
-                          textShadow: "0 1px 10px rgba(0, 0, 0, 0.8)"
+                          textShadow: "0 1px 10px rgba(0, 0, 0, 0.8)",
+                          fontFamily: "system-ui, -apple-system, sans-serif"
                         }}>
                           {generatedContent.description}
                         </p>
@@ -388,13 +374,14 @@ export default function EventProducer() {
                         {generatedContent.date && (
                           <div style={{
                             display: "inline-block",
-                            background: "rgba(0, 202, 255, 0.2)",
+                            background: "rgba(0, 202, 255, 0.25)",
                             border: "2px solid rgba(0, 202, 255, 0.5)",
                             borderRadius: "12px",
-                            padding: "8px 16px",
+                            padding: "10px 20px",
                             marginBottom: "8px",
-                            fontSize: invitationType === "story" ? "0.9rem" : "1rem",
-                            fontWeight: "700"
+                            fontSize: invitationType === "story" ? "1rem" : "1.1rem",
+                            fontWeight: "700",
+                            fontFamily: "system-ui, -apple-system, sans-serif"
                           }}>
                             📅 {generatedContent.date}
                           </div>
@@ -403,13 +390,14 @@ export default function EventProducer() {
                         {generatedContent.price && (
                           <div style={{
                             display: "inline-block",
-                            background: "rgba(16, 185, 129, 0.2)",
+                            background: "rgba(16, 185, 129, 0.25)",
                             border: "2px solid rgba(16, 185, 129, 0.5)",
                             borderRadius: "12px",
-                            padding: "8px 16px",
+                            padding: "10px 20px",
                             marginRight: "8px",
-                            fontSize: invitationType === "story" ? "0.9rem" : "1rem",
-                            fontWeight: "700"
+                            fontSize: invitationType === "story" ? "1rem" : "1.1rem",
+                            fontWeight: "700",
+                            fontFamily: "system-ui, -apple-system, sans-serif"
                           }}>
                             💰 {generatedContent.price}
                           </div>
@@ -418,14 +406,15 @@ export default function EventProducer() {
 
                       <div style={{ textAlign: "center" }}>
                         <div style={{
-                          fontSize: invitationType === "story" ? "1.5rem" : "1.8rem",
+                          fontSize: invitationType === "story" ? "1.8rem" : "2rem",
                           marginBottom: "8px"
                         }}>
                           🎤 🎵 🎉
                         </div>
                         <div style={{
-                          fontSize: invitationType === "story" ? "0.85rem" : "0.95rem",
-                          color: "#cbd5e1"
+                          fontSize: invitationType === "story" ? "0.9rem" : "1rem",
+                          color: "#cbd5e1",
+                          fontFamily: "system-ui, -apple-system, sans-serif"
                         }}>
                           מועדון אפיריון • המוזיקה שלנו, השירה שלכם
                         </div>
