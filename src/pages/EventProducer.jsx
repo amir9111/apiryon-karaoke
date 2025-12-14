@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Sparkles, Download, Share2, Image as ImageIcon, Loader2 } from "lucide-react";
 import html2canvas from "html2canvas";
