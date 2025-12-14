@@ -10,6 +10,9 @@ export default function EventProducer() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedContent, setGeneratedContent] = useState(null);
   const [invitationType, setInvitationType] = useState("regular");
+  const [templateStyle, setTemplateStyle] = useState("modern");
+  const [useCustomImage, setUseCustomImage] = useState(false);
+  const [customImageUrl, setCustomImageUrl] = useState(null);
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -45,6 +48,19 @@ export default function EventProducer() {
     );
   }
 
+  const handleImageUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const upload = await base44.integrations.Core.UploadFile({ file });
+      setCustomImageUrl(upload.file_url);
+      setUseCustomImage(true);
+    } catch (error) {
+      alert("שגיאה בהעלאת התמונה");
+    }
+  };
+
   const handleGenerate = async () => {
     if (!eventText.trim()) {
       alert("נא למלא את פרטי האירוע");
@@ -61,16 +77,18 @@ export default function EventProducer() {
 
 משימות שלך:
 1. חלץ את הפרטים החשובים: תאריך, שעה, סוג מוזיקה, מחיר כניסה, פרטים מיוחדים
-2. צור טקסט שיווקי קצר ומושך (עד 4 שורות) שמתאים להזמנה ויזואלית
-3. צור תיאור קצר לתמונת רקע שמתאימה לאירוע (לדוגמה: "מסיבת קריוקי צבעונית עם מיקרופונים וזרקורים")
+2. צור כותרת קצרה ומושכת עם אימוג'י מתאים
+3. צור טקסט שיווקי קצר ומרגש (2-3 שורות) עם אימוג'י
+4. צור תיאור לתמונת רקע שמחה וחגיגית
 
 החזר JSON במבנה הבא:
 {
-  "title": "כותרת מושכת באירוע (עד 6 מילים)",
-  "description": "טקסט שיווקי קצר ומושך",
+  "title": "כותרת עם אימוג'י (4-5 מילים)",
+  "description": "טקסט שיווקי עם אימוג'י",
   "date": "תאריך ושעה (אם צוין)",
   "price": "מחיר או 'כניסה חופשית'",
-  "imagePrompt": "תיאור לתמונת רקע מעוצבת"
+  "emoji": "אימוג'י מרכזי מתאים לאירוע (בודד)",
+  "imagePrompt": "תיאור לתמונת רקע"
 }
       `;
 
@@ -83,21 +101,27 @@ export default function EventProducer() {
             description: { type: "string" },
             date: { type: "string" },
             price: { type: "string" },
+            emoji: { type: "string" },
             imagePrompt: { type: "string" }
           },
           required: ["title", "description", "imagePrompt"]
         }
       });
 
-      const imagePrompt = `${analysisResult.imagePrompt}, vibrant colors, professional event poster style, modern design, high quality, cinematic lighting, no text`;
-      
-      const imageResult = await base44.integrations.Core.GenerateImage({
-        prompt: imagePrompt
-      });
+      let backgroundImage = customImageUrl;
+
+      if (!useCustomImage || !customImageUrl) {
+        const imagePrompt = `${analysisResult.imagePrompt}, vibrant happy party atmosphere, colorful celebration, karaoke microphones, stage lights, energetic crowd, joyful event, professional photography, bright colors, festive mood, no text`;
+        
+        const imageResult = await base44.integrations.Core.GenerateImage({
+          prompt: imagePrompt
+        });
+        backgroundImage = imageResult.url;
+      }
 
       setGeneratedContent({
         ...analysisResult,
-        backgroundImage: imageResult.url
+        backgroundImage
       });
 
     } catch (error) {
@@ -225,7 +249,7 @@ export default function EventProducer() {
                       border: invitationType === "regular" ? "none" : "1px solid rgba(51, 65, 85, 0.5)"
                     }}
                   >
-                    📱 הזמנה רגילה (ריבוע)
+                    📱 ריבוע
                   </button>
                   <button
                     onClick={() => setInvitationType("story")}
@@ -238,9 +262,87 @@ export default function EventProducer() {
                       border: invitationType === "story" ? "none" : "1px solid rgba(51, 65, 85, 0.5)"
                     }}
                   >
-                    📸 סטורי (אנכי)
+                    📸 סטורי
                   </button>
                 </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm font-bold mb-2" style={{ color: "#cbd5e1" }}>
+                  סגנון עיצוב:
+                </label>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setTemplateStyle("modern")}
+                    className="flex-1 py-3 px-4 rounded-xl font-bold transition-all"
+                    style={{
+                      background: templateStyle === "modern" 
+                        ? "linear-gradient(135deg, #a78bfa, #8b5cf6)" 
+                        : "rgba(51, 65, 85, 0.5)",
+                      color: templateStyle === "modern" ? "#001a2e" : "#94a3b8",
+                      border: templateStyle === "modern" ? "none" : "1px solid rgba(51, 65, 85, 0.5)"
+                    }}
+                  >
+                    ✨ מודרני
+                  </button>
+                  <button
+                    onClick={() => setTemplateStyle("bold")}
+                    className="flex-1 py-3 px-4 rounded-xl font-bold transition-all"
+                    style={{
+                      background: templateStyle === "bold" 
+                        ? "linear-gradient(135deg, #a78bfa, #8b5cf6)" 
+                        : "rgba(51, 65, 85, 0.5)",
+                      color: templateStyle === "bold" ? "#001a2e" : "#94a3b8",
+                      border: templateStyle === "bold" ? "none" : "1px solid rgba(51, 65, 85, 0.5)"
+                    }}
+                  >
+                    💥 נועז
+                  </button>
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm font-bold mb-2" style={{ color: "#cbd5e1" }}>
+                  תמונת רקע:
+                </label>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setUseCustomImage(false)}
+                    className="flex-1 py-3 px-4 rounded-xl font-bold transition-all"
+                    style={{
+                      background: !useCustomImage 
+                        ? "linear-gradient(135deg, #10b981, #059669)" 
+                        : "rgba(51, 65, 85, 0.5)",
+                      color: !useCustomImage ? "#fff" : "#94a3b8",
+                      border: !useCustomImage ? "none" : "1px solid rgba(51, 65, 85, 0.5)"
+                    }}
+                  >
+                    🤖 AI יצור
+                  </button>
+                  <label 
+                    className="flex-1 py-3 px-4 rounded-xl font-bold transition-all text-center cursor-pointer"
+                    style={{
+                      background: useCustomImage 
+                        ? "linear-gradient(135deg, #10b981, #059669)" 
+                        : "rgba(51, 65, 85, 0.5)",
+                      color: useCustomImage ? "#fff" : "#94a3b8",
+                      border: useCustomImage ? "none" : "1px solid rgba(51, 65, 85, 0.5)"
+                    }}
+                  >
+                    📤 העלה תמונה
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      style={{ display: "none" }}
+                    />
+                  </label>
+                </div>
+                {customImageUrl && (
+                  <div className="mt-2 text-xs text-center" style={{ color: "#10b981" }}>
+                    ✓ תמונה הועלתה בהצלחה
+                  </div>
+                )}
               </div>
 
               <button
@@ -332,86 +434,225 @@ export default function EventProducer() {
                       display: "flex",
                       flexDirection: "column",
                       justifyContent: "space-between",
-                      padding: "32px 24px",
+                      padding: invitationType === "story" ? "40px 28px" : "36px 28px",
                       color: "#ffffff"
                     }}>
-                      <div style={{ textAlign: "center" }}>
-                        <div style={{
-                          fontSize: invitationType === "story" ? "2rem" : "2.5rem",
-                          fontWeight: "900",
-                          color: "#ffffff",
-                          textShadow: "0 0 30px rgba(0, 202, 255, 0.8), 0 0 60px rgba(0, 202, 255, 0.4)",
-                          letterSpacing: "0.1em"
-                        }}>
-                          APIRYON
-                        </div>
-                      </div>
-
-                      <div style={{ textAlign: "center" }}>
-                        <h2 style={{
-                          fontSize: invitationType === "story" ? "1.8rem" : "2.2rem",
-                          fontWeight: "900",
-                          marginBottom: "16px",
-                          lineHeight: "1.2",
-                          textShadow: "0 2px 20px rgba(0, 0, 0, 0.8)"
-                        }}>
-                          {generatedContent.title}
-                        </h2>
-                        
-                        <p style={{
-                          fontSize: invitationType === "story" ? "1rem" : "1.1rem",
-                          marginBottom: "16px",
-                          lineHeight: "1.6",
-                          textShadow: "0 1px 10px rgba(0, 0, 0, 0.8)"
-                        }}>
-                          {generatedContent.description}
-                        </p>
-
-                        {generatedContent.date && (
-                          <div style={{
-                            display: "inline-block",
-                            background: "rgba(0, 202, 255, 0.2)",
-                            border: "2px solid rgba(0, 202, 255, 0.5)",
-                            borderRadius: "12px",
-                            padding: "8px 16px",
-                            marginBottom: "8px",
-                            fontSize: invitationType === "story" ? "0.9rem" : "1rem",
-                            fontWeight: "700"
-                          }}>
-                            📅 {generatedContent.date}
+                      {templateStyle === "modern" ? (
+                        <>
+                          <div style={{ textAlign: "center" }}>
+                            <div style={{
+                              fontSize: invitationType === "story" ? "2.3rem" : "3rem",
+                              fontWeight: "900",
+                              color: "#ffffff",
+                              textShadow: "0 0 40px rgba(0, 202, 255, 0.9), 0 0 80px rgba(0, 202, 255, 0.5)",
+                              letterSpacing: "0.15em",
+                              marginBottom: "8px"
+                            }}>
+                              APIRYON
+                            </div>
+                            <div style={{
+                              fontSize: invitationType === "story" ? "0.9rem" : "1rem",
+                              color: "#00caff",
+                              fontWeight: "600",
+                              textShadow: "0 0 15px rgba(0, 202, 255, 0.8)"
+                            }}>
+                              ✨ מועדון הקריוקי שלכם ✨
+                            </div>
                           </div>
-                        )}
 
-                        {generatedContent.price && (
-                          <div style={{
-                            display: "inline-block",
-                            background: "rgba(16, 185, 129, 0.2)",
-                            border: "2px solid rgba(16, 185, 129, 0.5)",
-                            borderRadius: "12px",
-                            padding: "8px 16px",
-                            marginRight: "8px",
-                            fontSize: invitationType === "story" ? "0.9rem" : "1rem",
-                            fontWeight: "700"
-                          }}>
-                            💰 {generatedContent.price}
+                          <div style={{ textAlign: "center" }}>
+                            {generatedContent.emoji && (
+                              <div style={{
+                                fontSize: invitationType === "story" ? "4rem" : "5rem",
+                                marginBottom: "16px",
+                                filter: "drop-shadow(0 0 20px rgba(255, 255, 255, 0.5))"
+                              }}>
+                                {generatedContent.emoji}
+                              </div>
+                            )}
+                            
+                            <h2 style={{
+                              fontSize: invitationType === "story" ? "2.2rem" : "2.8rem",
+                              fontWeight: "900",
+                              marginBottom: "20px",
+                              lineHeight: "1.2",
+                              textShadow: "0 4px 30px rgba(0, 0, 0, 0.9)",
+                              background: "linear-gradient(135deg, #ffffff, #00caff)",
+                              WebkitBackgroundClip: "text",
+                              WebkitTextFillColor: "transparent",
+                              filter: "drop-shadow(0 2px 20px rgba(0, 202, 255, 0.5))"
+                            }}>
+                              {generatedContent.title}
+                            </h2>
+                            
+                            <p style={{
+                              fontSize: invitationType === "story" ? "1.15rem" : "1.35rem",
+                              marginBottom: "24px",
+                              lineHeight: "1.7",
+                              textShadow: "0 2px 15px rgba(0, 0, 0, 0.9)",
+                              fontWeight: "600",
+                              padding: "0 12px"
+                            }}>
+                              {generatedContent.description}
+                            </p>
+
+                            <div style={{ display: "flex", flexDirection: "column", gap: "10px", alignItems: "center" }}>
+                              {generatedContent.date && (
+                                <div style={{
+                                  display: "inline-block",
+                                  background: "rgba(0, 202, 255, 0.25)",
+                                  border: "3px solid rgba(0, 202, 255, 0.6)",
+                                  borderRadius: "16px",
+                                  padding: "12px 24px",
+                                  fontSize: invitationType === "story" ? "1.05rem" : "1.2rem",
+                                  fontWeight: "800",
+                                  boxShadow: "0 0 25px rgba(0, 202, 255, 0.4)"
+                                }}>
+                                  📅 {generatedContent.date}
+                                </div>
+                              )}
+
+                              {generatedContent.price && (
+                                <div style={{
+                                  display: "inline-block",
+                                  background: "rgba(16, 185, 129, 0.25)",
+                                  border: "3px solid rgba(16, 185, 129, 0.6)",
+                                  borderRadius: "16px",
+                                  padding: "12px 24px",
+                                  fontSize: invitationType === "story" ? "1.05rem" : "1.2rem",
+                                  fontWeight: "800",
+                                  boxShadow: "0 0 25px rgba(16, 185, 129, 0.4)"
+                                }}>
+                                  💰 {generatedContent.price}
+                                </div>
+                              )}
+                            </div>
                           </div>
-                        )}
-                      </div>
 
-                      <div style={{ textAlign: "center" }}>
-                        <div style={{
-                          fontSize: invitationType === "story" ? "1.5rem" : "1.8rem",
-                          marginBottom: "8px"
-                        }}>
-                          🎤 🎵 🎉
-                        </div>
-                        <div style={{
-                          fontSize: invitationType === "story" ? "0.85rem" : "0.95rem",
-                          color: "#cbd5e1"
-                        }}>
-                          מועדון אפיריון • המוזיקה שלנו, השירה שלכם
-                        </div>
-                      </div>
+                          <div style={{ textAlign: "center" }}>
+                            <div style={{
+                              fontSize: invitationType === "story" ? "1.8rem" : "2.2rem",
+                              marginBottom: "12px",
+                              filter: "drop-shadow(0 0 10px rgba(255, 255, 255, 0.5))"
+                            }}>
+                              🎤 🎵 🎉
+                            </div>
+                            <div style={{
+                              fontSize: invitationType === "story" ? "0.95rem" : "1.1rem",
+                              color: "#e2e8f0",
+                              fontWeight: "600",
+                              textShadow: "0 2px 10px rgba(0, 0, 0, 0.8)"
+                            }}>
+                              המוזיקה שלנו • השירה שלכם
+                            </div>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div style={{ textAlign: "center" }}>
+                            <div style={{
+                              fontSize: invitationType === "story" ? "5rem" : "6rem",
+                              marginBottom: "12px",
+                              filter: "drop-shadow(0 0 25px rgba(255, 255, 255, 0.7))"
+                            }}>
+                              {generatedContent.emoji || "🎤"}
+                            </div>
+                          </div>
+
+                          <div style={{ textAlign: "center" }}>
+                            <div style={{
+                              fontSize: invitationType === "story" ? "2.5rem" : "3.2rem",
+                              fontWeight: "900",
+                              color: "#ffffff",
+                              textShadow: "0 0 50px rgba(255, 215, 0, 0.8), 0 4px 40px rgba(0, 0, 0, 0.9)",
+                              letterSpacing: "0.1em",
+                              marginBottom: "16px",
+                              transform: "scaleY(1.1)"
+                            }}>
+                              APIRYON
+                            </div>
+                            
+                            <h2 style={{
+                              fontSize: invitationType === "story" ? "2.5rem" : "3.2rem",
+                              fontWeight: "900",
+                              marginBottom: "20px",
+                              lineHeight: "1.1",
+                              textShadow: "0 0 30px rgba(255, 215, 0, 0.6), 0 5px 30px rgba(0, 0, 0, 0.9)",
+                              color: "#ffd700",
+                              WebkitTextStroke: "2px #000",
+                              textTransform: "uppercase"
+                            }}>
+                              {generatedContent.title}
+                            </h2>
+                            
+                            <p style={{
+                              fontSize: invitationType === "story" ? "1.3rem" : "1.6rem",
+                              marginBottom: "24px",
+                              lineHeight: "1.6",
+                              textShadow: "0 3px 20px rgba(0, 0, 0, 1), 0 0 15px rgba(0, 0, 0, 0.8)",
+                              fontWeight: "800",
+                              padding: "0 16px",
+                              color: "#ffffff"
+                            }}>
+                              {generatedContent.description}
+                            </p>
+
+                            <div style={{ display: "flex", flexDirection: "column", gap: "12px", alignItems: "center" }}>
+                              {generatedContent.date && (
+                                <div style={{
+                                  display: "inline-block",
+                                  background: "linear-gradient(135deg, #ff0080, #ff8c00)",
+                                  border: "4px solid #ffd700",
+                                  borderRadius: "20px",
+                                  padding: "14px 28px",
+                                  fontSize: invitationType === "story" ? "1.15rem" : "1.4rem",
+                                  fontWeight: "900",
+                                  boxShadow: "0 0 30px rgba(255, 215, 0, 0.6), 0 5px 20px rgba(0, 0, 0, 0.5)",
+                                  textShadow: "0 2px 10px rgba(0, 0, 0, 0.8)"
+                                }}>
+                                  📅 {generatedContent.date}
+                                </div>
+                              )}
+
+                              {generatedContent.price && (
+                                <div style={{
+                                  display: "inline-block",
+                                  background: "linear-gradient(135deg, #00ff88, #00d4ff)",
+                                  border: "4px solid #ffd700",
+                                  borderRadius: "20px",
+                                  padding: "14px 28px",
+                                  fontSize: invitationType === "story" ? "1.15rem" : "1.4rem",
+                                  fontWeight: "900",
+                                  boxShadow: "0 0 30px rgba(255, 215, 0, 0.6), 0 5px 20px rgba(0, 0, 0, 0.5)",
+                                  textShadow: "0 2px 10px rgba(0, 0, 0, 0.8)",
+                                  color: "#000"
+                                }}>
+                                  💰 {generatedContent.price}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+
+                          <div style={{ textAlign: "center" }}>
+                            <div style={{
+                              fontSize: invitationType === "story" ? "2rem" : "2.5rem",
+                              marginBottom: "12px",
+                              filter: "drop-shadow(0 0 15px rgba(255, 255, 255, 0.6))"
+                            }}>
+                              🎵 ⭐ 🎉
+                            </div>
+                            <div style={{
+                              fontSize: invitationType === "story" ? "1.05rem" : "1.2rem",
+                              color: "#ffd700",
+                              fontWeight: "900",
+                              textShadow: "0 0 20px rgba(255, 215, 0, 0.8), 0 3px 15px rgba(0, 0, 0, 0.9)",
+                              WebkitTextStroke: "1px #000"
+                            }}>
+                              המוזיקה שלנו • השירה שלכם
+                            </div>
+                          </div>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
