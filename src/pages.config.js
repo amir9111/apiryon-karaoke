@@ -5,6 +5,7 @@ import Audience from './pages/Audience';
 import Profile from './pages/Profile';
 import SongManager from './pages/SongManager';
 import Player from './pages/Player';
+import EventProducer from './pages/EventProducer';
 
 
 export const PAGES = {
@@ -15,6 +16,7 @@ export const PAGES = {
     "Profile": Profile,
     "SongManager": SongManager,
     "Player": Player,
+    "EventProducer": EventProducer,
 }
 
 export const pagesConfig = {
