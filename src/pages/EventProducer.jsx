@@ -140,7 +140,7 @@ export default function ProInviteGenerator() {
   ].filter(Boolean);
 
   return (
-    <div dir="rtl" style={{ minHeight: "100vh", padding: 16, background: "linear-gradient(135deg,#020617,#0a1929,#020617)", color: "#fff" }}>
+    <div dir="rtl" style={{ minHeight: "100vh", padding: "8px", background: "linear-gradient(135deg,#020617,#0a1929,#020617)", color: "#fff" }}>
       <div style={{ maxWidth: 1200, margin: "0 auto", display: "grid", gap: 14 }}>
         {/* Controls */}
         <div style={{ background: "rgba(15,23,42,0.88)", border: "1px solid rgba(0,202,255,0.25)", borderRadius: 18, padding: 16, backdropFilter: "blur(10px)" }}>
@@ -210,13 +210,14 @@ export default function ProInviteGenerator() {
         </div>
 
         {/* Poster Preview (1080x1350 - פורמט סטורי/פוסט) */}
-        <div style={{ display: "flex", justifyContent: "center" }}>
+        <div style={{ display: "flex", justifyContent: "center", overflow: "auto" }}>
           <div
             ref={cardRef}
             style={{
-              width: 1080,
-              height: 1350,
-              borderRadius: 44,
+              width: "min(1080px, 100vw - 16px)",
+              aspectRatio: "1080 / 1350",
+              maxWidth: "100%",
+              borderRadius: "clamp(20px, 4vw, 44px)",
               position: "relative",
               overflow: "hidden",
               background:
@@ -233,19 +234,19 @@ export default function ProInviteGenerator() {
             <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(2,6,23,0.10), rgba(2,6,23,0.88))" }} />
 
             {/* Top Brand */}
-            <div style={{ position: "absolute", top: 34, left: 34, right: 34, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 16px", borderRadius: 18, background: "rgba(0,202,255,0.10)", border: "1px solid rgba(0,202,255,0.22)", backdropFilter: "blur(10px)" }}>
+            <div style={{ position: "absolute", top: "2.5%", left: "3%", right: "3%", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "clamp(6px, 1vw, 12px)", padding: "clamp(8px, 1vw, 12px) clamp(10px, 1.5vw, 16px)", borderRadius: "clamp(12px, 1.5vw, 18px)", background: "rgba(0,202,255,0.10)", border: "1px solid rgba(0,202,255,0.22)", backdropFilter: "blur(10px)" }}>
                 <Music2 size={18} style={{ color: "#00caff" }} />
-                <div style={{ fontWeight: 950, letterSpacing: "0.12em" }}>APIRYON</div>
+                <div style={{ fontWeight: 950, letterSpacing: "0.12em", fontSize: "clamp(12px, 1.5vw, 16px)" }}>APIRYON</div>
               </div>
 
-              <div style={{ padding: "12px 16px", borderRadius: 18, background: "rgba(15,23,42,0.60)", border: "1px solid rgba(148,163,184,0.18)", backdropFilter: "blur(10px)", fontWeight: 900, color: "#00caff" }}>
+              <div style={{ padding: "clamp(8px, 1vw, 12px) clamp(10px, 1.5vw, 16px)", borderRadius: "clamp(12px, 1.5vw, 18px)", background: "rgba(15,23,42,0.60)", border: "1px solid rgba(148,163,184,0.18)", backdropFilter: "blur(10px)", fontWeight: 900, color: "#00caff", fontSize: "clamp(11px, 1.4vw, 15px)" }}>
                 ✨ הזמנה רשמית ✨
               </div>
             </div>
 
             {/* Meta bar (תאריך/שעה/מיקום) */}
-            <div style={{ position: "absolute", top: 110, left: 34, right: 34, display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
+            <div style={{ position: "absolute", top: "8%", left: "3%", right: "3%", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 100px), 1fr))", gap: "clamp(6px, 1vw, 12px)" }}>
               <MetaPill icon={<CalendarDays size={18} />} label="תאריך" value={date || "—"} />
               <MetaPill icon={<Clock size={18} />} label="שעה" value={time || "—"} />
               <MetaPill icon={<MapPin size={18} />} label="מיקום" value={location || "—"} />
@@ -255,21 +256,21 @@ export default function ProInviteGenerator() {
             <div
               style={{
                 position: "absolute",
-                left: 40,
-                right: 40,
-                top: 190,
-                bottom: 140,
-                borderRadius: 34,
+                left: "3.5%",
+                right: "3.5%",
+                top: "14%",
+                bottom: "10%",
+                borderRadius: "clamp(18px, 3vw, 34px)",
                 background: "rgba(15,23,42,0.55)",
                 border: "1px solid rgba(0,202,255,0.22)",
                 boxShadow: "inset 0 0 70px rgba(0,202,255,0.10)",
                 backdropFilter: "blur(16px)",
-                padding: 34,
+                padding: "clamp(16px, 3vw, 34px)",
                 display: "flex",
                 flexDirection: "column",
               }}
             >
-              <div style={{ fontSize: 30, fontWeight: 950, color: "#00caff", textShadow: "0 0 24px rgba(0,202,255,0.55)", marginBottom: 14 }}>
+              <div style={{ fontSize: "clamp(16px, 2.8vw, 30px)", fontWeight: 950, color: "#00caff", textShadow: "0 0 24px rgba(0,202,255,0.55)", marginBottom: "clamp(8px, 1.2vw, 14px)" }}>
                 🔥 לילה של מוזיקה • קריוקי • וייב 🔥
               </div>
 
@@ -290,17 +291,17 @@ export default function ProInviteGenerator() {
                 {text}
               </div>
 
-              <div style={{ marginTop: 18, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
-                <div style={{ fontWeight: 900, opacity: 0.88 }}>📲 שולחים לחברים • שומרים מקום • מגיעים מוקדם</div>
-                <div style={{ padding: "12px 16px", borderRadius: 16, background: "linear-gradient(135deg,#00caff,#0088ff)", color: "#001a2e", fontWeight: 950 }}>
+              <div style={{ marginTop: "clamp(10px, 1.5vw, 18px)", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "clamp(6px, 1vw, 10px)", flexWrap: "wrap" }}>
+                <div style={{ fontWeight: 900, opacity: 0.88, fontSize: "clamp(11px, 1.4vw, 15px)" }}>📲 שולחים לחברים • שומרים מקום • מגיעים מוקדם</div>
+                <div style={{ padding: "clamp(8px, 1.2vw, 12px) clamp(10px, 1.5vw, 16px)", borderRadius: "clamp(12px, 1.5vw, 16px)", background: "linear-gradient(135deg,#00caff,#0088ff)", color: "#001a2e", fontWeight: 950, fontSize: "clamp(12px, 1.4vw, 15px)", whiteSpace: "nowrap" }}>
                   🎤 שריינו עכשיו
                 </div>
               </div>
             </div>
 
             {/* Footer */}
-            <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 110, background: "linear-gradient(90deg, rgba(0,202,255,0.18), rgba(139,92,246,0.14), rgba(34,197,94,0.10))", borderTop: "1px solid rgba(148,163,184,0.12)" }}>
-              <div style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 950, letterSpacing: "0.08em", opacity: 0.96 }}>
+            <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "8%", background: "linear-gradient(90deg, rgba(0,202,255,0.18), rgba(139,92,246,0.14), rgba(34,197,94,0.10))", borderTop: "1px solid rgba(148,163,184,0.12)" }}>
+              <div style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 950, letterSpacing: "0.08em", opacity: 0.96, fontSize: "clamp(12px, 1.5vw, 16px)" }}>
                 ✨ APIRYON • המועדון הקריוקי שלכם ✨
               </div>
             </div>
@@ -320,17 +321,17 @@ function MetaPill({ icon, label, value }) {
     <div style={{
       display: "flex",
       alignItems: "center",
-      gap: 10,
-      padding: "14px 16px",
-      borderRadius: 18,
+      gap: "clamp(6px, 1vw, 10px)",
+      padding: "clamp(10px, 1.3vw, 14px) clamp(12px, 1.5vw, 16px)",
+      borderRadius: "clamp(12px, 1.5vw, 18px)",
       background: "rgba(15,23,42,0.60)",
       border: "1px solid rgba(148,163,184,0.18)",
       backdropFilter: "blur(10px)"
     }}>
-      <div style={{ color: "#00caff" }}>{icon}</div>
+      <div style={{ color: "#00caff", flexShrink: 0 }}>{icon}</div>
       <div style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }}>
-        <div style={{ fontSize: 12, opacity: 0.75, fontWeight: 900 }}>{label}</div>
-        <div style={{ fontSize: 16, fontWeight: 950, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+        <div style={{ fontSize: "clamp(10px, 1.1vw, 12px)", opacity: 0.75, fontWeight: 900 }}>{label}</div>
+        <div style={{ fontSize: "clamp(13px, 1.5vw, 16px)", fontWeight: 950, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
           {value}
         </div>
       </div>
