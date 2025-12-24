@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { toPng } from "html-to-image";
-import { Sparkles, Download, Share2, Loader2 } from "lucide-react";
+import { Sparkles, Download, Share2, Loader2, Home } from "lucide-react";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "@/utils";
 
 export default function EventProducer() {
   const [inputText, setInputText] = useState("");
@@ -169,7 +171,40 @@ ${templateImage ? '⚠️ קריטי: השתמש באותם ביטויים, או
       color: "#fff"
     }}>
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-        
+
+        {/* Back Button */}
+        <div style={{ marginBottom: "20px" }}>
+          <Link
+            to={createPageUrl("Home")}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+              padding: "12px 20px",
+              borderRadius: "12px",
+              background: "rgba(15, 23, 42, 0.9)",
+              border: "2px solid rgba(16, 185, 129, 0.5)",
+              boxShadow: "0 0 20px rgba(16, 185, 129, 0.3)",
+              color: "#10b981",
+              textDecoration: "none",
+              fontWeight: "700",
+              fontSize: "1rem",
+              transition: "all 0.3s"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "rgba(16, 185, 129, 0.2)";
+              e.currentTarget.style.transform = "translateX(5px)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "rgba(15, 23, 42, 0.9)";
+              e.currentTarget.style.transform = "translateX(0)";
+            }}
+          >
+            <Home className="w-5 h-5" />
+            <span>חזרה לדף הבית</span>
+          </Link>
+        </div>
+
         {/* Header */}
         <div style={{ textAlign: "center", marginBottom: "30px" }}>
           <div style={{
