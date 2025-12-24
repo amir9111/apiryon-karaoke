@@ -8,7 +8,25 @@ export default function EventProducer() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [invitation, setInvitation] = useState(null);
   const [isExporting, setIsExporting] = useState(false);
+  const [templateImage, setTemplateImage] = useState(null);
+  const [isUploadingTemplate, setIsUploadingTemplate] = useState(false);
   const cardRef = React.useRef(null);
+
+  const handleTemplateUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingTemplate(true);
+    try {
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      setTemplateImage(file_url);
+    } catch (error) {
+      console.error(error);
+      alert("שגיאה בהעלאת התבנית");
+    } finally {
+      setIsUploadingTemplate(false);
+    }
+  };
 
   const analyzeAndBuild = async () => {
     if (!inputText.trim()) {
@@ -18,9 +36,10 @@ export default function EventProducer() {
 
     setIsAnalyzing(true);
     try {
-      const result = await base44.integrations.Core.InvokeLLM({
-        prompt: `אתה מעצב הזמנות מקצועי למועדונים ואירועי קריוקי. 
+      const basePrompt = `אתה מעצב הזמנות מקצועי למועדונים ואירועי קריוקי. 
 קיבלת טקסט חופשי מלקוח, ועליך לחלץ ממנו את כל המידע הרלוונטי ולארגן אותו בצורה יפה.
+
+${templateImage ? `חשוב מאוד: צורפה תבנית דוגמה להזמנה. למד את הסגנון, המבנה, סוג הניסוחים, האווירה והטון שבה. צור הזמנה דומה בסגנון ובמבנה!` : ''}
 
 הטקסט שקיבלת:
 """
@@ -33,6 +52,7 @@ ${inputText}
 3. צור תת-כותרת משלימה (עד 40 תווים)
 4. ארגן את כל הפרטים בסדר הגיוני
 5. הוסף קריאה לפעולה בסוף
+${templateImage ? '6. השתמש באותו סגנון, טון וניסוח כמו בתבנית שצורפה' : ''}
 
 חשוב: השתמש בעברית תקנית, ברורה ומזמינה. הימנע מסלנג מיותר.
 
@@ -174,6 +194,118 @@ ${inputText}
             boxShadow: "0 0 40px rgba(0, 202, 255, 0.2)",
             backdropFilter: "blur(10px)"
           }}>
+            
+            {/* Template Upload */}
+            <div style={{
+              marginBottom: "25px",
+              padding: "20px",
+              background: "rgba(139, 92, 246, 0.1)",
+              border: "2px dashed rgba(139, 92, 246, 0.4)",
+              borderRadius: "16px"
+            }}>
+              <div style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                flexWrap: "wrap",
+                gap: "15px"
+              }}>
+                <div>
+                  <div style={{
+                    fontSize: "1.1rem",
+                    fontWeight: "700",
+                    color: "#a78bfa",
+                    marginBottom: "6px"
+                  }}>
+                    🎨 העלה תבנית להשראה (אופציונלי)
+                  </div>
+                  <div style={{ fontSize: "0.9rem", color: "#94a3b8" }}>
+                    ה-AI ילמד מהסגנון ויצור הזמנה דומה
+                  </div>
+                </div>
+                
+                <label style={{
+                  padding: "12px 24px",
+                  borderRadius: "12px",
+                  background: templateImage ? "linear-gradient(135deg, #10b981, #059669)" : "linear-gradient(135deg, #8b5cf6, #6d28d9)",
+                  color: "#fff",
+                  fontSize: "1rem",
+                  fontWeight: "700",
+                  cursor: isUploadingTemplate ? "wait" : "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  boxShadow: "0 0 20px rgba(139, 92, 246, 0.3)"
+                }}>
+                  {isUploadingTemplate ? (
+                    <>
+                      <Loader2 size={18} className="animate-spin" style={{ animation: "spin 1s linear infinite" }} />
+                      <span>מעלה...</span>
+                    </>
+                  ) : templateImage ? (
+                    <>
+                      <span>✓ תבנית הועלתה</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>📤 העלה תמונה</span>
+                    </>
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleTemplateUpload}
+                    disabled={isUploadingTemplate}
+                    style={{ display: "none" }}
+                  />
+                </label>
+              </div>
+
+              {templateImage && (
+                <div style={{
+                  marginTop: "15px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px"
+                }}>
+                  <img 
+                    src={templateImage} 
+                    alt="תבנית הזמנה"
+                    style={{
+                      width: "80px",
+                      height: "80px",
+                      objectFit: "cover",
+                      borderRadius: "10px",
+                      border: "2px solid rgba(139, 92, 246, 0.5)"
+                    }}
+                  />
+                  <div style={{ flex: 1 }}>
+                    <div style={{ color: "#10b981", fontWeight: "700", fontSize: "0.95rem" }}>
+                      ✓ התבנית נטענה בהצלחה
+                    </div>
+                    <div style={{ color: "#94a3b8", fontSize: "0.85rem" }}>
+                      ה-AI יצור הזמנה בסגנון דומה
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setTemplateImage(null)}
+                    style={{
+                      padding: "8px 16px",
+                      borderRadius: "8px",
+                      border: "1px solid rgba(239, 68, 68, 0.4)",
+                      background: "rgba(239, 68, 68, 0.1)",
+                      color: "#ef4444",
+                      cursor: "pointer",
+                      fontSize: "0.9rem",
+                      fontWeight: "600"
+                    }}
+                  >
+                    הסר
+                  </button>
+                </div>
+              )}
+            </div>
+
             <label style={{
               display: "block",
               fontSize: "1.2rem",
