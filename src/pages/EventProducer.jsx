@@ -36,25 +36,33 @@ export default function EventProducer() {
 
     setIsAnalyzing(true);
     try {
-      const basePrompt = `אתה מעצב הזמנות מקצועי למועדונים ואירועי קריוקי. 
-קיבלת טקסט חופשי מלקוח, ועליך לחלץ ממנו את כל המידע הרלוונטי ולארגן אותו בצורה יפה.
+      const basePrompt = `אתה מעצב הזמנות מקצועי למועדונים ואירועי קריוקי בישראל.
 
-${templateImage ? `חשוב מאוד: צורפה תבנית דוגמה להזמנה. למד את הסגנון, המבנה, סוג הניסוחים, האווירה והטון שבה. צור הזמנה דומה בסגנון ובמבנה!` : ''}
+${templateImage ? `
+🎨 חשוב מאוד - תבנית דוגמה צורפה!
+נתח בקפידה את התבנית שצורפה:
+- סגנון הכתיבה (האם זה אנרגטי? רשמי? צעיר?)
+- סוג הניסוחים והמילים (למשל: "ערב קריוקי", "מסיבת חנוכה", "ביום ים תיכוני" וכו')
+- מבנה המידע (איך מסודרים הפרטים?)
+- טון השיווקי (האם יש התרגשות? אמוג'י?)
+- סוג האירוע (קריוקי? מסיבה? ערב מוזיקה?)
 
-הטקסט שקיבלת:
+צור הזמנה חדשה בדיוק באותו סגנון, טון וניסוח!
+` : 'צור הזמנה מקצועית ואנרגטית למועדון/ערב קריוקי.'}
+
+הטקסט שקיבלת מהלקוח:
 """
 ${inputText}
 """
 
 המשימה שלך:
-1. חלץ את כל הפרטים החשובים (תאריך, שעה, מיקום, שם האירוע, פרטי התקשרות, וכו')
-2. צור כותרת ראשית מושכת ומרגשת (עד 60 תווים)
-3. צור תת-כותרת משלימה (עד 40 תווים)
-4. ארגן את כל הפרטים בסדר הגיוני
-5. הוסף קריאה לפעולה בסוף
-${templateImage ? '6. השתמש באותו סגנון, טון וניסוח כמו בתבנית שצורפה' : ''}
+1. חלץ את כל הפרטים: תאריך, שעה, מיקום, שם המועדון/אירוע, פרטי התקשרות
+2. ${templateImage ? 'צור כותרת ראשית בסגנון דומה לתבנית (סגנון הכתיבה, האנרגיה, השימוש באמוג׳י)' : 'צור כותרת ראשית מרגשת ומזמינה'}
+3. ${templateImage ? 'צור תת-כותרת שמשלימה את הכותרת - באותו סגנון בדיוק' : 'צור תת-כותרת משלימה'}
+4. ${templateImage ? 'רשום רשימת פרטים/highlights באותו סגנון ניסוח כמו בתבנית' : 'רשום רשימת פרטים חשובים'}
+5. ${templateImage ? 'הוסף קריאה לפעולה באותו טון כמו בתבנית' : 'הוסף קריאה לפעולה'}
 
-חשוב: השתמש בעברית תקנית, ברורה ומזמינה. הימנע מסלנג מיותר.
+${templateImage ? '⚠️ קריטי: השתמש באותם ביטויים, אותו טון, אותה אנרגיה ואותו סגנון כתיבה בדיוק כמו בתבנית!' : ''}
 
 החזר JSON בפורמט הבא:`;
       
@@ -496,20 +504,22 @@ DJ LIVE, מוזיקה מזרחית ולהיטים
                   position: "relative",
                   borderRadius: "24px",
                   overflow: "hidden",
-                  background: "linear-gradient(135deg, #020617 0%, #0a1929 50%, #020617 100%)",
-                  border: "3px solid rgba(0, 202, 255, 0.3)",
-                  boxShadow: "0 0 60px rgba(0, 202, 255, 0.3)"
+                  background: "linear-gradient(135deg, #1a0f0a 0%, #2d1810 30%, #1a0f0a 70%, #0a0604 100%)",
+                  border: "3px solid rgba(255, 140, 0, 0.3)",
+                  boxShadow: "0 0 60px rgba(255, 100, 0, 0.3), 0 0 100px rgba(255, 140, 0, 0.2)"
                 }}
               >
-                {/* Background Effects */}
+                {/* Background Effects - Stage Lighting Style */}
                 <div style={{
                   position: "absolute",
                   inset: 0,
                   background: `
-                    radial-gradient(circle at 20% 20%, rgba(0, 202, 255, 0.15), transparent 50%),
-                    radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.15), transparent 50%)
+                    radial-gradient(ellipse at 50% 0%, rgba(255, 140, 0, 0.3), transparent 40%),
+                    radial-gradient(ellipse at 0% 50%, rgba(255, 100, 0, 0.2), transparent 50%),
+                    radial-gradient(ellipse at 100% 50%, rgba(255, 100, 0, 0.2), transparent 50%),
+                    radial-gradient(ellipse at 50% 100%, rgba(139, 92, 246, 0.15), transparent 50%)
                   `,
-                  opacity: 0.6
+                  opacity: 0.7
                 }} />
 
                 {/* Content Container */}
@@ -525,39 +535,48 @@ DJ LIVE, מוזיקה מזרחית ולהיטים
                   {/* Header */}
                   <div>
                     <div style={{
-                      fontSize: "clamp(1rem, 2vw, 1.3rem)",
-                      color: "#00caff",
-                      fontWeight: "800",
+                      fontSize: "clamp(0.9rem, 1.8vw, 1.2rem)",
+                      color: "#FFD700",
+                      fontWeight: "900",
                       textTransform: "uppercase",
-                      letterSpacing: "0.1em",
+                      letterSpacing: "0.15em",
                       textAlign: "center",
-                      marginBottom: "clamp(20px, 3%, 40px)",
-                      textShadow: "0 0 20px rgba(0, 202, 255, 0.6)"
+                      marginBottom: "clamp(15px, 2.5%, 30px)",
+                      textShadow: "0 0 25px rgba(255, 215, 0, 0.8), 0 2px 10px rgba(0, 0, 0, 0.8)",
+                      background: "linear-gradient(180deg, #FFD700 0%, #FFA500 100%)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      filter: "drop-shadow(0 0 20px rgba(255, 140, 0, 0.6))"
                     }}>
                       🎤 APIRYON CLUB 🎤
                     </div>
 
                     {/* Title */}
                     <h1 style={{
-                      fontSize: "clamp(2rem, 5vw, 3.5rem)",
+                      fontSize: "clamp(2rem, 5vw, 3.8rem)",
                       fontWeight: "900",
-                      color: "#fff",
+                      background: "linear-gradient(180deg, #FFFFFF 0%, #FFD700 50%, #FFA500 100%)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
                       textAlign: "center",
                       marginBottom: "clamp(15px, 2%, 25px)",
-                      lineHeight: "1.2",
-                      textShadow: "0 4px 20px rgba(0, 0, 0, 0.8)"
+                      lineHeight: "1.1",
+                      textShadow: "0 6px 25px rgba(255, 140, 0, 0.5)",
+                      filter: "drop-shadow(0 4px 15px rgba(0, 0, 0, 0.9))",
+                      letterSpacing: "-0.02em"
                     }}>
                       {invitation.title}
                     </h1>
 
                     {/* Subtitle */}
                     <div style={{
-                      fontSize: "clamp(1.3rem, 2.5vw, 2rem)",
-                      fontWeight: "700",
-                      color: "#00caff",
+                      fontSize: "clamp(1.4rem, 2.8vw, 2.3rem)",
+                      fontWeight: "800",
+                      color: "#FFD700",
                       textAlign: "center",
                       marginBottom: "clamp(30px, 4%, 50px)",
-                      textShadow: "0 0 15px rgba(0, 202, 255, 0.5)"
+                      textShadow: "0 0 20px rgba(255, 215, 0, 0.6), 0 3px 15px rgba(0, 0, 0, 0.9)",
+                      letterSpacing: "0.02em"
                     }}>
                       {invitation.subtitle}
                     </div>
@@ -565,12 +584,12 @@ DJ LIVE, מוזיקה מזרחית ולהיטים
 
                   {/* Main Info */}
                   <div style={{
-                    background: "rgba(15, 23, 42, 0.7)",
+                    background: "rgba(10, 6, 4, 0.85)",
                     borderRadius: "20px",
                     padding: "clamp(20px, 3%, 35px)",
-                    border: "2px solid rgba(0, 202, 255, 0.3)",
-                    backdropFilter: "blur(10px)",
-                    boxShadow: "0 0 30px rgba(0, 202, 255, 0.2)"
+                    border: "2px solid rgba(255, 140, 0, 0.4)",
+                    backdropFilter: "blur(12px)",
+                    boxShadow: "0 0 40px rgba(255, 100, 0, 0.3), inset 0 0 30px rgba(255, 140, 0, 0.05)"
                   }}>
                     
                     {/* Date, Time, Location */}
@@ -620,7 +639,7 @@ DJ LIVE, מוזיקה מזרחית ולהיטים
                             color: "#cbd5e1",
                             fontWeight: "600"
                           }}>
-                            <span style={{ color: "#00caff", fontSize: "1.2em" }}>✓</span>
+                            <span style={{ color: "#FFD700", fontSize: "1.2em" }}>✓</span>
                             <span>{highlight}</span>
                           </div>
                         ))}
@@ -642,14 +661,15 @@ DJ LIVE, מוזיקה מזרחית ולהיטים
 
                     {/* Call to Action */}
                     <div style={{
-                      background: "linear-gradient(135deg, #00caff, #0088ff)",
-                      padding: "clamp(12px, 2%, 18px) clamp(20px, 3%, 30px)",
+                      background: "linear-gradient(135deg, #FF8C00, #FFA500, #FFD700)",
+                      padding: "clamp(14px, 2.5%, 20px) clamp(20px, 3%, 30px)",
                       borderRadius: "15px",
                       textAlign: "center",
-                      fontSize: "clamp(1.1rem, 2vw, 1.5rem)",
+                      fontSize: "clamp(1.2rem, 2.2vw, 1.7rem)",
                       fontWeight: "900",
-                      color: "#001a2e",
-                      boxShadow: "0 0 25px rgba(0, 202, 255, 0.5)"
+                      color: "#000",
+                      boxShadow: "0 0 30px rgba(255, 140, 0, 0.6), 0 4px 15px rgba(0, 0, 0, 0.5)",
+                      textShadow: "0 1px 3px rgba(255, 255, 255, 0.3)"
                     }}>
                       {invitation.callToAction}
                     </div>
@@ -678,27 +698,30 @@ DJ LIVE, מוזיקה מזרחית ולהיטים
 function InfoPill({ icon, label, value }) {
   return (
     <div style={{
-      background: "rgba(0, 202, 255, 0.1)",
-      border: "1px solid rgba(0, 202, 255, 0.3)",
-      borderRadius: "12px",
-      padding: "12px",
-      textAlign: "center"
+      background: "rgba(255, 140, 0, 0.15)",
+      border: "2px solid rgba(255, 140, 0, 0.4)",
+      borderRadius: "14px",
+      padding: "14px 12px",
+      textAlign: "center",
+      boxShadow: "0 0 15px rgba(255, 100, 0, 0.2)"
     }}>
-      <div style={{ fontSize: "1.5rem", marginBottom: "5px" }}>{icon}</div>
+      <div style={{ fontSize: "1.6rem", marginBottom: "6px" }}>{icon}</div>
       <div style={{
-        fontSize: "0.75rem",
-        color: "#94a3b8",
-        fontWeight: "600",
-        marginBottom: "3px",
+        fontSize: "0.7rem",
+        color: "#FFA500",
+        fontWeight: "700",
+        marginBottom: "4px",
         textTransform: "uppercase",
-        letterSpacing: "0.05em"
+        letterSpacing: "0.08em",
+        textShadow: "0 0 10px rgba(255, 140, 0, 0.4)"
       }}>
         {label}
       </div>
       <div style={{
-        fontSize: "1rem",
-        color: "#fff",
-        fontWeight: "800"
+        fontSize: "1.05rem",
+        color: "#FFD700",
+        fontWeight: "900",
+        textShadow: "0 0 10px rgba(255, 215, 0, 0.5)"
       }}>
         {value}
       </div>
