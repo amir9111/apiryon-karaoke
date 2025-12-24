@@ -56,7 +56,11 @@ ${templateImage ? '6. השתמש באותו סגנון, טון וניסוח כמ
 
 חשוב: השתמש בעברית תקנית, ברורה ומזמינה. הימנע מסלנג מיותר.
 
-החזר JSON בפורמט הבא:`,
+החזר JSON בפורמט הבא:`;
+      
+      const result = await base44.integrations.Core.InvokeLLM({
+        prompt: basePrompt,
+        ...(templateImage && { file_urls: [templateImage] }),
         response_json_schema: {
           type: "object",
           properties: {
