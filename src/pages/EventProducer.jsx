@@ -383,21 +383,43 @@ function InvitationCard({ refObj, data }) {
         filter: "brightness(0.7) contrast(1.15) saturate(1.1)"
       }} />
 
-      {/* לוגו אפריון - watermark */}
+      {/* לוגו אפריון - watermark מרובד */}
       <div style={{
         position: "absolute",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%) rotate(-15deg)",
-        fontSize: "clamp(180px, 25vw, 350px)",
-        fontWeight: "900",
-        color: "rgba(255,255,255,0.04)",
-        letterSpacing: "0.05em",
+        inset: 0,
         pointerEvents: "none",
-        textTransform: "uppercase",
-        zIndex: 0
+        zIndex: 0,
+        overflow: "hidden"
       }}>
-        APIRYON
+        {/* לוגו גדול מרכזי */}
+        <div style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%) rotate(-12deg)",
+          fontSize: "clamp(200px, 28vw, 400px)",
+          fontWeight: "900",
+          color: "rgba(255,255,255,0.03)",
+          letterSpacing: "0.08em",
+          textTransform: "uppercase",
+          lineHeight: 1
+        }}>
+          APIRYON
+        </div>
+        
+        {/* לוגו קטן פינה ימין עליון */}
+        <div style={{
+          position: "absolute",
+          top: "clamp(15px, 3%, 30px)",
+          right: "clamp(15px, 3%, 30px)",
+          fontSize: "clamp(1rem, 2vw, 1.4rem)",
+          fontWeight: "900",
+          color: "rgba(255,255,255,0.15)",
+          letterSpacing: "0.15em",
+          textTransform: "uppercase"
+        }}>
+          🎤 APIRYON
+        </div>
       </div>
 
       {/* שכבת קריאות */}
@@ -697,15 +719,15 @@ function btnStyle(type) {
 
 function getBgPrompt(styleId, eventName) {
   const prompts = {
-    karaoke: "Vibrant karaoke club atmosphere with stage lights, microphones, neon glow, warm orange and gold lighting, energetic nightlife vibe, professional photography, abstract background without text or letters",
-    birthday: "Festive birthday party atmosphere with colorful balloons, confetti, warm lighting, celebration vibes, joyful energy, professional event photography, abstract background without text or letters",
-    mizrahi: "Middle Eastern party celebration, warm stage lights, traditional ornate decorations, golden and orange hues, festive dance floor, oriental patterns, premium club atmosphere, abstract background without text or letters",
-    club: "Modern nightclub with laser lights, DJ booth, neon blue and purple lighting, fog effects, energetic dance floor, techno atmosphere, professional club photography, abstract background without text or letters",
-    premium: "Luxury elegant venue, sophisticated golden lighting, premium interior, champagne vibes, classy atmosphere, high-end event space, abstract background without text or letters",
-    holiday: "Festive celebration atmosphere, decorative lights, party decorations, warm joyful colors, celebratory mood, special occasion vibes, abstract background without text or letters"
+    karaoke: "Vibrant karaoke club stage lights, microphones silhouettes, neon orange gold glow, energetic nightclub atmosphere, abstract bokeh lights",
+    birthday: "Festive colorful balloons, confetti particles, warm celebration lighting, joyful party atmosphere, abstract decorative elements",
+    mizrahi: "Middle Eastern ornate patterns, warm golden lighting, traditional decorative motifs, festive oriental atmosphere, abstract cultural design",
+    club: "Modern nightclub laser beams, DJ booth lights, neon blue purple glow, fog effects, abstract techno atmosphere",
+    premium: "Luxury golden lighting, elegant champagne bubbles, sophisticated premium atmosphere, classy ambient glow, abstract luxury design",
+    holiday: "Festive decorative lights, party atmosphere, warm joyful colors, celebration mood, abstract holiday design"
   };
 
-  return `${prompts[styleId] || prompts.karaoke}. High quality, professional event photography, 4K resolution, cinematic lighting, NO TEXT, NO WORDS, NO LETTERS in the image. Pure visual atmosphere only. Event theme: ${eventName}`;
+  return `${prompts[styleId] || prompts.karaoke}. Pure abstract visual atmosphere, NO TEXT, NO HEBREW, NO ENGLISH, NO WORDS, NO LETTERS, NO WRITING, NO SIGNS, NO TYPOGRAPHY whatsoever. Only lights, colors, patterns, and atmosphere. Professional photography, 4K, cinematic. Theme: ${eventName}`;
 }
 
 const inputStyle = {
