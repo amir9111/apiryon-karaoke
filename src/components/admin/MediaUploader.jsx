@@ -127,12 +127,13 @@ export default function MediaUploader() {
           <>
             <Image className="w-5 h-5" />
             <Video className="w-5 h-5" />
-            בחר תמונה או וידאו
+            בחר תמונה או וידאו קצר
           </>
         )}
         <input
           type="file"
-          accept="image/*,video/*"
+          accept="image/*,video/mp4,video/webm,video/quicktime,video/x-msvideo"
+          capture="environment"
           onChange={handleFileUpload}
           disabled={isUploading}
           style={{ display: "none" }}

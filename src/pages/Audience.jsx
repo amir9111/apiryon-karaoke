@@ -289,13 +289,16 @@ export default function Audience() {
                       loop
                       muted
                       playsInline
+                      controls={false}
+                      preload="auto"
                       onError={(e) => console.error('❌ Video error:', e)}
                       onLoadedData={() => console.log('✅ Video loaded')}
                       style={{
                         width: "100%",
                         maxHeight: "75vh",
                         display: "block",
-                        objectFit: "contain"
+                        objectFit: "contain",
+                        backgroundColor: "#000"
                       }}
                     />
                   ) : (
