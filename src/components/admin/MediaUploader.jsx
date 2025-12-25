@@ -6,6 +6,11 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 export default function MediaUploader() {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState("");
+  const [showCamera, setShowCamera] = useState(false);
+  const [recordingVideo, setRecordingVideo] = useState(false);
+  const [mediaRecorder, setMediaRecorder] = useState(null);
+  const videoRef = React.useRef(null);
+  const canvasRef = React.useRef(null);
   const queryClient = useQueryClient();
 
   const { data: mediaList = [] } = useQuery({
@@ -65,6 +70,108 @@ export default function MediaUploader() {
     }
   };
 
+  const startCamera = async (isVideo = false) => {
+    setShowCamera(true);
+    try {
+      const constraints = isVideo 
+        ? { video: { facingMode: 'environment' }, audio: false }
+        : { video: { facingMode: 'environment' } };
+      
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        
+        if (isVideo) {
+          const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+          const chunks = [];
+          
+          recorder.ondataavailable = (e) => chunks.push(e.data);
+          recorder.onstop = async () => {
+            const blob = new Blob(chunks, { type: 'video/webm' });
+            await uploadMedia(blob, 'video');
+            stopCamera();
+          };
+          
+          setMediaRecorder(recorder);
+        }
+      }
+    } catch (err) {
+      console.error('Camera error:', err);
+      setUploadStatus("❌ לא ניתן לגשת למצלמה");
+      setTimeout(() => setUploadStatus(""), 3000);
+      setShowCamera(false);
+    }
+  };
+
+  const capturePhoto = async () => {
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    if (!video || !canvas) return;
+    
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0);
+    
+    canvas.toBlob(async (blob) => {
+      await uploadMedia(blob, 'image');
+      stopCamera();
+    }, 'image/jpeg', 0.9);
+  };
+
+  const startRecording = () => {
+    if (mediaRecorder) {
+      mediaRecorder.start();
+      setRecordingVideo(true);
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorder && recordingVideo) {
+      mediaRecorder.stop();
+      setRecordingVideo(false);
+    }
+  };
+
+  const stopCamera = () => {
+    if (videoRef.current?.srcObject) {
+      const tracks = videoRef.current.srcObject.getTracks();
+      tracks.forEach(track => track.stop());
+      videoRef.current.srcObject = null;
+    }
+    setShowCamera(false);
+    setRecordingVideo(false);
+    setMediaRecorder(null);
+  };
+
+  const uploadMedia = async (blob, type) => {
+    setIsUploading(true);
+    setUploadStatus("מעלה קובץ...");
+    
+    try {
+      const file = new File([blob], `${type}-${Date.now()}.${type === 'video' ? 'webm' : 'jpg'}`, 
+        { type: type === 'video' ? 'video/webm' : 'image/jpeg' });
+      
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      
+      await base44.entities.MediaUpload.create({
+        media_url: file_url,
+        media_type: type,
+        is_active: true
+      });
+
+      queryClient.invalidateQueries({ queryKey: ['media-uploads'] });
+      setUploadStatus("✅ הקובץ הועלה בהצלחה!");
+      setTimeout(() => setUploadStatus(""), 3000);
+    } catch (error) {
+      console.error('❌ Upload error:', error);
+      setUploadStatus("❌ שגיאה בהעלאה");
+      setTimeout(() => setUploadStatus(""), 3000);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   return (
     <div style={{
       background: "rgba(15, 23, 42, 0.95)",
@@ -91,8 +198,58 @@ export default function MediaUploader() {
       </div>
 
       <p style={{ color: "#cbd5e1", marginBottom: "20px", fontSize: "0.95rem" }}>
-        העלה תמונות או סרטונים שיוצגו במסך הקהל. הקובץ האחרון שהועלה יוצג אוטומטית.
+        צלם או העלה תמונות וסרטונים להצגה במסך הקהל
       </p>
+
+      {!showCamera ? (
+        <>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "16px" }}>
+            <button
+              onClick={() => startCamera(false)}
+              disabled={isUploading}
+              style={{
+                padding: "16px",
+                background: "linear-gradient(135deg, #8b5cf6, #6d28d9)",
+                color: "#fff",
+                border: "none",
+                borderRadius: "12px",
+                fontSize: "1rem",
+                fontWeight: "700",
+                cursor: isUploading ? "not-allowed" : "pointer",
+                boxShadow: "0 0 20px rgba(139, 92, 246, 0.4)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "8px"
+              }}
+            >
+              <Image className="w-5 h-5" />
+              צלם תמונה
+            </button>
+            
+            <button
+              onClick={() => startCamera(true)}
+              disabled={isUploading}
+              style={{
+                padding: "16px",
+                background: "linear-gradient(135deg, #ec4899, #be185d)",
+                color: "#fff",
+                border: "none",
+                borderRadius: "12px",
+                fontSize: "1rem",
+                fontWeight: "700",
+                cursor: isUploading ? "not-allowed" : "pointer",
+                boxShadow: "0 0 20px rgba(236, 72, 153, 0.4)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "8px"
+              }}
+            >
+              <Video className="w-5 h-5" />
+              צלם וידאו
+            </button>
+          </div>
 
       <label style={{
         display: "flex",
@@ -139,6 +296,110 @@ export default function MediaUploader() {
           style={{ display: "none" }}
         />
       </label>
+        </>
+      ) : (
+        <div style={{ marginBottom: "16px" }}>
+          <video 
+            ref={videoRef} 
+            autoPlay 
+            playsInline 
+            muted
+            style={{ 
+              width: "100%", 
+              maxHeight: "400px", 
+              borderRadius: "12px", 
+              marginBottom: "12px",
+              backgroundColor: "#000"
+            }} 
+          />
+          <canvas ref={canvasRef} style={{ display: "none" }} />
+          
+          <div style={{ display: "flex", gap: "12px" }}>
+            {mediaRecorder ? (
+              recordingVideo ? (
+                <button
+                  onClick={stopRecording}
+                  style={{
+                    flex: 1,
+                    padding: "14px",
+                    background: "linear-gradient(135deg, #ef4444, #dc2626)",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "12px",
+                    fontSize: "1rem",
+                    fontWeight: "700",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "8px"
+                  }}
+                >
+                  ⏹️ עצור הקלטה
+                </button>
+              ) : (
+                <button
+                  onClick={startRecording}
+                  style={{
+                    flex: 1,
+                    padding: "14px",
+                    background: "linear-gradient(135deg, #ef4444, #dc2626)",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "12px",
+                    fontSize: "1rem",
+                    fontWeight: "700",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "8px"
+                  }}
+                >
+                  ⏺️ התחל הקלטה
+                </button>
+              )
+            ) : (
+              <button
+                onClick={capturePhoto}
+                style={{
+                  flex: 1,
+                  padding: "14px",
+                  background: "linear-gradient(135deg, #10b981, #059669)",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "12px",
+                  fontSize: "1rem",
+                  fontWeight: "700",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "8px"
+                }}
+              >
+                📸 צלם
+              </button>
+            )}
+            
+            <button
+              onClick={stopCamera}
+              style={{
+                padding: "14px 20px",
+                background: "rgba(248, 113, 113, 0.2)",
+                color: "#f87171",
+                border: "2px solid rgba(248, 113, 113, 0.4)",
+                borderRadius: "12px",
+                fontSize: "1rem",
+                fontWeight: "700",
+                cursor: "pointer"
+              }}
+            >
+              ✕ ביטול
+            </button>
+          </div>
+        </div>
+      )}
 
       {uploadStatus && (
         <div style={{
