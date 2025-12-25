@@ -456,44 +456,25 @@ function InvitationCard({ refObj, data }) {
         padding: "40px 35px"
       }}>
         
-        {/* לוגו מקצועי פינה ימין */}
+        {/* לוגו אמיתי - האפריון */}
         <div style={{
           position: "absolute",
           top: "30px",
           right: "30px",
-          width: "120px",
-          height: "120px",
-          borderRadius: "50%",
-          background: "linear-gradient(135deg, #1a1a1a 0%, #000 100%)",
-          border: "4px solid transparent",
-          backgroundClip: "padding-box",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexDirection: "column",
-          boxShadow: `0 0 30px ${accent}, 0 0 60px rgba(255, 215, 0, 0.3), inset 0 0 20px rgba(255, 215, 0, 0.1)`,
-          zIndex: 10,
-          position: "relative"
+          width: "140px",
+          height: "140px",
+          zIndex: 10
         }}>
-          <div style={{
-            position: "absolute",
-            inset: "-4px",
-            borderRadius: "50%",
-            background: `linear-gradient(135deg, ${accent} 0%, #FFA500 100%)`,
-            zIndex: -1
-          }} />
-          <div style={{
-            fontSize: "2.5rem",
-            marginBottom: "5px"
-          }}>🎤</div>
-          <div style={{
-            fontSize: "0.75rem",
-            fontWeight: "900",
-            background: `linear-gradient(135deg, ${accent}, #FFA500)`,
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            letterSpacing: "0.1em"
-          }}>APIRYON</div>
+          <img 
+            src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/693c1c7149a5af7efdab4614/658f38deb_WhatsAppImage2025-12-25at033539.jpg"
+            alt="APIRYON"
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "contain",
+              filter: "drop-shadow(0 0 25px rgba(0, 202, 255, 0.8)) drop-shadow(0 0 50px rgba(0, 202, 255, 0.4))"
+            }}
+          />
         </div>
 
         {/* תאריך מקצועי פינה שמאל */}
@@ -545,40 +526,42 @@ function InvitationCard({ refObj, data }) {
           </div>
         )}
 
-        {/* כותרת ענקית מקצועית */}
+        {/* כותרת HERO דרמטית */}
         <div style={{
-          marginTop: "180px",
-          marginBottom: "40px",
+          marginTop: "200px",
+          marginBottom: "50px",
           position: "relative",
-          padding: "0 20px"
+          padding: "0 30px"
         }}>
-          {/* כותרת ראשית */}
           <div style={{
-            fontSize: "5.5rem",
+            fontSize: "7rem",
             fontWeight: "900",
-            lineHeight: 0.9,
+            lineHeight: 0.85,
             textAlign: "center",
             textTransform: "uppercase",
-            letterSpacing: "-0.02em",
-            background: `linear-gradient(180deg, ${primaryText} 0%, #e0e0e0 100%)`,
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            filter: `drop-shadow(0 0 40px ${accent}) drop-shadow(0 6px 20px rgba(0,0,0,0.9))`,
-            marginBottom: "20px"
+            letterSpacing: "-0.03em",
+            color: "#FFFFFF",
+            textShadow: `
+              0 0 60px ${accent},
+              0 0 120px rgba(255, 215, 0, 0.6),
+              0 10px 40px rgba(0,0,0,0.9),
+              0 20px 80px rgba(0,0,0,0.7)
+            `,
+            marginBottom: "30px",
+            fontFamily: "Impact, 'Arial Black', sans-serif"
           }}>
             {data.title}
           </div>
           
-          {/* תת כותרת רגשית */}
           <div style={{
-            fontSize: "1.6rem",
-            fontWeight: "400",
+            fontSize: "2rem",
+            fontWeight: "700",
             textAlign: "center",
-            color: primaryText,
-            letterSpacing: "0.05em",
-            opacity: 0.95,
-            textShadow: "0 2px 12px rgba(0,0,0,0.9)",
-            lineHeight: 1.4
+            color: accent,
+            letterSpacing: "0.15em",
+            textShadow: `0 0 30px ${accent}, 0 4px 20px rgba(0,0,0,0.9)`,
+            lineHeight: 1.3,
+            textTransform: "uppercase"
           }}>
             {data.subtitle}
           </div>
@@ -809,80 +792,102 @@ function InvitationCard({ refObj, data }) {
           border: `2px solid ${rgba(accent, 0.3)}`,
           boxShadow: `0 0 30px ${rgba(accent, 0.2)}`
         }}>
-          {/* אייקונים סימטריים */}
+          {/* אייקונים מקצועיים - סימטריה מושלמת */}
           <div style={{
             display: "grid",
             gridTemplateColumns: "repeat(3, 1fr)",
-            gap: "20px",
-            marginBottom: "20px",
-            maxWidth: "600px",
-            margin: "0 auto 20px"
+            gap: "25px",
+            marginBottom: "25px",
+            maxWidth: "550px",
+            margin: "0 auto 25px"
           }}>
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px" }}>
+            <div style={{ 
+              display: "flex", 
+              flexDirection: "column", 
+              alignItems: "center", 
+              gap: "10px" 
+            }}>
               <div style={{
-                width: "55px",
-                height: "55px",
+                width: "65px",
+                height: "65px",
                 borderRadius: "50%",
-                background: "linear-gradient(135deg, #1877f2, #0d65d9)",
+                background: "linear-gradient(135deg, #1877f2 0%, #0d65d9 100%)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: "1.8rem",
+                fontSize: "2.2rem",
                 fontWeight: "900",
                 color: "#fff",
-                boxShadow: "0 6px 20px rgba(24, 119, 242, 0.6)",
-                border: "3px solid rgba(255,255,255,0.1)"
+                boxShadow: "0 8px 30px rgba(24, 119, 242, 0.7), 0 0 60px rgba(24, 119, 242, 0.3)",
+                border: "4px solid rgba(255,255,255,0.15)",
+                fontFamily: "Arial, sans-serif"
               }}>f</div>
               <div style={{
-                fontSize: "0.7rem",
+                fontSize: "0.75rem",
                 color: "#1877f2",
-                fontWeight: "700",
+                fontWeight: "800",
                 textAlign: "center",
-                letterSpacing: "0.05em"
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                textShadow: "0 0 10px rgba(24, 119, 242, 0.6)"
               }}>Facebook</div>
             </div>
 
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px" }}>
+            <div style={{ 
+              display: "flex", 
+              flexDirection: "column", 
+              alignItems: "center", 
+              gap: "10px" 
+            }}>
               <div style={{
-                width: "55px",
-                height: "55px",
+                width: "65px",
+                height: "65px",
                 borderRadius: "50%",
-                background: "linear-gradient(135deg, #E1306C, #C13584, #833AB4)",
+                background: "linear-gradient(135deg, #E1306C 0%, #C13584 50%, #833AB4 100%)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: "1.5rem",
-                boxShadow: "0 6px 20px rgba(193, 53, 132, 0.6)",
-                border: "3px solid rgba(255,255,255,0.1)"
+                fontSize: "2rem",
+                boxShadow: "0 8px 30px rgba(193, 53, 132, 0.7), 0 0 60px rgba(193, 53, 132, 0.3)",
+                border: "4px solid rgba(255,255,255,0.15)"
               }}>📷</div>
               <div style={{
-                fontSize: "0.7rem",
+                fontSize: "0.75rem",
                 color: "#E1306C",
-                fontWeight: "700",
+                fontWeight: "800",
                 textAlign: "center",
-                letterSpacing: "0.05em"
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                textShadow: "0 0 10px rgba(225, 48, 108, 0.6)"
               }}>Instagram</div>
             </div>
 
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px" }}>
+            <div style={{ 
+              display: "flex", 
+              flexDirection: "column", 
+              alignItems: "center", 
+              gap: "10px" 
+            }}>
               <div style={{
-                width: "55px",
-                height: "55px",
+                width: "65px",
+                height: "65px",
                 borderRadius: "50%",
-                background: "linear-gradient(135deg, #25D366, #128C7E)",
+                background: "linear-gradient(135deg, #25D366 0%, #128C7E 100%)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: "1.5rem",
-                boxShadow: "0 6px 20px rgba(37, 211, 102, 0.6)",
-                border: "3px solid rgba(255,255,255,0.1)"
+                fontSize: "2rem",
+                boxShadow: "0 8px 30px rgba(37, 211, 102, 0.7), 0 0 60px rgba(37, 211, 102, 0.3)",
+                border: "4px solid rgba(255,255,255,0.15)"
               }}>💬</div>
               <div style={{
-                fontSize: "0.7rem",
+                fontSize: "0.75rem",
                 color: "#25D366",
-                fontWeight: "700",
+                fontWeight: "800",
                 textAlign: "center",
-                letterSpacing: "0.05em"
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                textShadow: "0 0 10px rgba(37, 211, 102, 0.6)"
               }}>WhatsApp</div>
             </div>
           </div>
@@ -894,71 +899,106 @@ function InvitationCard({ refObj, data }) {
             marginBottom: "20px"
           }} />
 
-          {/* QR סימטרי */}
+          {/* QR מסודר סימטרי */}
           <div style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
-            gap: "25px",
-            maxWidth: "400px",
-            margin: "0 auto 20px"
+            gap: "30px",
+            maxWidth: "450px",
+            margin: "0 auto 25px",
+            alignItems: "start"
           }}>
-            <div style={{ textAlign: "center" }}>
-              <img 
-                src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15"
-                style={{
-                  width: "90px",
-                  height: "90px",
-                  background: "#fff",
-                  padding: "6px",
-                  borderRadius: "12px",
-                  border: `3px solid ${accent}`,
-                  boxShadow: `0 0 20px ${rgba(accent, 0.4)}`
-                }}
-              />
+            <div style={{ 
+              display: "flex", 
+              flexDirection: "column", 
+              alignItems: "center",
+              gap: "12px"
+            }}>
               <div style={{
-                fontSize: "0.75rem",
+                width: "110px",
+                height: "110px",
+                background: "#fff",
+                padding: "8px",
+                borderRadius: "16px",
+                border: `4px solid ${accent}`,
+                boxShadow: `0 0 25px ${rgba(accent, 0.5)}, 0 8px 30px rgba(0,0,0,0.5)`,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
+              }}>
+                <img 
+                  src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    display: "block"
+                  }}
+                  alt="QR WhatsApp"
+                />
+              </div>
+              <div style={{
+                fontSize: "0.85rem",
                 color: accent,
-                fontWeight: "700",
-                marginTop: "8px",
-                letterSpacing: "0.05em"
-              }}>הצטרף לקבוצה</div>
+                fontWeight: "800",
+                letterSpacing: "0.08em",
+                textAlign: "center",
+                textTransform: "uppercase",
+                textShadow: `0 0 15px ${accent}`
+              }}>קבוצת<br/>WhatsApp</div>
             </div>
             
-            <div style={{ textAlign: "center" }}>
-              <img 
-                src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://www.tiktok.com/@apiryon.club"
-                style={{
-                  width: "90px",
-                  height: "90px",
-                  background: "#fff",
-                  padding: "6px",
-                  borderRadius: "12px",
-                  border: `3px solid ${accent}`,
-                  boxShadow: `0 0 20px ${rgba(accent, 0.4)}`
-                }}
-              />
+            <div style={{ 
+              display: "flex", 
+              flexDirection: "column", 
+              alignItems: "center",
+              gap: "12px"
+            }}>
               <div style={{
-                fontSize: "0.75rem",
+                width: "110px",
+                height: "110px",
+                background: "#fff",
+                padding: "8px",
+                borderRadius: "16px",
+                border: `4px solid ${accent}`,
+                boxShadow: `0 0 25px ${rgba(accent, 0.5)}, 0 8px 30px rgba(0,0,0,0.5)`,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
+              }}>
+                <img 
+                  src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://www.tiktok.com/@apiryon.club"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    display: "block"
+                  }}
+                  alt="QR TikTok"
+                />
+              </div>
+              <div style={{
+                fontSize: "0.85rem",
                 color: accent,
-                fontWeight: "700",
-                marginTop: "8px",
-                letterSpacing: "0.05em"
-              }}>עקבו ב-TikTok</div>
+                fontWeight: "800",
+                letterSpacing: "0.08em",
+                textAlign: "center",
+                textTransform: "uppercase",
+                textShadow: `0 0 15px ${accent}`
+              }}>עקבו<br/>TikTok</div>
             </div>
           </div>
 
           {/* לוגו תחתון */}
           <div style={{
             textAlign: "center",
-            fontSize: "1.2rem",
+            fontSize: "1.4rem",
             fontWeight: "900",
-            background: `linear-gradient(135deg, ${accent}, #FFA500)`,
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            letterSpacing: "0.2em",
-            filter: `drop-shadow(0 0 20px ${accent})`
+            color: "#fff",
+            letterSpacing: "0.25em",
+            textTransform: "uppercase",
+            textShadow: `0 0 30px ${accent}, 0 0 60px rgba(255, 215, 0, 0.4), 0 4px 20px rgba(0,0,0,0.8)`,
+            fontFamily: "Impact, 'Arial Black', sans-serif"
           }}>
-            🎤 APIRYON CLUB 🎤
+            APIRYON CLUB
           </div>
         </div>
       </div>
