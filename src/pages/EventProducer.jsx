@@ -701,19 +701,24 @@ function InvitationCard({ refObj, data }) {
           }
         `}</style>
 
-        {/* לוגו קטן למטה */}
+        {/* לוגו קטן למטה עם אייקונים */}
         <div style={{
           position: "absolute",
           bottom: "clamp(20px, 3%, 30px)",
           left: "50%",
           transform: "translateX(-50%)",
+          display: "flex",
+          alignItems: "center",
+          gap: "clamp(10px, 2vw, 15px)",
           fontSize: "clamp(0.8rem, 1.5vw, 1rem)",
-          color: "rgba(255,255,255,0.6)",
+          color: "rgba(255,255,255,0.7)",
           fontWeight: "900",
           letterSpacing: "0.15em",
           textShadow: "1px 1px 3px rgba(0,0,0,0.8)"
         }}>
-          APIRYON CLUB
+          <span style={{ fontSize: "clamp(1.2rem, 2.5vw, 1.8rem)" }}>🎤</span>
+          <span>APIRYON CLUB</span>
+          <span style={{ fontSize: "clamp(1.2rem, 2.5vw, 1.8rem)" }}>🎤</span>
         </div>
       </div>
     </div>
