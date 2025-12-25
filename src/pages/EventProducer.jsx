@@ -461,7 +461,7 @@ function InvitationCard({ refObj, data }) {
         height: "100%",
         display: "flex",
         flexDirection: "column",
-        padding: "30px 30px 20px"
+        padding: "25px 30px 15px"
       }}>
 
         {/* פסי זהב דקורטיביים - פינות */}
@@ -1130,7 +1130,7 @@ function InvitationCard({ refObj, data }) {
         {/* Footer קומפקטי */}
         <div style={{
           background: "linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.95) 100%)",
-          padding: "12px 12px 10px",
+          padding: "8px 12px 8px",
           borderRadius: "16px",
           border: `2px solid ${rgba(accent, 0.3)}`,
           boxShadow: `0 -5px 30px ${rgba(accent, 0.2)}`,
@@ -1199,7 +1199,7 @@ function InvitationCard({ refObj, data }) {
             justifyContent: "center",
             alignItems: "center",
             gap: "20px",
-            marginBottom: "10px"
+            marginBottom: "8px"
           }}>
             <div style={{ textAlign: "center" }}>
               <div style={{
