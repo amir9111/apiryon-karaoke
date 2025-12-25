@@ -212,21 +212,48 @@ export default function ManualQueue() {
                 </div>
               </div>
 
-              {/* הנחיות מילוי */}
+              {/* QR Code + שיווק */}
               <div style={{
                 marginTop: "3mm",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: "2mm",
                 padding: "2mm",
                 background: "rgba(0, 202, 255, 0.05)",
-                borderRadius: "4px",
-                textAlign: "center"
+                borderRadius: "4px"
               }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{
+                    fontSize: "0.65rem",
+                    fontWeight: "700",
+                    color: "#00caff",
+                    marginBottom: "1mm",
+                    lineHeight: "1.2"
+                  }}>
+                    🎤 הצטרפו לערבי קריוקי
+                  </div>
+                  <div style={{
+                    fontSize: "0.5rem",
+                    color: "#64748b",
+                    fontWeight: "600"
+                  }}>
+                    סרקו להצטרפות לקבוצה
+                  </div>
+                </div>
                 <div style={{
-                  fontSize: "0.55rem",
-                  color: "#64748b",
-                  fontWeight: "600",
-                  lineHeight: "1.3"
+                  width: "15mm",
+                  height: "15mm",
+                  background: "#fff",
+                  padding: "1mm",
+                  borderRadius: "3px",
+                  border: "1px solid #00caff"
                 }}>
-                  ✍️ אנא מלא בכתב יד ברור וקריא
+                  <img 
+                    src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15"
+                    style={{ width: "100%", height: "100%", display: "block" }}
+                    alt="QR"
+                  />
                 </div>
               </div>
             </div>
