@@ -224,20 +224,18 @@ export default function Audience() {
                     width: "100vw",
                     height: "100vh",
                     display: "block",
-                    objectFit: "cover",
+                    objectFit: "contain",
                     objectPosition: "center",
                     backgroundColor: "#000",
                     imageRendering: "high-quality",
                     WebkitBackfaceVisibility: "hidden",
                     backfaceVisibility: "hidden",
-                    transform: "translateZ(0) scale(1.001)",
-                    filter: "contrast(1.12) brightness(1.06) saturate(1.18) sharpen(1.5)",
-                    WebkitFilter: "contrast(1.12) brightness(1.06) saturate(1.18)",
+                    transform: "translateZ(0)",
                     willChange: "transform"
                   }}
                 />
               ) : (
-<img
+                <img
                   src={latestMedia.media_url}
                   alt="תמונה מהאירוע"
                   loading="eager"
@@ -250,18 +248,15 @@ export default function Audience() {
                   }}
                   onLoad={(e) => {
                     console.log('✅ Image loaded:', latestMedia.media_url);
-                    // Force maximum quality rendering
-                    e.target.style.imageRendering = 'high-quality';
-                    e.target.style.transform = 'translateZ(0) scale(1.0005)';
                   }}
                   style={{
                     width: "100vw",
                     height: "100vh",
                     display: "block",
-                    objectFit: "cover",
+                    objectFit: "contain",
                     objectPosition: "center",
                     backgroundColor: "#000",
-                    imageRendering: "high-quality",
+                    imageRendering: "-webkit-optimize-contrast",
                     WebkitBackfaceVisibility: "hidden",
                     backfaceVisibility: "hidden",
                     transform: "translateZ(0)",

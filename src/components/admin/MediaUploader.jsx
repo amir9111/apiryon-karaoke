@@ -27,15 +27,26 @@ export default function MediaUploader() {
 
   const enhanceImageWithAI = async (imageUrl) => {
     try {
-      setUploadStatus("🤖 משפר תמונה באמצעות AI...");
+      setUploadStatus("🤖 משפר תמונה באמצעות AI - שלב 1...");
       
-      const result = await base44.integrations.Core.GenerateImage({
-        prompt: `Professional photo enhancement: Enhance this image to maximum quality with perfect sharpness, vibrant colors, optimal contrast, professional lighting correction, and ultra-high resolution. Make it look stunning on a large TV screen. Focus on: crystal clear details, rich saturated colors, perfect exposure, professional color grading, enhanced depth and dimension. Output should be broadcast-quality suitable for 4K displays.`,
+      // First enhancement: Upscale and improve quality
+      const firstPass = await base44.integrations.Core.GenerateImage({
+        prompt: `ULTRA HIGH QUALITY 8K UPSCALE: Transform this image into ultra-high resolution 8K quality. Apply professional-grade enhancement: MAXIMUM sharpness and clarity, VIVID and saturated colors (boost saturation by 40%), PERFECT contrast and exposure, remove ALL noise and blur, enhance fine details and textures, professional color grading like a cinema camera, make colors POP and vibrant, crystal-clear focus, broadcast television quality, make it look STUNNING and PROFESSIONAL on giant screens and 4K/8K displays. This should look like it was shot on a RED camera with professional lighting.`,
         existing_image_urls: [imageUrl]
       });
       
-      console.log('✨ AI enhanced image:', result.url);
-      return result.url;
+      console.log('✨ First AI pass completed');
+      
+      setUploadStatus("🤖 משפר תמונה באמצעות AI - שלב 2...");
+      
+      // Second enhancement: Further refine and polish
+      const secondPass = await base44.integrations.Core.GenerateImage({
+        prompt: `FINAL PROFESSIONAL POLISH 8K: Take this already enhanced image to MAXIMUM quality. Apply final professional touches: razor-sharp details, MAXIMUM color vibrancy and richness, perfect lighting balance, eliminate any remaining imperfections, add depth and dimension, make it look like professional photography, suitable for large format prints and cinema displays. Colors should be incredibly rich and vivid. This is the FINAL master quality version for professional broadcast.`,
+        existing_image_urls: [firstPass.url]
+      });
+      
+      console.log('✨ AI double-enhancement completed:', secondPass.url);
+      return secondPass.url;
     } catch (error) {
       console.error('⚠️ AI enhancement failed, using original:', error);
       return imageUrl;
