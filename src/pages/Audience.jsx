@@ -218,104 +218,99 @@ export default function Audience() {
         }}>
 
           {/* Media Display Section */}
-          {latestMedia ? (
+          {latestMedia && (
             <motion.div
               key={latestMedia.id}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.5 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.6 }}
               style={{
                 width: "100%",
                 maxWidth: "1200px",
-                marginBottom: "2vh",
+                marginBottom: "3vh",
                 position: "relative"
               }}
             >
               <div style={{
-                background: "rgba(15, 23, 42, 0.5)",
-                borderRadius: "24px",
-                padding: "20px",
-                border: "3px solid rgba(0, 202, 255, 0.4)",
-                boxShadow: "0 0 60px rgba(0, 202, 255, 0.4)",
+                background: "rgba(15, 23, 42, 0.95)",
+                borderRadius: "28px",
+                padding: "24px",
+                border: "3px solid rgba(0, 202, 255, 0.5)",
+                boxShadow: "0 0 80px rgba(0, 202, 255, 0.5), inset 0 0 40px rgba(0, 202, 255, 0.1)",
                 backdropFilter: "blur(30px)",
-                overflow: "hidden"
+                overflow: "hidden",
+                position: "relative"
               }}>
-                {latestMedia.media_type === 'video' ? (
-                  <video
-                    src={latestMedia.media_url}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    style={{
-                      width: "100%",
-                      maxHeight: "70vh",
-                      borderRadius: "16px",
-                      objectFit: "contain",
-                      background: "#000"
-                    }}
-                  />
-                ) : (
-                  <img
-                    src={latestMedia.media_url}
-                    alt="תמונה מהאירוע"
-                    style={{
-                      width: "100%",
-                      maxHeight: "70vh",
-                      borderRadius: "16px",
-                      objectFit: "contain"
-                    }}
-                  />
-                )}
-              </div>
-            </motion.div>
-          ) : (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              style={{
-                background: "rgba(15, 23, 42, 0.3)",
-                borderRadius: "30px",
-                padding: "60px 40px",
-                marginBottom: "40px",
-                border: "2px dashed rgba(0, 202, 255, 0.3)",
-                textAlign: "center",
-                backdropFilter: "blur(30px)",
-                maxWidth: "700px",
-                width: "100%",
-                position: "relative",
-                overflow: "hidden"
-              }}
-            >
-              <div style={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                opacity: 0.08,
-                pointerEvents: "none",
-                zIndex: 0
-              }}>
-                <ApyironLogo size="large" showCircle={true} />
-              </div>
-
-              <div style={{ position: "relative", zIndex: 1 }}>
-                <motion.div
-                  animate={{ scale: [1, 1.2, 1], rotate: [0, 10, -10, 0] }}
-                  transition={{ duration: 3, repeat: Infinity }}
-                  style={{ fontSize: "4rem", marginBottom: "20px" }}
-                >
-                  🎵
-                </motion.div>
-                <div style={{ 
-                  fontSize: "clamp(1.6rem, 3.5vw, 2.5rem)", 
-                  color: "#00caff", 
-                  fontWeight: "800",
-                  textShadow: "0 0 25px rgba(0, 202, 255, 0.8)"
+                {/* Header Badge */}
+                <div style={{
+                  textAlign: "center",
+                  marginBottom: "16px"
                 }}>
-                  מתכוננים לזמר הבא...
+                  <div style={{
+                    display: "inline-block",
+                    background: "linear-gradient(135deg, #00caff, #0088ff)",
+                    color: "#001a2e",
+                    padding: "8px 24px",
+                    borderRadius: "12px",
+                    fontSize: "clamp(0.9rem, 1.5vw, 1.1rem)",
+                    fontWeight: "800",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.1em",
+                    boxShadow: "0 0 30px rgba(0, 202, 255, 0.6)"
+                  }}>
+                    {latestMedia.media_type === 'video' ? '🎥 וידיאו' : '📸 תמונה'} מהאירוע
+                  </div>
                 </div>
+
+                {/* Media Container */}
+                <div style={{
+                  background: "#000",
+                  borderRadius: "20px",
+                  overflow: "hidden",
+                  border: "2px solid rgba(0, 202, 255, 0.3)",
+                  boxShadow: "0 10px 50px rgba(0, 0, 0, 0.7)"
+                }}>
+                  {latestMedia.media_type === 'video' ? (
+                    <video
+                      key={latestMedia.media_url}
+                      src={latestMedia.media_url}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      style={{
+                        width: "100%",
+                        maxHeight: "75vh",
+                        display: "block",
+                        objectFit: "contain"
+                      }}
+                    />
+                  ) : (
+                    <img
+                      src={latestMedia.media_url}
+                      alt="תמונה מהאירוע"
+                      style={{
+                        width: "100%",
+                        maxHeight: "75vh",
+                        display: "block",
+                        objectFit: "contain"
+                      }}
+                    />
+                  )}
+                </div>
+
+                {/* Decorative Glow Effect */}
+                <div style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  background: "radial-gradient(circle at 50% 50%, rgba(0, 202, 255, 0.1), transparent 70%)",
+                  pointerEvents: "none",
+                  zIndex: -1
+                }} />
               </div>
             </motion.div>
           )}
