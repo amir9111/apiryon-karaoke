@@ -463,7 +463,31 @@ function InvitationCard({ refObj, data }) {
         flexDirection: "column",
         padding: "30px 30px 20px"
       }}>
-        
+
+        {/* תג LIMITED EDITION */}
+        <div style={{
+          position: "absolute",
+          top: "15px",
+          left: "15px",
+          background: "linear-gradient(135deg, #000 0%, #1a1a1a 100%)",
+          padding: "8px 16px",
+          borderRadius: "8px",
+          border: `2px solid ${accent}`,
+          boxShadow: `0 0 20px ${accent}, inset 0 0 10px rgba(255, 215, 0, 0.1)`,
+          zIndex: 20
+        }}>
+          <div style={{
+            fontSize: "0.65rem",
+            fontWeight: "900",
+            color: accent,
+            letterSpacing: "0.15em",
+            textTransform: "uppercase",
+            textShadow: `0 0 10px ${accent}`
+          }}>
+            ⚡ LIMITED ⚡
+          </div>
+        </div>
+
         {/* פסי זהב דקורטיביים - פינות */}
         <div style={{
           position: "absolute",
@@ -897,8 +921,16 @@ function InvitationCard({ refObj, data }) {
                   marginBottom: "6px",
                   letterSpacing: "0.15em",
                   textTransform: "uppercase",
-                  textShadow: `0 0 10px ${accent}`
-                }}>מיקום</div>
+                  textShadow: `0 0 10px ${accent}`,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "4px"
+                }}>
+                  <span style={{ fontSize: "0.9rem" }}>💎</span>
+                  מיקום
+                  <span style={{ fontSize: "0.9rem" }}>💎</span>
+                </div>
                 <div style={{
                   fontSize: "1.3rem",
                   fontWeight: "900",
@@ -940,8 +972,16 @@ function InvitationCard({ refObj, data }) {
                   marginBottom: "6px",
                   letterSpacing: "0.15em",
                   textTransform: "uppercase",
-                  textShadow: `0 0 10px ${accent}`
-                }}>כניסה</div>
+                  textShadow: `0 0 10px ${accent}`,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "4px"
+                }}>
+                  <span style={{ fontSize: "0.9rem" }}>💎</span>
+                  כניסה
+                  <span style={{ fontSize: "0.9rem" }}>💎</span>
+                </div>
                 <div style={{
                   fontSize: "1.3rem",
                   fontWeight: "900",
