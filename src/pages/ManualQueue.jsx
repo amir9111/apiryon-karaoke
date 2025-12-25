@@ -111,9 +111,9 @@ export default function ManualQueue() {
           }}>
             {Array.from({ length: 4 }).map((_, cardIndex) => (
           <div key={cardIndex} style={{
-            border: "3px dashed #00caff",
-            borderRadius: "8px",
-            padding: "5mm",
+            border: "2px dashed #00caff",
+            borderRadius: "6px",
+            padding: "3mm",
             background: "linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%)",
             pageBreakInside: "avoid",
             position: "relative",
@@ -125,21 +125,21 @@ export default function ManualQueue() {
               {/* כותרת */}
               <div style={{
                 textAlign: "center",
-                marginBottom: "3mm",
-                paddingBottom: "2mm",
-                borderBottom: "2px solid #00caff"
+                marginBottom: "2mm",
+                paddingBottom: "1.5mm",
+                borderBottom: "1.5px solid #00caff"
               }}>
                 <div style={{
-                  fontSize: "0.85rem",
+                  fontSize: "0.7rem",
                   fontWeight: "900",
                   color: "#00caff",
-                  marginBottom: "1mm",
+                  marginBottom: "0.5mm",
                   letterSpacing: "0.02em"
                 }}>
                   🎤 רישום לתור קריוקי 🎤
                 </div>
                 <div style={{
-                  fontSize: "0.6rem",
+                  fontSize: "0.5rem",
                   color: "#64748b",
                   fontWeight: "600"
                 }}>
@@ -155,117 +155,117 @@ export default function ManualQueue() {
               <div style={{
                 display: "flex",
                 justifyContent: "center",
-                marginBottom: "3mm",
+                marginBottom: "2mm",
                 background: "rgba(0, 202, 255, 0.08)",
-                padding: "2mm",
-                borderRadius: "6px"
+                padding: "1mm",
+                borderRadius: "4px"
               }}>
-                <div style={{ transform: "scale(0.4)" }}>
+                <div style={{ transform: "scale(0.3)" }}>
                   <ApyironLogo size="small" showCircle={true} />
                 </div>
               </div>
 
               {/* Form Fields */}
-              <div style={{ display: "flex", flexDirection: "column", gap: "4mm", flex: 1 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "2.5mm", flex: 1 }}>
                 {/* שם המבצע */}
                 <div style={{
                   background: "rgba(255, 255, 255, 0.7)",
-                  padding: "2mm",
-                  borderRadius: "4px",
+                  padding: "1.5mm",
+                  borderRadius: "3px",
                   border: "1px solid rgba(0, 202, 255, 0.2)"
                 }}>
                   <div style={{
-                    fontSize: "0.75rem",
+                    fontSize: "0.65rem",
                     fontWeight: "700",
                     color: "#00caff",
-                    marginBottom: "2mm",
+                    marginBottom: "1mm",
                     display: "flex",
                     alignItems: "center",
-                    gap: "2mm"
+                    gap: "1.5mm"
                   }}>
-                    <span style={{ fontSize: "0.9rem" }}>👤</span>
+                    <span style={{ fontSize: "0.75rem" }}>👤</span>
                     שם המבצע:
                   </div>
                   <div style={{
-                    borderBottom: "2px solid #00caff",
-                    height: "6mm"
+                    borderBottom: "1.5px solid #00caff",
+                    height: "5mm"
                   }}></div>
                 </div>
 
                 {/* שם השיר */}
                 <div style={{
                   background: "rgba(255, 255, 255, 0.7)",
-                  padding: "2mm",
-                  borderRadius: "4px",
+                  padding: "1.5mm",
+                  borderRadius: "3px",
                   border: "1px solid rgba(0, 202, 255, 0.2)"
                 }}>
                   <div style={{
-                    fontSize: "0.75rem",
+                    fontSize: "0.65rem",
                     fontWeight: "700",
                     color: "#00caff",
-                    marginBottom: "2mm",
+                    marginBottom: "1mm",
                     display: "flex",
                     alignItems: "center",
-                    gap: "2mm"
+                    gap: "1.5mm"
                   }}>
-                    <span style={{ fontSize: "0.9rem" }}>🎵</span>
+                    <span style={{ fontSize: "0.75rem" }}>🎵</span>
                     שם השיר:
                   </div>
                   <div style={{
-                    borderBottom: "2px solid #00caff",
-                    height: "6mm"
+                    borderBottom: "1.5px solid #00caff",
+                    height: "5mm"
                   }}></div>
                 </div>
 
                 {/* שם הזמר */}
                 <div style={{
                   background: "rgba(255, 255, 255, 0.7)",
-                  padding: "2mm",
-                  borderRadius: "4px",
+                  padding: "1.5mm",
+                  borderRadius: "3px",
                   border: "1px solid rgba(0, 202, 255, 0.2)"
                 }}>
                   <div style={{
-                    fontSize: "0.75rem",
+                    fontSize: "0.65rem",
                     fontWeight: "700",
                     color: "#00caff",
-                    marginBottom: "2mm",
+                    marginBottom: "1mm",
                     display: "flex",
                     alignItems: "center",
-                    gap: "2mm"
+                    gap: "1.5mm"
                   }}>
-                    <span style={{ fontSize: "0.9rem" }}>🎸</span>
+                    <span style={{ fontSize: "0.75rem" }}>🎸</span>
                     שם הזמר:
                   </div>
                   <div style={{
-                    borderBottom: "2px solid #00caff",
-                    height: "6mm"
+                    borderBottom: "1.5px solid #00caff",
+                    height: "5mm"
                   }}></div>
                 </div>
               </div>
 
               {/* QR Code + שיווק */}
               <div style={{
-                marginTop: "3mm",
+                marginTop: "2mm",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                gap: "2mm",
-                padding: "2mm",
+                gap: "1.5mm",
+                padding: "1.5mm",
                 background: "rgba(0, 202, 255, 0.05)",
-                borderRadius: "4px"
+                borderRadius: "3px"
               }}>
                 <div style={{ flex: 1 }}>
                   <div style={{
-                    fontSize: "0.65rem",
+                    fontSize: "0.55rem",
                     fontWeight: "700",
                     color: "#00caff",
-                    marginBottom: "1mm",
+                    marginBottom: "0.5mm",
                     lineHeight: "1.2"
                   }}>
                     🎤 הצטרפו לערבי קריוקי
                   </div>
                   <div style={{
-                    fontSize: "0.5rem",
+                    fontSize: "0.45rem",
                     color: "#64748b",
                     fontWeight: "600"
                   }}>
@@ -273,15 +273,15 @@ export default function ManualQueue() {
                   </div>
                 </div>
                 <div style={{
-                  width: "15mm",
-                  height: "15mm",
+                  width: "12mm",
+                  height: "12mm",
                   background: "#fff",
-                  padding: "1mm",
-                  borderRadius: "3px",
+                  padding: "0.5mm",
+                  borderRadius: "2px",
                   border: "1px solid #00caff"
                 }}>
                   <img 
-                    src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15"
+                    src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15"
                     style={{ width: "100%", height: "100%", display: "block" }}
                     alt="QR"
                   />
