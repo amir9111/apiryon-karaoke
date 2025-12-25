@@ -141,7 +141,7 @@ ${formData.artists && formData.artists.length > 0 ? `- זמרים: ${formData.ar
       
       if (format === 'whatsapp') {
         width = 1080;
-        height = 1080; // ריבועי לווטסאפ
+        height = 1350; // גודל מלא של הפלייר - מתאים לווטסאפ
         filename = 'apiryon-whatsapp.png';
       } else if (format === 'story') {
         width = 1080;
