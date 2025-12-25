@@ -472,7 +472,7 @@ function InvitationCard({ refObj, data }) {
         height: "100%",
         display: "flex",
         flexDirection: "column",
-        padding: "40px 35px"
+        padding: "30px 30px 20px"
       }}>
         
         {/* פסי זהב דקורטיביים - פינות */}
@@ -649,10 +649,10 @@ function InvitationCard({ refObj, data }) {
 
         {/* כותרת HERO דרמטית - רבודה */}
         <div style={{
-          marginTop: "180px",
-          marginBottom: "35px",
+          marginTop: "160px",
+          marginBottom: "25px",
           position: "relative",
-          padding: "0 30px"
+          padding: "0 25px"
         }}>
           {/* תג VIP */}
           <div style={{
@@ -696,9 +696,9 @@ function InvitationCard({ refObj, data }) {
           {/* כותרת ראשית רבודה */}
           <div style={{
             position: "relative",
-            fontSize: "7.5rem",
+            fontSize: "6.5rem",
             fontWeight: "900",
-            lineHeight: 0.85,
+            lineHeight: 0.9,
             textAlign: "center",
             textTransform: "uppercase",
             letterSpacing: "-0.03em",
@@ -730,7 +730,7 @@ function InvitationCard({ refObj, data }) {
           
           {/* תת כותרת משודרגת */}
           <div style={{
-            fontSize: "2.2rem",
+            fontSize: "1.9rem",
             fontWeight: "700",
             textAlign: "center",
             background: `linear-gradient(135deg, ${accent}, #FFA500, ${accent})`,
@@ -753,16 +753,16 @@ function InvitationCard({ refObj, data }) {
           <div style={{
             display: "flex",
             justifyContent: "center",
-            gap: "25px",
-            marginBottom: "30px",
+            gap: "20px",
+            marginBottom: "20px",
             flexWrap: "wrap",
             padding: "0 20px"
           }}>
             {data.artists.map((artist, i) => (
               <div key={i} style={{ textAlign: "center", position: "relative" }}>
                 <div style={{
-                  width: data.artists.length === 1 ? "320px" : "200px",
-                  height: data.artists.length === 1 ? "320px" : "200px",
+                  width: data.artists.length === 1 ? "280px" : "180px",
+                  height: data.artists.length === 1 ? "280px" : "180px",
                   position: "relative"
                 }}>
                   <img 
@@ -780,9 +780,9 @@ function InvitationCard({ refObj, data }) {
                   />
                 </div>
                 <div style={{
-                  fontSize: data.artists.length === 1 ? "2.8rem" : "2rem",
+                  fontSize: data.artists.length === 1 ? "2.4rem" : "1.8rem",
                   fontWeight: "900",
-                  marginTop: "20px",
+                  marginTop: "15px",
                   background: `linear-gradient(135deg, ${accent}, #FFA500)`,
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
@@ -800,8 +800,8 @@ function InvitationCard({ refObj, data }) {
         {/* Highlights מעוצבים */}
         {data.highlights && data.highlights.length > 0 && (
           <div style={{
-            marginBottom: "25px",
-            padding: "0 40px",
+            marginBottom: "18px",
+            padding: "0 35px",
             position: "relative"
           }}>
             {/* מסגרת זהב עדינה */}
@@ -850,7 +850,7 @@ function InvitationCard({ refObj, data }) {
                 </div>
                 
                 <div style={{
-                  fontSize: "1.7rem",
+                  fontSize: "1.5rem",
                   color: primaryText,
                   fontWeight: "700",
                   textShadow: `0 0 25px ${rgba(accent, 0.5)}, 0 3px 15px rgba(0,0,0,0.9)`,
@@ -867,9 +867,9 @@ function InvitationCard({ refObj, data }) {
           display: "flex",
           justifyContent: "center",
           alignItems: "stretch",
-          gap: "15px",
-          marginBottom: "20px",
-          padding: "0 30px",
+          gap: "12px",
+          marginBottom: "15px",
+          padding: "0 25px",
           flexWrap: "wrap"
         }}>
           {data.location && (
@@ -901,7 +901,7 @@ function InvitationCard({ refObj, data }) {
                   textShadow: `0 0 10px ${accent}`
                 }}>מיקום</div>
                 <div style={{
-                  fontSize: "1.5rem",
+                  fontSize: "1.3rem",
                   fontWeight: "900",
                   color: primaryText,
                   textShadow: "0 2px 8px rgba(0,0,0,0.7)"
@@ -938,7 +938,7 @@ function InvitationCard({ refObj, data }) {
                   textShadow: `0 0 10px ${accent}`
                 }}>כניסה</div>
                 <div style={{
-                  fontSize: "1.5rem",
+                  fontSize: "1.3rem",
                   fontWeight: "900",
                   color: primaryText,
                   textShadow: "0 2px 8px rgba(0,0,0,0.7)"
@@ -951,7 +951,7 @@ function InvitationCard({ refObj, data }) {
         {/* CTA מסוגנן מושך */}
         <div style={{
           position: "relative",
-          marginBottom: "20px",
+          marginBottom: "15px",
           padding: "0 25px"
         }}>
           {/* זוהר עדין */}
@@ -991,7 +991,7 @@ function InvitationCard({ refObj, data }) {
             {/* המשפט המרכזי - מסוגנן מושך */}
             <div style={{
               position: "relative",
-              fontSize: "2rem",
+              fontSize: "1.8rem",
               fontWeight: "900",
               color: "#000",
               textAlign: "center",
@@ -1047,7 +1047,7 @@ function InvitationCard({ refObj, data }) {
         {/* Footer קומפקטי */}
         <div style={{
           background: "linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.95) 100%)",
-          padding: "15px 15px 12px",
+          padding: "12px 12px 10px",
           borderRadius: "16px",
           border: `2px solid ${rgba(accent, 0.3)}`,
           boxShadow: `0 -5px 30px ${rgba(accent, 0.2)}`,
