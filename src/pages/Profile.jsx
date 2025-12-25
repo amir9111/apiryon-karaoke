@@ -79,16 +79,20 @@ export default function Profile() {
     setIsSaving(true);
     
     try {
-      localStorage.setItem('apiryon_user_name', profileData.name);
-      if (profileData.photo) {
-        localStorage.setItem('apiryon_user_photo', profileData.photo);
+      if (typeof window !== 'undefined' && window.localStorage) {
+        localStorage.setItem('apiryon_user_name', profileData.name);
+        if (profileData.photo) {
+          localStorage.setItem('apiryon_user_photo', profileData.photo);
+        }
+        setSaveMessage("הפרטים נשמרו בהצלחה! ✓");
+      } else {
+        setSaveMessage("שגיאה: אחסון לא זמין");
       }
-      
-      setSaveMessage("הפרטים נשמרו בהצלחה! ✓");
       setTimeout(() => setSaveMessage(""), 3000);
     } catch (error) {
-      setSaveMessage("שגיאה בשמירה");
-      setTimeout(() => setSaveMessage(""), 3000);
+      console.error('Error saving profile:', error);
+      setSaveMessage(`שגיאה בשמירה: ${error.message || 'אחסון מלא'}`);
+      setTimeout(() => setSaveMessage(""), 4000);
     } finally {
       setIsSaving(false);
     }
