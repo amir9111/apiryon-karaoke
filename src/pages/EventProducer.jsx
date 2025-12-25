@@ -33,6 +33,15 @@ export default function EventProducer() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const vipTags = [
+    "⭐ אירוע מיוחד ⭐",
+    "🔥 לילה בלתי נשכח 🔥",
+    "💎 אירוע יוקרה 💎",
+    "⚡ ערב אגדי ⚡",
+    "🎭 חוויה ייחודית 🎭",
+    "🌟 לילה של כוכבים 🌟"
+  ];
+
   const generateInvitation = async () => {
     if (!formData.eventName.trim()) {
       alert("נא למלא שם אירוע");
@@ -42,6 +51,7 @@ export default function EventProducer() {
     setIsGenerating(true);
     try {
       const selectedStyle = styles.find(s => s.id === formData.style);
+      const randomVipTag = vipTags[Math.floor(Math.random() * vipTags.length)];
       
       // ייצור רקע אוטומטי עם AI
       const bgPrompt = getBgPrompt(formData.style, formData.eventName);
@@ -122,7 +132,8 @@ ${formData.artists && formData.artists.length > 0 ? `- זמרים: ${formData.ar
         ...formData,
         bgImage,
         ...textResult,
-        accentColor: selectedStyle.color
+        accentColor: selectedStyle.color,
+        vipTag: randomVipTag
       });
     } catch (error) {
       console.error(error);
@@ -658,7 +669,7 @@ function InvitationCard({ refObj, data }) {
             border: "2px solid rgba(0,0,0,0.3)",
             textTransform: "uppercase"
           }}>
-            ⭐ אירוע מיוחד ⭐
+            {data.vipTag || "⭐ אירוע מיוחד ⭐"}
           </div>
           
           {/* שכבת רקע מטושטשת */}
