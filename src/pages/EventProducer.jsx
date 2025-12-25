@@ -403,242 +403,154 @@ export default function EventProducer() {
 }
 
 function InvitationCard({ refObj, data }) {
-  const accent = "#D6B36A"; // זהב פרימיום קבוע
-  const primaryText = "#FFFFFF"; // לבן מלא
+  const accent = "#FFD700"; // זהב בוהק
+  const primaryText = "#FFFFFF";
   
   return (
     <div
       ref={refObj}
       style={{
         width: "100%",
-        maxWidth: "min(1080px, 100vw)",
+        maxWidth: "1080px",
         aspectRatio: "1080 / 1350",
         position: "relative",
-        borderRadius: "clamp(16px, 3vw, 24px)",
         overflow: "hidden",
-        background: "#000",
-        border: `3px solid ${accent}`,
-        boxShadow: `0 0 40px ${rgba(accent, 0.25)}`
+        background: "#000"
       }}
     >
-      {/* רקע שנוצר */}
+      {/* רקע */}
       <div style={{
         position: "absolute",
         inset: 0,
         backgroundImage: `url(${data.bgImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
-        filter: "brightness(0.7) contrast(1.15) saturate(1.1)"
+        filter: "brightness(0.6) contrast(1.2)"
       }} />
 
-      {/* לוגו אפריון - watermark מרובד */}
+      {/* Overlay */}
       <div style={{
         position: "absolute",
         inset: 0,
-        pointerEvents: "none",
-        zIndex: 0,
-        overflow: "hidden"
-      }}>
-        {/* לוגו גדול מרכזי */}
-        <div style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%) rotate(-12deg)",
-          fontSize: "clamp(200px, 28vw, 400px)",
-          fontWeight: "900",
-          color: "rgba(255,255,255,0.03)",
-          letterSpacing: "0.08em",
-          textTransform: "uppercase",
-          lineHeight: 1
-        }}>
-          APIRYON
-        </div>
-        
-        {/* לוגו קטן פינה ימין עליון */}
-        <div style={{
-          position: "absolute",
-          top: "clamp(15px, 3%, 30px)",
-          right: "clamp(15px, 3%, 30px)",
-          fontSize: "clamp(1rem, 2vw, 1.4rem)",
-          fontWeight: "900",
-          color: "rgba(255,255,255,0.15)",
-          letterSpacing: "0.15em",
-          textTransform: "uppercase"
-        }}>
-          🎤 APIRYON
-        </div>
-      </div>
-
-      {/* Overlay כהה לקריאות */}
-      <div style={{
-        position: "absolute",
-        inset: 0,
-        background: "linear-gradient(180deg, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.45) 50%, rgba(0,0,0,0.75) 100%)"
+        background: "linear-gradient(180deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.8) 100%)"
       }} />
 
-      {/* תוכן מקצועי */}
+      {/* תוכן */}
       <div style={{
         position: "relative",
         height: "100%",
         display: "flex",
         flexDirection: "column",
-        padding: "clamp(40px, 6%, 70px) clamp(30px, 5%, 50px)"
+        padding: "30px 25px"
       }}>
         
-        {/* כותרת ראשית - נקייה ומרשימה */}
+        {/* לוגו עגול פינה ימין */}
         <div style={{
-          textAlign: "center",
-          marginBottom: "clamp(15px, 2.5%, 25px)"
+          position: "absolute",
+          top: "20px",
+          right: "20px",
+          width: "80px",
+          height: "80px",
+          borderRadius: "50%",
+          background: "rgba(0,0,0,0.8)",
+          border: `3px solid ${accent}`,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: "2rem",
+          zIndex: 10
         }}>
-          <h1 style={{
-            fontSize: "clamp(3.5rem, 8vw, 7rem)",
-            fontWeight: "900",
-            lineHeight: 0.9,
-            margin: 0,
-            textTransform: "uppercase",
-            color: primaryText,
-            textShadow: "0 4px 12px rgba(0,0,0,0.6)",
-            letterSpacing: "0.02em"
-          }}>
-            {data.title}
-          </h1>
+          🎤
         </div>
 
-        {/* תת-כותרת */}
-        <div style={{
-          fontSize: "clamp(1.4rem, 2.8vw, 2.2rem)",
-          fontWeight: "400",
-          color: primaryText,
-          textAlign: "center",
-          marginBottom: "clamp(35px, 5%, 50px)",
-          textShadow: "0 2px 8px rgba(0,0,0,0.5)",
-          opacity: 0.95
-        }}>
-          {data.subtitle}
-        </div>
-
-        {/* עמודת מידע - צד ימין */}
-        <div style={{
-          marginBottom: "clamp(30px, 4.5%, 45px)"
-        }}>
-          {data.date && (
-            <div style={{
-              marginBottom: "clamp(18px, 3%, 25px)",
-              textAlign: "right"
-            }}>
-              <div style={{
-                fontSize: "clamp(0.9rem, 1.6vw, 1.1rem)",
-                color: accent,
-                fontWeight: "700",
-                textTransform: "uppercase",
-                letterSpacing: "0.15em",
-                marginBottom: "6px"
-              }}>תאריך</div>
-              <div style={{
-                fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)",
-                fontWeight: "700",
-                color: primaryText,
-                textShadow: "0 2px 8px rgba(0,0,0,0.5)"
-              }}>
-                {data.date}
-              </div>
-            </div>
-          )}
-
-          {data.time && (
-            <div style={{
-              marginBottom: "clamp(18px, 3%, 25px)",
-              textAlign: "right"
-            }}>
-              <div style={{
-                fontSize: "clamp(0.9rem, 1.6vw, 1.1rem)",
-                color: accent,
-                fontWeight: "700",
-                textTransform: "uppercase",
-                letterSpacing: "0.15em",
-                marginBottom: "6px"
-              }}>שעה</div>
-              <div style={{
-                fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)",
-                fontWeight: "700",
-                color: primaryText,
-                textShadow: "0 2px 8px rgba(0,0,0,0.5)"
-              }}>
-                {data.time}
-              </div>
-            </div>
-          )}
-
-          {data.location && (
-            <div style={{
-              textAlign: "right"
-            }}>
-              <div style={{
-                fontSize: "clamp(0.9rem, 1.6vw, 1.1rem)",
-                color: accent,
-                fontWeight: "700",
-                textTransform: "uppercase",
-                letterSpacing: "0.15em",
-                marginBottom: "6px"
-              }}>מיקום</div>
-              <div style={{
-                fontSize: "clamp(1.6rem, 3.2vw, 2.5rem)",
-                fontWeight: "700",
-                color: primaryText,
-                textShadow: "0 2px 8px rgba(0,0,0,0.5)"
-              }}>
-                {data.location}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Highlights Panel */}
-        {data.highlights?.length > 0 && (
+        {/* תאריך גדול פינה שמאל */}
+        {data.date && (
           <div style={{
-            background: "rgba(0,0,0,0.45)",
-            borderRight: `4px solid ${accent}`,
-            padding: "clamp(20px, 3.5%, 30px) clamp(25px, 4%, 35px)",
-            marginBottom: "clamp(25px, 4%, 35px)",
-            backdropFilter: "blur(8px)"
+            position: "absolute",
+            top: "20px",
+            left: "20px",
+            textAlign: "left",
+            zIndex: 10
           }}>
-            {data.highlights.slice(0, 3).map((h, i) => (
-              <div key={i} style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "15px",
-                marginBottom: i < 2 ? "clamp(15px, 2.5%, 20px)" : "0",
-                textAlign: "right"
-              }}>
-                <div style={{
-                  width: "8px",
-                  height: "8px",
-                  background: accent,
-                  borderRadius: "50%",
-                  flexShrink: 0,
-                  boxShadow: `0 0 10px ${rgba(accent, 0.6)}`
-                }} />
-                <span style={{
-                  fontSize: "clamp(1.2rem, 2.3vw, 1.8rem)",
-                  fontWeight: "400",
-                  color: primaryText,
-                  textShadow: "0 2px 6px rgba(0,0,0,0.4)"
-                }}>
-                  {h}
-                </span>
-              </div>
-            ))}
+            <div style={{
+              fontSize: "3rem",
+              fontWeight: "900",
+              color: accent,
+              lineHeight: 0.9,
+              textShadow: `0 0 20px ${accent}, 0 4px 10px rgba(0,0,0,0.8)`
+            }}>
+              {data.date.split(' ')[1] || data.date}
+            </div>
+            <div style={{
+              fontSize: "0.9rem",
+              color: primaryText,
+              fontWeight: "700",
+              marginTop: "5px",
+              letterSpacing: "0.1em"
+            }}>
+              OPEN DOORS {data.time}
+            </div>
           </div>
         )}
 
-        {/* תמונות זמרים */}
+        {/* כותרת ענקית עם אפקט שכבות */}
+        <div style={{
+          marginTop: "140px",
+          marginBottom: "30px",
+          position: "relative"
+        }}>
+          {/* שכבה אחורית */}
+          <div style={{
+            fontSize: "4.5rem",
+            fontWeight: "900",
+            color: "rgba(255,255,255,0.1)",
+            textTransform: "uppercase",
+            lineHeight: 0.85,
+            textAlign: "center",
+            position: "absolute",
+            top: "-10px",
+            left: 0,
+            right: 0,
+            zIndex: 0
+          }}>
+            {data.title}
+          </div>
+          {/* שכבה קדמית */}
+          <div style={{
+            fontSize: "4.5rem",
+            fontWeight: "900",
+            color: primaryText,
+            textTransform: "uppercase",
+            lineHeight: 0.85,
+            textAlign: "center",
+            position: "relative",
+            zIndex: 1,
+            textShadow: `0 0 30px ${accent}, 0 4px 15px rgba(0,0,0,0.9)`
+          }}>
+            {data.title}
+          </div>
+          
+          {/* תת כותרת */}
+          <div style={{
+            fontSize: "1.3rem",
+            color: accent,
+            textAlign: "center",
+            marginTop: "15px",
+            fontWeight: "700",
+            textShadow: "0 2px 8px rgba(0,0,0,0.8)"
+          }}>
+            {data.subtitle}
+          </div>
+        </div>
+
+        {/* תמונות זמרים - גדולות ובולטות */}
         {data.artists && data.artists.length > 0 && (
           <div style={{
-            display: "grid",
-            gridTemplateColumns: data.artists.length === 1 ? "1fr" : data.artists.length === 2 ? "1fr 1fr" : "repeat(auto-fit, minmax(150px, 1fr))",
-            gap: "clamp(15px, 2.5%, 20px)",
-            marginBottom: "clamp(25px, 4%, 35px)"
+            display: "flex",
+            justifyContent: "center",
+            gap: "20px",
+            marginBottom: "30px",
+            flexWrap: "wrap"
           }}>
             {data.artists.map((artist, i) => (
               <div key={i} style={{ textAlign: "center" }}>
@@ -646,20 +558,21 @@ function InvitationCard({ refObj, data }) {
                   src={artist.image} 
                   alt={artist.name}
                   style={{
-                    width: "100%",
-                    aspectRatio: "1",
+                    width: data.artists.length === 1 ? "280px" : "180px",
+                    height: data.artists.length === 1 ? "280px" : "180px",
                     objectFit: "cover",
-                    borderRadius: "12px",
-                    border: `3px solid ${accent}`,
-                    marginBottom: "10px",
-                    boxShadow: `0 4px 15px ${rgba(accent, 0.4)}`
+                    borderRadius: "50%",
+                    border: `5px solid ${accent}`,
+                    boxShadow: `0 0 30px ${accent}, 0 8px 25px rgba(0,0,0,0.8)`
                   }}
                 />
                 <div style={{
-                  fontSize: "clamp(1.2rem, 2.3vw, 1.8rem)",
-                  fontWeight: "700",
+                  fontSize: data.artists.length === 1 ? "2.5rem" : "1.8rem",
+                  fontWeight: "900",
                   color: accent,
-                  textShadow: "0 2px 8px rgba(0,0,0,0.6)"
+                  marginTop: "15px",
+                  textShadow: `0 0 20px ${accent}, 0 3px 10px rgba(0,0,0,0.8)`,
+                  textTransform: "uppercase"
                 }}>
                   {artist.name}
                 </div>
@@ -668,149 +581,212 @@ function InvitationCard({ refObj, data }) {
           </div>
         )}
 
-        {/* ספייסר אוטומטי */}
         <div style={{ flex: 1 }} />
 
-        {/* Contact + מחיר */}
+        {/* CTA + מידע */}
         <div style={{
-          display: "flex",
-          justifyContent: "space-around",
-          alignItems: "center",
-          marginBottom: "clamp(20px, 3.5%, 30px)",
-          gap: "20px"
-        }}>
-          {data.phone && (
-            <div style={{ textAlign: "center" }}>
-              <div style={{
-                fontSize: "clamp(0.85rem, 1.5vw, 1rem)",
-                color: accent,
-                fontWeight: "700",
-                textTransform: "uppercase",
-                letterSpacing: "0.2em",
-                marginBottom: "8px"
-              }}>הזמנות</div>
-              <div style={{
-                fontSize: "clamp(1.4rem, 2.6vw, 2rem)",
-                fontWeight: "700",
-                color: primaryText,
-                textShadow: "0 2px 8px rgba(0,0,0,0.5)",
-                direction: "ltr"
-              }}>
-                {data.phone}
-              </div>
-            </div>
-          )}
-          {data.price && (
-            <div style={{ textAlign: "center" }}>
-              <div style={{
-                fontSize: "clamp(0.85rem, 1.5vw, 1rem)",
-                color: accent,
-                fontWeight: "700",
-                textTransform: "uppercase",
-                letterSpacing: "0.2em",
-                marginBottom: "8px"
-              }}>כניסה</div>
-              <div style={{
-                fontSize: "clamp(1.4rem, 2.6vw, 2rem)",
-                fontWeight: "700",
-                color: primaryText,
-                textShadow: "0 2px 8px rgba(0,0,0,0.5)"
-              }}>
-                {data.price}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* CTA תחתון */}
-        <div style={{
-          background: accent,
-          padding: "clamp(18px, 3.5%, 28px)",
-          textAlign: "center",
-          borderRadius: "8px",
-          boxShadow: `0 4px 20px ${rgba(accent, 0.4)}`,
-          marginBottom: "clamp(15px, 2.5%, 20px)"
+          background: `linear-gradient(135deg, ${accent}, #FFA500)`,
+          padding: "25px",
+          borderRadius: "12px",
+          marginBottom: "20px",
+          boxShadow: `0 0 40px ${accent}`
         }}>
           <div style={{
-            fontSize: "clamp(1.3rem, 2.6vw, 2rem)",
-            fontWeight: "700",
+            fontSize: "2rem",
+            fontWeight: "900",
             color: "#000",
-            textTransform: "uppercase",
-            letterSpacing: "0.05em"
+            textAlign: "center",
+            marginBottom: "15px",
+            textTransform: "uppercase"
           }}>
             {data.cta}
           </div>
-        </div>
-
-        {/* Footer - QR Codes */}
-        <div style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: "clamp(20px, 3.5%, 30px)",
-          padding: "clamp(15px, 2.5%, 20px)",
-          background: "rgba(0,0,0,0.5)",
-          borderRadius: "8px"
-        }}>
-          <div style={{ textAlign: "center" }}>
-            <img 
-              src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15"
-              alt="WhatsApp QR"
-              style={{
-                width: "clamp(70px, 10vw, 100px)",
-                height: "clamp(70px, 10vw, 100px)",
-                background: "#fff",
-                padding: "5px",
-                borderRadius: "8px",
-                marginBottom: "5px"
-              }}
-            />
-            <div style={{
-              fontSize: "clamp(0.7rem, 1.3vw, 0.9rem)",
-              color: primaryText,
-              fontWeight: "600"
-            }}>קבוצת WhatsApp</div>
-          </div>
           
-          <div style={{ textAlign: "center" }}>
-            <img 
-              src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://www.tiktok.com/@apiryon.club"
-              alt="TikTok QR"
-              style={{
-                width: "clamp(70px, 10vw, 100px)",
-                height: "clamp(70px, 10vw, 100px)",
-                background: "#fff",
-                padding: "5px",
-                borderRadius: "8px",
-                marginBottom: "5px"
-              }}
-            />
-            <div style={{
-              fontSize: "clamp(0.7rem, 1.3vw, 0.9rem)",
-              color: primaryText,
-              fontWeight: "600"
-            }}>TikTok</div>
+          <div style={{
+            display: "flex",
+            justifyContent: "space-around",
+            gap: "20px"
+          }}>
+            {data.phone && (
+              <div style={{ textAlign: "center" }}>
+                <div style={{
+                  fontSize: "0.9rem",
+                  color: "rgba(0,0,0,0.7)",
+                  fontWeight: "700",
+                  marginBottom: "5px"
+                }}>להזמנות</div>
+                <div style={{
+                  fontSize: "1.6rem",
+                  fontWeight: "900",
+                  color: "#000",
+                  direction: "ltr"
+                }}>
+                  {data.phone}
+                </div>
+              </div>
+            )}
+            {data.price && (
+              <div style={{ textAlign: "center" }}>
+                <div style={{
+                  fontSize: "0.9rem",
+                  color: "rgba(0,0,0,0.7)",
+                  fontWeight: "700",
+                  marginBottom: "5px"
+                }}>כניסה</div>
+                <div style={{
+                  fontSize: "1.6rem",
+                  fontWeight: "900",
+                  color: "#000"
+                }}>
+                  {data.price}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* לוגו קטן למטה עם אייקונים */}
+        {/* Footer - אייקונים + QR */}
         <div style={{
-          position: "absolute",
-          bottom: "clamp(20px, 3%, 30px)",
-          left: "50%",
-          transform: "translateX(-50%)",
-          display: "flex",
-          alignItems: "center",
-          gap: "clamp(10px, 2vw, 15px)",
-          fontSize: "clamp(0.8rem, 1.5vw, 1rem)",
-          color: "rgba(255,255,255,0.7)",
-          fontWeight: "900",
-          letterSpacing: "0.15em",
-          textShadow: "1px 1px 3px rgba(0,0,0,0.8)"
+          background: "rgba(0,0,0,0.85)",
+          padding: "20px",
+          borderRadius: "10px"
         }}>
-          <span style={{ fontSize: "clamp(1.2rem, 2.5vw, 1.8rem)" }}>🎤</span>
-          <span>APIRYON CLUB</span>
-          <span style={{ fontSize: "clamp(1.2rem, 2.5vw, 1.8rem)" }}>🎤</span>
+          {/* שורת אייקונים */}
+          <div style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: "25px",
+            marginBottom: "15px"
+          }}>
+            <div style={{ textAlign: "center" }}>
+              <div style={{
+                width: "45px",
+                height: "45px",
+                borderRadius: "50%",
+                background: "linear-gradient(135deg, #1877f2, #0d65d9)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "1.5rem",
+                marginBottom: "5px",
+                boxShadow: "0 4px 15px rgba(24, 119, 242, 0.5)"
+              }}>
+                f
+              </div>
+              <div style={{
+                fontSize: "0.7rem",
+                color: primaryText,
+                fontWeight: "600"
+              }}>הדף שלנו ב-Facebook</div>
+            </div>
+
+            <div style={{ textAlign: "center" }}>
+              <div style={{
+                width: "45px",
+                height: "45px",
+                borderRadius: "50%",
+                background: "linear-gradient(135deg, #E1306C, #C13584, #833AB4)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "1.5rem",
+                marginBottom: "5px",
+                boxShadow: "0 4px 15px rgba(193, 53, 132, 0.5)"
+              }}>
+                📷
+              </div>
+              <div style={{
+                fontSize: "0.7rem",
+                color: primaryText,
+                fontWeight: "600"
+              }}>עקבו אחרינו ב-Instagram</div>
+            </div>
+
+            <div style={{ textAlign: "center" }}>
+              <div style={{
+                width: "45px",
+                height: "45px",
+                borderRadius: "50%",
+                background: "linear-gradient(135deg, #25D366, #128C7E)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "1.5rem",
+                marginBottom: "5px",
+                boxShadow: "0 4px 15px rgba(37, 211, 102, 0.5)"
+              }}>
+                💬
+              </div>
+              <div style={{
+                fontSize: "0.7rem",
+                color: primaryText,
+                fontWeight: "600"
+              }}>הצטרפות לווטסאפ</div>
+            </div>
+          </div>
+
+          {/* שורת QR */}
+          <div style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: "30px",
+            paddingTop: "15px",
+            borderTop: `2px solid ${accent}`
+          }}>
+            <div style={{ textAlign: "center" }}>
+              <img 
+                src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15"
+                style={{
+                  width: "85px",
+                  height: "85px",
+                  background: "#fff",
+                  padding: "5px",
+                  borderRadius: "8px",
+                  border: `2px solid ${accent}`
+                }}
+              />
+              <div style={{
+                fontSize: "0.75rem",
+                color: accent,
+                fontWeight: "700",
+                marginTop: "5px"
+              }}>סרוק להצטרפות</div>
+            </div>
+            
+            <div style={{ textAlign: "center" }}>
+              <img 
+                src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://www.tiktok.com/@apiryon.club"
+                style={{
+                  width: "85px",
+                  height: "85px",
+                  background: "#fff",
+                  padding: "5px",
+                  borderRadius: "8px",
+                  border: `2px solid ${accent}`
+                }}
+              />
+              <div style={{
+                fontSize: "0.75rem",
+                color: accent,
+                fontWeight: "700",
+                marginTop: "5px"
+              }}>עקבו ב-TikTok</div>
+            </div>
+          </div>
+
+          {/* שם המקום */}
+          <div style={{
+            textAlign: "center",
+            marginTop: "15px",
+            fontSize: "1.1rem",
+            fontWeight: "900",
+            color: accent,
+            letterSpacing: "0.2em",
+            textShadow: `0 0 15px ${accent}`
+          }}>
+            🎤 APIRYON CLUB 🎤
+          </div>
         </div>
       </div>
     </div>
