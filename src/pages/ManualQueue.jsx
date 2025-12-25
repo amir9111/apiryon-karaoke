@@ -105,36 +105,40 @@ export default function ManualQueue() {
           <div style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
-            gap: "5mm"
-            }}>
+            gridTemplateRows: "1fr 1fr",
+            gap: "5mm",
+            height: "calc(297mm - 20mm)"
+          }}>
             {Array.from({ length: 4 }).map((_, cardIndex) => (
-            <div key={cardIndex} style={{
+          <div key={cardIndex} style={{
             border: "2px dashed #00caff",
-            borderRadius: "8px",
-            padding: "8mm",
+            borderRadius: "6px",
+            padding: "5mm",
             background: "#f8fafc",
             pageBreakInside: "avoid",
-            position: "relative"
-            }}>
+            position: "relative",
+            display: "flex",
+            flexDirection: "column"
+          }}>
 
               {/* כותרת */}
               <div style={{
                 textAlign: "center",
-                marginBottom: "5mm",
-                paddingBottom: "4mm",
+                marginBottom: "3mm",
+                paddingBottom: "2mm",
                 borderBottom: "2px solid #00caff"
               }}>
                 <div style={{
-                  fontSize: "1.1rem",
+                  fontSize: "0.85rem",
                   fontWeight: "900",
                   color: "#00caff",
-                  marginBottom: "2mm",
+                  marginBottom: "1mm",
                   letterSpacing: "0.02em"
                 }}>
                   🎤 רישום לתור קריוקי 🎤
                 </div>
                 <div style={{
-                  fontSize: "0.7rem",
+                  fontSize: "0.6rem",
                   color: "#64748b",
                   fontWeight: "600"
                 }}>
@@ -150,77 +154,77 @@ export default function ManualQueue() {
               <div style={{
                 display: "flex",
                 justifyContent: "center",
-                marginBottom: "6mm"
+                marginBottom: "3mm"
               }}>
-                <div style={{ transform: "scale(0.5)" }}>
+                <div style={{ transform: "scale(0.4)" }}>
                   <ApyironLogo size="small" showCircle={true} />
                 </div>
               </div>
 
               {/* Form Fields */}
-              <div style={{ display: "flex", flexDirection: "column", gap: "6mm" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "4mm", flex: 1 }}>
                 {/* שם המבצע */}
                 <div>
                   <div style={{
-                    fontSize: "0.9rem",
+                    fontSize: "0.75rem",
                     fontWeight: "700",
                     color: "#00caff",
-                    marginBottom: "3mm"
+                    marginBottom: "2mm"
                   }}>
                     שם המבצע:
                   </div>
                   <div style={{
                     borderBottom: "2px solid #cbd5e1",
-                    height: "8mm"
+                    height: "6mm"
                   }}></div>
                 </div>
 
                 {/* שם הזמר */}
                 <div>
                   <div style={{
-                    fontSize: "0.9rem",
+                    fontSize: "0.75rem",
                     fontWeight: "700",
                     color: "#00caff",
-                    marginBottom: "3mm"
+                    marginBottom: "2mm"
                   }}>
                     שם הזמר:
                   </div>
                   <div style={{
                     borderBottom: "2px solid #cbd5e1",
-                    height: "8mm"
+                    height: "6mm"
                   }}></div>
                 </div>
 
                 {/* שם השיר */}
                 <div>
                   <div style={{
-                    fontSize: "0.9rem",
+                    fontSize: "0.75rem",
                     fontWeight: "700",
                     color: "#00caff",
-                    marginBottom: "3mm"
+                    marginBottom: "2mm"
                   }}>
                     שם השיר:
                   </div>
                   <div style={{
                     borderBottom: "2px solid #cbd5e1",
-                    height: "8mm"
+                    height: "6mm"
                   }}></div>
                 </div>
               </div>
 
               {/* הנחיות מילוי */}
               <div style={{
-                marginTop: "5mm",
-                padding: "3mm",
+                marginTop: "3mm",
+                padding: "2mm",
                 background: "rgba(0, 202, 255, 0.05)",
                 borderRadius: "4px",
                 textAlign: "center"
               }}>
                 <div style={{
-                  fontSize: "0.65rem",
+                  fontSize: "0.55rem",
                   color: "#64748b",
                   fontWeight: "600",
-                  lineHeight: "1.4"
+                  lineHeight: "1.3"
                 }}>
                   ✍️ אנא מלא בכתב יד ברור וקריא
                 </div>
