@@ -4,6 +4,7 @@ import { toPng } from "html-to-image";
 import { Sparkles, Download, Share2, Loader2, Home } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+import ArtistsUpload from "../components/ArtistsUpload";
 
 export default function EventProducer() {
   const [formData, setFormData] = useState({
@@ -12,7 +13,9 @@ export default function EventProducer() {
     time: "",
     location: "",
     phone: "",
-    style: "karaoke"
+    price: "",
+    style: "karaoke",
+    artists: [] // [{name: "", image: ""}]
   });
   const [isGenerating, setIsGenerating] = useState(false);
   const [invitation, setInvitation] = useState(null);
@@ -21,11 +24,7 @@ export default function EventProducer() {
 
   const styles = [
     { id: "karaoke", label: "🎤 קריוקי", color: "#FFA500" },
-    { id: "birthday", label: "🎂 יום הולדת", color: "#F472B6" },
-    { id: "mizrahi", label: "🔥 מזרחי/חפלה", color: "#FFD700" },
-    { id: "club", label: "✨ מועדון/טכנו", color: "#00CAFF" },
-    { id: "premium", label: "💎 פרימיום", color: "#D6B36A" },
-    { id: "holiday", label: "🎉 חג", color: "#F472B6" }
+    { id: "mizrahi", label: "🔥 חפלה מזרחית", color: "#FFD700" }
   ];
 
   const handleChange = (e) => {
@@ -271,7 +270,7 @@ export default function EventProducer() {
               />
             </div>
 
-            <div style={{ marginBottom: "24px" }}>
+            <div style={{ marginBottom: "20px" }}>
               <label style={labelStyle}>טלפון</label>
               <input
                 type="text"
@@ -283,11 +282,23 @@ export default function EventProducer() {
               />
             </div>
 
-            <div style={{ marginBottom: "28px" }}>
+            <div style={{ marginBottom: "24px" }}>
+              <label style={labelStyle}>מחיר כניסה (₪)</label>
+              <input
+                type="text"
+                name="price"
+                value={formData.price}
+                onChange={handleChange}
+                placeholder="50 ₪ / חינם"
+                style={inputStyle}
+              />
+            </div>
+
+            <div style={{ marginBottom: "20px" }}>
               <label style={{ display: "block", fontSize: "0.95rem", fontWeight: "700", color: "#00caff", marginBottom: "12px" }}>
                 בחר סגנון *
               </label>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "10px" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
                 {styles.map(style => (
                   <button
                     key={style.id}
@@ -310,6 +321,16 @@ export default function EventProducer() {
                   </button>
                 ))}
               </div>
+            </div>
+
+            <div style={{ marginBottom: "28px" }}>
+              <label style={{ display: "block", fontSize: "0.95rem", fontWeight: "700", color: "#00caff", marginBottom: "12px" }}>
+                זמרים באירוע (אופציונלי)
+              </label>
+              <ArtistsUpload 
+                artists={formData.artists}
+                onChange={(artists) => setFormData(prev => ({ ...prev, artists }))}
+              />
             </div>
 
             <button
@@ -366,7 +387,7 @@ export default function EventProducer() {
               <button onClick={shareImage} style={btnStyle("cyanOutline")}>
                 <Share2 size={18} /> שתף
               </button>
-              <button onClick={() => { setInvitation(null); setFormData({ ...formData, eventName: "", date: "", time: "", location: "", phone: "" }); }} style={btnStyle("redOutline")}>
+              <button onClick={() => { setInvitation(null); setFormData({ eventName: "", date: "", time: "", location: "", phone: "", price: "", style: "karaoke", artists: [] }); }} style={btnStyle("redOutline")}>
                 ✕ התחל מחדש
               </button>
             </div>
@@ -611,34 +632,95 @@ function InvitationCard({ refObj, data }) {
           </div>
         )}
 
+        {/* תמונות זמרים */}
+        {data.artists && data.artists.length > 0 && (
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: data.artists.length === 1 ? "1fr" : data.artists.length === 2 ? "1fr 1fr" : "repeat(auto-fit, minmax(150px, 1fr))",
+            gap: "clamp(15px, 2.5%, 20px)",
+            marginBottom: "clamp(25px, 4%, 35px)"
+          }}>
+            {data.artists.map((artist, i) => (
+              <div key={i} style={{ textAlign: "center" }}>
+                <img 
+                  src={artist.image} 
+                  alt={artist.name}
+                  style={{
+                    width: "100%",
+                    aspectRatio: "1",
+                    objectFit: "cover",
+                    borderRadius: "12px",
+                    border: `3px solid ${accent}`,
+                    marginBottom: "10px",
+                    boxShadow: `0 4px 15px ${rgba(accent, 0.4)}`
+                  }}
+                />
+                <div style={{
+                  fontSize: "clamp(1.2rem, 2.3vw, 1.8rem)",
+                  fontWeight: "700",
+                  color: accent,
+                  textShadow: "0 2px 8px rgba(0,0,0,0.6)"
+                }}>
+                  {artist.name}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
         {/* ספייסר אוטומטי */}
         <div style={{ flex: 1 }} />
 
-        {/* Contact */}
-        {data.phone && (
-          <div style={{
-            textAlign: "center",
-            marginBottom: "clamp(20px, 3.5%, 30px)"
-          }}>
-            <div style={{
-              fontSize: "clamp(0.85rem, 1.5vw, 1rem)",
-              color: accent,
-              fontWeight: "700",
-              textTransform: "uppercase",
-              letterSpacing: "0.2em",
-              marginBottom: "8px"
-            }}>הזמנות</div>
-            <div style={{
-              fontSize: "clamp(1.6rem, 3vw, 2.4rem)",
-              fontWeight: "700",
-              color: primaryText,
-              textShadow: "0 2px 8px rgba(0,0,0,0.5)",
-              direction: "ltr"
-            }}>
-              {data.phone}
+        {/* Contact + מחיר */}
+        <div style={{
+          display: "flex",
+          justifyContent: "space-around",
+          alignItems: "center",
+          marginBottom: "clamp(20px, 3.5%, 30px)",
+          gap: "20px"
+        }}>
+          {data.phone && (
+            <div style={{ textAlign: "center" }}>
+              <div style={{
+                fontSize: "clamp(0.85rem, 1.5vw, 1rem)",
+                color: accent,
+                fontWeight: "700",
+                textTransform: "uppercase",
+                letterSpacing: "0.2em",
+                marginBottom: "8px"
+              }}>הזמנות</div>
+              <div style={{
+                fontSize: "clamp(1.4rem, 2.6vw, 2rem)",
+                fontWeight: "700",
+                color: primaryText,
+                textShadow: "0 2px 8px rgba(0,0,0,0.5)",
+                direction: "ltr"
+              }}>
+                {data.phone}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+          {data.price && (
+            <div style={{ textAlign: "center" }}>
+              <div style={{
+                fontSize: "clamp(0.85rem, 1.5vw, 1rem)",
+                color: accent,
+                fontWeight: "700",
+                textTransform: "uppercase",
+                letterSpacing: "0.2em",
+                marginBottom: "8px"
+              }}>כניסה</div>
+              <div style={{
+                fontSize: "clamp(1.4rem, 2.6vw, 2rem)",
+                fontWeight: "700",
+                color: primaryText,
+                textShadow: "0 2px 8px rgba(0,0,0,0.5)"
+              }}>
+                {data.price}
+              </div>
+            </div>
+          )}
+        </div>
 
         {/* CTA תחתון */}
         <div style={{
@@ -646,7 +728,8 @@ function InvitationCard({ refObj, data }) {
           padding: "clamp(18px, 3.5%, 28px)",
           textAlign: "center",
           borderRadius: "8px",
-          boxShadow: `0 4px 20px ${rgba(accent, 0.4)}`
+          boxShadow: `0 4px 20px ${rgba(accent, 0.4)}`,
+          marginBottom: "clamp(15px, 2.5%, 20px)"
         }}>
           <div style={{
             fontSize: "clamp(1.3rem, 2.6vw, 2rem)",
@@ -656,6 +739,57 @@ function InvitationCard({ refObj, data }) {
             letterSpacing: "0.05em"
           }}>
             {data.cta}
+          </div>
+        </div>
+
+        {/* Footer - QR Codes */}
+        <div style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: "clamp(20px, 3.5%, 30px)",
+          padding: "clamp(15px, 2.5%, 20px)",
+          background: "rgba(0,0,0,0.5)",
+          borderRadius: "8px"
+        }}>
+          <div style={{ textAlign: "center" }}>
+            <img 
+              src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15"
+              alt="WhatsApp QR"
+              style={{
+                width: "clamp(70px, 10vw, 100px)",
+                height: "clamp(70px, 10vw, 100px)",
+                background: "#fff",
+                padding: "5px",
+                borderRadius: "8px",
+                marginBottom: "5px"
+              }}
+            />
+            <div style={{
+              fontSize: "clamp(0.7rem, 1.3vw, 0.9rem)",
+              color: primaryText,
+              fontWeight: "600"
+            }}>קבוצת WhatsApp</div>
+          </div>
+          
+          <div style={{ textAlign: "center" }}>
+            <img 
+              src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://www.tiktok.com/@apiryon.club"
+              alt="TikTok QR"
+              style={{
+                width: "clamp(70px, 10vw, 100px)",
+                height: "clamp(70px, 10vw, 100px)",
+                background: "#fff",
+                padding: "5px",
+                borderRadius: "8px",
+                marginBottom: "5px"
+              }}
+            />
+            <div style={{
+              fontSize: "clamp(0.7rem, 1.3vw, 0.9rem)",
+              color: primaryText,
+              fontWeight: "600"
+            }}>TikTok</div>
           </div>
         </div>
 
