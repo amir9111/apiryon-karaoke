@@ -73,16 +73,17 @@ export default function ServiceWorkerRegistration() {
       self.addEventListener('fetch', (event) => {
         const url = new URL(event.request.url);
         
-        // Serve manifest.json
+        // Serve manifest.json with correct headers
         if (url.pathname === '/manifest.json' || url.pathname.endsWith('manifest.json')) {
-          console.log('📄 [SW] Serving manifest.json from SW');
+          console.log('📄 [SW] Serving manifest.json');
           event.respondWith(
             new Response(JSON.stringify(MANIFEST), {
               status: 200,
               headers: {
-                'Content-Type': 'application/manifest+json',
+                'Content-Type': 'application/manifest+json; charset=utf-8',
                 'Access-Control-Allow-Origin': '*',
-                'Cache-Control': 'no-cache'
+                'Cache-Control': 'no-store',
+                'X-Content-Type-Options': 'nosniff'
               }
             })
           );
