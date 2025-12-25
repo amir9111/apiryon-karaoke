@@ -33,7 +33,7 @@ export default function ManualQueue() {
     window.print();
   };
 
-  const totalCards = numPages * 8;
+  const totalCards = numPages * 4;
   const allCardNumbers = Array.from({ length: totalCards }, (_, i) => startNumber + i);
 
   return (
@@ -112,8 +112,8 @@ export default function ManualQueue() {
               cursor: "pointer"
             }}
           >
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => (
-              <option key={n} value={n}>{n} דפים ({n * 8} כרטיסים)</option>
+            {Array.from({ length: 50 }, (_, i) => i + 1).map(n => (
+              <option key={n} value={n}>{n} דפים ({n * 4} כרטיסים)</option>
             ))}
           </select>
         </div>
@@ -151,7 +151,7 @@ export default function ManualQueue() {
             gridTemplateColumns: "1fr 1fr",
             gap: "5mm"
           }}>
-            {allCardNumbers.slice(pageIndex * 8, (pageIndex + 1) * 8).map((num) => (
+            {allCardNumbers.slice(pageIndex * 4, (pageIndex + 1) * 4).map((num) => (
             <div key={num} style={{
               border: "2px dashed #00caff",
               borderRadius: "8px",
