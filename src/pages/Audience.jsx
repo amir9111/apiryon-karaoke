@@ -255,25 +255,17 @@ export default function Audience() {
                     e.target.style.transform = 'translateZ(0) scale(1.0005)';
                   }}
                   style={{
-                    width: "100%",
-                    height: "100%",
-                    minWidth: "100vw",
-                    minHeight: "100vh",
+                    width: "100vw",
+                    height: "100vh",
                     display: "block",
-                    objectFit: "contain",
+                    objectFit: "cover",
                     objectPosition: "center",
                     backgroundColor: "#000",
                     imageRendering: "high-quality",
-                    MozImageRendering: "crisp-edges",
-                    WebkitImageRendering: "-webkit-optimize-contrast",
-                    msInterpolationMode: "bicubic",
                     WebkitBackfaceVisibility: "hidden",
                     backfaceVisibility: "hidden",
-                    transform: "translateZ(0) scale(1.0005)",
-                    filter: "contrast(1.2) brightness(1.12) saturate(1.3) sharpen(2px)",
-                    WebkitFilter: "contrast(1.2) brightness(1.12) saturate(1.3)",
-                    willChange: "transform",
-                    imageSmoothing: "high"
+                    transform: "translateZ(0)",
+                    willChange: "transform"
                   }}
                 />
               )}
