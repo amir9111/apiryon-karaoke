@@ -3,9 +3,14 @@ import ApyironLogo from "../components/ApyironLogo";
 import NavigationMenu from "../components/NavigationMenu";
 
 export default function ManualQueue() {
+  const [numPages, setNumPages] = React.useState(1);
+
   const handlePrint = () => {
     window.print();
   };
+
+  const totalCards = numPages * 8;
+  const allCardNumbers = Array.from({ length: totalCards }, (_, i) => i + 1);
 
   return (
     <div dir="rtl" style={{
@@ -36,6 +41,37 @@ export default function ManualQueue() {
         <p style={{ color: "#cbd5e1", fontSize: "1.1rem", marginBottom: "25px" }}>
           הדפס דפים אלו, גזור לכרטיסים קטנים וחלק בין האנשים למילוי ידני
         </p>
+        
+        <div style={{ 
+          display: "flex", 
+          alignItems: "center", 
+          justifyContent: "center", 
+          gap: "15px",
+          marginBottom: "20px"
+        }}>
+          <label style={{ color: "#cbd5e1", fontSize: "1rem", fontWeight: "600" }}>
+            כמות דפים:
+          </label>
+          <select
+            value={numPages}
+            onChange={(e) => setNumPages(parseInt(e.target.value))}
+            style={{
+              padding: "10px 20px",
+              borderRadius: "8px",
+              border: "2px solid rgba(0, 202, 255, 0.3)",
+              background: "rgba(15, 23, 42, 0.9)",
+              color: "#fff",
+              fontSize: "1rem",
+              fontWeight: "600",
+              cursor: "pointer"
+            }}
+          >
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => (
+              <option key={n} value={n}>{n} דפים ({n * 8} כרטיסים)</option>
+            ))}
+          </select>
+        </div>
+
         <button
           onClick={handlePrint}
           style={{
@@ -50,24 +86,26 @@ export default function ManualQueue() {
             boxShadow: "0 0 30px rgba(0, 202, 255, 0.4)"
           }}
         >
-          🖨️ הדפס דפים
+          🖨️ הדפס {totalCards} כרטיסים
         </button>
       </div>
 
-      {/* A4 Page Container */}
-      <div style={{
-        maxWidth: "210mm",
-        margin: "0 auto",
-        background: "#fff",
-        padding: "10mm",
-        minHeight: "297mm"
-      }}>
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "5mm"
+      {/* A4 Pages Container */}
+      {Array.from({ length: numPages }, (_, pageIndex) => (
+        <div key={pageIndex} style={{
+          maxWidth: "210mm",
+          margin: "0 auto",
+          background: "#fff",
+          padding: "10mm",
+          minHeight: "297mm",
+          pageBreakAfter: pageIndex < numPages - 1 ? "always" : "auto"
         }}>
-          {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "5mm"
+          }}>
+            {allCardNumbers.slice(pageIndex * 8, (pageIndex + 1) * 8).map((num) => (
             <div key={num} style={{
               border: "2px dashed #00caff",
               borderRadius: "8px",
@@ -176,9 +214,10 @@ export default function ManualQueue() {
                 </div>
               </div>
             </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      ))}
 
       <style>{`
         @media print {
