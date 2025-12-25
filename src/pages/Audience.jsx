@@ -222,10 +222,10 @@ export default function Audience() {
           flexDirection: latestMedia ? "row" : "column",
           alignItems: "stretch", 
           justifyContent: "space-between",
-          padding: latestMedia ? "0 20px" : "0 20px 2vh",
+          padding: latestMedia ? "10px 20px 20px" : "0 20px 2vh",
           width: "100%",
           flex: 1,
-          overflow: "hidden",
+          overflow: "auto",
           gap: "20px"
         }}>
 
@@ -304,7 +304,7 @@ export default function Audience() {
                         width: "100%",
                         height: "100%",
                         display: "block",
-                        objectFit: "cover",
+                        objectFit: "contain",
                         backgroundColor: "#000"
                       }}
                     />
@@ -321,7 +321,7 @@ export default function Audience() {
                         width: "100%",
                         height: "100%",
                         display: "block",
-                        objectFit: "cover"
+                        objectFit: "contain"
                       }}
                     />
                   )}
