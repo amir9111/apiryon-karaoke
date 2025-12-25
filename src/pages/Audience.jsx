@@ -253,7 +253,7 @@ export default function Audience() {
                     width: "100vw",
                     height: "100vh",
                     display: "block",
-                    objectFit: "contain",
+                    objectFit: "cover",
                     objectPosition: "center",
                     backgroundColor: "#000",
                     imageRendering: "-webkit-optimize-contrast",
