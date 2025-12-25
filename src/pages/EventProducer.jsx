@@ -456,14 +456,19 @@ function InvitationCard({ refObj, data }) {
         padding: "40px 35px"
       }}>
         
-        {/* לוגו אמיתי - האפריון */}
+        {/* לוגו אמיתי - משולב טבעי */}
         <div style={{
           position: "absolute",
           top: "30px",
           right: "30px",
-          width: "140px",
-          height: "140px",
-          zIndex: 10
+          width: "150px",
+          height: "150px",
+          zIndex: 10,
+          borderRadius: "50%",
+          overflow: "hidden",
+          background: "radial-gradient(circle, rgba(0,40,60,0.9) 0%, rgba(0,20,40,0.7) 50%, transparent 100%)",
+          padding: "10px",
+          boxShadow: "0 0 40px rgba(0, 202, 255, 0.6), 0 0 80px rgba(0, 202, 255, 0.3)"
         }}>
           <img 
             src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/693c1c7149a5af7efdab4614/658f38deb_WhatsAppImage2025-12-25at033539.jpg"
@@ -471,8 +476,8 @@ function InvitationCard({ refObj, data }) {
             style={{
               width: "100%",
               height: "100%",
-              objectFit: "contain",
-              filter: "drop-shadow(0 0 25px rgba(0, 202, 255, 0.8)) drop-shadow(0 0 50px rgba(0, 202, 255, 0.4))"
+              objectFit: "cover",
+              borderRadius: "50%"
             }}
           />
         </div>
@@ -567,8 +572,8 @@ function InvitationCard({ refObj, data }) {
           </div>
         </div>
 
-        {/* תמונות זמרים / פרטי אירוע */}
-        {data.artists && data.artists.length > 0 ? (
+        {/* תמונות זמרים */}
+        {data.artists && data.artists.length > 0 && (
           <div style={{
             display: "flex",
             justifyContent: "center",
@@ -614,83 +619,117 @@ function InvitationCard({ refObj, data }) {
               </div>
             ))}
           </div>
-        ) : (
+        )}
+        
+        {/* Highlights - ללא קשר לזמרים */}
+        {data.highlights && data.highlights.length > 0 && (
           <div style={{
-            background: "rgba(0,0,0,0.6)",
-            padding: "30px",
-            borderRadius: "16px",
             marginBottom: "30px",
-            border: `2px solid ${rgba(accent, 0.3)}`,
-            backdropFilter: "blur(10px)"
+            padding: "0 40px"
           }}>
-            <div style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "20px",
-              marginBottom: "20px"
-            }}>
-              {data.location && (
-                <div style={{ textAlign: "right" }}>
-                  <div style={{
-                    fontSize: "0.9rem",
-                    color: accent,
-                    fontWeight: "700",
-                    marginBottom: "8px",
-                    letterSpacing: "0.1em"
-                  }}>📍 מיקום</div>
-                  <div style={{
-                    fontSize: "1.8rem",
-                    fontWeight: "700",
-                    color: primaryText
-                  }}>{data.location}</div>
-                </div>
-              )}
-              {data.price && (
-                <div style={{ textAlign: "left" }}>
-                  <div style={{
-                    fontSize: "0.9rem",
-                    color: accent,
-                    fontWeight: "700",
-                    marginBottom: "8px",
-                    letterSpacing: "0.1em"
-                  }}>💰 כניסה</div>
-                  <div style={{
-                    fontSize: "1.8rem",
-                    fontWeight: "700",
-                    color: primaryText
-                  }}>{data.price}</div>
-                </div>
-              )}
-            </div>
-            {data.highlights && data.highlights.length > 0 && (
-              <div>
-                {data.highlights.map((h, i) => (
-                  <div key={i} style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "12px",
-                    marginBottom: "12px",
-                    paddingRight: "10px"
-                  }}>
-                    <div style={{
-                      width: "10px",
-                      height: "10px",
-                      borderRadius: "50%",
-                      background: `linear-gradient(135deg, ${accent}, #FFA500)`,
-                      boxShadow: `0 0 10px ${accent}`,
-                      flexShrink: 0
-                    }} />
-                    <div style={{
-                      fontSize: "1.4rem",
-                      color: primaryText,
-                      fontWeight: "400"
-                    }}>{h}</div>
-                  </div>
-                ))}
+            {data.highlights.map((h, i) => (
+              <div key={i} style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "15px",
+                marginBottom: "18px"
+              }}>
+                <div style={{
+                  width: "12px",
+                  height: "12px",
+                  borderRadius: "50%",
+                  background: `linear-gradient(135deg, ${accent}, #FFA500)`,
+                  boxShadow: `0 0 15px ${accent}`,
+                  flexShrink: 0
+                }} />
+                <div style={{
+                  fontSize: "1.6rem",
+                  color: primaryText,
+                  fontWeight: "600",
+                  textShadow: "0 2px 10px rgba(0,0,0,0.8)",
+                  textAlign: "center"
+                }}>{h}</div>
               </div>
-            )}
+            ))}
           </div>
         )}
+        
+        {/* מידע חשוב - מיקום וכניסה בשורה אחת */}
+        <div style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: "50px",
+          marginBottom: "35px",
+          padding: "0 30px",
+          flexWrap: "wrap"
+        }}>
+          {data.location && (
+            <div style={{ 
+              display: "flex", 
+              alignItems: "center", 
+              gap: "15px",
+              background: "rgba(0,0,0,0.5)",
+              padding: "18px 30px",
+              borderRadius: "16px",
+              border: `2px solid ${rgba(accent, 0.4)}`,
+              boxShadow: `0 0 25px ${rgba(accent, 0.3)}`
+            }}>
+              <div style={{
+                fontSize: "2.5rem"
+              }}>📍</div>
+              <div>
+                <div style={{
+                  fontSize: "0.85rem",
+                  color: accent,
+                  fontWeight: "700",
+                  marginBottom: "4px",
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase"
+                }}>מיקום</div>
+                <div style={{
+                  fontSize: "1.6rem",
+                  fontWeight: "900",
+                  color: primaryText,
+                  textShadow: "0 2px 8px rgba(0,0,0,0.7)"
+                }}>{data.location}</div>
+              </div>
+            </div>
+          )}
+          {data.price && (
+            <div style={{ 
+              display: "flex", 
+              alignItems: "center", 
+              gap: "15px",
+              background: "rgba(0,0,0,0.5)",
+              padding: "18px 30px",
+              borderRadius: "16px",
+              border: `2px solid ${rgba(accent, 0.4)}`,
+              boxShadow: `0 0 25px ${rgba(accent, 0.3)}`
+            }}>
+              <div style={{
+                fontSize: "2.5rem"
+              }}>💳</div>
+              <div>
+                <div style={{
+                  fontSize: "0.85rem",
+                  color: accent,
+                  fontWeight: "700",
+                  marginBottom: "4px",
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase"
+                }}>כניסה</div>
+                <div style={{
+                  fontSize: "1.6rem",
+                  fontWeight: "900",
+                  color: primaryText,
+                  textShadow: "0 2px 8px rgba(0,0,0,0.7)"
+                }}>{data.price}</div>
+              </div>
+            </div>
+          )}
+        </div>
 
         <div style={{ flex: 1 }} />
 
@@ -784,218 +823,142 @@ function InvitationCard({ refObj, data }) {
           </div>
         </div>
 
-        {/* Footer מקצועי */}
+        {/* Footer קומפקטי בתחתית */}
         <div style={{
-          background: "rgba(0,0,0,0.9)",
-          padding: "25px 20px",
-          borderRadius: "16px",
+          background: "linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.95) 100%)",
+          padding: "20px",
+          borderRadius: "20px 20px 0 0",
           border: `2px solid ${rgba(accent, 0.3)}`,
-          boxShadow: `0 0 30px ${rgba(accent, 0.2)}`
+          borderBottom: "none",
+          boxShadow: `0 -5px 30px ${rgba(accent, 0.2)}`
         }}>
-          {/* אייקונים מקצועיים - סימטריה מושלמת */}
+          {/* שורה ראשונה: אייקונים */}
           <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: "25px",
-            marginBottom: "25px",
-            maxWidth: "550px",
-            margin: "0 auto 25px"
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: "30px",
+            marginBottom: "18px"
           }}>
-            <div style={{ 
-              display: "flex", 
-              flexDirection: "column", 
-              alignItems: "center", 
-              gap: "10px" 
-            }}>
-              <div style={{
-                width: "65px",
-                height: "65px",
-                borderRadius: "50%",
-                background: "linear-gradient(135deg, #1877f2 0%, #0d65d9 100%)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "2.2rem",
-                fontWeight: "900",
-                color: "#fff",
-                boxShadow: "0 8px 30px rgba(24, 119, 242, 0.7), 0 0 60px rgba(24, 119, 242, 0.3)",
-                border: "4px solid rgba(255,255,255,0.15)",
-                fontFamily: "Arial, sans-serif"
-              }}>f</div>
-              <div style={{
-                fontSize: "0.75rem",
-                color: "#1877f2",
-                fontWeight: "800",
-                textAlign: "center",
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                textShadow: "0 0 10px rgba(24, 119, 242, 0.6)"
-              }}>Facebook</div>
-            </div>
+            <div style={{
+              width: "50px",
+              height: "50px",
+              borderRadius: "50%",
+              background: "linear-gradient(135deg, #1877f2, #0d65d9)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "1.8rem",
+              fontWeight: "900",
+              color: "#fff",
+              boxShadow: "0 6px 20px rgba(24, 119, 242, 0.5)",
+              border: "3px solid rgba(255,255,255,0.1)"
+            }}>f</div>
 
-            <div style={{ 
-              display: "flex", 
-              flexDirection: "column", 
-              alignItems: "center", 
-              gap: "10px" 
-            }}>
-              <div style={{
-                width: "65px",
-                height: "65px",
-                borderRadius: "50%",
-                background: "linear-gradient(135deg, #E1306C 0%, #C13584 50%, #833AB4 100%)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "2rem",
-                boxShadow: "0 8px 30px rgba(193, 53, 132, 0.7), 0 0 60px rgba(193, 53, 132, 0.3)",
-                border: "4px solid rgba(255,255,255,0.15)"
-              }}>📷</div>
-              <div style={{
-                fontSize: "0.75rem",
-                color: "#E1306C",
-                fontWeight: "800",
-                textAlign: "center",
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                textShadow: "0 0 10px rgba(225, 48, 108, 0.6)"
-              }}>Instagram</div>
-            </div>
+            <div style={{
+              width: "50px",
+              height: "50px",
+              borderRadius: "50%",
+              background: "linear-gradient(135deg, #E1306C, #C13584, #833AB4)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "1.6rem",
+              boxShadow: "0 6px 20px rgba(193, 53, 132, 0.5)",
+              border: "3px solid rgba(255,255,255,0.1)"
+            }}>📷</div>
 
-            <div style={{ 
-              display: "flex", 
-              flexDirection: "column", 
-              alignItems: "center", 
-              gap: "10px" 
-            }}>
-              <div style={{
-                width: "65px",
-                height: "65px",
-                borderRadius: "50%",
-                background: "linear-gradient(135deg, #25D366 0%, #128C7E 100%)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "2rem",
-                boxShadow: "0 8px 30px rgba(37, 211, 102, 0.7), 0 0 60px rgba(37, 211, 102, 0.3)",
-                border: "4px solid rgba(255,255,255,0.15)"
-              }}>💬</div>
-              <div style={{
-                fontSize: "0.75rem",
-                color: "#25D366",
-                fontWeight: "800",
-                textAlign: "center",
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                textShadow: "0 0 10px rgba(37, 211, 102, 0.6)"
-              }}>WhatsApp</div>
-            </div>
+            <div style={{
+              width: "50px",
+              height: "50px",
+              borderRadius: "50%",
+              background: "linear-gradient(135deg, #25D366, #128C7E)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "1.6rem",
+              boxShadow: "0 6px 20px rgba(37, 211, 102, 0.5)",
+              border: "3px solid rgba(255,255,255,0.1)"
+            }}>💬</div>
           </div>
 
           {/* קו מפריד */}
           <div style={{
-            height: "2px",
-            background: `linear-gradient(90deg, transparent, ${accent}, transparent)`,
-            marginBottom: "20px"
+            height: "1px",
+            background: `linear-gradient(90deg, transparent, ${rgba(accent, 0.5)}, transparent)`,
+            margin: "15px 0"
           }} />
 
-          {/* QR מסודר סימטרי */}
+          {/* שורה שנייה: QR codes קטנים */}
           <div style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "30px",
-            maxWidth: "450px",
-            margin: "0 auto 25px",
-            alignItems: "start"
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: "35px",
+            marginBottom: "15px"
           }}>
-            <div style={{ 
-              display: "flex", 
-              flexDirection: "column", 
-              alignItems: "center",
-              gap: "12px"
-            }}>
+            <div style={{ textAlign: "center" }}>
               <div style={{
-                width: "110px",
-                height: "110px",
+                width: "75px",
+                height: "75px",
                 background: "#fff",
-                padding: "8px",
-                borderRadius: "16px",
-                border: `4px solid ${accent}`,
-                boxShadow: `0 0 25px ${rgba(accent, 0.5)}, 0 8px 30px rgba(0,0,0,0.5)`,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center"
+                padding: "5px",
+                borderRadius: "10px",
+                border: `2px solid ${accent}`,
+                boxShadow: `0 0 15px ${rgba(accent, 0.4)}`,
+                marginBottom: "6px"
               }}>
                 <img 
-                  src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15"
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    display: "block"
-                  }}
+                  src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15"
+                  style={{ width: "100%", height: "100%", display: "block" }}
                   alt="QR WhatsApp"
                 />
               </div>
               <div style={{
-                fontSize: "0.85rem",
+                fontSize: "0.65rem",
                 color: accent,
-                fontWeight: "800",
-                letterSpacing: "0.08em",
-                textAlign: "center",
-                textTransform: "uppercase",
-                textShadow: `0 0 15px ${accent}`
-              }}>קבוצת<br/>WhatsApp</div>
+                fontWeight: "700",
+                letterSpacing: "0.05em",
+                textShadow: `0 0 10px ${accent}`
+              }}>WhatsApp</div>
             </div>
             
-            <div style={{ 
-              display: "flex", 
-              flexDirection: "column", 
-              alignItems: "center",
-              gap: "12px"
-            }}>
+            <div style={{ textAlign: "center" }}>
               <div style={{
-                width: "110px",
-                height: "110px",
+                width: "75px",
+                height: "75px",
                 background: "#fff",
-                padding: "8px",
-                borderRadius: "16px",
-                border: `4px solid ${accent}`,
-                boxShadow: `0 0 25px ${rgba(accent, 0.5)}, 0 8px 30px rgba(0,0,0,0.5)`,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center"
+                padding: "5px",
+                borderRadius: "10px",
+                border: `2px solid ${accent}`,
+                boxShadow: `0 0 15px ${rgba(accent, 0.4)}`,
+                marginBottom: "6px"
               }}>
                 <img 
-                  src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://www.tiktok.com/@apiryon.club"
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    display: "block"
-                  }}
+                  src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=https://www.tiktok.com/@apiryon.club"
+                  style={{ width: "100%", height: "100%", display: "block" }}
                   alt="QR TikTok"
                 />
               </div>
               <div style={{
-                fontSize: "0.85rem",
+                fontSize: "0.65rem",
                 color: accent,
-                fontWeight: "800",
-                letterSpacing: "0.08em",
-                textAlign: "center",
-                textTransform: "uppercase",
-                textShadow: `0 0 15px ${accent}`
-              }}>עקבו<br/>TikTok</div>
+                fontWeight: "700",
+                letterSpacing: "0.05em",
+                textShadow: `0 0 10px ${accent}`
+              }}>TikTok</div>
             </div>
           </div>
 
           {/* לוגו תחתון */}
           <div style={{
             textAlign: "center",
-            fontSize: "1.4rem",
+            fontSize: "1.1rem",
             fontWeight: "900",
             color: "#fff",
-            letterSpacing: "0.25em",
+            letterSpacing: "0.2em",
             textTransform: "uppercase",
-            textShadow: `0 0 30px ${accent}, 0 0 60px rgba(255, 215, 0, 0.4), 0 4px 20px rgba(0,0,0,0.8)`,
+            textShadow: `0 0 20px ${accent}, 0 0 40px ${rgba(accent, 0.3)}`,
             fontFamily: "Impact, 'Arial Black', sans-serif"
           }}>
             APIRYON CLUB
