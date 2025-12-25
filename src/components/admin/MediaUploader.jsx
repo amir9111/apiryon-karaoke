@@ -25,11 +25,71 @@ export default function MediaUploader() {
     },
   });
 
+  const processImage = async (file) => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d', { 
+        alpha: false,
+        willReadFrequently: false 
+      });
+      
+      img.onload = () => {
+        // Maintain original resolution for maximum quality
+        canvas.width = img.width;
+        canvas.height = img.height;
+        
+        // Enable high-quality rendering
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        
+        // Draw original image
+        ctx.drawImage(img, 0, 0);
+        
+        // Get image data for processing
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
+        
+        // Professional image enhancement
+        for (let i = 0; i < data.length; i += 4) {
+          // Enhanced contrast (1.25x)
+          data[i] = Math.min(255, ((data[i] - 128) * 1.25) + 128);     // Red
+          data[i+1] = Math.min(255, ((data[i+1] - 128) * 1.25) + 128); // Green
+          data[i+2] = Math.min(255, ((data[i+2] - 128) * 1.25) + 128); // Blue
+          
+          // Enhanced brightness (1.12x)
+          data[i] = Math.min(255, data[i] * 1.12);
+          data[i+1] = Math.min(255, data[i+1] * 1.12);
+          data[i+2] = Math.min(255, data[i+2] * 1.12);
+          
+          // Enhanced saturation (1.3x)
+          const gray = 0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2];
+          data[i] = Math.min(255, gray + 1.3 * (data[i] - gray));
+          data[i+1] = Math.min(255, gray + 1.3 * (data[i+1] - gray));
+          data[i+2] = Math.min(255, gray + 1.3 * (data[i+2] - gray));
+        }
+        
+        // Apply processed data
+        ctx.putImageData(imageData, 0, 0);
+        
+        // Sharpen filter (subtle)
+        ctx.filter = 'contrast(1.05) brightness(1.02)';
+        ctx.drawImage(canvas, 0, 0);
+        ctx.filter = 'none';
+        
+        // Convert to high-quality JPEG
+        canvas.toBlob(resolve, 'image/jpeg', 0.98);
+      };
+      
+      img.src = URL.createObjectURL(file);
+    });
+  };
+
   const handleFileUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    console.log('📤 Uploading file:', file.name, 'Type:', file.type);
+    console.log('📤 Processing file:', file.name, 'Type:', file.type);
 
     const isVideo = file.type.startsWith('video/') || 
                     file.name.toLowerCase().match(/\.(mp4|mov|avi|webm|mkv)$/);
@@ -43,13 +103,23 @@ export default function MediaUploader() {
     }
 
     setIsUploading(true);
-    setUploadStatus("מעלה קובץ...");
+    setUploadStatus("מעבד ומשפר איכות...");
 
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      let processedFile = file;
+      
+      // Process images for maximum quality
+      if (isImage) {
+        const processedBlob = await processImage(file);
+        processedFile = new File([processedBlob], file.name, { type: 'image/jpeg' });
+        console.log('✨ Image enhanced:', file.name);
+      }
+      
+      setUploadStatus("מעלה קובץ...");
+      const { file_url } = await base44.integrations.Core.UploadFile({ file: processedFile });
       
       const mediaType = isVideo ? 'video' : 'image';
-      console.log('✅ File uploaded:', file_url, 'Detected type:', mediaType);
+      console.log('✅ File uploaded:', file_url, 'Type:', mediaType);
       
       await base44.entities.MediaUpload.create({
         media_url: file_url,
@@ -149,10 +219,39 @@ export default function MediaUploader() {
     
     ctx.drawImage(video, 0, 0);
     
+    // Professional image enhancement
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+    
+    for (let i = 0; i < data.length; i += 4) {
+      // Enhanced contrast (1.25x)
+      data[i] = Math.min(255, ((data[i] - 128) * 1.25) + 128);
+      data[i+1] = Math.min(255, ((data[i+1] - 128) * 1.25) + 128);
+      data[i+2] = Math.min(255, ((data[i+2] - 128) * 1.25) + 128);
+      
+      // Enhanced brightness (1.12x)
+      data[i] = Math.min(255, data[i] * 1.12);
+      data[i+1] = Math.min(255, data[i+1] * 1.12);
+      data[i+2] = Math.min(255, data[i+2] * 1.12);
+      
+      // Enhanced saturation (1.3x)
+      const gray = 0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2];
+      data[i] = Math.min(255, gray + 1.3 * (data[i] - gray));
+      data[i+1] = Math.min(255, gray + 1.3 * (data[i+1] - gray));
+      data[i+2] = Math.min(255, gray + 1.3 * (data[i+2] - gray));
+    }
+    
+    ctx.putImageData(imageData, 0, 0);
+    
+    // Apply final sharpening
+    ctx.filter = 'contrast(1.05) brightness(1.02)';
+    ctx.drawImage(canvas, 0, 0);
+    ctx.filter = 'none';
+    
     canvas.toBlob(async (blob) => {
       await uploadMedia(blob, 'image');
       stopCamera();
-    }, 'image/jpeg', 0.98); // Maximum quality
+    }, 'image/jpeg', 0.98);
   };
 
   const startRecording = () => {
