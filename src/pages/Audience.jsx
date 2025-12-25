@@ -225,13 +225,15 @@ export default function Audience() {
                     height: "100vh",
                     display: "block",
                     objectFit: "cover",
+                    objectPosition: "center",
                     backgroundColor: "#000",
                     imageRendering: "high-quality",
-                    willChange: "transform",
+                    WebkitBackfaceVisibility: "hidden",
                     backfaceVisibility: "hidden",
-                    perspective: "1000px",
-                    transform: "translateZ(0)",
-                    filter: "contrast(1.1) brightness(1.05) saturate(1.15)"
+                    transform: "translateZ(0) scale(1.001)",
+                    filter: "contrast(1.12) brightness(1.06) saturate(1.18) sharpen(1.5)",
+                    WebkitFilter: "contrast(1.12) brightness(1.06) saturate(1.18)",
+                    willChange: "transform"
                   }}
                 />
               ) : (
@@ -240,6 +242,7 @@ export default function Audience() {
                   alt="תמונה מהאירוע"
                   loading="eager"
                   fetchpriority="high"
+                  decoding="sync"
                   onError={(e) => {
                     console.error('❌ Image error:', latestMedia.media_url);
                     e.target.style.display = 'none';
@@ -248,11 +251,22 @@ export default function Audience() {
                   style={{
                     width: "100vw",
                     height: "100vh",
+                    maxWidth: "100vw",
+                    maxHeight: "100vh",
                     display: "block",
                     objectFit: "cover",
+                    objectPosition: "center",
                     backgroundColor: "#000",
+                    imageRendering: "-webkit-optimize-contrast",
+                    imageRendering: "crisp-edges",
                     imageRendering: "high-quality",
-                    filter: "contrast(1.15) brightness(1.08) saturate(1.2)"
+                    WebkitBackfaceVisibility: "hidden",
+                    backfaceVisibility: "hidden",
+                    transform: "translateZ(0) scale(1.001)",
+                    filter: "contrast(1.18) brightness(1.1) saturate(1.25) unsharp-mask(1.5px, 0.8, 0)",
+                    WebkitFilter: "contrast(1.18) brightness(1.1) saturate(1.25)",
+                    willChange: "transform",
+                    imageSmoothing: false
                   }}
                 />
               )}
