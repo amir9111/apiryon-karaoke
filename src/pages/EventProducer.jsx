@@ -48,36 +48,55 @@ export default function EventProducer() {
       const { url: bgImage } = await base44.integrations.Core.GenerateImage({ prompt: bgPrompt });
 
       const textPrompt = `
-אתה מעצב פליירים ברמת מועדוני־על והופעות גדולות בישראל.
-המטרה: לגרום לצופה לרצות להגיע – לא רק "להבין שיש אירוע".
+אתה אמן מילים שמתמחה בפסיכולוגיה שיווקית ופליירים יוקרתיים למועדוני־על.
 
-אין לנתח את המידע ואין לשנות טקסטים.
-העבודה שלך היא ליצור טקסטים שמוכרים.
+🎯 המשימה: ליצור טקסטים שמפעילים FOMO חזק ורצון בלתי נשלט להגיע.
 
-עקרונות חובה:
+📌 טכניקות פסיכולוגיות שחייב להשתמש בהן:
+1. מחסור וייחודיות - "רק הלילה", "הזדמנות אחת", "מוגבל"
+2. שיוך חברתי - "כולם מדברים", "המקום להיות בו", "מי שמי יהיה שם"
+3. רגש עז - התרגשות, מתח, אנרגיה, תחושת חיים
+4. הבטחה ממשית - "אתם תרגישו", "לא תשכחו", "חוויה"
+5. דחיפות - "עכשיו", "הערב", "אל תפספסו"
 
-היררכיית טקסט:
-- כותרת ראשית: 2-4 מילים חזקות מאוד (מוקד העין)
-- תת־כותרת: משפט רגשי אחד בלבד שגורם לרצות להגיע
-- Highlights: בדיוק 3 שורות, כל אחת 3-6 מילים, דברים שגורמים לאנשים להרגיש שהם חייבים להיות שם
-- CTA: משפט אחד עם FOMO חזק – "אם לא תבוא, תפספס"
+🎨 הנחיות יצירה:
 
-פרטי האירוע:
+כותרת (2-4 מילים):
+- חזקה, ישירה, בלתי נשכחת
+- משתמשת במילים רגשיות חזקות
+- יוצרת אנרגיה מיידית
+
+תת-כותרת (משפט אחד):
+- משלימה את הכותרת עם הבטחה רגשית
+- מתארת תחושה או חוויה, לא רק מידע
+- גורמת לקורא להרגיש שהוא חייב להיות שם
+
+Highlights (3 שורות, 3-6 מילים כל אחת):
+- כל שורה = הטבה פסיכולוגית אחרת
+- דוגמאות: "האנרגיה הכי משוגעת בעיר", "זמרים שיעשו לכם את הלילה", "אווירה שלא תשכחו לעולם"
+- לא פשוט "מה יש" אלא "איך זה ירגיש"
+
+CTA (משפט אחד מתוחכם):
+- יוצר FOMO חכם ולא גס
+- משתמש בשילוב של דחיפות + תועלת רגשית
+- דוגמה: "מי שלא יבוא, יפספס את הלילה שכולם ידברו עליו"
+
+📋 פרטי האירוע:
 - שם: ${formData.eventName}
 - סגנון: ${selectedStyle.label}
 - תאריך: ${formData.date || "לא צוין"}
 - שעה: ${formData.time || "לא צוין"}
 - מיקום: ${formData.location || "לא צוין"}
+${formData.artists && formData.artists.length > 0 ? `- זמרים: ${formData.artists.map(a => a.name).join(', ')}` : ''}
 
-תחושה:
-- יוקרתי
-- חזק
-- ביטחון עצמי
-- "זה אירוע שכולם מדברים עליו"
+✨ התוצאה חייבת:
+- להיות בעברית תקנית ומלוטשת
+- ללא אמוג'י בטקסט (נשתמש בהם בעיצוב)
+- לגרום לאדם להרגיש שאם הוא לא יגיע, הוא יפספס משהו אדיר
 
-המבחן: אם הצופה לא מרגיש FOMO תוך 2 שניות – נכשלת.
+🔥 המבחן: אם בן אדם קורא את הטקסטים ולא מרגיש שהוא חייב להגיע - נכשלת.
 
-בלי emoji בטקסט. החזר JSON בלבד.
+החזר JSON בלבד.
 `;
 
       const textResult = await base44.integrations.Core.InvokeLLM({
@@ -85,16 +104,16 @@ export default function EventProducer() {
         response_json_schema: {
           type: "object",
           properties: {
-            title: { type: "string", description: "2-4 מילים חזקות" },
-            subtitle: { type: "string", description: "שורה אחת קצרה" },
+            title: { type: "string", description: "כותרת דרמטית 2-4 מילים שמפעילה רגש חזק" },
+            subtitle: { type: "string", description: "משפט אחד שמתאר חוויה או תחושה, לא רק מידע" },
             highlights: { 
               type: "array", 
               items: { type: "string" },
               minItems: 3,
               maxItems: 3,
-              description: "בדיוק 3 highlights קצרים"
+              description: "3 הבטחות רגשיות/חוויתיות, 3-6 מילים כל אחת"
             },
-            cta: { type: "string", description: "משפט אחד עם FOMO עדין" }
+            cta: { type: "string", description: "משפט CTA מתוחכם עם FOMO חכם ודחיפות" }
           },
           required: ["title", "subtitle", "highlights", "cta"]
         }
@@ -929,8 +948,6 @@ function InvitationCard({ refObj, data }) {
           )}
         </div>
 
-        <div style={{ flex: 1 }} />
-
         {/* CTA מסוגנן מושך */}
         <div style={{
           position: "relative",
@@ -1027,14 +1044,14 @@ function InvitationCard({ refObj, data }) {
           </div>
         </div>
 
-        {/* Footer קומפקטי בתחתית */}
+        {/* Footer קומפקטי */}
         <div style={{
           background: "linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.95) 100%)",
-          padding: "20px",
-          borderRadius: "20px 20px 0 0",
+          padding: "20px 15px 15px",
+          borderRadius: "16px",
           border: `2px solid ${rgba(accent, 0.3)}`,
-          borderBottom: "none",
-          boxShadow: `0 -5px 30px ${rgba(accent, 0.2)}`
+          boxShadow: `0 -5px 30px ${rgba(accent, 0.2)}`,
+          marginTop: "15px"
         }}>
           {/* שורה ראשונה: אייקונים */}
           <div style={{
