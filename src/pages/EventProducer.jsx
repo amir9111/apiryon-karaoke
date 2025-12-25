@@ -1248,10 +1248,33 @@ function InvitationCard({ refObj, data }) {
           }}>
             APIRYON CLUB
           </div>
-        </div>
-      </div>
-    </div>
-  );
+
+          {/* תנאים משפטיים */}
+          <div style={{
+            fontSize: "0.5rem",
+            color: "rgba(148, 163, 184, 0.6)",
+            textAlign: "center",
+            marginTop: "8px",
+            lineHeight: "1.3",
+            padding: "0 10px"
+          }}>
+            <div style={{ marginBottom: "3px" }}>
+              * כפוף לתקנון המועדון. המקום שומר לעצמו את הזכות לסרב כניסה ללא מתן הסבר.
+            </div>
+            <div style={{ marginBottom: "3px" }}>
+              * ההנהלה אינה אחראית על אובדן/גניבה של חפצים אישיים. צילום ללא אישור אסור.
+            </div>
+            <div style={{ marginBottom: "3px" }}>
+              * האירוע מיועד לבני 18+ בלבד. יש להציג תעודה מזהה בכניסה.
+            </div>
+            <div>
+              © 2025 APIRYON CLUB. All Rights Reserved.
+            </div>
+          </div>
+          </div>
+          </div>
+          </div>
+          );
 }
 
 function InfoPill({ icon, label, value, accent }) {
