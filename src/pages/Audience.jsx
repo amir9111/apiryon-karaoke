@@ -187,14 +187,17 @@ export default function Audience() {
                     width: "100%",
                     height: "100%",
                     display: "block",
-                    objectFit: "cover",
-                    backgroundColor: "#000"
+                    objectFit: "contain",
+                    backgroundColor: "#000",
+                    imageRendering: "high-quality"
                   }}
                 />
               ) : (
                 <img
                   src={latestMedia.media_url}
                   alt="תמונה מהאירוע"
+                  loading="eager"
+                  fetchpriority="high"
                   onError={(e) => {
                     console.error('❌ Image error:', latestMedia.media_url);
                     e.target.style.display = 'none';
@@ -204,7 +207,10 @@ export default function Audience() {
                     width: "100%",
                     height: "100%",
                     display: "block",
-                    objectFit: "cover"
+                    objectFit: "contain",
+                    imageRendering: "-webkit-optimize-contrast",
+                    imageRendering: "high-quality",
+                    imageRendering: "crisp-edges"
                   }}
                 />
               )}
