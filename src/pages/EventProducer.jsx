@@ -456,7 +456,80 @@ function InvitationCard({ refObj, data }) {
         padding: "40px 35px"
       }}>
         
-        {/* לוגו אמיתי - משולב טבעי */}
+        {/* פסי זהב דקורטיביים - פינות */}
+        <div style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "200px",
+          height: "200px",
+          background: `linear-gradient(135deg, ${accent} 0%, transparent 70%)`,
+          opacity: 0.15,
+          pointerEvents: "none"
+        }} />
+        <div style={{
+          position: "absolute",
+          bottom: 0,
+          right: 0,
+          width: "200px",
+          height: "200px",
+          background: `linear-gradient(-45deg, ${accent} 0%, transparent 70%)`,
+          opacity: 0.15,
+          pointerEvents: "none"
+        }} />
+        
+        {/* ניצוצות זהב מעופפים */}
+        <div style={{
+          position: "absolute",
+          top: "25%",
+          left: "10%",
+          width: "8px",
+          height: "8px",
+          borderRadius: "50%",
+          background: accent,
+          boxShadow: `0 0 20px ${accent}`,
+          animation: "sparkle 3s ease-in-out infinite"
+        }} />
+        <div style={{
+          position: "absolute",
+          top: "40%",
+          right: "15%",
+          width: "6px",
+          height: "6px",
+          borderRadius: "50%",
+          background: accent,
+          boxShadow: `0 0 15px ${accent}`,
+          animation: "sparkle 4s ease-in-out infinite 0.5s"
+        }} />
+        <div style={{
+          position: "absolute",
+          bottom: "30%",
+          left: "20%",
+          width: "10px",
+          height: "10px",
+          borderRadius: "50%",
+          background: accent,
+          boxShadow: `0 0 25px ${accent}`,
+          animation: "sparkle 3.5s ease-in-out infinite 1s"
+        }} />
+        
+        <style>{`
+          @keyframes sparkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.5); }
+          }
+          @keyframes glow-pulse {
+            0%, 100% { filter: drop-shadow(0 0 25px rgba(0, 202, 255, 0.8)) drop-shadow(0 0 50px rgba(0, 202, 255, 0.4)); }
+            50% { filter: drop-shadow(0 0 40px rgba(0, 202, 255, 1)) drop-shadow(0 0 80px rgba(0, 202, 255, 0.6)); }
+          }
+          @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+          }
+        `}</style>
+        
+        {/* לוגו אמיתי - משולב טבעי עם אנימציה */}
         <div style={{
           position: "absolute",
           top: "30px",
@@ -468,7 +541,7 @@ function InvitationCard({ refObj, data }) {
           overflow: "hidden",
           background: "radial-gradient(circle, rgba(0,40,60,0.9) 0%, rgba(0,20,40,0.7) 50%, transparent 100%)",
           padding: "10px",
-          boxShadow: "0 0 40px rgba(0, 202, 255, 0.6), 0 0 80px rgba(0, 202, 255, 0.3)"
+          animation: "glow-pulse 3s ease-in-out infinite"
         }}>
           <img 
             src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/693c1c7149a5af7efdab4614/658f38deb_WhatsAppImage2025-12-25at033539.jpg"
@@ -482,91 +555,175 @@ function InvitationCard({ refObj, data }) {
           />
         </div>
 
-        {/* תאריך מקצועי פינה שמאל */}
+        {/* תאריך מקצועי פינה שמאל + פס זהב */}
         {data.date && (
           <div style={{
             position: "absolute",
             top: "30px",
             left: "30px",
             textAlign: "left",
-            zIndex: 10,
-            background: "rgba(0,0,0,0.7)",
-            padding: "15px 20px",
-            borderRadius: "12px",
-            border: `2px solid ${accent}`,
-            boxShadow: `0 0 20px ${rgba(accent, 0.4)}`
+            zIndex: 10
           }}>
+            {/* פס זהב דקורטיבי */}
             <div style={{
-              fontSize: "3.5rem",
-              fontWeight: "900",
-              lineHeight: 0.85,
-              background: `linear-gradient(135deg, ${accent}, #FFA500)`,
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              letterSpacing: "-0.02em"
-            }}>
-              {data.date.split(' ')[1] || data.date}
-            </div>
+              position: "absolute",
+              top: "-10px",
+              left: "-10px",
+              right: "-10px",
+              bottom: "-10px",
+              background: `linear-gradient(135deg, ${accent}, #FFA500, ${accent})`,
+              backgroundSize: "200% 200%",
+              animation: "gradient-shift 3s ease infinite",
+              borderRadius: "16px",
+              opacity: 0.3,
+              filter: "blur(8px)"
+            }} />
+            
             <div style={{
-              fontSize: "0.85rem",
-              color: accent,
-              fontWeight: "700",
-              marginTop: "8px",
-              letterSpacing: "0.15em",
-              textShadow: `0 0 10px ${rgba(accent, 0.6)}`
+              position: "relative",
+              background: "rgba(0,0,0,0.85)",
+              padding: "18px 24px",
+              borderRadius: "14px",
+              border: `3px solid ${accent}`,
+              boxShadow: `0 0 30px ${rgba(accent, 0.6)}, inset 0 0 20px rgba(0,0,0,0.5)`
             }}>
-              OPEN DOORS
-            </div>
-            {data.time && (
               <div style={{
-                fontSize: "1.4rem",
-                color: primaryText,
+                fontSize: "4rem",
                 fontWeight: "900",
-                marginTop: "3px",
-                letterSpacing: "0.05em"
+                lineHeight: 0.8,
+                background: `linear-gradient(135deg, ${accent} 0%, #FFA500 50%, ${accent} 100%)`,
+                backgroundSize: "200% auto",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                letterSpacing: "-0.03em",
+                animation: "gradient-shift 4s ease infinite",
+                textShadow: "0 5px 15px rgba(0,0,0,0.5)"
               }}>
-                {data.time}
+                {data.date.split(' ')[1] || data.date}
               </div>
-            )}
+              <div style={{
+                fontSize: "0.9rem",
+                color: accent,
+                fontWeight: "800",
+                marginTop: "10px",
+                letterSpacing: "0.2em",
+                textShadow: `0 0 15px ${accent}`,
+                textTransform: "uppercase"
+              }}>
+                ⚡ OPEN DOORS
+              </div>
+              {data.time && (
+                <div style={{
+                  fontSize: "1.6rem",
+                  color: primaryText,
+                  fontWeight: "900",
+                  marginTop: "5px",
+                  letterSpacing: "0.08em",
+                  textShadow: "0 2px 10px rgba(0,0,0,0.8)"
+                }}>
+                  {data.time}
+                </div>
+              )}
+            </div>
           </div>
         )}
 
-        {/* כותרת HERO דרמטית */}
+        {/* כותרת HERO דרמטית - רבודה */}
         <div style={{
-          marginTop: "200px",
+          marginTop: "210px",
           marginBottom: "50px",
           position: "relative",
           padding: "0 30px"
         }}>
+          {/* תג VIP */}
           <div style={{
+            position: "absolute",
+            top: "-40px",
+            left: "50%",
+            transform: "translateX(-50%) rotate(-2deg)",
+            background: `linear-gradient(135deg, ${accent}, #FFA500)`,
+            padding: "8px 30px",
+            borderRadius: "25px",
+            fontSize: "0.9rem",
+            fontWeight: "900",
+            color: "#000",
+            letterSpacing: "0.2em",
+            boxShadow: `0 0 30px ${accent}, 0 8px 25px rgba(0,0,0,0.6)`,
+            border: "2px solid rgba(0,0,0,0.3)",
+            textTransform: "uppercase"
+          }}>
+            ⭐ אירוע מיוחד ⭐
+          </div>
+          
+          {/* שכבת רקע מטושטשת */}
+          <div style={{
+            position: "absolute",
+            top: "10px",
+            left: "50%",
+            transform: "translateX(-50%)",
             fontSize: "7rem",
+            fontWeight: "900",
+            color: "rgba(255, 215, 0, 0.08)",
+            textTransform: "uppercase",
+            letterSpacing: "-0.03em",
+            filter: "blur(3px)",
+            pointerEvents: "none",
+            fontFamily: "Impact, 'Arial Black', sans-serif",
+            whiteSpace: "nowrap"
+          }}>
+            {data.title}
+          </div>
+          
+          {/* כותרת ראשית רבודה */}
+          <div style={{
+            position: "relative",
+            fontSize: "7.5rem",
             fontWeight: "900",
             lineHeight: 0.85,
             textAlign: "center",
             textTransform: "uppercase",
             letterSpacing: "-0.03em",
-            color: "#FFFFFF",
-            textShadow: `
-              0 0 60px ${accent},
-              0 0 120px rgba(255, 215, 0, 0.6),
-              0 10px 40px rgba(0,0,0,0.9),
-              0 20px 80px rgba(0,0,0,0.7)
+            background: `linear-gradient(180deg, #FFFFFF 0%, ${accent} 50%, #FFA500 100%)`,
+            backgroundSize: "100% 200%",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            animation: "gradient-shift 5s ease infinite",
+            filter: `
+              drop-shadow(0 0 80px ${accent})
+              drop-shadow(0 0 40px rgba(255, 215, 0, 0.8))
+              drop-shadow(0 15px 50px rgba(0,0,0,0.9))
+              drop-shadow(0 25px 100px rgba(0,0,0,0.7))
             `,
-            marginBottom: "30px",
+            marginBottom: "35px",
             fontFamily: "Impact, 'Arial Black', sans-serif"
           }}>
             {data.title}
           </div>
           
+          {/* קו זהב דקורטיבי */}
           <div style={{
-            fontSize: "2rem",
+            width: "200px",
+            height: "3px",
+            background: `linear-gradient(90deg, transparent, ${accent}, transparent)`,
+            margin: "0 auto 25px",
+            boxShadow: `0 0 20px ${accent}`
+          }} />
+          
+          {/* תת כותרת משודרגת */}
+          <div style={{
+            fontSize: "2.2rem",
             fontWeight: "700",
             textAlign: "center",
-            color: accent,
+            background: `linear-gradient(135deg, ${accent}, #FFA500, ${accent})`,
+            backgroundSize: "200% auto",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            animation: "gradient-shift 3s ease infinite",
             letterSpacing: "0.15em",
-            textShadow: `0 0 30px ${accent}, 0 4px 20px rgba(0,0,0,0.9)`,
-            lineHeight: 1.3,
-            textTransform: "uppercase"
+            textShadow: `0 0 40px ${accent}`,
+            lineHeight: 1.4,
+            textTransform: "uppercase",
+            filter: `drop-shadow(0 4px 25px rgba(0,0,0,0.9))`
           }}>
             {data.subtitle}
           </div>
@@ -621,34 +778,65 @@ function InvitationCard({ refObj, data }) {
           </div>
         )}
         
-        {/* Highlights - ללא קשר לזמרים */}
+        {/* Highlights מעוצבים */}
         {data.highlights && data.highlights.length > 0 && (
           <div style={{
-            marginBottom: "30px",
-            padding: "0 40px"
+            marginBottom: "35px",
+            padding: "0 40px",
+            position: "relative"
           }}>
+            {/* מסגרת זהב עדינה */}
+            <div style={{
+              position: "absolute",
+              top: "-15px",
+              left: "50%",
+              transform: "translateX(-50%)",
+              width: "80%",
+              height: "calc(100% + 30px)",
+              border: `2px solid ${rgba(accent, 0.2)}`,
+              borderRadius: "20px",
+              pointerEvents: "none"
+            }} />
+            
             {data.highlights.map((h, i) => (
               <div key={i} style={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                gap: "15px",
-                marginBottom: "18px"
+                gap: "18px",
+                marginBottom: "20px",
+                position: "relative"
               }}>
+                {/* יהלום זהב */}
                 <div style={{
-                  width: "12px",
-                  height: "12px",
-                  borderRadius: "50%",
-                  background: `linear-gradient(135deg, ${accent}, #FFA500)`,
-                  boxShadow: `0 0 15px ${accent}`,
-                  flexShrink: 0
-                }} />
+                  width: "0",
+                  height: "0",
+                  borderLeft: "8px solid transparent",
+                  borderRight: "8px solid transparent",
+                  borderBottom: `14px solid ${accent}`,
+                  position: "relative",
+                  boxShadow: `0 0 20px ${accent}`,
+                  filter: `drop-shadow(0 0 10px ${accent})`
+                }}>
+                  <div style={{
+                    position: "absolute",
+                    top: "14px",
+                    left: "-8px",
+                    width: "0",
+                    height: "0",
+                    borderLeft: "8px solid transparent",
+                    borderRight: "8px solid transparent",
+                    borderTop: `8px solid ${accent}`
+                  }} />
+                </div>
+                
                 <div style={{
-                  fontSize: "1.6rem",
+                  fontSize: "1.7rem",
                   color: primaryText,
-                  fontWeight: "600",
-                  textShadow: "0 2px 10px rgba(0,0,0,0.8)",
-                  textAlign: "center"
+                  fontWeight: "700",
+                  textShadow: `0 0 25px ${rgba(accent, 0.5)}, 0 3px 15px rgba(0,0,0,0.9)`,
+                  textAlign: "center",
+                  letterSpacing: "0.02em"
                 }}>{h}</div>
               </div>
             ))}
@@ -733,93 +921,136 @@ function InvitationCard({ refObj, data }) {
 
         <div style={{ flex: 1 }} />
 
-        {/* CTA מקצועי */}
+        {/* CTA דרמטי עם אפקטים */}
         <div style={{
-          background: `linear-gradient(135deg, ${accent} 0%, #FFA500 50%, ${accent} 100%)`,
-          padding: "30px 25px",
-          borderRadius: "16px",
-          marginBottom: "25px",
-          boxShadow: `0 0 50px ${accent}, 0 10px 40px rgba(0,0,0,0.7)`,
-          border: "2px solid rgba(255,255,255,0.1)",
           position: "relative",
-          overflow: "hidden"
+          marginBottom: "25px"
         }}>
+          {/* זוהר חיצוני */}
           <div style={{
             position: "absolute",
-            inset: 0,
-            background: "radial-gradient(circle at 30% 50%, rgba(255,255,255,0.15), transparent 60%)",
-            pointerEvents: "none"
+            inset: "-5px",
+            background: `linear-gradient(135deg, ${accent}, #FFA500, ${accent})`,
+            backgroundSize: "200% 200%",
+            animation: "gradient-shift 3s ease infinite",
+            borderRadius: "20px",
+            filter: "blur(20px)",
+            opacity: 0.6
           }} />
           
           <div style={{
-            fontSize: "2.2rem",
-            fontWeight: "900",
-            color: "#000",
-            textAlign: "center",
-            marginBottom: "20px",
-            textTransform: "uppercase",
-            letterSpacing: "0.02em",
-            textShadow: "0 2px 4px rgba(255,255,255,0.3)",
-            position: "relative"
+            position: "relative",
+            background: `linear-gradient(135deg, ${accent} 0%, #FFA500 50%, ${accent} 100%)`,
+            backgroundSize: "200% auto",
+            animation: "gradient-shift 4s ease infinite",
+            padding: "35px 28px",
+            borderRadius: "18px",
+            boxShadow: `
+              0 0 60px ${accent}, 
+              0 15px 50px rgba(0,0,0,0.8),
+              inset 0 2px 40px rgba(255,255,255,0.2),
+              inset 0 -2px 20px rgba(0,0,0,0.3)
+            `,
+            border: "3px solid rgba(255,255,255,0.15)",
+            overflow: "hidden"
           }}>
-            {data.cta}
-          </div>
-          
-          <div style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: "40px",
-            position: "relative"
-          }}>
-            {data.phone && (
-              <div style={{ textAlign: "center" }}>
-                <div style={{
-                  fontSize: "0.85rem",
-                  color: "rgba(0,0,0,0.6)",
-                  fontWeight: "700",
-                  marginBottom: "6px",
-                  letterSpacing: "0.1em",
-                  textTransform: "uppercase"
-                }}>📞 להזמנות</div>
-                <div style={{
-                  fontSize: "1.8rem",
-                  fontWeight: "900",
-                  color: "#000",
-                  direction: "ltr",
-                  letterSpacing: "0.05em"
+            {/* אפקט ברק */}
+            <div style={{
+              position: "absolute",
+              top: 0,
+              left: "-100%",
+              width: "100%",
+              height: "100%",
+              background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)",
+              animation: "shine 3s ease-in-out infinite"
+            }} />
+            
+            <style>{`
+              @keyframes shine {
+                0% { left: -100%; }
+                50%, 100% { left: 200%; }
+              }
+            `}</style>
+            
+            <div style={{
+              fontSize: "2.5rem",
+              fontWeight: "900",
+              color: "#000",
+              textAlign: "center",
+              marginBottom: "25px",
+              textTransform: "uppercase",
+              letterSpacing: "0.05em",
+              textShadow: "0 3px 8px rgba(255,255,255,0.4), 0 6px 20px rgba(0,0,0,0.3)",
+              position: "relative",
+              fontFamily: "Impact, 'Arial Black', sans-serif"
+            }}>
+              {data.cta}
+            </div>
+            
+            <div style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: "45px",
+              position: "relative",
+              flexWrap: "wrap"
+            }}>
+              {data.phone && (
+                <div style={{ 
+                  textAlign: "center",
+                  background: "rgba(0,0,0,0.2)",
+                  padding: "15px 25px",
+                  borderRadius: "12px",
+                  border: "2px solid rgba(0,0,0,0.3)"
                 }}>
-                  {data.phone}
+                  <div style={{
+                    fontSize: "0.9rem",
+                    color: "rgba(0,0,0,0.7)",
+                    fontWeight: "800",
+                    marginBottom: "8px",
+                    letterSpacing: "0.15em",
+                    textTransform: "uppercase"
+                  }}>📞 להזמנות</div>
+                  <div style={{
+                    fontSize: "2rem",
+                    fontWeight: "900",
+                    color: "#000",
+                    direction: "ltr",
+                    letterSpacing: "0.08em",
+                    textShadow: "0 2px 4px rgba(255,255,255,0.3)"
+                  }}>
+                    {data.phone}
+                  </div>
                 </div>
-              </div>
-            )}
-            {data.price && (
-              <div style={{
-                width: "2px",
-                height: "50px",
-                background: "rgba(0,0,0,0.2)"
-              }} />
-            )}
-            {data.price && (
-              <div style={{ textAlign: "center" }}>
-                <div style={{
-                  fontSize: "0.85rem",
-                  color: "rgba(0,0,0,0.6)",
-                  fontWeight: "700",
-                  marginBottom: "6px",
-                  letterSpacing: "0.1em",
-                  textTransform: "uppercase"
-                }}>💳 כניסה</div>
-                <div style={{
-                  fontSize: "1.8rem",
-                  fontWeight: "900",
-                  color: "#000",
-                  letterSpacing: "0.05em"
+              )}
+              {data.price && (
+                <div style={{ 
+                  textAlign: "center",
+                  background: "rgba(0,0,0,0.2)",
+                  padding: "15px 25px",
+                  borderRadius: "12px",
+                  border: "2px solid rgba(0,0,0,0.3)"
                 }}>
-                  {data.price}
+                  <div style={{
+                    fontSize: "0.9rem",
+                    color: "rgba(0,0,0,0.7)",
+                    fontWeight: "800",
+                    marginBottom: "8px",
+                    letterSpacing: "0.15em",
+                    textTransform: "uppercase"
+                  }}>💳 כניסה</div>
+                  <div style={{
+                    fontSize: "2rem",
+                    fontWeight: "900",
+                    color: "#000",
+                    letterSpacing: "0.08em",
+                    textShadow: "0 2px 4px rgba(255,255,255,0.3)"
+                  }}>
+                    {data.price}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
 
