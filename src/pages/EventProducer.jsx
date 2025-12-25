@@ -1,18 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { toPng } from "html-to-image";
-import { Sparkles, Download, Share2, Loader2, Home } from "lucide-react";
+import { Sparkles, Download, Share2, Loader2, Home, Palette } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 
-export default function EventProducer() {
+export default function EventProducerV2() {
   const [inputText, setInputText] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [invitation, setInvitation] = useState(null);
   const [isExporting, setIsExporting] = useState(false);
+
   const [templateImage, setTemplateImage] = useState(null);
   const [isUploadingTemplate, setIsUploadingTemplate] = useState(false);
-  const cardRef = React.useRef(null);
+
+  const cardRef = useRef(null);
 
   const handleTemplateUpload = async (e) => {
     const file = e.target.files?.[0];
@@ -38,57 +40,61 @@ export default function EventProducer() {
 
     setIsAnalyzing(true);
     try {
-      const basePrompt = `אתה מעצב הזמנות מקצועי למועדונים ואירועי קריוקי בישראל.
+      const prompt = `
+אתה מומחה להפקת ליינים ועיצוב הזמנות למועדוני קריוקי בישראל.
+המטרה: להחזיר גם טקסט שיווקי וגם "DNA עיצובי" (קונספט) כדי שהפלייר ירגיש כמו במה/אורות/חום/חג.
 
-${templateImage ? `
-🎨 חשוב מאוד - תבנית דוגמה צורפה!
-נתח בקפידה את התבנית שצורפה:
-- סגנון הכתיבה (האם זה אנרגטי? רשמי? צעיר?)
-- סוג הניסוחים והמילים (למשל: "ערב קריוקי", "מסיבת חנוכה", "ביום ים תיכוני" וכו')
-- מבנה המידע (איך מסודרים הפרטים?)
-- טון השיווקי (האם יש התרגשות? אמוג'י?)
-- סוג האירוע (קריוקי? מסיבה? ערב מוזיקה?)
+אם צורפה תמונת תבנית - תחקה את הסגנון הוויזואלי והטקסטואלי (אנרגיה/מילים/טון).
 
-צור הזמנה חדשה בדיוק באותו סגנון, טון וניסוח!
-` : 'צור הזמנה מקצועית ואנרגטית למועדון/ערב קריוקי.'}
-
-הטקסט שקיבלת מהלקוח:
+הטקסט:
 """
 ${inputText}
 """
 
-המשימה שלך:
-1. חלץ את כל הפרטים: תאריך, שעה, מיקום, שם המועדון/אירוע, פרטי התקשרות
-2. ${templateImage ? 'צור כותרת ראשית בסגנון דומה לתבנית (סגנון הכתיבה, האנרגיה, השימוש באמוג׳י)' : 'צור כותרת ראשית מרגשת ומזמינה'}
-3. ${templateImage ? 'צור תת-כותרת שמשלימה את הכותרת - באותו סגנון בדיוק' : 'צור תת-כותרת משלימה'}
-4. ${templateImage ? 'רשום רשימת פרטים/highlights באותו סגנון ניסוח כמו בתבנית' : 'רשום רשימת פרטים חשובים'}
-5. ${templateImage ? 'הוסף קריאה לפעולה באותו טון כמו בתבנית' : 'הוסף קריאה לפעולה'}
+כללי איכות:
+- כותרת קצרה, חזקה, מושכת עין.
+- תת-כותרת משלימה שנותנת "סיבה לבוא".
+- 3-5 Highlights קצרים, חדים.
+- CTA קצר, פוקד, עם FOMO קל.
+- אם יש חג (חנוכה/פורים/עצמאות) תתאים mood="festive".
+- אם זה "חם/מפוצץ/חפלה" mood="hot_stage".
+- אם זה לילה כהה/מסיבה mood="dark_club".
+- אם זה יוקרתי/אלגנטי mood="premium".
 
-${templateImage ? '⚠️ קריטי: השתמש באותם ביטויים, אותו טון, אותה אנרגיה ואותו סגנון כתיבה בדיוק כמו בתבנית!' : ''}
+החזר JSON בלבד.
+`;
 
-החזר JSON בפורמט הבא:`;
-      
       const result = await base44.integrations.Core.InvokeLLM({
-        prompt: basePrompt,
+        prompt,
         ...(templateImage && { file_urls: [templateImage] }),
         response_json_schema: {
           type: "object",
           properties: {
-            title: { type: "string", description: "כותרת ראשית מושכת" },
-            subtitle: { type: "string", description: "תת-כותרת" },
-            date: { type: "string", description: "התאריך (אם יש)" },
-            time: { type: "string", description: "השעה (אם יש)" },
-            location: { type: "string", description: "המיקום (אם יש)" },
-            description: { type: "string", description: "תיאור האירוע (2-3 שורות)" },
-            highlights: { 
-              type: "array", 
-              items: { type: "string" },
-              description: "3-5 נקודות חשובות/מיוחדות באירוע"
-            },
-            contact: { type: "string", description: "פרטי התקשרות (אם יש)" },
-            callToAction: { type: "string", description: "קריאה לפעולה" }
+            title: { type: "string" },
+            subtitle: { type: "string" },
+            description: { type: "string" },
+            highlights: { type: "array", items: { type: "string" } },
+            callToAction: { type: "string" },
+
+            date: { type: "string" },
+            time: { type: "string" },
+            location: { type: "string" },
+            contact: { type: "string" },
+
+            design: {
+              type: "object",
+              properties: {
+                mood: { type: "string", enum: ["hot_stage", "dark_club", "premium", "festive"] },
+                accentColor: { type: "string", description: "HEX like #FFA500" },
+                effects: {
+                  type: "array",
+                  items: { type: "string", enum: ["stage_lights", "glow", "smoke", "sparks", "bokeh"] }
+                }
+              },
+              required: ["mood", "accentColor", "effects"]
+            }
           },
-          required: ["title", "subtitle", "description", "callToAction"]
+          required: ["title", "subtitle", "description", "callToAction", "design"]
         }
       });
 
@@ -101,45 +107,23 @@ ${templateImage ? '⚠️ קריטי: השתמש באותם ביטויים, או
     }
   };
 
-  const exportImage = async () => {
+  const exportPng = async (w, h, filename) => {
     if (!cardRef.current) return;
     setIsExporting(true);
     try {
-      const dataUrl = await toPng(cardRef.current, { 
-        cacheBust: true, 
+      const dataUrl = await toPng(cardRef.current, {
+        cacheBust: true,
         pixelRatio: 3,
-        width: 1080,
-        height: 1350
+        width: w,
+        height: h
       });
       const a = document.createElement("a");
       a.href = dataUrl;
-      a.download = "apiryon-invitation.png";
+      a.download = filename;
       a.click();
     } catch (error) {
       console.error(error);
       alert("שגיאה ביצוא התמונה");
-    } finally {
-      setIsExporting(false);
-    }
-  };
-
-  const exportStory = async () => {
-    if (!cardRef.current) return;
-    setIsExporting(true);
-    try {
-      const dataUrl = await toPng(cardRef.current, { 
-        cacheBust: true, 
-        pixelRatio: 3,
-        width: 1080,
-        height: 1920
-      });
-      const a = document.createElement("a");
-      a.href = dataUrl;
-      a.download = "apiryon-story.png";
-      a.click();
-    } catch (error) {
-      console.error(error);
-      alert("שגיאה ביצוא הסטורי");
     } finally {
       setIsExporting(false);
     }
@@ -156,12 +140,18 @@ ${templateImage ? '⚠️ קריטי: השתמש באותם ביטויים, או
       if (navigator.share && navigator.canShare?.({ files: [file] })) {
         await navigator.share({ title: "הזמנה - האפריון", files: [file] });
       } else {
-        await exportImage();
+        await exportPng(1080, 1350, "apiryon-invitation.png");
       }
     } catch (error) {
-      await exportImage();
+      await exportPng(1080, 1350, "apiryon-invitation.png");
     }
   };
+
+  const moodTheme = invitation?.design?.mood || "hot_stage";
+  const accent = invitation?.design?.accentColor || "#FFA500";
+  const effects = invitation?.design?.effects || ["stage_lights", "glow"];
+
+  const theme = getTheme(moodTheme, accent);
 
   return (
     <div dir="rtl" style={{
@@ -172,7 +162,6 @@ ${templateImage ? '⚠️ קריטי: השתמש באותם ביטויים, או
     }}>
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
 
-        {/* Back Button */}
         <div style={{ marginBottom: "20px" }}>
           <Link
             to={createPageUrl("Home")}
@@ -187,17 +176,8 @@ ${templateImage ? '⚠️ קריטי: השתמש באותם ביטויים, או
               boxShadow: "0 0 20px rgba(16, 185, 129, 0.3)",
               color: "#10b981",
               textDecoration: "none",
-              fontWeight: "700",
-              fontSize: "1rem",
-              transition: "all 0.3s"
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "rgba(16, 185, 129, 0.2)";
-              e.currentTarget.style.transform = "translateX(5px)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "rgba(15, 23, 42, 0.9)";
-              e.currentTarget.style.transform = "translateX(0)";
+              fontWeight: "800",
+              fontSize: "1rem"
             }}
           >
             <Home className="w-5 h-5" />
@@ -205,15 +185,8 @@ ${templateImage ? '⚠️ קריטי: השתמש באותם ביטויים, או
           </Link>
         </div>
 
-        {/* Header */}
         <div style={{ textAlign: "center", marginBottom: "30px" }}>
-          <div style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "12px",
-            marginBottom: "12px"
-          }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10 }}>
             <Sparkles size={32} style={{ color: "#00caff" }} />
             <h1 style={{
               fontSize: "clamp(1.8rem, 4vw, 2.5rem)",
@@ -223,15 +196,14 @@ ${templateImage ? '⚠️ קריטי: השתמש באותם ביטויים, או
               WebkitTextFillColor: "transparent",
               margin: 0
             }}>
-              יוצר ההזמנות החכם
+              יוצר הזמנות V2 (DNA עיצובי)
             </h1>
           </div>
-          <p style={{ color: "#94a3b8", fontSize: "1.1rem" }}>
-            כתוב טקסט חופשי, ה-AI יבנה לך הזמנה מקצועית 🎨
+          <p style={{ color: "#94a3b8", fontSize: "1.05rem" }}>
+            אתה כותב טקסט → ה-AI מחליט גם על קונספט (חום/במה/חג) 🎛️
           </p>
         </div>
 
-        {/* Input Section */}
         {!invitation && (
           <div style={{
             background: "rgba(15, 23, 42, 0.9)",
@@ -241,8 +213,6 @@ ${templateImage ? '⚠️ קריטי: השתמש באותם ביטויים, או
             boxShadow: "0 0 40px rgba(0, 202, 255, 0.2)",
             backdropFilter: "blur(10px)"
           }}>
-            
-            {/* Template Upload */}
             <div style={{
               marginBottom: "25px",
               padding: "20px",
@@ -258,26 +228,23 @@ ${templateImage ? '⚠️ קריטי: השתמש באותם ביטויים, או
                 gap: "15px"
               }}>
                 <div>
-                  <div style={{
-                    fontSize: "1.1rem",
-                    fontWeight: "700",
-                    color: "#a78bfa",
-                    marginBottom: "6px"
-                  }}>
-                    🎨 העלה תבנית להשראה (אופציונלי)
+                  <div style={{ fontSize: "1.05rem", fontWeight: "800", color: "#a78bfa", marginBottom: 6 }}>
+                    <span style={{ marginInlineEnd: 8 }}>🎨</span> העלה תבנית להשראה (אופציונלי)
                   </div>
                   <div style={{ fontSize: "0.9rem", color: "#94a3b8" }}>
-                    ה-AI ילמד מהסגנון ויצור הזמנה דומה
+                    ה-AI ילמד גם על טון וגם על קונספט
                   </div>
                 </div>
-                
+
                 <label style={{
                   padding: "12px 24px",
                   borderRadius: "12px",
-                  background: templateImage ? "linear-gradient(135deg, #10b981, #059669)" : "linear-gradient(135deg, #8b5cf6, #6d28d9)",
+                  background: templateImage
+                    ? "linear-gradient(135deg, #10b981, #059669)"
+                    : "linear-gradient(135deg, #8b5cf6, #6d28d9)",
                   color: "#fff",
                   fontSize: "1rem",
-                  fontWeight: "700",
+                  fontWeight: "800",
                   cursor: isUploadingTemplate ? "wait" : "pointer",
                   display: "flex",
                   alignItems: "center",
@@ -286,17 +253,13 @@ ${templateImage ? '⚠️ קריטי: השתמש באותם ביטויים, או
                 }}>
                   {isUploadingTemplate ? (
                     <>
-                      <Loader2 size={18} className="animate-spin" style={{ animation: "spin 1s linear infinite" }} />
+                      <Loader2 size={18} style={{ animation: "spin 1s linear infinite" }} />
                       <span>מעלה...</span>
                     </>
                   ) : templateImage ? (
-                    <>
-                      <span>✓ תבנית הועלתה</span>
-                    </>
+                    <span>✓ תבנית הועלתה</span>
                   ) : (
-                    <>
-                      <span>📤 העלה תמונה</span>
-                    </>
+                    <span>📤 העלה תמונה</span>
                   )}
                   <input
                     type="file"
@@ -309,42 +272,37 @@ ${templateImage ? '⚠️ קריטי: השתמש באותם ביטויים, או
               </div>
 
               {templateImage && (
-                <div style={{
-                  marginTop: "15px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "10px"
-                }}>
-                  <img 
-                    src={templateImage} 
-                    alt="תבנית הזמנה"
+                <div style={{ marginTop: 15, display: "flex", alignItems: "center", gap: 10 }}>
+                  <img
+                    src={templateImage}
+                    alt="תבנית"
                     style={{
-                      width: "80px",
-                      height: "80px",
+                      width: 80,
+                      height: 80,
                       objectFit: "cover",
-                      borderRadius: "10px",
+                      borderRadius: 10,
                       border: "2px solid rgba(139, 92, 246, 0.5)"
                     }}
                   />
                   <div style={{ flex: 1 }}>
-                    <div style={{ color: "#10b981", fontWeight: "700", fontSize: "0.95rem" }}>
+                    <div style={{ color: "#10b981", fontWeight: 800, fontSize: "0.95rem" }}>
                       ✓ התבנית נטענה בהצלחה
                     </div>
                     <div style={{ color: "#94a3b8", fontSize: "0.85rem" }}>
-                      ה-AI יצור הזמנה בסגנון דומה
+                      ה-AI ידמה סגנון + mood
                     </div>
                   </div>
                   <button
                     onClick={() => setTemplateImage(null)}
                     style={{
                       padding: "8px 16px",
-                      borderRadius: "8px",
+                      borderRadius: 8,
                       border: "1px solid rgba(239, 68, 68, 0.4)",
                       background: "rgba(239, 68, 68, 0.1)",
                       color: "#ef4444",
                       cursor: "pointer",
                       fontSize: "0.9rem",
-                      fontWeight: "600"
+                      fontWeight: 700
                     }}
                   >
                     הסר
@@ -353,74 +311,64 @@ ${templateImage ? '⚠️ קריטי: השתמש באותם ביטויים, או
               )}
             </div>
 
-            <label style={{
-              display: "block",
-              fontSize: "1.2rem",
-              fontWeight: "700",
-              color: "#00caff",
-              marginBottom: "12px"
-            }}>
-              📝 הזן את פרטי האירוע (טקסט חופשי)
+            <label style={{ display: "block", fontSize: "1.15rem", fontWeight: 900, color: "#00caff", marginBottom: 12 }}>
+              📝 הזן פרטי אירוע (טקסט חופשי)
             </label>
-            
+
             <textarea
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
               placeholder={`לדוגמה:
 ערב קריוקי מטורף באפריון!
-חמישי הקרוב 18.12 בשעה 21:00
-במועדון האפריון בטבריה
-DJ LIVE, מוזיקה מזרחית ולהיטים
-להזמנות: 050-1234567
-בואו לשיר ולרקוד!`}
+חמישי הקרוב בשעה 21:00
+מוזיקה מזרחית • חפלות • ריקודים
+להזמנות: 050-1234567`}
               style={{
                 width: "100%",
-                minHeight: "200px",
-                padding: "16px",
-                borderRadius: "14px",
+                minHeight: 200,
+                padding: 16,
+                borderRadius: 14,
                 border: "1px solid rgba(148, 163, 184, 0.3)",
                 background: "rgba(2, 6, 23, 0.7)",
                 color: "#fff",
                 fontSize: "1.05rem",
-                lineHeight: "1.6",
+                lineHeight: 1.6,
                 resize: "vertical",
                 outline: "none",
                 fontFamily: "inherit"
               }}
-              onFocus={(e) => e.target.style.borderColor = "#00caff"}
-              onBlur={(e) => e.target.style.borderColor = "rgba(148, 163, 184, 0.3)"}
             />
 
             <button
               onClick={analyzeAndBuild}
               disabled={isAnalyzing || !inputText.trim()}
               style={{
-                marginTop: "20px",
+                marginTop: 20,
                 padding: "16px 32px",
-                borderRadius: "14px",
+                borderRadius: 14,
                 border: "none",
                 background: isAnalyzing ? "rgba(100, 116, 139, 0.5)" : "linear-gradient(135deg, #00caff, #0088ff)",
                 color: isAnalyzing ? "#64748b" : "#001a2e",
                 fontSize: "1.1rem",
-                fontWeight: "700",
+                fontWeight: 900,
                 cursor: isAnalyzing || !inputText.trim() ? "not-allowed" : "pointer",
                 display: "flex",
                 alignItems: "center",
-                gap: "10px",
-                boxShadow: isAnalyzing ? "none" : "0 0 30px rgba(0, 202, 255, 0.4)",
+                gap: 10,
                 width: "100%",
-                justifyContent: "center"
+                justifyContent: "center",
+                boxShadow: isAnalyzing ? "none" : "0 0 30px rgba(0, 202, 255, 0.4)"
               }}
             >
               {isAnalyzing ? (
                 <>
-                  <Loader2 size={20} className="animate-spin" style={{ animation: "spin 1s linear infinite" }} />
+                  <Loader2 size={20} style={{ animation: "spin 1s linear infinite" }} />
                   <span>AI מנתח ובונה...</span>
                 </>
               ) : (
                 <>
                   <Sparkles size={20} />
-                  <span>🎨 בנה לי הזמנה מקצועית</span>
+                  <span>🎨 בנה לי הזמנה (V2)</span>
                 </>
               )}
             </button>
@@ -434,102 +382,59 @@ DJ LIVE, מוזיקה מזרחית ולהיטים
           </div>
         )}
 
-        {/* Invitation Preview */}
         {invitation && (
           <div>
-            {/* Action Buttons */}
-            <div style={{
-              display: "flex",
-              gap: "12px",
-              marginBottom: "20px",
-              flexWrap: "wrap",
-              justifyContent: "center"
-            }}>
+            <div style={{ display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap", justifyContent: "center" }}>
               <button
-                onClick={exportImage}
+                onClick={() => exportPng(1080, 1350, "apiryon-invitation.png")}
                 disabled={isExporting}
-                style={{
-                  padding: "14px 24px",
-                  borderRadius: "12px",
-                  border: "none",
-                  background: "linear-gradient(135deg, #10b981, #059669)",
-                  color: "#fff",
-                  fontSize: "1rem",
-                  fontWeight: "700",
-                  cursor: isExporting ? "not-allowed" : "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  boxShadow: "0 0 20px rgba(16, 185, 129, 0.3)"
-                }}
+                style={btnStyle("green")}
               >
-                <Download size={18} />
-                הורד תמונה (1080×1350)
+                <Download size={18} /> הורד תמונה (1080×1350)
               </button>
 
               <button
-                onClick={exportStory}
+                onClick={() => exportPng(1080, 1920, "apiryon-story.png")}
                 disabled={isExporting}
-                style={{
-                  padding: "14px 24px",
-                  borderRadius: "12px",
-                  border: "none",
-                  background: "linear-gradient(135deg, #8b5cf6, #6d28d9)",
-                  color: "#fff",
-                  fontSize: "1rem",
-                  fontWeight: "700",
-                  cursor: isExporting ? "not-allowed" : "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  boxShadow: "0 0 20px rgba(139, 92, 246, 0.3)"
-                }}
+                style={btnStyle("purple")}
               >
-                <Download size={18} />
-                הורד סטורי (1080×1920)
+                <Download size={18} /> הורד סטורי (1080×1920)
+              </button>
+
+              <button onClick={shareImage} style={btnStyle("cyanOutline")}>
+                <Share2 size={18} /> שתף
               </button>
 
               <button
-                onClick={shareImage}
-                style={{
-                  padding: "14px 24px",
-                  borderRadius: "12px",
-                  border: "2px solid rgba(0, 202, 255, 0.4)",
-                  background: "rgba(0, 202, 255, 0.1)",
-                  color: "#00caff",
-                  fontSize: "1rem",
-                  fontWeight: "700",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px"
-                }}
-              >
-                <Share2 size={18} />
-                שתף
-              </button>
-
-              <button
-                onClick={() => {
-                  setInvitation(null);
-                  setInputText("");
-                }}
-                style={{
-                  padding: "14px 24px",
-                  borderRadius: "12px",
-                  border: "2px solid rgba(239, 68, 68, 0.4)",
-                  background: "rgba(239, 68, 68, 0.1)",
-                  color: "#ef4444",
-                  fontSize: "1rem",
-                  fontWeight: "700",
-                  cursor: "pointer"
-                }}
+                onClick={() => { setInvitation(null); setInputText(""); }}
+                style={btnStyle("redOutline")}
               >
                 ✕ התחל מחדש
               </button>
             </div>
 
-            {/* Invitation Card */}
+            {/* DNA badge */}
+            <div style={{
+              display: "flex",
+              justifyContent: "center",
+              marginBottom: 12
+            }}>
+              <div style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 10,
+                padding: "10px 14px",
+                borderRadius: 999,
+                background: "rgba(15, 23, 42, 0.7)",
+                border: `1px solid ${hexToRgba(accent, 0.5)}`,
+                color: "#e2e8f0",
+                fontWeight: 800
+              }}>
+                <Palette size={18} />
+                <span>DNA: {invitation.design.mood} • Accent: {accent}</span>
+              </div>
+            </div>
+
             <div style={{ display: "flex", justifyContent: "center" }}>
               <div
                 ref={cardRef}
@@ -537,27 +442,20 @@ DJ LIVE, מוזיקה מזרחית ולהיטים
                   width: "min(1080px, 100%)",
                   aspectRatio: "1080 / 1350",
                   position: "relative",
-                  borderRadius: "24px",
+                  borderRadius: 24,
                   overflow: "hidden",
-                  background: "linear-gradient(135deg, #1a0f0a 0%, #2d1810 30%, #1a0f0a 70%, #0a0604 100%)",
-                  border: "3px solid rgba(255, 140, 0, 0.3)",
-                  boxShadow: "0 0 60px rgba(255, 100, 0, 0.3), 0 0 100px rgba(255, 140, 0, 0.2)"
+                  background: theme.baseBg,
+                  border: `3px solid ${hexToRgba(accent, 0.35)}`,
+                  boxShadow: theme.outerShadow
                 }}
               >
-                {/* Background Effects - Stage Lighting Style */}
-                <div style={{
-                  position: "absolute",
-                  inset: 0,
-                  background: `
-                    radial-gradient(ellipse at 50% 0%, rgba(255, 140, 0, 0.3), transparent 40%),
-                    radial-gradient(ellipse at 0% 50%, rgba(255, 100, 0, 0.2), transparent 50%),
-                    radial-gradient(ellipse at 100% 50%, rgba(255, 100, 0, 0.2), transparent 50%),
-                    radial-gradient(ellipse at 50% 100%, rgba(139, 92, 246, 0.15), transparent 50%)
-                  `,
-                  opacity: 0.7
-                }} />
+                {/* FX layers */}
+                {effects.includes("stage_lights") && <StageLights accent={accent} mood={moodTheme} />}
+                {effects.includes("glow") && <Glow accent={accent} />}
+                {effects.includes("bokeh") && <Bokeh accent={accent} />}
+                {effects.includes("sparks") && <Sparks accent={accent} />}
+                {effects.includes("smoke") && <Smoke />}
 
-                {/* Content Container */}
                 <div style={{
                   position: "relative",
                   height: "100%",
@@ -566,157 +464,84 @@ DJ LIVE, מוזיקה מזרחית ולהיטים
                   flexDirection: "column",
                   justifyContent: "space-between"
                 }}>
-                  
-                  {/* Header */}
                   <div>
-                    <div style={{
-                      fontSize: "clamp(0.9rem, 1.8vw, 1.2rem)",
-                      color: "#FFD700",
-                      fontWeight: "900",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.15em",
-                      textAlign: "center",
-                      marginBottom: "clamp(15px, 2.5%, 30px)",
-                      textShadow: "0 0 25px rgba(255, 215, 0, 0.8), 0 2px 10px rgba(0, 0, 0, 0.8)",
-                      background: "linear-gradient(180deg, #FFD700 0%, #FFA500 100%)",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                      filter: "drop-shadow(0 0 20px rgba(255, 140, 0, 0.6))"
-                    }}>
+                    <div style={topBrandStyle(accent)}>
                       🎤 APIRYON CLUB 🎤
                     </div>
 
-                    {/* Title */}
-                    <h1 style={{
-                      fontSize: "clamp(2rem, 5vw, 3.8rem)",
-                      fontWeight: "900",
-                      background: "linear-gradient(180deg, #FFFFFF 0%, #FFD700 50%, #FFA500 100%)",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                      textAlign: "center",
-                      marginBottom: "clamp(15px, 2%, 25px)",
-                      lineHeight: "1.1",
-                      textShadow: "0 6px 25px rgba(255, 140, 0, 0.5)",
-                      filter: "drop-shadow(0 4px 15px rgba(0, 0, 0, 0.9))",
-                      letterSpacing: "-0.02em"
-                    }}>
+                    <h1 style={titleStyle(accent)}>
                       {invitation.title}
                     </h1>
 
-                    {/* Subtitle */}
-                    <div style={{
-                      fontSize: "clamp(1.4rem, 2.8vw, 2.3rem)",
-                      fontWeight: "800",
-                      color: "#FFD700",
-                      textAlign: "center",
-                      marginBottom: "clamp(30px, 4%, 50px)",
-                      textShadow: "0 0 20px rgba(255, 215, 0, 0.6), 0 3px 15px rgba(0, 0, 0, 0.9)",
-                      letterSpacing: "0.02em"
-                    }}>
+                    <div style={subtitleStyle(accent)}>
                       {invitation.subtitle}
                     </div>
                   </div>
 
-                  {/* Main Info */}
-                  <div style={{
-                    background: "rgba(10, 6, 4, 0.85)",
-                    borderRadius: "20px",
-                    padding: "clamp(20px, 3%, 35px)",
-                    border: "2px solid rgba(255, 140, 0, 0.4)",
-                    backdropFilter: "blur(12px)",
-                    boxShadow: "0 0 40px rgba(255, 100, 0, 0.3), inset 0 0 30px rgba(255, 140, 0, 0.05)"
-                  }}>
-                    
-                    {/* Date, Time, Location */}
+                  <div style={infoCardStyle(accent)}>
                     <div style={{
                       display: "grid",
                       gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
-                      gap: "15px",
-                      marginBottom: "25px"
+                      gap: 15,
+                      marginBottom: 22
                     }}>
-                      {invitation.date && (
-                        <InfoPill icon="📅" label="תאריך" value={invitation.date} />
-                      )}
-                      {invitation.time && (
-                        <InfoPill icon="⏰" label="שעה" value={invitation.time} />
-                      )}
-                      {invitation.location && (
-                        <InfoPill icon="📍" label="מיקום" value={invitation.location} />
-                      )}
+                      {invitation.date && <InfoPill icon="📅" label="תאריך" value={invitation.date} accent={accent} />}
+                      {invitation.time && <InfoPill icon="⏰" label="שעה" value={invitation.time} accent={accent} />}
+                      {invitation.location && <InfoPill icon="📍" label="מיקום" value={invitation.location} accent={accent} />}
                     </div>
 
-                    {/* Description */}
                     <div style={{
                       fontSize: "clamp(1rem, 1.8vw, 1.3rem)",
                       color: "#e2e8f0",
-                      lineHeight: "1.6",
-                      marginBottom: "20px",
+                      lineHeight: 1.6,
+                      marginBottom: 18,
                       textAlign: "center",
-                      fontWeight: "500"
+                      fontWeight: 600
                     }}>
                       {invitation.description}
                     </div>
 
-                    {/* Highlights */}
-                    {invitation.highlights && invitation.highlights.length > 0 && (
-                      <div style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "10px",
-                        marginBottom: "20px"
-                      }}>
-                        {invitation.highlights.map((highlight, idx) => (
-                          <div key={idx} style={{
+                    {invitation.highlights?.length > 0 && (
+                      <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 18 }}>
+                        {invitation.highlights.slice(0, 5).map((h, i) => (
+                          <div key={i} style={{
                             display: "flex",
                             alignItems: "center",
-                            gap: "10px",
+                            gap: 10,
                             fontSize: "clamp(0.95rem, 1.6vw, 1.15rem)",
                             color: "#cbd5e1",
-                            fontWeight: "600"
+                            fontWeight: 800
                           }}>
-                            <span style={{ color: "#FFD700", fontSize: "1.2em" }}>✓</span>
-                            <span>{highlight}</span>
+                            <span style={{ color: accent, fontSize: "1.2em" }}>✓</span>
+                            <span>{h}</span>
                           </div>
                         ))}
                       </div>
                     )}
 
-                    {/* Contact */}
                     {invitation.contact && (
                       <div style={{
                         fontSize: "clamp(1rem, 1.8vw, 1.25rem)",
                         color: "#fbbf24",
-                        fontWeight: "700",
+                        fontWeight: 900,
                         textAlign: "center",
-                        marginBottom: "15px"
+                        marginBottom: 14
                       }}>
                         📞 {invitation.contact}
                       </div>
                     )}
 
-                    {/* Call to Action */}
-                    <div style={{
-                      background: "linear-gradient(135deg, #FF8C00, #FFA500, #FFD700)",
-                      padding: "clamp(14px, 2.5%, 20px) clamp(20px, 3%, 30px)",
-                      borderRadius: "15px",
-                      textAlign: "center",
-                      fontSize: "clamp(1.2rem, 2.2vw, 1.7rem)",
-                      fontWeight: "900",
-                      color: "#000",
-                      boxShadow: "0 0 30px rgba(255, 140, 0, 0.6), 0 4px 15px rgba(0, 0, 0, 0.5)",
-                      textShadow: "0 1px 3px rgba(255, 255, 255, 0.3)"
-                    }}>
+                    <div style={ctaStyle(accent)}>
                       {invitation.callToAction}
                     </div>
                   </div>
 
-                  {/* Footer */}
                   <div style={{
                     fontSize: "clamp(0.85rem, 1.5vw, 1.1rem)",
                     color: "#94a3b8",
                     textAlign: "center",
-                    fontWeight: "600",
-                    marginTop: "20px"
+                    fontWeight: 700,
+                    marginTop: 18
                   }}>
                     ✨ APIRYON • המועדון הקריוקי שלכם ✨
                   </div>
@@ -725,38 +550,149 @@ DJ LIVE, מוזיקה מזרחית ולהיטים
             </div>
           </div>
         )}
+
       </div>
     </div>
   );
 }
 
-function InfoPill({ icon, label, value }) {
+function btnStyle(type) {
+  const base = {
+    padding: "14px 24px",
+    borderRadius: 12,
+    border: "none",
+    fontSize: "1rem",
+    fontWeight: 900,
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    gap: 8
+  };
+  if (type === "green") return { ...base, background: "linear-gradient(135deg,#10b981,#059669)", color: "#fff", boxShadow: "0 0 20px rgba(16,185,129,.3)" };
+  if (type === "purple") return { ...base, background: "linear-gradient(135deg,#8b5cf6,#6d28d9)", color: "#fff", boxShadow: "0 0 20px rgba(139,92,246,.3)" };
+  if (type === "cyanOutline") return { ...base, border: "2px solid rgba(0,202,255,.4)", background: "rgba(0,202,255,.1)", color: "#00caff" };
+  if (type === "redOutline") return { ...base, border: "2px solid rgba(239,68,68,.4)", background: "rgba(239,68,68,.1)", color: "#ef4444" };
+  return base;
+}
+
+function getTheme(mood, accent) {
+  if (mood === "dark_club") {
+    return {
+      baseBg: "linear-gradient(135deg,#020617 0%, #0b1220 55%, #020617 100%)",
+      outerShadow: `0 0 60px ${hexToRgba(accent, 0.22)}, 0 0 120px rgba(0,0,0,.55)`
+    };
+  }
+  if (mood === "premium") {
+    return {
+      baseBg: "linear-gradient(135deg,#0b0b0d 0%, #1a1410 50%, #0b0b0d 100%)",
+      outerShadow: `0 0 60px ${hexToRgba(accent, 0.22)}, 0 0 120px rgba(0,0,0,.55)`
+    };
+  }
+  if (mood === "festive") {
+    return {
+      baseBg: "linear-gradient(135deg,#2d0a1f 0%, #3b0764 35%, #2d0a1f 100%)",
+      outerShadow: `0 0 70px ${hexToRgba(accent, 0.28)}, 0 0 120px rgba(0,0,0,.55)`
+    };
+  }
+  // hot_stage default
+  return {
+    baseBg: "linear-gradient(135deg,#1a0f0a 0%, #2d1810 40%, #0a0604 100%)",
+    outerShadow: `0 0 70px ${hexToRgba(accent, 0.28)}, 0 0 130px rgba(0,0,0,.6)`
+  };
+}
+
+function topBrandStyle(accent) {
+  return {
+    fontSize: "clamp(.9rem, 1.8vw, 1.2rem)",
+    fontWeight: 900,
+    textTransform: "uppercase",
+    letterSpacing: ".15em",
+    textAlign: "center",
+    marginBottom: "clamp(12px, 2.5%, 28px)",
+    background: `linear-gradient(180deg, #ffffff 0%, ${accent} 60%, #000 130%)`,
+    WebkitBackgroundClip: "text",
+    WebkitTextFillColor: "transparent",
+    filter: `drop-shadow(0 0 18px ${hexToRgba(accent, .55)})`
+  };
+}
+
+function titleStyle(accent) {
+  return {
+    fontSize: "clamp(2rem, 5vw, 3.8rem)",
+    fontWeight: 950,
+    textAlign: "center",
+    marginBottom: "clamp(12px, 2%, 22px)",
+    lineHeight: 1.08,
+    letterSpacing: "-0.02em",
+    background: `linear-gradient(180deg, #FFFFFF 0%, ${accent} 55%, #ffd700 120%)`,
+    WebkitBackgroundClip: "text",
+    WebkitTextFillColor: "transparent",
+    filter: `drop-shadow(0 6px 18px rgba(0,0,0,.9))`
+  };
+}
+
+function subtitleStyle(accent) {
+  return {
+    fontSize: "clamp(1.3rem, 2.8vw, 2.3rem)",
+    fontWeight: 900,
+    color: "#fff",
+    textAlign: "center",
+    marginBottom: "clamp(26px, 4%, 48px)",
+    textShadow: `0 0 18px ${hexToRgba(accent, .5)}, 0 3px 14px rgba(0,0,0,.9)`
+  };
+}
+
+function infoCardStyle(accent) {
+  return {
+    background: "rgba(10, 6, 4, 0.85)",
+    borderRadius: 20,
+    padding: "clamp(20px, 3%, 35px)",
+    border: `2px solid ${hexToRgba(accent, 0.38)}`,
+    backdropFilter: "blur(12px)",
+    boxShadow: `0 0 40px ${hexToRgba(accent, 0.22)}, inset 0 0 30px ${hexToRgba(accent, 0.06)}`
+  };
+}
+
+function ctaStyle(accent) {
+  return {
+    background: `linear-gradient(135deg, ${accent}, #FFD700)`,
+    padding: "clamp(14px, 2.5%, 20px) clamp(20px, 3%, 30px)",
+    borderRadius: 15,
+    textAlign: "center",
+    fontSize: "clamp(1.15rem, 2.2vw, 1.7rem)",
+    fontWeight: 950,
+    color: "#000",
+    boxShadow: `0 0 30px ${hexToRgba(accent, 0.55)}, 0 4px 15px rgba(0,0,0,.55)`
+  };
+}
+
+function InfoPill({ icon, label, value, accent }) {
   return (
     <div style={{
-      background: "rgba(255, 140, 0, 0.15)",
-      border: "2px solid rgba(255, 140, 0, 0.4)",
-      borderRadius: "14px",
+      background: hexToRgba(accent, 0.14),
+      border: `2px solid ${hexToRgba(accent, 0.38)}`,
+      borderRadius: 14,
       padding: "14px 12px",
       textAlign: "center",
-      boxShadow: "0 0 15px rgba(255, 100, 0, 0.2)"
+      boxShadow: `0 0 15px ${hexToRgba(accent, 0.2)}`
     }}>
-      <div style={{ fontSize: "1.6rem", marginBottom: "6px" }}>{icon}</div>
+      <div style={{ fontSize: "1.6rem", marginBottom: 6 }}>{icon}</div>
       <div style={{
         fontSize: "0.7rem",
-        color: "#FFA500",
-        fontWeight: "700",
-        marginBottom: "4px",
+        color: accent,
+        fontWeight: 900,
+        marginBottom: 4,
         textTransform: "uppercase",
-        letterSpacing: "0.08em",
-        textShadow: "0 0 10px rgba(255, 140, 0, 0.4)"
+        letterSpacing: ".08em",
+        textShadow: `0 0 10px ${hexToRgba(accent, 0.35)}`
       }}>
         {label}
       </div>
       <div style={{
         fontSize: "1.05rem",
-        color: "#FFD700",
-        fontWeight: "900",
-        textShadow: "0 0 10px rgba(255, 215, 0, 0.5)"
+        color: "#fff",
+        fontWeight: 950,
+        textShadow: `0 0 10px ${hexToRgba(accent, 0.35)}`
       }}>
         {value}
       </div>
@@ -764,4 +700,96 @@ function InfoPill({ icon, label, value }) {
   );
 }
 
-EventProducer.isPublic = true;
+/* FX Components */
+
+function StageLights({ accent, mood }) {
+  const top = mood === "dark_club" ? 0.45 : 0.35;
+  return (
+    <div style={{
+      position: "absolute",
+      inset: 0,
+      background: `
+        radial-gradient(ellipse at 50% 0%, ${hexToRgba(accent, top)}, transparent 40%),
+        radial-gradient(ellipse at 0% 50%, ${hexToRgba(accent, 0.20)}, transparent 55%),
+        radial-gradient(ellipse at 100% 50%, ${hexToRgba(accent, 0.20)}, transparent 55%),
+        radial-gradient(ellipse at 50% 100%, rgba(139, 92, 246, 0.14), transparent 55%)
+      `,
+      opacity: 0.85
+    }} />
+  );
+}
+
+function Glow({ accent }) {
+  return (
+    <div style={{
+      position: "absolute",
+      inset: 0,
+      background: `radial-gradient(circle at 50% 35%, ${hexToRgba(accent, 0.18)}, transparent 55%)`,
+      filter: "blur(2px)"
+    }} />
+  );
+}
+
+function Bokeh({ accent }) {
+  return (
+    <div style={{
+      position: "absolute",
+      inset: 0,
+      background: `
+        radial-gradient(circle at 20% 25%, ${hexToRgba(accent, .16)}, transparent 12%),
+        radial-gradient(circle at 78% 22%, rgba(255,255,255,.10), transparent 14%),
+        radial-gradient(circle at 30% 72%, rgba(255,215,0,.10), transparent 15%),
+        radial-gradient(circle at 84% 68%, ${hexToRgba(accent, .12)}, transparent 15%)
+      `,
+      opacity: 0.9
+    }} />
+  );
+}
+
+function Sparks({ accent }) {
+  return (
+    <div style={{
+      position: "absolute",
+      inset: 0,
+      background: `
+        radial-gradient(circle at 35% 28%, rgba(255,255,255,.20), transparent 6%),
+        radial-gradient(circle at 60% 24%, ${hexToRgba(accent,.22)}, transparent 6%),
+        radial-gradient(circle at 52% 58%, rgba(255,215,0,.16), transparent 6%),
+        radial-gradient(circle at 18% 62%, ${hexToRgba(accent,.18)}, transparent 6%),
+        radial-gradient(circle at 80% 56%, rgba(255,255,255,.12), transparent 7%)
+      `,
+      opacity: 0.9
+    }} />
+  );
+}
+
+function Smoke() {
+  return (
+    <div style={{
+      position: "absolute",
+      inset: 0,
+      background: `
+        radial-gradient(ellipse at 30% 60%, rgba(255,255,255,.05), transparent 50%),
+        radial-gradient(ellipse at 70% 55%, rgba(255,255,255,.04), transparent 55%),
+        radial-gradient(ellipse at 50% 85%, rgba(255,255,255,.03), transparent 50%)
+      `,
+      filter: "blur(10px)",
+      opacity: 0.8
+    }} />
+  );
+}
+
+function hexToRgba(hex, a) {
+  try {
+    const h = hex.replace("#", "").trim();
+    const full = h.length === 3 ? h.split("").map((c) => c + c).join("") : h;
+    const r = parseInt(full.slice(0, 2), 16);
+    const g = parseInt(full.slice(2, 4), 16);
+    const b = parseInt(full.slice(4, 6), 16);
+    return `rgba(${r}, ${g}, ${b}, ${a})`;
+  } catch {
+    return `rgba(255,165,0,${a})`;
+  }
+}
+
+EventProducerV2.isPublic = true;
