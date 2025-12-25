@@ -57,7 +57,7 @@ export default function Audience() {
 
   return (
     <div dir="rtl" style={{
-      minHeight: "100vh",
+      width: "100vw",
       height: "100vh",
       background: "linear-gradient(135deg, #020617 0%, #0a1929 50%, #020617 100%)",
       color: "#fff",
@@ -67,7 +67,7 @@ export default function Audience() {
       flexDirection: "column"
     }}>
       {/* Fixed Menu */}
-      <div style={{ position: "fixed", top: "20px", right: "20px", zIndex: 10000 }}>
+      <div style={{ position: "fixed", top: "10px", right: "10px", zIndex: 10000 }}>
         <NavigationMenu onSummaryClick={() => setShowSummary(true)} />
       </div>
 
@@ -76,11 +76,11 @@ export default function Audience() {
         onClick={toggleFullscreen}
         style={{
           position: "fixed",
-          bottom: "20px",
-          right: "20px",
-          width: "50px",
-          height: "50px",
-          borderRadius: "12px",
+          bottom: "10px",
+          right: "10px",
+          width: "40px",
+          height: "40px",
+          borderRadius: "10px",
           border: "none",
           background: "rgba(15, 23, 42, 0.95)",
           color: "#00caff",
@@ -103,11 +103,11 @@ export default function Audience() {
         }}
         title={isFullscreen ? "צא ממסך מלא" : "הצג במסך מלא"}
       >
-        {isFullscreen ? <Minimize className="w-6 h-6" /> : <Maximize className="w-6 h-6" />}
+        {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
       </button>
 
       {/* CONTENT */}
-      <div>
+      <div style={{ display: "flex", flexDirection: "column", height: "100%", overflow: "hidden" }}>
         <EventSummaryModal 
           isOpen={showSummary}
           onClose={() => setShowSummary(false)}
@@ -129,10 +129,11 @@ export default function Audience() {
         <div style={{
           position: "relative",
           width: "100%",
-          padding: "1vh 20px",
-          marginBottom: "1vh",
+          padding: "0.5vh 10px",
+          marginBottom: "0.5vh",
           overflow: "hidden",
-          background: "linear-gradient(180deg, rgba(0, 202, 255, 0.05) 0%, transparent 100%)"
+          background: "linear-gradient(180deg, rgba(0, 202, 255, 0.05) 0%, transparent 100%)",
+          flexShrink: 0
         }}>
           {/* Stretched Logo Background */}
           <div style={{
@@ -173,15 +174,15 @@ export default function Audience() {
               }}
               style={{
                 display: "inline-block",
-                fontSize: "clamp(2rem, 3.5vw, 3.5rem)",
-                marginBottom: "0.5vh"
+                fontSize: "clamp(1.5rem, 2.5vw, 2.5rem)",
+                marginBottom: "0"
               }}
             >
               🎵
             </motion.div>
             
             <div style={{
-              fontSize: "clamp(1.8rem, 3.5vw, 3.2rem)",
+              fontSize: "clamp(1.3rem, 2.5vw, 2.2rem)",
               fontWeight: "900",
               background: "linear-gradient(90deg, #00caff 0%, #0088ff 25%, #00d4ff 50%, #0088ff 75%, #00caff 100%)",
               backgroundSize: "200% auto",
@@ -208,8 +209,8 @@ export default function Audience() {
               }}
               style={{
                 display: "inline-block",
-                fontSize: "clamp(2rem, 3.5vw, 3.5rem)",
-                marginTop: "0.5vh"
+                fontSize: "clamp(1.5rem, 2.5vw, 2.5rem)",
+                marginTop: "0"
               }}
             >
               🎤
@@ -222,11 +223,12 @@ export default function Audience() {
           flexDirection: latestMedia ? "row" : "column",
           alignItems: "stretch", 
           justifyContent: "space-between",
-          padding: latestMedia ? "10px 20px 20px" : "0 20px 2vh",
+          padding: latestMedia ? "0 10px 10px" : "0 20px 2vh",
           width: "100%",
           flex: 1,
-          overflow: "auto",
-          gap: "20px"
+          minHeight: 0,
+          overflow: "hidden",
+          gap: "10px"
         }}>
 
           {/* Media Display Section */}
@@ -245,44 +247,23 @@ export default function Audience() {
               }}
             >
               <div style={{
-                background: "rgba(15, 23, 42, 0.95)",
-                borderRadius: "24px",
-                padding: "16px",
-                border: "3px solid rgba(0, 202, 255, 0.5)",
-                boxShadow: "0 0 80px rgba(0, 202, 255, 0.5)",
-                backdropFilter: "blur(30px)",
+                background: "rgba(15, 23, 42, 0.8)",
+                borderRadius: "16px",
+                padding: "8px",
+                border: "2px solid rgba(0, 202, 255, 0.4)",
+                boxShadow: "0 0 40px rgba(0, 202, 255, 0.3)",
+                backdropFilter: "blur(20px)",
                 height: "100%",
                 display: "flex",
                 flexDirection: "column"
               }}>
-                {/* Header Badge */}
-                <div style={{
-                  textAlign: "center",
-                  marginBottom: "12px"
-                }}>
-                  <div style={{
-                    display: "inline-block",
-                    background: "linear-gradient(135deg, #00caff, #0088ff)",
-                    color: "#001a2e",
-                    padding: "6px 20px",
-                    borderRadius: "12px",
-                    fontSize: "1rem",
-                    fontWeight: "800",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.1em",
-                    boxShadow: "0 0 30px rgba(0, 202, 255, 0.6)"
-                  }}>
-                    {latestMedia.media_type === 'video' ? '🎥 וידיאו' : '📸 תמונה'} מהאירוע
-                  </div>
-                </div>
-
                 {/* Media Container */}
                 <div style={{
                   background: "#000",
-                  borderRadius: "16px",
+                  borderRadius: "12px",
                   overflow: "hidden",
-                  border: "2px solid rgba(0, 202, 255, 0.3)",
-                  boxShadow: "0 10px 50px rgba(0, 0, 0, 0.7)",
+                  border: "1px solid rgba(0, 202, 255, 0.2)",
+                  boxShadow: "0 5px 30px rgba(0, 0, 0, 0.5)",
                   flex: 1,
                   display: "flex",
                   alignItems: "center",
@@ -343,10 +324,10 @@ export default function Audience() {
           }}>
             {/* QR Code for Join Queue */}
             <div style={{
-                background: "rgba(15, 23, 42, 0.3)",
-                borderRadius: "20px",
-                padding: "1.5vh 15px",
-                border: "3px solid rgba(16, 185, 129, 0.4)",
+                background: "rgba(15, 23, 42, 0.5)",
+                borderRadius: "16px",
+                padding: "8px",
+                border: "2px solid rgba(16, 185, 129, 0.4)",
                 textAlign: "center",
                 display: "flex",
                 flexDirection: "column",
@@ -357,49 +338,49 @@ export default function Audience() {
               }}
             >
               <div style={{ 
-                fontSize: "clamp(1.3rem, 2vw, 1.6rem)", 
+                fontSize: "0.9rem", 
                 color: "#10b981", 
-                marginBottom: "1vh",
+                marginBottom: "4px",
                 fontWeight: "700",
-                textShadow: "0 0 18px rgba(16, 185, 129, 0.7)"
+                textShadow: "0 0 10px rgba(16, 185, 129, 0.7)"
               }}>
                 🎤 הצטרף לתור
               </div>
 
               <div style={{
-                width: "clamp(140px, 14vw, 160px)",
-                height: "clamp(140px, 14vw, 160px)",
+                width: "120px",
+                height: "120px",
                 background: "#fff",
-                borderRadius: "16px",
+                borderRadius: "12px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                marginBottom: "1vh",
-                boxShadow: "0 0 25px rgba(16, 185, 129, 0.4)",
-                border: "3px solid #10b981"
+                marginBottom: "4px",
+                boxShadow: "0 0 15px rgba(16, 185, 129, 0.3)",
+                border: "2px solid #10b981"
               }}>
                 <img 
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${window.location.origin}/Home`}
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${window.location.origin}/Home`}
                   alt="QR Code להצטרפות לתור"
-                  style={{ width: "clamp(130px, 13vw, 150px)", height: "clamp(130px, 13vw, 150px)" }}
+                  style={{ width: "110px", height: "110px" }}
                 />
               </div>
 
               <div style={{ 
-                fontSize: "clamp(1rem, 1.5vw, 1.2rem)", 
+                fontSize: "0.75rem", 
                 color: "#cbd5e1",
                 fontWeight: "600"
               }}>
-                סרוק והצטרף לקריוקי
+                סרוק והצטרף
               </div>
             </div>
 
             {/* QR Code for WhatsApp */}
             <div style={{
-                background: "rgba(15, 23, 42, 0.3)",
-                borderRadius: "20px",
-                padding: "1.5vh 15px",
-                border: "3px solid rgba(0, 202, 255, 0.4)",
+                background: "rgba(15, 23, 42, 0.5)",
+                borderRadius: "16px",
+                padding: "8px",
+                border: "2px solid rgba(0, 202, 255, 0.4)",
                 textAlign: "center",
                 display: "flex",
                 flexDirection: "column",
@@ -410,49 +391,49 @@ export default function Audience() {
               }}
             >
               <div style={{ 
-                fontSize: "clamp(1.3rem, 2vw, 1.6rem)", 
+                fontSize: "0.9rem", 
                 color: "#00caff", 
-                marginBottom: "1vh",
+                marginBottom: "4px",
                 fontWeight: "700",
-                textShadow: "0 0 18px rgba(0, 202, 255, 0.7)"
+                textShadow: "0 0 10px rgba(0, 202, 255, 0.7)"
               }}>
-                💬 קבוצת וואטסאפ
+                💬 וואטסאפ
               </div>
 
               <div style={{
-                width: "clamp(140px, 14vw, 160px)",
-                height: "clamp(140px, 14vw, 160px)",
+                width: "120px",
+                height: "120px",
                 background: "#fff",
-                borderRadius: "16px",
+                borderRadius: "12px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                marginBottom: "1vh",
-                boxShadow: "0 0 25px rgba(0, 202, 255, 0.4)",
-                border: "3px solid #00caff"
+                marginBottom: "4px",
+                boxShadow: "0 0 15px rgba(0, 202, 255, 0.3)",
+                border: "2px solid #00caff"
               }}>
                 <img 
-                  src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15"
+                  src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15"
                   alt="QR Code WhatsApp"
-                  style={{ width: "clamp(130px, 13vw, 150px)", height: "clamp(130px, 13vw, 150px)" }}
+                  style={{ width: "110px", height: "110px" }}
                 />
               </div>
 
               <div style={{ 
-                fontSize: "clamp(1rem, 1.5vw, 1.2rem)", 
+                fontSize: "0.75rem", 
                 color: "#cbd5e1",
                 fontWeight: "600"
               }}>
-                עדכונים על ערבי קריוקי
+                עדכונים
               </div>
             </div>
 
             {/* QR Code for TikTok */}
             <div style={{
-                background: "rgba(15, 23, 42, 0.3)",
-                borderRadius: "20px",
-                padding: "1.5vh 15px",
-                border: "3px solid rgba(255, 0, 80, 0.4)",
+                background: "rgba(15, 23, 42, 0.5)",
+                borderRadius: "16px",
+                padding: "8px",
+                border: "2px solid rgba(255, 0, 80, 0.4)",
                 textAlign: "center",
                 display: "flex",
                 flexDirection: "column",
@@ -463,40 +444,40 @@ export default function Audience() {
               }}
             >
               <div style={{ 
-                fontSize: "clamp(1.3rem, 2vw, 1.6rem)", 
+                fontSize: "0.9rem", 
                 color: "#ff0050", 
-                marginBottom: "1vh",
+                marginBottom: "4px",
                 fontWeight: "700",
-                textShadow: "0 0 18px rgba(255, 0, 80, 0.7)"
+                textShadow: "0 0 10px rgba(255, 0, 80, 0.7)"
               }}>
                 🎵 טיקטוק
               </div>
 
               <div style={{
-                width: "clamp(140px, 14vw, 160px)",
-                height: "clamp(140px, 14vw, 160px)",
+                width: "120px",
+                height: "120px",
                 background: "#fff",
-                borderRadius: "16px",
+                borderRadius: "12px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                marginBottom: "1vh",
-                boxShadow: "0 0 25px rgba(255, 0, 80, 0.4)",
-                border: "3px solid #ff0050"
+                marginBottom: "4px",
+                boxShadow: "0 0 15px rgba(255, 0, 80, 0.3)",
+                border: "2px solid #ff0050"
               }}>
                 <img 
-                  src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=https://www.tiktok.com/@apiryon.club"
+                  src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://www.tiktok.com/@apiryon.club"
                   alt="QR Code TikTok"
-                  style={{ width: "clamp(130px, 13vw, 150px)", height: "clamp(130px, 13vw, 150px)" }}
+                  style={{ width: "110px", height: "110px" }}
                 />
               </div>
 
               <div style={{ 
-                fontSize: "clamp(1rem, 1.5vw, 1.2rem)", 
+                fontSize: "0.75rem", 
                 color: "#cbd5e1",
                 fontWeight: "600"
               }}>
-                תראו את עצמכם בסרטונים! 📸
+                תראו אתכם! 📸
               </div>
             </div>
           </div>
