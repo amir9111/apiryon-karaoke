@@ -20,11 +20,16 @@ export default function MenuButton() {
     fetchUser();
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem('apiryon_user_id');
-    localStorage.removeItem('apiryon_visited');
-    localStorage.removeItem('apiryon_terms_accepted');
-    window.location.reload();
+  const handleLogout = async () => {
+    try {
+      localStorage.removeItem('apiryon_user_id');
+      localStorage.removeItem('apiryon_visited');
+      localStorage.removeItem('apiryon_terms_accepted');
+      await base44.auth.logout();
+    } catch (error) {
+      console.error('Logout error:', error);
+      window.location.reload();
+    }
   };
 
   return (
