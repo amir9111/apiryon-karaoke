@@ -150,7 +150,7 @@ export default function Audience() {
           overflow: "hidden"
         }}>
 
-          {/* Media Display (30 seconds) */}
+          {/* Media Display (30 seconds) - Full Screen */}
           {latestMedia && showMedia && (
             <motion.div
               key="media"
@@ -159,12 +159,16 @@ export default function Audience() {
               exit={{ opacity: 0 }}
               transition={{ duration: 1 }}
               style={{
-                width: "100%",
-                height: "100%",
+                position: "fixed",
+                top: 0,
+                left: 0,
+                width: "100vw",
+                height: "100vh",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                background: "#000"
+                background: "#000",
+                zIndex: 1
               }}
             >
               {latestMedia.media_type === 'video' ? (
@@ -183,7 +187,7 @@ export default function Audience() {
                     width: "100%",
                     height: "100%",
                     display: "block",
-                    objectFit: "contain",
+                    objectFit: "cover",
                     backgroundColor: "#000"
                   }}
                 />
@@ -200,7 +204,7 @@ export default function Audience() {
                     width: "100%",
                     height: "100%",
                     display: "block",
-                    objectFit: "contain"
+                    objectFit: "cover"
                   }}
                 />
               )}
