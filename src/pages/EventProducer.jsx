@@ -24,7 +24,8 @@ export default function EventProducer() {
 
   const styles = [
     { id: "karaoke", label: "🎤 קריוקי", color: "#FFA500" },
-    { id: "mizrahi", label: "🔥 חפלה מזרחית", color: "#FFD700" }
+    { id: "mizrahi", label: "🔥 חפלה מזרחית", color: "#FFD700" },
+    { id: "combined", label: "⭐ קריוקי + מזרחית", color: "#FFD700" }
   ];
 
   const handleChange = (e) => {
@@ -309,7 +310,7 @@ export default function EventProducer() {
               <label style={{ display: "block", fontSize: "0.95rem", fontWeight: "700", color: "#00caff", marginBottom: "12px" }}>
                 בחר סגנון *
               </label>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "10px" }}>
                 {styles.map(style => (
                   <button
                     key={style.id}
@@ -414,19 +415,19 @@ export default function EventProducer() {
 }
 
 function InvitationCard({ refObj, data }) {
-  const accent = "#FFD700"; // זהב בוהק
+  const accent = "#FFD700";
   const primaryText = "#FFFFFF";
   
   return (
     <div
       ref={refObj}
       style={{
-        width: "100%",
-        maxWidth: "1080px",
-        aspectRatio: "1080 / 1350",
+        width: "1080px",
+        height: "1350px",
         position: "relative",
         overflow: "hidden",
-        background: "#000"
+        background: "#000",
+        fontFamily: "'Arial', 'Helvetica', sans-serif"
       }}
     >
       {/* רקע */}
@@ -436,14 +437,14 @@ function InvitationCard({ refObj, data }) {
         backgroundImage: `url(${data.bgImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
-        filter: "brightness(0.6) contrast(1.2)"
+        filter: "brightness(0.5) contrast(1.3) saturate(1.2)"
       }} />
 
-      {/* Overlay */}
+      {/* Overlay כהה */}
       <div style={{
         position: "absolute",
         inset: 0,
-        background: "linear-gradient(180deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.8) 100%)"
+        background: "linear-gradient(180deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.85) 100%)"
       }} />
 
       {/* תוכן */}
@@ -452,202 +453,346 @@ function InvitationCard({ refObj, data }) {
         height: "100%",
         display: "flex",
         flexDirection: "column",
-        padding: "30px 25px"
+        padding: "40px 35px"
       }}>
         
-        {/* לוגו עגול פינה ימין */}
+        {/* לוגו מקצועי פינה ימין */}
         <div style={{
           position: "absolute",
-          top: "20px",
-          right: "20px",
-          width: "80px",
-          height: "80px",
+          top: "30px",
+          right: "30px",
+          width: "120px",
+          height: "120px",
           borderRadius: "50%",
-          background: "rgba(0,0,0,0.8)",
-          border: `3px solid ${accent}`,
+          background: "linear-gradient(135deg, #1a1a1a 0%, #000 100%)",
+          border: "4px solid transparent",
+          backgroundClip: "padding-box",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          fontSize: "2rem",
-          zIndex: 10
+          flexDirection: "column",
+          boxShadow: `0 0 30px ${accent}, 0 0 60px rgba(255, 215, 0, 0.3), inset 0 0 20px rgba(255, 215, 0, 0.1)`,
+          zIndex: 10,
+          position: "relative"
         }}>
-          🎤
+          <div style={{
+            position: "absolute",
+            inset: "-4px",
+            borderRadius: "50%",
+            background: `linear-gradient(135deg, ${accent} 0%, #FFA500 100%)`,
+            zIndex: -1
+          }} />
+          <div style={{
+            fontSize: "2.5rem",
+            marginBottom: "5px"
+          }}>🎤</div>
+          <div style={{
+            fontSize: "0.75rem",
+            fontWeight: "900",
+            background: `linear-gradient(135deg, ${accent}, #FFA500)`,
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            letterSpacing: "0.1em"
+          }}>APIRYON</div>
         </div>
 
-        {/* תאריך גדול פינה שמאל */}
+        {/* תאריך מקצועי פינה שמאל */}
         {data.date && (
           <div style={{
             position: "absolute",
-            top: "20px",
-            left: "20px",
+            top: "30px",
+            left: "30px",
             textAlign: "left",
-            zIndex: 10
+            zIndex: 10,
+            background: "rgba(0,0,0,0.7)",
+            padding: "15px 20px",
+            borderRadius: "12px",
+            border: `2px solid ${accent}`,
+            boxShadow: `0 0 20px ${rgba(accent, 0.4)}`
           }}>
             <div style={{
-              fontSize: "3rem",
+              fontSize: "3.5rem",
               fontWeight: "900",
-              color: accent,
-              lineHeight: 0.9,
-              textShadow: `0 0 20px ${accent}, 0 4px 10px rgba(0,0,0,0.8)`
+              lineHeight: 0.85,
+              background: `linear-gradient(135deg, ${accent}, #FFA500)`,
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              letterSpacing: "-0.02em"
             }}>
               {data.date.split(' ')[1] || data.date}
             </div>
             <div style={{
-              fontSize: "0.9rem",
-              color: primaryText,
+              fontSize: "0.85rem",
+              color: accent,
               fontWeight: "700",
-              marginTop: "5px",
-              letterSpacing: "0.1em"
+              marginTop: "8px",
+              letterSpacing: "0.15em",
+              textShadow: `0 0 10px ${rgba(accent, 0.6)}`
             }}>
-              OPEN DOORS {data.time}
+              OPEN DOORS
             </div>
+            {data.time && (
+              <div style={{
+                fontSize: "1.4rem",
+                color: primaryText,
+                fontWeight: "900",
+                marginTop: "3px",
+                letterSpacing: "0.05em"
+              }}>
+                {data.time}
+              </div>
+            )}
           </div>
         )}
 
-        {/* כותרת ענקית עם אפקט שכבות */}
+        {/* כותרת ענקית מקצועית */}
         <div style={{
-          marginTop: "140px",
-          marginBottom: "30px",
-          position: "relative"
+          marginTop: "180px",
+          marginBottom: "40px",
+          position: "relative",
+          padding: "0 20px"
         }}>
-          {/* שכבה אחורית */}
+          {/* כותרת ראשית */}
           <div style={{
-            fontSize: "4.5rem",
+            fontSize: "5.5rem",
             fontWeight: "900",
-            color: "rgba(255,255,255,0.1)",
-            textTransform: "uppercase",
-            lineHeight: 0.85,
+            lineHeight: 0.9,
             textAlign: "center",
-            position: "absolute",
-            top: "-10px",
-            left: 0,
-            right: 0,
-            zIndex: 0
-          }}>
-            {data.title}
-          </div>
-          {/* שכבה קדמית */}
-          <div style={{
-            fontSize: "4.5rem",
-            fontWeight: "900",
-            color: primaryText,
             textTransform: "uppercase",
-            lineHeight: 0.85,
-            textAlign: "center",
-            position: "relative",
-            zIndex: 1,
-            textShadow: `0 0 30px ${accent}, 0 4px 15px rgba(0,0,0,0.9)`
+            letterSpacing: "-0.02em",
+            background: `linear-gradient(180deg, ${primaryText} 0%, #e0e0e0 100%)`,
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            filter: `drop-shadow(0 0 40px ${accent}) drop-shadow(0 6px 20px rgba(0,0,0,0.9))`,
+            marginBottom: "20px"
           }}>
             {data.title}
           </div>
           
-          {/* תת כותרת */}
+          {/* תת כותרת רגשית */}
           <div style={{
-            fontSize: "1.3rem",
-            color: accent,
+            fontSize: "1.6rem",
+            fontWeight: "400",
             textAlign: "center",
-            marginTop: "15px",
-            fontWeight: "700",
-            textShadow: "0 2px 8px rgba(0,0,0,0.8)"
+            color: primaryText,
+            letterSpacing: "0.05em",
+            opacity: 0.95,
+            textShadow: "0 2px 12px rgba(0,0,0,0.9)",
+            lineHeight: 1.4
           }}>
             {data.subtitle}
           </div>
         </div>
 
-        {/* תמונות זמרים - גדולות ובולטות */}
-        {data.artists && data.artists.length > 0 && (
+        {/* תמונות זמרים / פרטי אירוע */}
+        {data.artists && data.artists.length > 0 ? (
           <div style={{
             display: "flex",
             justifyContent: "center",
-            gap: "20px",
-            marginBottom: "30px",
-            flexWrap: "wrap"
+            gap: "30px",
+            marginBottom: "40px",
+            flexWrap: "wrap",
+            padding: "0 20px"
           }}>
             {data.artists.map((artist, i) => (
-              <div key={i} style={{ textAlign: "center" }}>
-                <img 
-                  src={artist.image} 
-                  alt={artist.name}
-                  style={{
-                    width: data.artists.length === 1 ? "280px" : "180px",
-                    height: data.artists.length === 1 ? "280px" : "180px",
-                    objectFit: "cover",
-                    borderRadius: "50%",
-                    border: `5px solid ${accent}`,
-                    boxShadow: `0 0 30px ${accent}, 0 8px 25px rgba(0,0,0,0.8)`
-                  }}
-                />
+              <div key={i} style={{ textAlign: "center", position: "relative" }}>
                 <div style={{
-                  fontSize: data.artists.length === 1 ? "2.5rem" : "1.8rem",
+                  width: data.artists.length === 1 ? "320px" : "200px",
+                  height: data.artists.length === 1 ? "320px" : "200px",
+                  position: "relative"
+                }}>
+                  <img 
+                    src={artist.image} 
+                    alt={artist.name}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      borderRadius: "50%",
+                      border: `6px solid transparent`,
+                      background: `linear-gradient(#000, #000) padding-box, linear-gradient(135deg, ${accent}, #FFA500) border-box`,
+                      boxShadow: `0 0 40px ${accent}, 0 0 80px ${rgba(accent, 0.4)}, inset 0 0 20px rgba(0,0,0,0.5)`
+                    }}
+                  />
+                </div>
+                <div style={{
+                  fontSize: data.artists.length === 1 ? "2.8rem" : "2rem",
                   fontWeight: "900",
-                  color: accent,
-                  marginTop: "15px",
-                  textShadow: `0 0 20px ${accent}, 0 3px 10px rgba(0,0,0,0.8)`,
-                  textTransform: "uppercase"
+                  marginTop: "20px",
+                  background: `linear-gradient(135deg, ${accent}, #FFA500)`,
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  filter: `drop-shadow(0 0 15px ${accent})`,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.02em"
                 }}>
                   {artist.name}
                 </div>
               </div>
             ))}
           </div>
+        ) : (
+          <div style={{
+            background: "rgba(0,0,0,0.6)",
+            padding: "30px",
+            borderRadius: "16px",
+            marginBottom: "30px",
+            border: `2px solid ${rgba(accent, 0.3)}`,
+            backdropFilter: "blur(10px)"
+          }}>
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "20px",
+              marginBottom: "20px"
+            }}>
+              {data.location && (
+                <div style={{ textAlign: "right" }}>
+                  <div style={{
+                    fontSize: "0.9rem",
+                    color: accent,
+                    fontWeight: "700",
+                    marginBottom: "8px",
+                    letterSpacing: "0.1em"
+                  }}>📍 מיקום</div>
+                  <div style={{
+                    fontSize: "1.8rem",
+                    fontWeight: "700",
+                    color: primaryText
+                  }}>{data.location}</div>
+                </div>
+              )}
+              {data.price && (
+                <div style={{ textAlign: "left" }}>
+                  <div style={{
+                    fontSize: "0.9rem",
+                    color: accent,
+                    fontWeight: "700",
+                    marginBottom: "8px",
+                    letterSpacing: "0.1em"
+                  }}>💰 כניסה</div>
+                  <div style={{
+                    fontSize: "1.8rem",
+                    fontWeight: "700",
+                    color: primaryText
+                  }}>{data.price}</div>
+                </div>
+              )}
+            </div>
+            {data.highlights && data.highlights.length > 0 && (
+              <div>
+                {data.highlights.map((h, i) => (
+                  <div key={i} style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "12px",
+                    marginBottom: "12px",
+                    paddingRight: "10px"
+                  }}>
+                    <div style={{
+                      width: "10px",
+                      height: "10px",
+                      borderRadius: "50%",
+                      background: `linear-gradient(135deg, ${accent}, #FFA500)`,
+                      boxShadow: `0 0 10px ${accent}`,
+                      flexShrink: 0
+                    }} />
+                    <div style={{
+                      fontSize: "1.4rem",
+                      color: primaryText,
+                      fontWeight: "400"
+                    }}>{h}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         )}
 
         <div style={{ flex: 1 }} />
 
-        {/* CTA + מידע */}
+        {/* CTA מקצועי */}
         <div style={{
-          background: `linear-gradient(135deg, ${accent}, #FFA500)`,
-          padding: "25px",
-          borderRadius: "12px",
-          marginBottom: "20px",
-          boxShadow: `0 0 40px ${accent}`
+          background: `linear-gradient(135deg, ${accent} 0%, #FFA500 50%, ${accent} 100%)`,
+          padding: "30px 25px",
+          borderRadius: "16px",
+          marginBottom: "25px",
+          boxShadow: `0 0 50px ${accent}, 0 10px 40px rgba(0,0,0,0.7)`,
+          border: "2px solid rgba(255,255,255,0.1)",
+          position: "relative",
+          overflow: "hidden"
         }}>
           <div style={{
-            fontSize: "2rem",
+            position: "absolute",
+            inset: 0,
+            background: "radial-gradient(circle at 30% 50%, rgba(255,255,255,0.15), transparent 60%)",
+            pointerEvents: "none"
+          }} />
+          
+          <div style={{
+            fontSize: "2.2rem",
             fontWeight: "900",
             color: "#000",
             textAlign: "center",
-            marginBottom: "15px",
-            textTransform: "uppercase"
+            marginBottom: "20px",
+            textTransform: "uppercase",
+            letterSpacing: "0.02em",
+            textShadow: "0 2px 4px rgba(255,255,255,0.3)",
+            position: "relative"
           }}>
             {data.cta}
           </div>
           
           <div style={{
             display: "flex",
-            justifyContent: "space-around",
-            gap: "20px"
+            justifyContent: "center",
+            alignItems: "center",
+            gap: "40px",
+            position: "relative"
           }}>
             {data.phone && (
               <div style={{ textAlign: "center" }}>
                 <div style={{
-                  fontSize: "0.9rem",
-                  color: "rgba(0,0,0,0.7)",
+                  fontSize: "0.85rem",
+                  color: "rgba(0,0,0,0.6)",
                   fontWeight: "700",
-                  marginBottom: "5px"
-                }}>להזמנות</div>
+                  marginBottom: "6px",
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase"
+                }}>📞 להזמנות</div>
                 <div style={{
-                  fontSize: "1.6rem",
+                  fontSize: "1.8rem",
                   fontWeight: "900",
                   color: "#000",
-                  direction: "ltr"
+                  direction: "ltr",
+                  letterSpacing: "0.05em"
                 }}>
                   {data.phone}
                 </div>
               </div>
             )}
             {data.price && (
+              <div style={{
+                width: "2px",
+                height: "50px",
+                background: "rgba(0,0,0,0.2)"
+              }} />
+            )}
+            {data.price && (
               <div style={{ textAlign: "center" }}>
                 <div style={{
-                  fontSize: "0.9rem",
-                  color: "rgba(0,0,0,0.7)",
+                  fontSize: "0.85rem",
+                  color: "rgba(0,0,0,0.6)",
                   fontWeight: "700",
-                  marginBottom: "5px"
-                }}>כניסה</div>
+                  marginBottom: "6px",
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase"
+                }}>💳 כניסה</div>
                 <div style={{
-                  fontSize: "1.6rem",
+                  fontSize: "1.8rem",
                   fontWeight: "900",
-                  color: "#000"
+                  color: "#000",
+                  letterSpacing: "0.05em"
                 }}>
                   {data.price}
                 </div>
@@ -656,145 +801,162 @@ function InvitationCard({ refObj, data }) {
           </div>
         </div>
 
-        {/* Footer - אייקונים + QR */}
+        {/* Footer מקצועי */}
         <div style={{
-          background: "rgba(0,0,0,0.85)",
-          padding: "20px",
-          borderRadius: "10px"
+          background: "rgba(0,0,0,0.9)",
+          padding: "25px 20px",
+          borderRadius: "16px",
+          border: `2px solid ${rgba(accent, 0.3)}`,
+          boxShadow: `0 0 30px ${rgba(accent, 0.2)}`
         }}>
-          {/* שורת אייקונים */}
+          {/* אייקונים סימטריים */}
           <div style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: "25px",
-            marginBottom: "15px"
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: "20px",
+            marginBottom: "20px",
+            maxWidth: "600px",
+            margin: "0 auto 20px"
           }}>
-            <div style={{ textAlign: "center" }}>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px" }}>
               <div style={{
-                width: "45px",
-                height: "45px",
+                width: "55px",
+                height: "55px",
                 borderRadius: "50%",
                 background: "linear-gradient(135deg, #1877f2, #0d65d9)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: "1.5rem",
-                marginBottom: "5px",
-                boxShadow: "0 4px 15px rgba(24, 119, 242, 0.5)"
-              }}>
-                f
-              </div>
+                fontSize: "1.8rem",
+                fontWeight: "900",
+                color: "#fff",
+                boxShadow: "0 6px 20px rgba(24, 119, 242, 0.6)",
+                border: "3px solid rgba(255,255,255,0.1)"
+              }}>f</div>
               <div style={{
                 fontSize: "0.7rem",
-                color: primaryText,
-                fontWeight: "600"
-              }}>הדף שלנו ב-Facebook</div>
+                color: "#1877f2",
+                fontWeight: "700",
+                textAlign: "center",
+                letterSpacing: "0.05em"
+              }}>Facebook</div>
             </div>
 
-            <div style={{ textAlign: "center" }}>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px" }}>
               <div style={{
-                width: "45px",
-                height: "45px",
+                width: "55px",
+                height: "55px",
                 borderRadius: "50%",
                 background: "linear-gradient(135deg, #E1306C, #C13584, #833AB4)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 fontSize: "1.5rem",
-                marginBottom: "5px",
-                boxShadow: "0 4px 15px rgba(193, 53, 132, 0.5)"
-              }}>
-                📷
-              </div>
+                boxShadow: "0 6px 20px rgba(193, 53, 132, 0.6)",
+                border: "3px solid rgba(255,255,255,0.1)"
+              }}>📷</div>
               <div style={{
                 fontSize: "0.7rem",
-                color: primaryText,
-                fontWeight: "600"
-              }}>עקבו אחרינו ב-Instagram</div>
+                color: "#E1306C",
+                fontWeight: "700",
+                textAlign: "center",
+                letterSpacing: "0.05em"
+              }}>Instagram</div>
             </div>
 
-            <div style={{ textAlign: "center" }}>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px" }}>
               <div style={{
-                width: "45px",
-                height: "45px",
+                width: "55px",
+                height: "55px",
                 borderRadius: "50%",
                 background: "linear-gradient(135deg, #25D366, #128C7E)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 fontSize: "1.5rem",
-                marginBottom: "5px",
-                boxShadow: "0 4px 15px rgba(37, 211, 102, 0.5)"
-              }}>
-                💬
-              </div>
+                boxShadow: "0 6px 20px rgba(37, 211, 102, 0.6)",
+                border: "3px solid rgba(255,255,255,0.1)"
+              }}>💬</div>
               <div style={{
                 fontSize: "0.7rem",
-                color: primaryText,
-                fontWeight: "600"
-              }}>הצטרפות לווטסאפ</div>
+                color: "#25D366",
+                fontWeight: "700",
+                textAlign: "center",
+                letterSpacing: "0.05em"
+              }}>WhatsApp</div>
             </div>
           </div>
 
-          {/* שורת QR */}
+          {/* קו מפריד */}
           <div style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: "30px",
-            paddingTop: "15px",
-            borderTop: `2px solid ${accent}`
+            height: "2px",
+            background: `linear-gradient(90deg, transparent, ${accent}, transparent)`,
+            marginBottom: "20px"
+          }} />
+
+          {/* QR סימטרי */}
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "25px",
+            maxWidth: "400px",
+            margin: "0 auto 20px"
           }}>
             <div style={{ textAlign: "center" }}>
               <img 
                 src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15"
                 style={{
-                  width: "85px",
-                  height: "85px",
+                  width: "90px",
+                  height: "90px",
                   background: "#fff",
-                  padding: "5px",
-                  borderRadius: "8px",
-                  border: `2px solid ${accent}`
+                  padding: "6px",
+                  borderRadius: "12px",
+                  border: `3px solid ${accent}`,
+                  boxShadow: `0 0 20px ${rgba(accent, 0.4)}`
                 }}
               />
               <div style={{
                 fontSize: "0.75rem",
                 color: accent,
                 fontWeight: "700",
-                marginTop: "5px"
-              }}>סרוק להצטרפות</div>
+                marginTop: "8px",
+                letterSpacing: "0.05em"
+              }}>הצטרף לקבוצה</div>
             </div>
             
             <div style={{ textAlign: "center" }}>
               <img 
                 src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://www.tiktok.com/@apiryon.club"
                 style={{
-                  width: "85px",
-                  height: "85px",
+                  width: "90px",
+                  height: "90px",
                   background: "#fff",
-                  padding: "5px",
-                  borderRadius: "8px",
-                  border: `2px solid ${accent}`
+                  padding: "6px",
+                  borderRadius: "12px",
+                  border: `3px solid ${accent}`,
+                  boxShadow: `0 0 20px ${rgba(accent, 0.4)}`
                 }}
               />
               <div style={{
                 fontSize: "0.75rem",
                 color: accent,
                 fontWeight: "700",
-                marginTop: "5px"
+                marginTop: "8px",
+                letterSpacing: "0.05em"
               }}>עקבו ב-TikTok</div>
             </div>
           </div>
 
-          {/* שם המקום */}
+          {/* לוגו תחתון */}
           <div style={{
             textAlign: "center",
-            marginTop: "15px",
-            fontSize: "1.1rem",
+            fontSize: "1.2rem",
             fontWeight: "900",
-            color: accent,
+            background: `linear-gradient(135deg, ${accent}, #FFA500)`,
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
             letterSpacing: "0.2em",
-            textShadow: `0 0 15px ${accent}`
+            filter: `drop-shadow(0 0 20px ${accent})`
           }}>
             🎤 APIRYON CLUB 🎤
           </div>
