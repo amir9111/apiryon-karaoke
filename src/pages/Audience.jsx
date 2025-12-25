@@ -40,8 +40,14 @@ export default function Audience() {
     staleTime: 4000,
   });
 
-  const current = requests.find(r => r.status === "performing");
-  const next = requests.filter(r => r.status === "waiting")[0];
+  const { data: mediaUploads = [] } = useQuery({
+    queryKey: ['media-uploads'],
+    queryFn: () => base44.entities.MediaUpload.list('-created_date', 1),
+    refetchInterval: 3000,
+    staleTime: 2000,
+  });
+
+  const latestMedia = mediaUploads[0];
 
   return (
     <div dir="rtl" style={{
@@ -211,131 +217,57 @@ export default function Audience() {
           minHeight: "0"
         }}>
 
-          {/* Current Song - HERO SECTION */}
-          {current ? (
+          {/* Media Display Section */}
+          {latestMedia ? (
             <motion.div
-              key={current.id}
-              initial={{ opacity: 0, scale: 0.8 }}
+              key={latestMedia.id}
+              initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.6, type: "spring" }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.5 }}
               style={{
                 width: "100%",
                 maxWidth: "1200px",
-                marginBottom: "1.5vh",
+                marginBottom: "2vh",
                 position: "relative"
               }}
             >
               <div style={{
-                background: "rgba(15, 23, 42, 0.3)",
+                background: "rgba(15, 23, 42, 0.5)",
                 borderRadius: "24px",
-                padding: "2vh 20px",
-                textAlign: "center",
-                position: "relative",
-                backdropFilter: "blur(30px)",
+                padding: "20px",
                 border: "3px solid rgba(0, 202, 255, 0.4)",
-                boxShadow: "0 0 60px rgba(0, 202, 255, 0.4), inset 0 0 30px rgba(0, 202, 255, 0.05)",
+                boxShadow: "0 0 60px rgba(0, 202, 255, 0.4)",
+                backdropFilter: "blur(30px)",
                 overflow: "hidden"
               }}>
-                <motion.div
-                  animate={{ scale: [1, 1.05, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                  style={{ 
-                    fontSize: "clamp(1.5rem, 2.5vw, 2rem)", 
-                    color: "#00caff", 
-                    marginBottom: "1vh",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.3em",
-                    fontWeight: "900",
-                    textShadow: "0 0 30px rgba(0, 202, 255, 1), 0 0 60px rgba(0, 202, 255, 0.6)",
-                    position: "relative",
-                    zIndex: 10
-                  }}
-                >
-                  🎤 LIVE NOW 🎤
-                </motion.div>
-
-                <div style={{ 
-                  position: "relative",
-                  display: "inline-block",
-                  marginBottom: "1.5vh",
-                  zIndex: 10
-                }}>
-                  {current.photo_url ? (
-                    <img 
-                      src={current.photo_url} 
-                      alt={`תמונת פרופיל של ${current.singer_name}`}
-                      role="img"
-                      aria-label={`${current.singer_name} מבצע כעת על הבמה`}
-                      style={{
-                        width: "clamp(140px, 15vw, 180px)",
-                        height: "clamp(140px, 15vw, 180px)",
-                        borderRadius: "50%",
-                        objectFit: "cover",
-                        border: "5px solid #00caff",
-                        animation: "glow 2s ease-in-out infinite",
-                        position: "relative",
-                        zIndex: 1
-                      }}
-                    />
-                  ) : (
-                    <div style={{
-                      width: "clamp(140px, 15vw, 180px)",
-                      height: "clamp(140px, 15vw, 180px)",
-                      borderRadius: "50%",
-                      background: "linear-gradient(135deg, #00caff, #0088ff)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: "clamp(4rem, 7vw, 6rem)",
-                      border: "5px solid #00caff",
-                      animation: "glow 2s ease-in-out infinite"
-                    }}>
-                      🎤
-                    </div>
-                  )}
-                </div>
-
-                <div style={{ 
-                  fontSize: "clamp(2.5rem, 5vw, 4rem)", 
-                  fontWeight: "900", 
-                  marginBottom: "1vh",
-                  color: "#ffffff",
-                  textShadow: "0 0 35px rgba(0, 202, 255, 0.7), 0 6px 25px rgba(0, 0, 0, 0.9)",
-                  lineHeight: "1.1",
-                  position: "relative",
-                  zIndex: 10
-                }}>
-                  {current.singer_name}
-                </div>
-
-                <div style={{ 
-                  fontSize: "clamp(1.7rem, 3.5vw, 3rem)", 
-                  color: "#e2e8f0",
-                  fontWeight: "700",
-                  marginBottom: "0.8vh",
-                  textShadow: "0 4px 12px rgba(0, 0, 0, 0.6)",
-                  position: "relative",
-                  zIndex: 10
-                }}>
-                  {current.song_title}
-                </div>
-
-                {current.song_artist && (
-                  <div style={{ 
-                    fontSize: "clamp(1.3rem, 2.5vw, 2.2rem)", 
-                    color: "#94a3b8",
-                    fontWeight: "600",
-                    position: "relative",
-                    zIndex: 10
-                  }}>
-                    {current.song_artist}
-                  </div>
+                {latestMedia.media_type === 'video' ? (
+                  <video
+                    src={latestMedia.media_url}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    style={{
+                      width: "100%",
+                      maxHeight: "70vh",
+                      borderRadius: "16px",
+                      objectFit: "contain",
+                      background: "#000"
+                    }}
+                  />
+                ) : (
+                  <img
+                    src={latestMedia.media_url}
+                    alt="תמונה מהאירוע"
+                    style={{
+                      width: "100%",
+                      maxHeight: "70vh",
+                      borderRadius: "16px",
+                      objectFit: "contain"
+                    }}
+                  />
                 )}
-
-                <div style={{ marginTop: "1.5vh", position: "relative", zIndex: 10, transform: "scale(1.3)" }}>
-                  <AudioWave isPlaying={true} />
-                </div>
               </div>
             </motion.div>
           ) : (
@@ -356,7 +288,6 @@ export default function Audience() {
                 overflow: "hidden"
               }}
             >
-              {/* Background Logo - Transparent */}
               <div style={{
                 position: "absolute",
                 top: "50%",
@@ -369,7 +300,6 @@ export default function Audience() {
                 <ApyironLogo size="large" showCircle={true} />
               </div>
 
-              {/* Content on top */}
               <div style={{ position: "relative", zIndex: 1 }}>
                 <motion.div
                   animate={{ scale: [1, 1.2, 1], rotate: [0, 10, -10, 0] }}
@@ -389,105 +319,6 @@ export default function Audience() {
               </div>
             </motion.div>
           )}
-
-          {/* Next Singer */}
-          <div style={{
-            width: "100%",
-            maxWidth: "1200px",
-            marginBottom: "1.5vh"
-          }}>
-            <div style={{
-                background: "rgba(15, 23, 42, 0.3)",
-                borderRadius: "18px",
-                padding: "1.2vh 15px",
-                border: "2px solid rgba(251, 191, 36, 0.5)",
-                textAlign: "center",
-                boxShadow: "0 8px 30px rgba(251, 191, 36, 0.3)",
-                backdropFilter: "blur(30px)"
-              }}>
-              <div style={{ 
-                fontSize: "clamp(1.1rem, 2vw, 1.5rem)", 
-                color: "#fbbf24", 
-                marginBottom: "0.8vh",
-                fontWeight: "800",
-                textShadow: "0 0 20px rgba(251, 191, 36, 0.8)"
-              }}>
-                ⏭️ הבא בתור
-              </div>
-
-              {next ? (
-                <>
-                  {next.photo_url ? (
-                    <img
-                      src={next.photo_url} 
-                      alt={next.singer_name}
-                      style={{
-                        width: "clamp(80px, 10vw, 110px)",
-                        height: "clamp(80px, 10vw, 110px)",
-                        borderRadius: "50%",
-                        objectFit: "cover",
-                        marginBottom: "0.8vh",
-                        border: "3px solid #fbbf24",
-                        boxShadow: "0 0 30px rgba(251, 191, 36, 0.5)"
-                      }}
-                    />
-                  ) : (
-                    <div style={{
-                      width: "clamp(80px, 10vw, 110px)",
-                      height: "clamp(80px, 10vw, 110px)",
-                      borderRadius: "50%",
-                      background: "linear-gradient(135deg, #fbbf24, #f59e0b)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: "clamp(2.5rem, 5vw, 3.5rem)",
-                      marginBottom: "0.8vh",
-                      margin: "0 auto 0.8vh",
-                      border: "3px solid #fbbf24",
-                      boxShadow: "0 0 30px rgba(251, 191, 36, 0.5)"
-                    }}>
-                      🎤
-                    </div>
-                  )}
-
-                  <div style={{ 
-                    fontSize: "clamp(1.4rem, 3vw, 2.2rem)", 
-                    fontWeight: "900", 
-                    marginBottom: "0.5vh",
-                    color: "#ffffff",
-                    textShadow: "0 0 25px rgba(251, 191, 36, 0.6)"
-                  }}>
-                    {next.singer_name}
-                  </div>
-                  <div style={{ 
-                    fontSize: "clamp(1.1rem, 2.2vw, 1.7rem)", 
-                    color: "#cbd5e1",
-                    fontWeight: "700"
-                  }}>
-                    {next.song_title}
-                  </div>
-                  {next.song_artist && (
-                    <div style={{ 
-                      fontSize: "clamp(0.95rem, 1.8vw, 1.4rem)", 
-                      color: "#94a3b8", 
-                      marginTop: "0.3vh" 
-                    }}>
-                      {next.song_artist}
-                    </div>
-                  )}
-                </>
-              ) : (
-                <div style={{ 
-                  color: "#64748b", 
-                  fontSize: "clamp(1.1rem, 2vw, 1.5rem)", 
-                  padding: "1.5vh 15px",
-                  fontWeight: "600"
-                }}>
-                  אין ממתינים כרגע
-                </div>
-              )}
-            </div>
-          </div>
 
           {/* QR Codes Row */}
           <div style={{ 
