@@ -42,12 +42,18 @@ export default function Audience() {
 
   const { data: mediaUploads = [] } = useQuery({
     queryKey: ['media-uploads'],
-    queryFn: () => base44.entities.MediaUpload.list('-created_date', 1),
+    queryFn: async () => {
+      const data = await base44.entities.MediaUpload.list('-created_date', 1);
+      console.log('📸 Media uploads:', data);
+      return data;
+    },
     refetchInterval: 3000,
     staleTime: 2000,
   });
 
   const latestMedia = mediaUploads[0];
+  
+  console.log('🎬 Latest media:', latestMedia);
 
   return (
     <div dir="rtl" style={{
