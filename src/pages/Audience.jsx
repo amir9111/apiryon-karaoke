@@ -200,7 +200,8 @@ export default function Audience() {
                     willChange: "transform",
                     backfaceVisibility: "hidden",
                     perspective: "1000px",
-                    transform: "translateZ(0)"
+                    transform: "translateZ(0)",
+                    filter: "contrast(1.1) brightness(1.05) saturate(1.15)"
                   }}
                 />
               ) : (
@@ -220,7 +221,8 @@ export default function Audience() {
                     display: "block",
                     objectFit: "cover",
                     backgroundColor: "#000",
-                    imageRendering: "high-quality"
+                    imageRendering: "high-quality",
+                    filter: "contrast(1.15) brightness(1.08) saturate(1.2)"
                   }}
                 />
               )}
