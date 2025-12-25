@@ -253,13 +253,13 @@ export default function Audience() {
                     width: "100vw",
                     height: "100vh",
                     display: "block",
-                    objectFit: "cover",
+                    objectFit: "contain",
                     objectPosition: "center",
                     backgroundColor: "#000",
                     imageRendering: "-webkit-optimize-contrast",
                     WebkitBackfaceVisibility: "hidden",
                     backfaceVisibility: "hidden",
-                    transform: "translateZ(0)",
+                    transform: "translateZ(0) scale(1.15)",
                     willChange: "transform"
                   }}
                 />
