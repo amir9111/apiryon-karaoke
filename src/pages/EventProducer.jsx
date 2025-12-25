@@ -467,14 +467,15 @@ function InvitationCard({ refObj, data }) {
         {/* תג LIMITED EDITION */}
         <div style={{
           position: "absolute",
-          top: "15px",
-          left: "15px",
+          top: "200px",
+          right: "15px",
           background: "linear-gradient(135deg, #000 0%, #1a1a1a 100%)",
           padding: "8px 16px",
           borderRadius: "8px",
           border: `2px solid ${accent}`,
           boxShadow: `0 0 20px ${accent}, inset 0 0 10px rgba(255, 215, 0, 0.1)`,
-          zIndex: 20
+          zIndex: 20,
+          transform: "rotate(-5deg)"
         }}>
           <div style={{
             fontSize: "0.65rem",
@@ -1144,7 +1145,7 @@ function InvitationCard({ refObj, data }) {
                   fontWeight: "700",
                   fontStyle: "italic"
                 }}>
-                  🌟 מאורש - מארח שלכם לערב מושלם
+                  🌟 מארח - המארח שלכם לערב מושלם
                 </div>
               </div>
             )}
