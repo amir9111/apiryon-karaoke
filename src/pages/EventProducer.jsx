@@ -742,14 +742,61 @@ function InvitationCard({ refObj, data }) {
             {data.eventName}
           </div>
           
-          {/* קו זהב דקורטיבי */}
-          <div style={{
-            width: "200px",
-            height: "3px",
-            background: `linear-gradient(90deg, transparent, ${accent}, transparent)`,
-            margin: "0 auto 25px",
-            boxShadow: `0 0 20px ${accent}`
-          }} />
+          {/* קו זהב דקורטיבי מעוטר */}
+          <div style={{ 
+            display: "flex", 
+            alignItems: "center", 
+            justifyContent: "center", 
+            gap: "10px",
+            margin: "0 auto 25px"
+          }}>
+            <div style={{
+              width: "0",
+              height: "0",
+              borderLeft: "6px solid transparent",
+              borderRight: "6px solid transparent",
+              borderBottom: `10px solid ${accent}`,
+              filter: `drop-shadow(0 0 8px ${accent})`,
+              position: "relative"
+            }}>
+              <div style={{
+                position: "absolute",
+                top: "10px",
+                left: "-6px",
+                width: "0",
+                height: "0",
+                borderLeft: "6px solid transparent",
+                borderRight: "6px solid transparent",
+                borderTop: `6px solid ${accent}`
+              }} />
+            </div>
+            <div style={{
+              width: "150px",
+              height: "3px",
+              background: `linear-gradient(90deg, transparent, ${accent}, transparent)`,
+              boxShadow: `0 0 20px ${accent}`
+            }} />
+            <div style={{
+              width: "0",
+              height: "0",
+              borderLeft: "6px solid transparent",
+              borderRight: "6px solid transparent",
+              borderBottom: `10px solid ${accent}`,
+              filter: `drop-shadow(0 0 8px ${accent})`,
+              position: "relative"
+            }}>
+              <div style={{
+                position: "absolute",
+                top: "10px",
+                left: "-6px",
+                width: "0",
+                height: "0",
+                borderLeft: "6px solid transparent",
+                borderRight: "6px solid transparent",
+                borderTop: `6px solid ${accent}`
+              }} />
+            </div>
+          </div>
           
           {/* תת כותרת משודרגת */}
           <div style={{
