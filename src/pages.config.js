@@ -7,6 +7,7 @@ import Profile from './pages/Profile';
 import QueueManager from './pages/QueueManager';
 import SongManager from './pages/SongManager';
 import Terms from './pages/Terms';
+import ManualQueue from './pages/ManualQueue';
 
 
 export const PAGES = {
@@ -19,6 +20,7 @@ export const PAGES = {
     "QueueManager": QueueManager,
     "SongManager": SongManager,
     "Terms": Terms,
+    "ManualQueue": ManualQueue,
 }
 
 export const pagesConfig = {
