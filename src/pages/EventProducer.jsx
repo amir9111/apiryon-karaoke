@@ -94,15 +94,31 @@ JSON בלבד.
     }
   };
 
-  const exportPng = async (w, h, filename) => {
+  const exportPng = async (format) => {
     if (!cardRef.current) return;
     setIsExporting(true);
     try {
+      let width, height, filename;
+      
+      if (format === 'whatsapp') {
+        width = 1080;
+        height = 1080; // ריבועי לווטסאפ
+        filename = 'apiryon-whatsapp.png';
+      } else if (format === 'story') {
+        width = 1080;
+        height = 1920; // 9:16 לסטורי
+        filename = 'apiryon-story.png';
+      } else {
+        width = 1080;
+        height = 1350; // ברירת מחדל
+        filename = 'apiryon-invitation.png';
+      }
+      
       const dataUrl = await toPng(cardRef.current, {
         cacheBust: true,
         pixelRatio: 3,
-        width: w,
-        height: h
+        width,
+        height
       });
       const a = document.createElement("a");
       a.href = dataUrl;
@@ -332,10 +348,10 @@ JSON בלבד.
         {invitation && (
           <div>
             <div style={{ display: "flex", gap: "12px", marginBottom: "20px", flexWrap: "wrap", justifyContent: "center" }}>
-              <button onClick={() => exportPng(1080, 1350, "apiryon-invitation.png")} disabled={isExporting} style={btnStyle("green")}>
-                <Download size={18} /> הורד תמונה
+              <button onClick={() => exportPng('whatsapp')} disabled={isExporting} style={btnStyle("green")}>
+                <Download size={18} /> הורד לווטסאפ
               </button>
-              <button onClick={() => exportPng(1080, 1920, "apiryon-story.png")} disabled={isExporting} style={btnStyle("purple")}>
+              <button onClick={() => exportPng('story')} disabled={isExporting} style={btnStyle("purple")}>
                 <Download size={18} /> הורד סטורי
               </button>
               <button onClick={shareImage} style={btnStyle("cyanOutline")}>
@@ -363,14 +379,19 @@ function InvitationCard({ refObj, data }) {
     <div
       ref={refObj}
       style={{
-        width: "min(1080px, 100%)",
+        width: "100%",
+        maxWidth: "min(1080px, 100vw)",
         aspectRatio: "1080 / 1350",
         position: "relative",
-        borderRadius: "24px",
+        borderRadius: "clamp(16px, 3vw, 24px)",
         overflow: "hidden",
         background: "#000",
-        border: `3px solid ${rgba(accent, 0.4)}`,
-        boxShadow: `0 0 60px ${rgba(accent, 0.2)}`
+        border: `4px solid ${rgba(accent, 0.5)}`,
+        boxShadow: `
+          0 0 60px ${rgba(accent, 0.3)},
+          0 0 120px ${rgba(accent, 0.15)},
+          inset 0 0 80px ${rgba(accent, 0.08)}
+        `
       }}
     >
       {/* רקע שנוצר */}
@@ -422,15 +443,25 @@ function InvitationCard({ refObj, data }) {
         </div>
       </div>
 
-      {/* שכבת קריאות */}
+      {/* שכבות עומק ויוקרה */}
       <div style={{
         position: "absolute",
         inset: 0,
         background: `
-          radial-gradient(circle at 30% 25%, ${rgba(accent, 0.35)}, transparent 55%),
-          radial-gradient(circle at 70% 80%, ${rgba(accent, 0.25)}, transparent 50%),
-          linear-gradient(180deg, rgba(0,0,0,.65) 0%, rgba(0,0,0,.3) 45%, rgba(0,0,0,.75) 100%)
+          radial-gradient(circle at 30% 25%, ${rgba(accent, 0.4)}, transparent 55%),
+          radial-gradient(circle at 70% 80%, ${rgba(accent, 0.3)}, transparent 50%),
+          radial-gradient(circle at 50% 50%, rgba(0,0,0,0.2), transparent 70%),
+          linear-gradient(180deg, rgba(0,0,0,.7) 0%, rgba(0,0,0,.25) 45%, rgba(0,0,0,.8) 100%)
         `
+      }} />
+      
+      {/* טקסטורת noise לעומק */}
+      <div style={{
+        position: "absolute",
+        inset: 0,
+        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E")`,
+        opacity: 0.15,
+        mixBlendMode: "overlay"
       }} />
 
       {/* תוכן חופשי */}
@@ -440,7 +471,7 @@ function InvitationCard({ refObj, data }) {
         padding: "clamp(35px, 5.5%, 65px)"
       }}>
         
-        {/* כותרת ענקית */}
+        {/* כותרת ענקית עם אפקטים */}
         <div style={{
           transform: "rotate(-3deg)",
           marginBottom: "clamp(18px, 3%, 30px)",
@@ -448,25 +479,35 @@ function InvitationCard({ refObj, data }) {
           zIndex: 2
         }}>
           <h1 style={{
-            fontSize: "clamp(3.5rem, 8vw, 6.5rem)",
+            fontSize: "clamp(3rem, 7vw, 6rem)",
             fontWeight: "900",
             lineHeight: 0.95,
             textAlign: "right",
             margin: 0,
             textTransform: "uppercase",
-            color: "#fff",
-            textShadow: `
-              4px 4px 0px ${rgba(accent, 0.9)},
-              8px 8px 0px rgba(0,0,0,0.5),
-              0 0 60px ${rgba(accent, 0.7)},
-              0 0 100px ${rgba(accent, 0.4)}
+            background: `linear-gradient(135deg, #fff 0%, ${accent} 40%, #FFD700 80%, #fff 100%)`,
+            backgroundSize: "200% auto",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            filter: `
+              drop-shadow(4px 4px 0px ${rgba(accent, 0.9)})
+              drop-shadow(8px 8px 0px rgba(0,0,0,0.5))
+              drop-shadow(0 0 60px ${rgba(accent, 0.8)})
+              drop-shadow(0 0 100px ${rgba(accent, 0.5)})
             `,
             letterSpacing: "-0.02em",
-            WebkitTextStroke: `2px ${rgba(accent, 0.3)}`
+            animation: "shimmer 3s linear infinite"
           }}>
             {data.title}
           </h1>
         </div>
+        
+        <style>{`
+          @keyframes shimmer {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+          }
+        `}</style>
 
         {/* תת-כותרת */}
         <div style={{
@@ -622,31 +663,43 @@ function InvitationCard({ refObj, data }) {
           </div>
         )}
 
-        {/* CTA ענק */}
+        {/* CTA ענק מנצנץ */}
         <div style={{
           position: "relative",
           transform: "rotate(1.5deg)"
         }}>
           <div style={{
-            background: `linear-gradient(135deg, ${accent}, #FFD700)`,
+            background: `linear-gradient(135deg, ${accent} 0%, #FFD700 50%, ${accent} 100%)`,
+            backgroundSize: "200% auto",
             padding: "clamp(20px, 4%, 30px) clamp(18px, 3.5%, 28px)",
             borderRadius: "20px",
             textAlign: "center",
-            fontSize: "clamp(1.8rem, 3.8vw, 3rem)",
+            fontSize: "clamp(1.6rem, 3.5vw, 2.8rem)",
             fontWeight: "900",
             color: "#000",
             textTransform: "uppercase",
             boxShadow: `
-              5px 5px 0px rgba(0,0,0,0.4),
-              0 0 50px ${rgba(accent, 0.7)},
-              inset 0 3px 15px rgba(255,255,255,0.3)
+              5px 5px 0px rgba(0,0,0,0.5),
+              10px 10px 0px rgba(0,0,0,0.2),
+              0 0 60px ${rgba(accent, 0.9)},
+              0 0 100px ${rgba(accent, 0.6)},
+              inset 0 4px 20px rgba(255,255,255,0.4),
+              inset 0 -4px 15px rgba(0,0,0,0.2)
             `,
-            border: "4px solid #000",
-            letterSpacing: "0.02em"
+            border: `5px solid ${rgba(accent, 0.8)}`,
+            letterSpacing: "0.03em",
+            animation: "pulse 2s ease-in-out infinite, shimmer 3s linear infinite"
           }}>
             {data.cta}
           </div>
         </div>
+        
+        <style>{`
+          @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+          }
+        `}</style>
 
         {/* לוגו קטן למטה */}
         <div style={{
