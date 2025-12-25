@@ -179,22 +179,6 @@ export default function ManualQueue() {
                   }}></div>
                 </div>
 
-                {/* שם הזמר */}
-                <div>
-                  <div style={{
-                    fontSize: "0.75rem",
-                    fontWeight: "700",
-                    color: "#00caff",
-                    marginBottom: "2mm"
-                  }}>
-                    שם הזמר:
-                  </div>
-                  <div style={{
-                    borderBottom: "2px solid #cbd5e1",
-                    height: "6mm"
-                  }}></div>
-                </div>
-
                 {/* שם השיר */}
                 <div>
                   <div style={{
@@ -204,6 +188,22 @@ export default function ManualQueue() {
                     marginBottom: "2mm"
                   }}>
                     שם השיר:
+                  </div>
+                  <div style={{
+                    borderBottom: "2px solid #cbd5e1",
+                    height: "6mm"
+                  }}></div>
+                </div>
+
+                {/* שם הזמר */}
+                <div>
+                  <div style={{
+                    fontSize: "0.75rem",
+                    fontWeight: "700",
+                    color: "#00caff",
+                    marginBottom: "2mm"
+                  }}>
+                    שם הזמר:
                   </div>
                   <div style={{
                     borderBottom: "2px solid #cbd5e1",
