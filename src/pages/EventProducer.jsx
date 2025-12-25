@@ -597,7 +597,7 @@ function InvitationCard({ refObj, data }) {
               opacity: 0.3,
               filter: "blur(8px)"
             }} />
-            
+
             <div style={{
               position: "relative",
               background: "rgba(0,0,0,0.85)",
@@ -643,9 +643,50 @@ function InvitationCard({ refObj, data }) {
                   {data.time}
                 </div>
               )}
+              <div style={{
+                fontSize: "0.7rem",
+                color: "rgba(255, 215, 0, 0.8)",
+                marginTop: "8px",
+                fontWeight: "600",
+                textAlign: "center"
+              }}>
+                🕐 דלתות נפתחות שעה לפני
+              </div>
             </div>
           </div>
         )}
+
+        {/* תג גיל מינימום - פינה ימנית עליונה */}
+        <div style={{
+          position: "absolute",
+          top: "190px",
+          right: "30px",
+          zIndex: 10
+        }}>
+          <div style={{
+            background: "rgba(0,0,0,0.9)",
+            padding: "10px 18px",
+            borderRadius: "12px",
+            border: `2px solid ${accent}`,
+            boxShadow: `0 0 20px ${rgba(accent, 0.4)}`,
+            textAlign: "center"
+          }}>
+            <div style={{
+              fontSize: "1.8rem",
+              fontWeight: "900",
+              color: accent,
+              lineHeight: 1,
+              marginBottom: "4px",
+              textShadow: `0 0 15px ${accent}`
+            }}>18+</div>
+            <div style={{
+              fontSize: "0.6rem",
+              color: "rgba(255, 215, 0, 0.7)",
+              fontWeight: "600",
+              letterSpacing: "0.05em"
+            }}>גיל מינימום</div>
+          </div>
+        </div>
 
         {/* כותרת HERO דרמטית - רבודה */}
         <div style={{
@@ -906,6 +947,12 @@ function InvitationCard({ refObj, data }) {
                   color: primaryText,
                   textShadow: "0 2px 8px rgba(0,0,0,0.7)"
                 }}>{data.location}</div>
+                <div style={{
+                  fontSize: "0.65rem",
+                  color: "rgba(255, 215, 0, 0.7)",
+                  marginTop: "4px",
+                  fontWeight: "600"
+                }}>🅿️ חניה בשפע ובחינם</div>
               </div>
             </div>
           )}
@@ -943,6 +990,12 @@ function InvitationCard({ refObj, data }) {
                   color: primaryText,
                   textShadow: "0 2px 8px rgba(0,0,0,0.7)"
                 }}>{data.price}</div>
+                <div style={{
+                  fontSize: "0.65rem",
+                  color: "rgba(255, 215, 0, 0.7)",
+                  marginTop: "4px",
+                  fontWeight: "600"
+                }}>👔 לבוש חגיגי</div>
               </div>
             </div>
           )}
@@ -1009,7 +1062,7 @@ function InvitationCard({ refObj, data }) {
               {data.cta}
             </div>
             
-            {/* טלפון בלבד */}
+            {/* טלפון ומאורש */}
             {data.phone && (
               <div style={{
                 textAlign: "center",
@@ -1028,16 +1081,25 @@ function InvitationCard({ refObj, data }) {
                   marginBottom: "5px",
                   letterSpacing: "0.12em",
                   textTransform: "uppercase"
-                }}>📞 להזמנות</div>
+                }}>📞 להזמנות ושולחנות VIP</div>
                 <div style={{
                   fontSize: "1.6rem",
                   fontWeight: "900",
                   color: "#000",
                   direction: "ltr",
                   letterSpacing: "0.05em",
-                  textShadow: "0 1px 3px rgba(255,255,255,0.3)"
+                  textShadow: "0 1px 3px rgba(255,255,255,0.3)",
+                  marginBottom: "6px"
                 }}>
                   {data.phone}
+                </div>
+                <div style={{
+                  fontSize: "0.7rem",
+                  color: "rgba(0,0,0,0.6)",
+                  fontWeight: "700",
+                  fontStyle: "italic"
+                }}>
+                  🌟 מאורש - מארח שלכם לערב מושלם
                 </div>
               </div>
             )}
