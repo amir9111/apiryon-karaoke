@@ -16,11 +16,12 @@ export default function PWASetup() {
       <link rel="canonical" href={siteUrl} />
       
       {/* PWA */}
+      <link rel="manifest" href="/manifest.json" crossOrigin="use-credentials" />
       <meta name="theme-color" content="#00caff" />
       <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#020617" />
       <meta name="apple-mobile-web-app-capable" content="yes" />
       <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-      <meta name="apple-mobile-web-app-title" content="Apiryon" />
+      <meta name="apple-mobile-web-app-title" content="האפריון" />
       <link rel="apple-touch-icon" href={iconSvg} />
       <link rel="icon" href={iconSvg} />
       <meta name="mobile-web-app-capable" content="yes" />

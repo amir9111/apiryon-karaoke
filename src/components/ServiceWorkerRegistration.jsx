@@ -5,30 +5,39 @@ export default function ServiceWorkerRegistration() {
     if (typeof window === 'undefined' || !('serviceWorker' in navigator)) return;
 
     const manifest = {
-      name: "Apiryon - מערכת קריוקי",
-      short_name: "Apiryon",
-      description: "מערכת ניהול קריוקי מתקדמת",
+      name: "האפריון - מועדון קריוקי",
+      short_name: "האפריון",
+      description: "מערכת ניהול תור קריוקי ומסכי קהל למועדון האפריון",
       start_url: "/",
       scope: "/",
       display: "standalone",
       background_color: "#020617",
       theme_color: "#00caff",
-      orientation: "portrait",
+      orientation: "any",
+      lang: "he",
+      dir: "rtl",
+      categories: ["entertainment", "music", "lifestyle"],
       icons: [
         {
-          src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect fill='%23020617' width='512' height='512'/%3E%3Ccircle cx='256' cy='256' r='200' fill='none' stroke='%2300caff' stroke-width='16'/%3E%3Ctext x='256' y='280' font-family='Arial' font-size='70' font-weight='bold' text-anchor='middle' fill='%23ffffff'%3EAPIRYON%3C/text%3E%3C/svg%3E",
-          sizes: "512x512",
-          type: "image/svg+xml",
-          purpose: "any"
-        },
-        {
-          src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect fill='%23020617' width='192' height='192'/%3E%3Ccircle cx='96' cy='96' r='75' fill='none' stroke='%2300caff' stroke-width='6'/%3E%3Ctext x='96' y='105' font-family='Arial' font-size='26' font-weight='bold' text-anchor='middle' fill='%23ffffff'%3EAPIRYON%3C/text%3E%3C/svg%3E",
+          src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Cdefs%3E%3CradialGradient id='g' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='0%25' style='stop-color:%2300caff;stop-opacity:1'/%3E%3Cstop offset='100%25' style='stop-color:%230088ff;stop-opacity:1'/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle cx='96' cy='96' r='88' fill='url(%23g)'/%3E%3Ctext x='96' y='115' text-anchor='middle' font-size='36' font-weight='900' fill='%23ffffff' font-family='Arial,sans-serif'%3EAPIRYON%3C/text%3E%3C/svg%3E",
           sizes: "192x192",
           type: "image/svg+xml",
           purpose: "any"
         },
         {
-          src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect fill='%23020617' width='512' height='512'/%3E%3Ccircle cx='256' cy='256' r='200' fill='none' stroke='%2300caff' stroke-width='16'/%3E%3Ctext x='256' y='280' font-family='Arial' font-size='70' font-weight='bold' text-anchor='middle' fill='%23ffffff'%3EAPIRYON%3C/text%3E%3C/svg%3E",
+          src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3CradialGradient id='g' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='0%25' style='stop-color:%2300caff;stop-opacity:1'/%3E%3Cstop offset='100%25' style='stop-color:%230088ff;stop-opacity:1'/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle cx='256' cy='256' r='240' fill='url(%23g)'/%3E%3Ctext x='256' y='300' text-anchor='middle' font-size='90' font-weight='900' fill='%23ffffff' font-family='Arial,sans-serif'%3EAPIRYON%3C/text%3E%3C/svg%3E",
+          sizes: "512x512",
+          type: "image/svg+xml",
+          purpose: "any"
+        },
+        {
+          src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Cdefs%3E%3CradialGradient id='g' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='0%25' style='stop-color:%2300caff;stop-opacity:1'/%3E%3Cstop offset='100%25' style='stop-color:%230088ff;stop-opacity:1'/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle cx='96' cy='96' r='88' fill='url(%23g)'/%3E%3Ctext x='96' y='115' text-anchor='middle' font-size='36' font-weight='900' fill='%23ffffff' font-family='Arial,sans-serif'%3EAPIRYON%3C/text%3E%3C/svg%3E",
+          sizes: "192x192",
+          type: "image/svg+xml",
+          purpose: "maskable"
+        },
+        {
+          src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3CradialGradient id='g' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='0%25' style='stop-color:%2300caff;stop-opacity:1'/%3E%3Cstop offset='100%25' style='stop-color:%230088ff;stop-opacity:1'/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle cx='256' cy='256' r='240' fill='url(%23g)'/%3E%3Ctext x='256' y='300' text-anchor='middle' font-size='90' font-weight='900' fill='%23ffffff' font-family='Arial,sans-serif'%3EAPIRYON%3C/text%3E%3C/svg%3E",
           sizes: "512x512",
           type: "image/svg+xml",
           purpose: "maskable"
@@ -37,7 +46,7 @@ export default function ServiceWorkerRegistration() {
     };
 
     const swCode = `
-      const CACHE_NAME = 'apiryon-v7';
+      const CACHE_NAME = 'apiryon-v8';
       const MANIFEST = ${JSON.stringify(manifest)};
       
       self.addEventListener('install', (event) => {
