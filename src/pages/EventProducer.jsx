@@ -47,23 +47,26 @@ export default function EventProducer() {
       const bgPrompt = getBgPrompt(formData.style, formData.eventName);
       const { url: bgImage } = await base44.integrations.Core.GenerateImage({ prompt: bgPrompt });
 
-      // ייצור טקסט שיווקי
+      // ייצור תוכן פרימיום למועדון
       const textPrompt = `
-אתה קופירייטר למועדונים בישראל.
-צור טקסט שיווקי קצר ומושך לאירוע עם הפרטים הבאים:
+אתה מעצב פליירים ברמת "מועדוני-על" בישראל.
+
+חוקים מחייבים:
+- Title: גדול מאוד, 2-4 מילים בלבד, חד וחזק
+- Subtitle: שורה אחת קצרה מתחת לכותרת
+- Highlights: בדיוק 3 שורות קצרות, כל אחת 3-6 מילים
+- CTA: משפט אחד עם FOMO עדין (לא נואש)
+
+פרטי האירוע:
 - שם: ${formData.eventName}
 - סגנון: ${selectedStyle.label}
 - תאריך: ${formData.date || "לא צוין"}
 - שעה: ${formData.time || "לא צוין"}
 - מיקום: ${formData.location || "לא צוין"}
 
-החזר:
-- כותרת קצרה וחזקה (3-5 מילים)
-- תת-כותרת מושכת
-- 3-4 Highlights
-- CTA עם FOMO עדין
+סגנון: נקי, יוקרתי, לא ילדותי. בלי emoji בטקסט עצמו.
 
-JSON בלבד.
+החזר JSON בלבד.
 `;
 
       const textResult = await base44.integrations.Core.InvokeLLM({
@@ -71,12 +74,18 @@ JSON בלבד.
         response_json_schema: {
           type: "object",
           properties: {
-            title: { type: "string" },
-            subtitle: { type: "string" },
-            highlights: { type: "array", items: { type: "string" } },
-            cta: { type: "string" }
+            title: { type: "string", description: "2-4 מילים חזקות" },
+            subtitle: { type: "string", description: "שורה אחת קצרה" },
+            highlights: { 
+              type: "array", 
+              items: { type: "string" },
+              minItems: 3,
+              maxItems: 3,
+              description: "בדיוק 3 highlights קצרים"
+            },
+            cta: { type: "string", description: "משפט אחד עם FOMO עדין" }
           },
-          required: ["title", "subtitle", "cta"]
+          required: ["title", "subtitle", "highlights", "cta"]
         }
       });
 
@@ -373,7 +382,8 @@ JSON בלבד.
 }
 
 function InvitationCard({ refObj, data }) {
-  const accent = data.accentColor;
+  const accent = "#D6B36A"; // זהב פרימיום קבוע
+  const primaryText = "#FFFFFF"; // לבן מלא
   
   return (
     <div
@@ -386,12 +396,8 @@ function InvitationCard({ refObj, data }) {
         borderRadius: "clamp(16px, 3vw, 24px)",
         overflow: "hidden",
         background: "#000",
-        border: `4px solid ${rgba(accent, 0.5)}`,
-        boxShadow: `
-          0 0 60px ${rgba(accent, 0.3)},
-          0 0 120px ${rgba(accent, 0.15)},
-          inset 0 0 80px ${rgba(accent, 0.08)}
-        `
+        border: `3px solid ${accent}`,
+        boxShadow: `0 0 40px ${rgba(accent, 0.25)}`
       }}
     >
       {/* רקע שנוצר */}
@@ -443,203 +449,160 @@ function InvitationCard({ refObj, data }) {
         </div>
       </div>
 
-      {/* שכבות עומק ויוקרה */}
+      {/* Overlay כהה לקריאות */}
       <div style={{
         position: "absolute",
         inset: 0,
-        background: `
-          radial-gradient(circle at 30% 25%, ${rgba(accent, 0.4)}, transparent 55%),
-          radial-gradient(circle at 70% 80%, ${rgba(accent, 0.3)}, transparent 50%),
-          radial-gradient(circle at 50% 50%, rgba(0,0,0,0.2), transparent 70%),
-          linear-gradient(180deg, rgba(0,0,0,.7) 0%, rgba(0,0,0,.25) 45%, rgba(0,0,0,.8) 100%)
-        `
-      }} />
-      
-      {/* טקסטורת noise לעומק */}
-      <div style={{
-        position: "absolute",
-        inset: 0,
-        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E")`,
-        opacity: 0.15,
-        mixBlendMode: "overlay"
+        background: "linear-gradient(180deg, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.45) 50%, rgba(0,0,0,0.75) 100%)"
       }} />
 
-      {/* תוכן חופשי */}
+      {/* תוכן מקצועי */}
       <div style={{
         position: "relative",
         height: "100%",
-        padding: "clamp(35px, 5.5%, 65px)"
+        display: "flex",
+        flexDirection: "column",
+        padding: "clamp(40px, 6%, 70px) clamp(30px, 5%, 50px)"
       }}>
         
-        {/* כותרת ענקית עם אפקטים */}
+        {/* כותרת ראשית - נקייה ומרשימה */}
         <div style={{
-          transform: "rotate(-3deg)",
-          marginBottom: "clamp(18px, 3%, 30px)",
-          position: "relative",
-          zIndex: 2
+          textAlign: "center",
+          marginBottom: "clamp(15px, 2.5%, 25px)"
         }}>
           <h1 style={{
-            fontSize: "clamp(3rem, 7vw, 6rem)",
+            fontSize: "clamp(3.5rem, 8vw, 7rem)",
             fontWeight: "900",
-            lineHeight: 0.95,
-            textAlign: "right",
+            lineHeight: 0.9,
             margin: 0,
             textTransform: "uppercase",
-            background: `linear-gradient(135deg, #fff 0%, ${accent} 40%, #FFD700 80%, #fff 100%)`,
-            backgroundSize: "200% auto",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            filter: `
-              drop-shadow(4px 4px 0px ${rgba(accent, 0.9)})
-              drop-shadow(8px 8px 0px rgba(0,0,0,0.5))
-              drop-shadow(0 0 60px ${rgba(accent, 0.8)})
-              drop-shadow(0 0 100px ${rgba(accent, 0.5)})
-            `,
-            letterSpacing: "-0.02em",
-            animation: "shimmer 3s linear infinite"
+            color: primaryText,
+            textShadow: "0 4px 12px rgba(0,0,0,0.6)",
+            letterSpacing: "0.02em"
           }}>
             {data.title}
           </h1>
         </div>
-        
-        <style>{`
-          @keyframes shimmer {
-            0% { background-position: 0% center; }
-            100% { background-position: 200% center; }
-          }
-        `}</style>
 
         {/* תת-כותרת */}
         <div style={{
-          fontSize: "clamp(1.8rem, 3.8vw, 3rem)",
-          fontWeight: "900",
-          color: accent,
-          textAlign: "right",
-          marginBottom: "clamp(25px, 4%, 40px)",
-          textShadow: `
-            2px 2px 0px rgba(0,0,0,0.8),
-            0 0 30px ${rgba(accent, 0.8)}
-          `,
-          transform: "rotate(-1deg)",
-          lineHeight: 1.15
+          fontSize: "clamp(1.4rem, 2.8vw, 2.2rem)",
+          fontWeight: "400",
+          color: primaryText,
+          textAlign: "center",
+          marginBottom: "clamp(35px, 5%, 50px)",
+          textShadow: "0 2px 8px rgba(0,0,0,0.5)",
+          opacity: 0.95
         }}>
           {data.subtitle}
         </div>
 
-        {/* פרטי אירוע - פיזור חופשי */}
+        {/* עמודת מידע - צד ימין */}
         <div style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "clamp(16px, 3%, 24px)",
-          marginBottom: "clamp(25px, 4%, 35px)"
+          marginBottom: "clamp(30px, 4.5%, 45px)"
         }}>
           {data.date && (
             <div style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "14px",
-              transform: "rotate(1deg)"
+              marginBottom: "clamp(18px, 3%, 25px)",
+              textAlign: "right"
             }}>
               <div style={{
-                fontSize: "clamp(2.5rem, 5vw, 4rem)",
-                filter: `drop-shadow(0 0 15px ${rgba(accent, 0.7)})`
-              }}>📅</div>
-              <div>
-                <div style={{
-                  fontSize: "clamp(2rem, 4vw, 3.2rem)",
-                  fontWeight: "900",
-                  background: `linear-gradient(135deg, #fff 0%, ${accent} 100%)`,
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  lineHeight: 1,
-                  filter: `drop-shadow(2px 2px 0px rgba(0,0,0,0.7)) drop-shadow(0 0 20px ${rgba(accent, 0.6)})`
-                }}>
-                  {data.date}
-                </div>
+                fontSize: "clamp(0.9rem, 1.6vw, 1.1rem)",
+                color: accent,
+                fontWeight: "700",
+                textTransform: "uppercase",
+                letterSpacing: "0.15em",
+                marginBottom: "6px"
+              }}>תאריך</div>
+              <div style={{
+                fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)",
+                fontWeight: "700",
+                color: primaryText,
+                textShadow: "0 2px 8px rgba(0,0,0,0.5)"
+              }}>
+                {data.date}
               </div>
             </div>
           )}
 
           {data.time && (
             <div style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "14px",
-              transform: "rotate(-1.5deg)"
+              marginBottom: "clamp(18px, 3%, 25px)",
+              textAlign: "right"
             }}>
               <div style={{
-                fontSize: "clamp(2.5rem, 5vw, 4rem)",
-                filter: `drop-shadow(0 0 15px ${rgba(accent, 0.7)})`
-              }}>⏰</div>
-              <div>
-                <div style={{
-                  fontSize: "clamp(2rem, 4vw, 3.2rem)",
-                  fontWeight: "900",
-                  background: `linear-gradient(135deg, ${accent} 0%, #FFD700 100%)`,
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  lineHeight: 1,
-                  filter: `drop-shadow(2px 2px 0px rgba(0,0,0,0.7)) drop-shadow(0 0 20px ${rgba(accent, 0.6)})`
-                }}>
-                  {data.time}
-                </div>
+                fontSize: "clamp(0.9rem, 1.6vw, 1.1rem)",
+                color: accent,
+                fontWeight: "700",
+                textTransform: "uppercase",
+                letterSpacing: "0.15em",
+                marginBottom: "6px"
+              }}>שעה</div>
+              <div style={{
+                fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)",
+                fontWeight: "700",
+                color: primaryText,
+                textShadow: "0 2px 8px rgba(0,0,0,0.5)"
+              }}>
+                {data.time}
               </div>
             </div>
           )}
 
           {data.location && (
             <div style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "14px",
-              transform: "rotate(0.8deg)"
+              textAlign: "right"
             }}>
               <div style={{
-                fontSize: "clamp(2.5rem, 5vw, 4rem)",
-                filter: `drop-shadow(0 0 15px ${rgba(accent, 0.7)})`
-              }}>📍</div>
-              <div>
-                <div style={{
-                  fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)",
-                  fontWeight: "900",
-                  background: `linear-gradient(135deg, #FFD700 0%, #fff 50%, ${accent} 100%)`,
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  lineHeight: 1,
-                  filter: `drop-shadow(2px 2px 0px rgba(0,0,0,0.7)) drop-shadow(0 0 20px ${rgba(accent, 0.6)})`
-                }}>
-                  {data.location}
-                </div>
+                fontSize: "clamp(0.9rem, 1.6vw, 1.1rem)",
+                color: accent,
+                fontWeight: "700",
+                textTransform: "uppercase",
+                letterSpacing: "0.15em",
+                marginBottom: "6px"
+              }}>מיקום</div>
+              <div style={{
+                fontSize: "clamp(1.6rem, 3.2vw, 2.5rem)",
+                fontWeight: "700",
+                color: primaryText,
+                textShadow: "0 2px 8px rgba(0,0,0,0.5)"
+              }}>
+                {data.location}
               </div>
             </div>
           )}
         </div>
 
-        {/* Highlights */}
+        {/* Highlights Panel */}
         {data.highlights?.length > 0 && (
           <div style={{
+            background: "rgba(0,0,0,0.45)",
+            borderRight: `4px solid ${accent}`,
+            padding: "clamp(20px, 3.5%, 30px) clamp(25px, 4%, 35px)",
             marginBottom: "clamp(25px, 4%, 35px)",
-            transform: "rotate(-0.5deg)"
+            backdropFilter: "blur(8px)"
           }}>
-            {data.highlights.map((h, i) => (
+            {data.highlights.slice(0, 3).map((h, i) => (
               <div key={i} style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "12px",
-                marginBottom: "10px"
+                gap: "15px",
+                marginBottom: i < 2 ? "clamp(15px, 2.5%, 20px)" : "0",
+                textAlign: "right"
               }}>
+                <div style={{
+                  width: "8px",
+                  height: "8px",
+                  background: accent,
+                  borderRadius: "50%",
+                  flexShrink: 0,
+                  boxShadow: `0 0 10px ${rgba(accent, 0.6)}`
+                }} />
                 <span style={{
-                  fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)",
-                  color: accent,
-                  filter: `drop-shadow(0 0 12px ${rgba(accent, 0.8)})`
-                }}>★</span>
-                <span style={{
-                  fontSize: "clamp(1.3rem, 2.6vw, 2rem)",
-                  fontWeight: "900",
-                  background: `linear-gradient(90deg, #fff 0%, ${accent} 50%, #FFD700 100%)`,
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  filter: `drop-shadow(2px 2px 0px rgba(0,0,0,0.8)) drop-shadow(0 0 15px ${rgba(accent, 0.5)})`
+                  fontSize: "clamp(1.2rem, 2.3vw, 1.8rem)",
+                  fontWeight: "400",
+                  color: primaryText,
+                  textShadow: "0 2px 6px rgba(0,0,0,0.4)"
                 }}>
                   {h}
                 </span>
@@ -648,58 +611,53 @@ function InvitationCard({ refObj, data }) {
           </div>
         )}
 
-        {/* טלפון */}
+        {/* ספייסר אוטומטי */}
+        <div style={{ flex: 1 }} />
+
+        {/* Contact */}
         {data.phone && (
           <div style={{
-            fontSize: "clamp(1.6rem, 3.2vw, 2.5rem)",
-            color: "#fbbf24",
-            fontWeight: "900",
             textAlign: "center",
-            marginBottom: "clamp(20px, 3%, 30px)",
-            textShadow: "3px 3px 0px rgba(0,0,0,0.8), 0 0 25px rgba(251, 191, 36, 0.7)",
-            transform: "rotate(-1deg)"
+            marginBottom: "clamp(20px, 3.5%, 30px)"
           }}>
-            📞 {data.phone}
+            <div style={{
+              fontSize: "clamp(0.85rem, 1.5vw, 1rem)",
+              color: accent,
+              fontWeight: "700",
+              textTransform: "uppercase",
+              letterSpacing: "0.2em",
+              marginBottom: "8px"
+            }}>הזמנות</div>
+            <div style={{
+              fontSize: "clamp(1.6rem, 3vw, 2.4rem)",
+              fontWeight: "700",
+              color: primaryText,
+              textShadow: "0 2px 8px rgba(0,0,0,0.5)",
+              direction: "ltr"
+            }}>
+              {data.phone}
+            </div>
           </div>
         )}
 
-        {/* CTA ענק מנצנץ */}
+        {/* CTA תחתון */}
         <div style={{
-          position: "relative",
-          transform: "rotate(1.5deg)"
+          background: accent,
+          padding: "clamp(18px, 3.5%, 28px)",
+          textAlign: "center",
+          borderRadius: "8px",
+          boxShadow: `0 4px 20px ${rgba(accent, 0.4)}`
         }}>
           <div style={{
-            background: `linear-gradient(135deg, ${accent} 0%, #FFD700 50%, ${accent} 100%)`,
-            backgroundSize: "200% auto",
-            padding: "clamp(20px, 4%, 30px) clamp(18px, 3.5%, 28px)",
-            borderRadius: "20px",
-            textAlign: "center",
-            fontSize: "clamp(1.6rem, 3.5vw, 2.8rem)",
-            fontWeight: "900",
+            fontSize: "clamp(1.3rem, 2.6vw, 2rem)",
+            fontWeight: "700",
             color: "#000",
             textTransform: "uppercase",
-            boxShadow: `
-              5px 5px 0px rgba(0,0,0,0.5),
-              10px 10px 0px rgba(0,0,0,0.2),
-              0 0 60px ${rgba(accent, 0.9)},
-              0 0 100px ${rgba(accent, 0.6)},
-              inset 0 4px 20px rgba(255,255,255,0.4),
-              inset 0 -4px 15px rgba(0,0,0,0.2)
-            `,
-            border: `5px solid ${rgba(accent, 0.8)}`,
-            letterSpacing: "0.03em",
-            animation: "pulse 2s ease-in-out infinite, shimmer 3s linear infinite"
+            letterSpacing: "0.05em"
           }}>
             {data.cta}
           </div>
         </div>
-        
-        <style>{`
-          @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-          }
-        `}</style>
 
         {/* לוגו קטן למטה עם אייקונים */}
         <div style={{
