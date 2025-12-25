@@ -685,7 +685,7 @@ function InvitationCard({ refObj, data }) {
             position: "relative",
             fontSize: "6.5rem",
             fontWeight: "900",
-            lineHeight: 0.9,
+            lineHeight: 1.1,
             textAlign: "center",
             textTransform: "uppercase",
             letterSpacing: "-0.03em",
@@ -701,9 +701,10 @@ function InvitationCard({ refObj, data }) {
               drop-shadow(0 25px 100px rgba(0,0,0,0.7))
             `,
             marginBottom: "35px",
-            fontFamily: "Impact, 'Arial Black', sans-serif"
+            fontFamily: "Impact, 'Arial Black', sans-serif",
+            paddingBottom: "10px"
           }}>
-            {data.title}
+            {data.eventName}
           </div>
           
           {/* קו זהב דקורטיבי */}
