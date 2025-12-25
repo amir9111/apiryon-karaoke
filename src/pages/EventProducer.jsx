@@ -13,6 +13,7 @@ export default function EventProducerV2() {
 
   const [templateImage, setTemplateImage] = useState(null);
   const [isUploadingTemplate, setIsUploadingTemplate] = useState(false);
+  const [signals, setSignals] = useState(null);
 
   const cardRef = useRef(null);
 
@@ -39,6 +40,11 @@ export default function EventProducerV2() {
     }
 
     setIsAnalyzing(true);
+    
+    // שלב 1: נתח טקסט לפי חוקים קשיחים
+    const detectedSignals = deriveSignalsFromText(inputText);
+    setSignals(detectedSignals);
+
     try {
       const prompt = `
 אתה מומחה להפקת ליינים ועיצוב הזמנות למועדוני קריוקי בישראל.
@@ -98,7 +104,14 @@ ${inputText}
         }
       });
 
-      setInvitation(result);
+      // שלב 2: מיזוג AI + חוקים קשיחים
+      const mergedDesign = mergeDesign(result.design, detectedSignals.rulesDesign);
+      
+      setInvitation({
+        ...result,
+        design: mergedDesign,
+        signals: detectedSignals
+      });
     } catch (error) {
       console.error(error);
       alert("אירעה שגיאה בניתוח הטקסט. נסה שוב.");
@@ -413,11 +426,13 @@ ${inputText}
               </button>
             </div>
 
-            {/* DNA badge */}
+            {/* DNA badge + Signals */}
             <div style={{
               display: "flex",
               justifyContent: "center",
-              marginBottom: 12
+              marginBottom: 12,
+              flexWrap: "wrap",
+              gap: 10
             }}>
               <div style={{
                 display: "inline-flex",
@@ -433,6 +448,50 @@ ${inputText}
                 <Palette size={18} />
                 <span>DNA: {invitation.design.mood} • Accent: {accent}</span>
               </div>
+              
+              {invitation.signals && (
+                <>
+                  {invitation.signals.holiday && (
+                    <div style={{
+                      padding: "8px 12px",
+                      borderRadius: 999,
+                      background: "rgba(251, 191, 36, 0.2)",
+                      border: "1px solid rgba(251, 191, 36, 0.5)",
+                      color: "#fbbf24",
+                      fontSize: "0.85rem",
+                      fontWeight: 900
+                    }}>
+                      🎉 {invitation.signals.holiday}
+                    </div>
+                  )}
+                  {invitation.signals.vibe && (
+                    <div style={{
+                      padding: "8px 12px",
+                      borderRadius: 999,
+                      background: "rgba(139, 92, 246, 0.2)",
+                      border: "1px solid rgba(139, 92, 246, 0.5)",
+                      color: "#a78bfa",
+                      fontSize: "0.85rem",
+                      fontWeight: 900
+                    }}>
+                      {invitation.signals.vibe}
+                    </div>
+                  )}
+                  {invitation.signals.intensity && (
+                    <div style={{
+                      padding: "8px 12px",
+                      borderRadius: 999,
+                      background: "rgba(239, 68, 68, 0.2)",
+                      border: "1px solid rgba(239, 68, 68, 0.5)",
+                      color: "#ef4444",
+                      fontSize: "0.85rem",
+                      fontWeight: 900
+                    }}>
+                      🔥 {invitation.signals.intensity}
+                    </div>
+                  )}
+                </>
+              )}
             </div>
 
             <div style={{ display: "flex", justifyContent: "center" }}>
@@ -790,6 +849,94 @@ function hexToRgba(hex, a) {
   } catch {
     return `rgba(255,165,0,${a})`;
   }
+}
+
+function deriveSignalsFromText(raw) {
+  const t = (raw || "").toLowerCase();
+
+  const hasAny = (arr) => arr.some((w) => t.includes(w));
+
+  const holiday =
+    hasAny(["חנוכה", "חנוכיה", "סופגניה"]) ? "hanukkah" :
+    hasAny(["פורים", "מגילה", "תחפושות"]) ? "purim" :
+    hasAny(["עצמאות", "דגל", "יום העצמאות"]) ? "independence" :
+    hasAny(["שנה חדשה", "סילבסטר", "new year"]) ? "newyear" :
+    hasAny(["פסח", "מצה"]) ? "passover" :
+    hasAny(["רמדאן", "איפטאר"]) ? "ramadan" :
+    null;
+
+  const vibe =
+    hasAny(["חפלה", "מזרחית", "דאבקה", "דרבוקות", "להיטים", "קצב"]) ? "hafla" :
+    hasAny(["techno", "טכנו", "house", "האוס", "סט", "רייב"]) ? "club" :
+    hasAny(["vip", "פרימיום", "יוקרתי", "שולחן", "בוטיק"]) ? "premium" :
+    "karaoke";
+
+  const intensity =
+    hasAny(["מטורף", "שריפה", "פצצה", "מפוצץ", "היסטרי", "טירוף", "🔥"]) ? "high" :
+    hasAny(["רגוע", "צ'יל", "אווירה", "נעים"]) ? "low" :
+    "mid";
+
+  const timeOfDay =
+    hasAny(["22", "23", "00", "לילה", "אחרי חצות"]) ? "late" :
+    hasAny(["20", "21", "ערב"]) ? "evening" :
+    hasAny(["צהריים", "בוקר"]) ? "day" :
+    "unknown";
+
+  const crowd =
+    hasAny(["כולם", "כל העיר", "מלא אנשים", "קהל"]) ? "big" :
+    hasAny(["אינטימי", "מצומצם", "מעט מקומות"]) ? "small" :
+    "normal";
+
+  const elements = [];
+  if (holiday) elements.push(`holiday:${holiday}`);
+  if (hasAny(["dj", "די.ג'יי", "דיג'יי"])) elements.push("icon:dj");
+  if (hasAny(["ריקודים", "רוקדים", "dance", "💃"])) elements.push("icon:dance");
+  if (hasAny(["קריוקי", "מיקרופון", "🎤"])) elements.push("icon:mic");
+  if (hasAny(["הפתעות", "מתנות", "הגרלה"])) elements.push("badge:surprises");
+  if (hasAny(["כניסה חינם", "חינם"])) elements.push("badge:free");
+  if (hasAny(["vip", "שולחנות", "שמורים"])) elements.push("badge:vip");
+  if (hasAny(["הזמנה מראש", "מספר מקומות", "מוגבל", "מעט מקומות"])) elements.push("badge:limited");
+
+  let mood = "hot_stage";
+  if (vibe === "premium") mood = "premium";
+  if (vibe === "club") mood = "dark_club";
+  if (holiday) mood = "festive";
+  if (intensity === "low") mood = "premium";
+  if (timeOfDay === "late") mood = "dark_club";
+
+  let accentColor = "#FFA500";
+  if (mood === "dark_club") accentColor = "#00CAFF";
+  if (mood === "premium") accentColor = "#D6B36A";
+  if (mood === "festive") accentColor = holiday === "hanukkah" ? "#FFD700" : "#F472B6";
+
+  const effects = [];
+  if (mood === "hot_stage") effects.push("stage_lights", "glow", "sparks");
+  if (mood === "dark_club") effects.push("stage_lights", "bokeh", "glow");
+  if (mood === "premium") effects.push("glow", "smoke");
+  if (mood === "festive") effects.push("stage_lights", "glow", "bokeh", "sparks");
+
+  return {
+    holiday,
+    vibe,
+    intensity,
+    timeOfDay,
+    crowd,
+    elements,
+    rulesDesign: { mood, accentColor, effects }
+  };
+}
+
+function mergeDesign(aiDesign, rulesDesign) {
+  const out = { ...(aiDesign || {}) };
+
+  if (rulesDesign?.mood) out.mood = rulesDesign.mood;
+
+  const isHex = (x) => typeof x === "string" && /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(x.trim());
+  if (!isHex(out.accentColor) && rulesDesign?.accentColor) out.accentColor = rulesDesign.accentColor;
+
+  if (!Array.isArray(out.effects) || out.effects.length === 0) out.effects = rulesDesign?.effects || ["stage_lights", "glow"];
+
+  return out;
 }
 
 EventProducerV2.isPublic = true;
