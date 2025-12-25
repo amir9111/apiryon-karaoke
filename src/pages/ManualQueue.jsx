@@ -219,41 +219,6 @@ export default function ManualQueue() {
           minHeight: "297mm",
           pageBreakAfter: pageIndex < numPages - 1 ? "always" : "auto"
         }}>
-          {/* כותרת עליונה */}
-          {(eventName || eventDate) && (
-            <div style={{
-              textAlign: "center",
-              marginBottom: "8mm",
-              paddingBottom: "5mm",
-              borderBottom: "2px solid #00caff"
-            }}>
-              {eventName && (
-                <div style={{
-                  fontSize: "1.2rem",
-                  fontWeight: "900",
-                  color: "#00caff",
-                  marginBottom: "2mm"
-                }}>
-                  {eventName}
-                </div>
-              )}
-              {eventDate && (
-                <div style={{
-                  fontSize: "0.95rem",
-                  color: "#64748b",
-                  fontWeight: "600"
-                }}>
-                  📅 {new Date(eventDate + 'T00:00:00').toLocaleDateString('he-IL', { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                  })}
-                </div>
-              )}
-            </div>
-          )}
-
           <div style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
@@ -292,12 +257,46 @@ export default function ManualQueue() {
               <div style={{
                 display: "flex",
                 justifyContent: "center",
-                marginBottom: "8mm"
+                marginBottom: "6mm"
               }}>
                 <div style={{ transform: "scale(0.6)" }}>
                   <ApyironLogo size="small" showCircle={true} />
                 </div>
               </div>
+
+              {/* שם ליין ותאריך */}
+              {(eventName || eventDate) && (
+                <div style={{
+                  textAlign: "center",
+                  marginBottom: "6mm",
+                  paddingBottom: "4mm",
+                  borderBottom: "1px solid #cbd5e1"
+                }}>
+                  {eventName && (
+                    <div style={{
+                      fontSize: "0.85rem",
+                      fontWeight: "800",
+                      color: "#00caff",
+                      marginBottom: "2mm"
+                    }}>
+                      {eventName}
+                    </div>
+                  )}
+                  {eventDate && (
+                    <div style={{
+                      fontSize: "0.65rem",
+                      color: "#64748b",
+                      fontWeight: "600"
+                    }}>
+                      📅 {new Date(eventDate + 'T00:00:00').toLocaleDateString('he-IL', { 
+                        day: 'numeric',
+                        month: 'numeric',
+                        year: 'numeric'
+                      })}
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Form Fields */}
               <div style={{ display: "flex", flexDirection: "column", gap: "6mm" }}>
