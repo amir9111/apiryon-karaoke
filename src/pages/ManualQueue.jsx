@@ -5,6 +5,7 @@ import NavigationMenu from "../components/NavigationMenu";
 export default function ManualQueue() {
   const [numPages, setNumPages] = React.useState(1);
   const todayDate = new Date().toISOString().split('T')[0];
+  const todayDate = new Date().toISOString().split('T')[0];
 
   const handlePrint = () => {
     window.print();
@@ -111,14 +112,15 @@ export default function ManualQueue() {
           }}>
             {Array.from({ length: 4 }).map((_, cardIndex) => (
           <div key={cardIndex} style={{
-            border: "2px dashed #00caff",
-            borderRadius: "6px",
+            border: "3px dashed #00caff",
+            borderRadius: "8px",
             padding: "5mm",
-            background: "#f8fafc",
+            background: "linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%)",
             pageBreakInside: "avoid",
             position: "relative",
             display: "flex",
-            flexDirection: "column"
+            flexDirection: "column",
+            boxShadow: "0 2px 8px rgba(0, 202, 255, 0.15)"
           }}>
 
               {/* כותרת */}
@@ -154,7 +156,10 @@ export default function ManualQueue() {
               <div style={{
                 display: "flex",
                 justifyContent: "center",
-                marginBottom: "3mm"
+                marginBottom: "3mm",
+                background: "rgba(0, 202, 255, 0.08)",
+                padding: "2mm",
+                borderRadius: "6px"
               }}>
                 <div style={{ transform: "scale(0.4)" }}>
                   <ApyironLogo size="small" showCircle={true} />
@@ -164,49 +169,76 @@ export default function ManualQueue() {
               {/* Form Fields */}
               <div style={{ display: "flex", flexDirection: "column", gap: "4mm", flex: 1 }}>
                 {/* שם המבצע */}
-                <div>
+                <div style={{
+                  background: "rgba(255, 255, 255, 0.7)",
+                  padding: "2mm",
+                  borderRadius: "4px",
+                  border: "1px solid rgba(0, 202, 255, 0.2)"
+                }}>
                   <div style={{
                     fontSize: "0.75rem",
                     fontWeight: "700",
                     color: "#00caff",
-                    marginBottom: "2mm"
+                    marginBottom: "2mm",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "2mm"
                   }}>
+                    <span style={{ fontSize: "0.9rem" }}>👤</span>
                     שם המבצע:
                   </div>
                   <div style={{
-                    borderBottom: "2px solid #cbd5e1",
+                    borderBottom: "2px solid #00caff",
                     height: "6mm"
                   }}></div>
                 </div>
 
                 {/* שם השיר */}
-                <div>
+                <div style={{
+                  background: "rgba(255, 255, 255, 0.7)",
+                  padding: "2mm",
+                  borderRadius: "4px",
+                  border: "1px solid rgba(0, 202, 255, 0.2)"
+                }}>
                   <div style={{
                     fontSize: "0.75rem",
                     fontWeight: "700",
                     color: "#00caff",
-                    marginBottom: "2mm"
+                    marginBottom: "2mm",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "2mm"
                   }}>
+                    <span style={{ fontSize: "0.9rem" }}>🎵</span>
                     שם השיר:
                   </div>
                   <div style={{
-                    borderBottom: "2px solid #cbd5e1",
+                    borderBottom: "2px solid #00caff",
                     height: "6mm"
                   }}></div>
                 </div>
 
                 {/* שם הזמר */}
-                <div>
+                <div style={{
+                  background: "rgba(255, 255, 255, 0.7)",
+                  padding: "2mm",
+                  borderRadius: "4px",
+                  border: "1px solid rgba(0, 202, 255, 0.2)"
+                }}>
                   <div style={{
                     fontSize: "0.75rem",
                     fontWeight: "700",
                     color: "#00caff",
-                    marginBottom: "2mm"
+                    marginBottom: "2mm",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "2mm"
                   }}>
+                    <span style={{ fontSize: "0.9rem" }}>🎸</span>
                     שם הזמר:
                   </div>
                   <div style={{
-                    borderBottom: "2px solid #cbd5e1",
+                    borderBottom: "2px solid #00caff",
                     height: "6mm"
                   }}></div>
                 </div>
