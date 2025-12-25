@@ -137,29 +137,13 @@ ${formData.artists && formData.artists.length > 0 ? `- זמרים: ${formData.ar
     if (!cardRef.current) return;
     setIsExporting(true);
     try {
-      let width, height, filename;
-      
-      // כל הפורמטים יהיו 9:16 (מסך טלפון מלא)
-      width = 1080;
-      height = 1920;
-      
-      if (format === 'whatsapp') {
-        filename = 'apiryon-whatsapp.png';
-      } else if (format === 'story') {
-        filename = 'apiryon-story.png';
-      } else {
-        filename = 'apiryon-invitation.png';
-      }
-      
       const dataUrl = await toPng(cardRef.current, {
         cacheBust: true,
-        pixelRatio: 3,
-        width,
-        height
+        pixelRatio: 3
       });
       const a = document.createElement("a");
       a.href = dataUrl;
-      a.download = filename;
+      a.download = 'apiryon-invitation.png';
       a.click();
     } catch (error) {
       console.error(error);
@@ -408,7 +392,7 @@ ${formData.artists && formData.artists.length > 0 ? `- זמרים: ${formData.ar
           <div>
             <div style={{ display: "flex", gap: "12px", marginBottom: "20px", flexWrap: "wrap", justifyContent: "center" }}>
               <button onClick={() => exportPng('whatsapp')} disabled={isExporting} style={btnStyle("green")}>
-                <Download size={18} /> הורד תמונה
+                <Download size={18} /> הורד לווטסאפ
               </button>
               <button onClick={shareImage} style={btnStyle("cyanOutline")}>
                 <Share2 size={18} /> שתף
@@ -437,7 +421,7 @@ function InvitationCard({ refObj, data }) {
       ref={refObj}
       style={{
         width: "1080px",
-        height: "1920px",
+        height: "1350px",
         position: "relative",
         overflow: "hidden",
         background: "#000",
@@ -467,7 +451,7 @@ function InvitationCard({ refObj, data }) {
         height: "100%",
         display: "flex",
         flexDirection: "column",
-        padding: "40px 30px 30px"
+        padding: "30px 30px 20px"
       }}>
         
         {/* פסי זהב דקורטיביים - פינות */}
@@ -653,8 +637,8 @@ function InvitationCard({ refObj, data }) {
 
         {/* כותרת HERO דרמטית - רבודה */}
         <div style={{
-          marginTop: "200px",
-          marginBottom: "30px",
+          marginTop: "160px",
+          marginBottom: "25px",
           position: "relative",
           padding: "0 25px"
         }}>
@@ -757,8 +741,8 @@ function InvitationCard({ refObj, data }) {
           <div style={{
             display: "flex",
             justifyContent: "center",
-            gap: "25px",
-            marginBottom: "30px",
+            gap: "20px",
+            marginBottom: "20px",
             flexWrap: "wrap",
             padding: "0 20px"
           }}>
@@ -804,7 +788,7 @@ function InvitationCard({ refObj, data }) {
         {/* Highlights מעוצבים */}
         {data.highlights && data.highlights.length > 0 && (
           <div style={{
-            marginBottom: "25px",
+            marginBottom: "18px",
             padding: "0 35px",
             position: "relative"
           }}>
@@ -872,7 +856,7 @@ function InvitationCard({ refObj, data }) {
           justifyContent: "center",
           alignItems: "stretch",
           gap: "12px",
-          marginBottom: "25px",
+          marginBottom: "15px",
           padding: "0 25px",
           flexWrap: "wrap"
         }}>
@@ -967,7 +951,7 @@ function InvitationCard({ refObj, data }) {
         {/* CTA מסוגנן מושך */}
         <div style={{
           position: "relative",
-          marginBottom: "25px",
+          marginBottom: "15px",
           padding: "0 25px"
         }}>
           {/* זוהר עדין */}
@@ -1072,7 +1056,7 @@ function InvitationCard({ refObj, data }) {
         {/* Footer קומפקטי */}
         <div style={{
           background: "linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.95) 100%)",
-          padding: "18px 15px 15px",
+          padding: "12px 12px 10px",
           borderRadius: "16px",
           border: `2px solid ${rgba(accent, 0.3)}`,
           boxShadow: `0 -5px 30px ${rgba(accent, 0.2)}`,
