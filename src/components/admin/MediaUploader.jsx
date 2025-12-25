@@ -24,8 +24,12 @@ export default function MediaUploader() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const isVideo = file.type.startsWith('video/');
-    const isImage = file.type.startsWith('image/');
+    console.log('📤 Uploading file:', file.name, 'Type:', file.type);
+
+    const isVideo = file.type.startsWith('video/') || 
+                    file.name.toLowerCase().match(/\.(mp4|mov|avi|webm|mkv)$/);
+    const isImage = file.type.startsWith('image/') || 
+                    file.name.toLowerCase().match(/\.(jpg|jpeg|png|gif|webp|bmp)$/);
 
     if (!isVideo && !isImage) {
       setUploadStatus("❌ ניתן להעלות רק תמונות או סרטונים");
@@ -39,9 +43,12 @@ export default function MediaUploader() {
     try {
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
       
+      const mediaType = isVideo ? 'video' : 'image';
+      console.log('✅ File uploaded:', file_url, 'Detected type:', mediaType);
+      
       await base44.entities.MediaUpload.create({
         media_url: file_url,
-        media_type: isVideo ? 'video' : 'image',
+        media_type: mediaType,
         is_active: true
       });
 
@@ -49,11 +56,12 @@ export default function MediaUploader() {
       setUploadStatus("✅ הקובץ הועלה בהצלחה!");
       setTimeout(() => setUploadStatus(""), 3000);
     } catch (error) {
-      console.error('Upload error:', error);
+      console.error('❌ Upload error:', error);
       setUploadStatus("❌ שגיאה בהעלאה");
       setTimeout(() => setUploadStatus(""), 3000);
     } finally {
       setIsUploading(false);
+      e.target.value = '';
     }
   };
 

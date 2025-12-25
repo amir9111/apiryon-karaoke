@@ -275,7 +275,11 @@ export default function Audience() {
                   borderRadius: "20px",
                   overflow: "hidden",
                   border: "2px solid rgba(0, 202, 255, 0.3)",
-                  boxShadow: "0 10px 50px rgba(0, 0, 0, 0.7)"
+                  boxShadow: "0 10px 50px rgba(0, 0, 0, 0.7)",
+                  minHeight: "300px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center"
                 }}>
                   {latestMedia.media_type === 'video' ? (
                     <video
@@ -285,6 +289,8 @@ export default function Audience() {
                       loop
                       muted
                       playsInline
+                      onError={(e) => console.error('❌ Video error:', e)}
+                      onLoadedData={() => console.log('✅ Video loaded')}
                       style={{
                         width: "100%",
                         maxHeight: "75vh",
@@ -296,6 +302,11 @@ export default function Audience() {
                     <img
                       src={latestMedia.media_url}
                       alt="תמונה מהאירוע"
+                      onError={(e) => {
+                        console.error('❌ Image error:', latestMedia.media_url);
+                        e.target.style.display = 'none';
+                      }}
+                      onLoad={() => console.log('✅ Image loaded:', latestMedia.media_url)}
                       style={{
                         width: "100%",
                         maxHeight: "75vh",
