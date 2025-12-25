@@ -649,8 +649,8 @@ function InvitationCard({ refObj, data }) {
 
         {/* כותרת HERO דרמטית - רבודה */}
         <div style={{
-          marginTop: "200px",
-          marginBottom: "50px",
+          marginTop: "180px",
+          marginBottom: "35px",
           position: "relative",
           padding: "0 30px"
         }}>
@@ -753,8 +753,8 @@ function InvitationCard({ refObj, data }) {
           <div style={{
             display: "flex",
             justifyContent: "center",
-            gap: "30px",
-            marginBottom: "40px",
+            gap: "25px",
+            marginBottom: "30px",
             flexWrap: "wrap",
             padding: "0 20px"
           }}>
@@ -800,7 +800,7 @@ function InvitationCard({ refObj, data }) {
         {/* Highlights מעוצבים */}
         {data.highlights && data.highlights.length > 0 && (
           <div style={{
-            marginBottom: "35px",
+            marginBottom: "25px",
             padding: "0 40px",
             position: "relative"
           }}>
@@ -867,8 +867,8 @@ function InvitationCard({ refObj, data }) {
           display: "flex",
           justifyContent: "center",
           alignItems: "stretch",
-          gap: "20px",
-          marginBottom: "30px",
+          gap: "15px",
+          marginBottom: "20px",
           padding: "0 30px",
           flexWrap: "wrap"
         }}>
@@ -951,7 +951,7 @@ function InvitationCard({ refObj, data }) {
         {/* CTA מסוגנן מושך */}
         <div style={{
           position: "relative",
-          marginBottom: "30px",
+          marginBottom: "20px",
           padding: "0 25px"
         }}>
           {/* זוהר עדין */}
@@ -971,7 +971,7 @@ function InvitationCard({ refObj, data }) {
             background: `linear-gradient(135deg, ${accent} 0%, #FFA500 50%, ${accent} 100%)`,
             backgroundSize: "200% auto",
             animation: "gradient-shift 4s ease infinite",
-            padding: "22px 20px",
+            padding: "18px 20px",
             borderRadius: "14px",
             boxShadow: `0 0 40px ${rgba(accent, 0.6)}, 0 10px 35px rgba(0,0,0,0.7), inset 0 1px 20px rgba(255,255,255,0.15)`,
             border: "2px solid rgba(255,255,255,0.12)",
@@ -1047,23 +1047,23 @@ function InvitationCard({ refObj, data }) {
         {/* Footer קומפקטי */}
         <div style={{
           background: "linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.95) 100%)",
-          padding: "20px 15px 15px",
+          padding: "15px 15px 12px",
           borderRadius: "16px",
           border: `2px solid ${rgba(accent, 0.3)}`,
           boxShadow: `0 -5px 30px ${rgba(accent, 0.2)}`,
-          marginTop: "15px"
+          marginTop: "auto"
         }}>
           {/* שורה ראשונה: אייקונים */}
           <div style={{
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            gap: "30px",
-            marginBottom: "18px"
+            gap: "25px",
+            marginBottom: "12px"
           }}>
             <div style={{
-              width: "50px",
-              height: "50px",
+              width: "45px",
+              height: "45px",
               borderRadius: "50%",
               background: "linear-gradient(135deg, #1877f2, #0d65d9)",
               display: "flex",
@@ -1077,8 +1077,8 @@ function InvitationCard({ refObj, data }) {
             }}>f</div>
 
             <div style={{
-              width: "50px",
-              height: "50px",
+              width: "45px",
+              height: "45px",
               borderRadius: "50%",
               background: "linear-gradient(135deg, #E1306C, #C13584, #833AB4)",
               display: "flex",
@@ -1090,8 +1090,8 @@ function InvitationCard({ refObj, data }) {
             }}>📷</div>
 
             <div style={{
-              width: "50px",
-              height: "50px",
+              width: "45px",
+              height: "45px",
               borderRadius: "50%",
               background: "linear-gradient(135deg, #25D366, #128C7E)",
               display: "flex",
@@ -1107,7 +1107,7 @@ function InvitationCard({ refObj, data }) {
           <div style={{
             height: "1px",
             background: `linear-gradient(90deg, transparent, ${rgba(accent, 0.5)}, transparent)`,
-            margin: "15px 0"
+            margin: "10px 0"
           }} />
 
           {/* שורה שנייה: QR codes קטנים */}
@@ -1115,13 +1115,13 @@ function InvitationCard({ refObj, data }) {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            gap: "35px",
-            marginBottom: "15px"
+            gap: "30px",
+            marginBottom: "10px"
           }}>
             <div style={{ textAlign: "center" }}>
               <div style={{
-                width: "75px",
-                height: "75px",
+                width: "70px",
+                height: "70px",
                 background: "#fff",
                 padding: "5px",
                 borderRadius: "10px",
@@ -1130,7 +1130,7 @@ function InvitationCard({ refObj, data }) {
                 marginBottom: "6px"
               }}>
                 <img 
-                  src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15"
+                  src="https://api.qrserver.com/v1/create-qr-code/?size=70x70&data=https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15"
                   style={{ width: "100%", height: "100%", display: "block" }}
                   alt="QR WhatsApp"
                 />
@@ -1146,8 +1146,8 @@ function InvitationCard({ refObj, data }) {
             
             <div style={{ textAlign: "center" }}>
               <div style={{
-                width: "75px",
-                height: "75px",
+                width: "70px",
+                height: "70px",
                 background: "#fff",
                 padding: "5px",
                 borderRadius: "10px",
@@ -1156,7 +1156,7 @@ function InvitationCard({ refObj, data }) {
                 marginBottom: "6px"
               }}>
                 <img 
-                  src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=https://www.tiktok.com/@apiryon.club"
+                  src="https://api.qrserver.com/v1/create-qr-code/?size=70x70&data=https://www.tiktok.com/@apiryon.club"
                   style={{ width: "100%", height: "100%", display: "block" }}
                   alt="QR TikTok"
                 />
@@ -1174,13 +1174,14 @@ function InvitationCard({ refObj, data }) {
           {/* לוגו תחתון */}
           <div style={{
             textAlign: "center",
-            fontSize: "1.1rem",
+            fontSize: "1rem",
             fontWeight: "900",
             color: "#fff",
             letterSpacing: "0.2em",
             textTransform: "uppercase",
             textShadow: `0 0 20px ${accent}, 0 0 40px ${rgba(accent, 0.3)}`,
-            fontFamily: "Impact, 'Arial Black', sans-serif"
+            fontFamily: "Impact, 'Arial Black', sans-serif",
+            marginTop: "5px"
           }}>
             APIRYON CLUB
           </div>
