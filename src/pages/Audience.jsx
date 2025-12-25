@@ -129,8 +129,8 @@ export default function Audience() {
         <div style={{
           position: "relative",
           width: "100%",
-          padding: "0.5vh 10px",
-          marginBottom: "0.5vh",
+          padding: "5px 10px",
+          marginBottom: "5px",
           overflow: "hidden",
           background: "linear-gradient(180deg, rgba(0, 202, 255, 0.05) 0%, transparent 100%)",
           flexShrink: 0
@@ -174,7 +174,7 @@ export default function Audience() {
               }}
               style={{
                 display: "inline-block",
-                fontSize: "clamp(1.5rem, 2.5vw, 2.5rem)",
+                fontSize: "clamp(1.2rem, 2vw, 2rem)",
                 marginBottom: "0"
               }}
             >
@@ -182,7 +182,7 @@ export default function Audience() {
             </motion.div>
             
             <div style={{
-              fontSize: "clamp(1.3rem, 2.5vw, 2.2rem)",
+              fontSize: "clamp(1.1rem, 2vw, 1.8rem)",
               fontWeight: "900",
               background: "linear-gradient(90deg, #00caff 0%, #0088ff 25%, #00d4ff 50%, #0088ff 75%, #00caff 100%)",
               backgroundSize: "200% auto",
@@ -209,7 +209,7 @@ export default function Audience() {
               }}
               style={{
                 display: "inline-block",
-                fontSize: "clamp(1.5rem, 2.5vw, 2.5rem)",
+                fontSize: "clamp(1.2rem, 2vw, 2rem)",
                 marginTop: "0"
               }}
             >
@@ -247,66 +247,53 @@ export default function Audience() {
               }}
             >
               <div style={{
-                background: "rgba(15, 23, 42, 0.8)",
-                borderRadius: "16px",
-                padding: "8px",
+                background: "#000",
+                borderRadius: "12px",
+                overflow: "hidden",
                 border: "2px solid rgba(0, 202, 255, 0.4)",
                 boxShadow: "0 0 40px rgba(0, 202, 255, 0.3)",
-                backdropFilter: "blur(20px)",
                 height: "100%",
                 display: "flex",
-                flexDirection: "column"
+                alignItems: "center",
+                justifyContent: "center"
               }}>
-                {/* Media Container */}
-                <div style={{
-                  background: "#000",
-                  borderRadius: "12px",
-                  overflow: "hidden",
-                  border: "1px solid rgba(0, 202, 255, 0.2)",
-                  boxShadow: "0 5px 30px rgba(0, 0, 0, 0.5)",
-                  flex: 1,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center"
-                }}>
-                  {latestMedia.media_type === 'video' ? (
-                    <video
-                      key={latestMedia.media_url}
-                      src={latestMedia.media_url}
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      controls={false}
-                      preload="auto"
-                      onError={(e) => console.error('❌ Video error:', e)}
-                      onLoadedData={() => console.log('✅ Video loaded')}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        display: "block",
-                        objectFit: "contain",
-                        backgroundColor: "#000"
-                      }}
-                    />
-                  ) : (
-                    <img
-                      src={latestMedia.media_url}
-                      alt="תמונה מהאירוע"
-                      onError={(e) => {
-                        console.error('❌ Image error:', latestMedia.media_url);
-                        e.target.style.display = 'none';
-                      }}
-                      onLoad={() => console.log('✅ Image loaded:', latestMedia.media_url)}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        display: "block",
-                        objectFit: "contain"
-                      }}
-                    />
-                  )}
-                </div>
+                {latestMedia.media_type === 'video' ? (
+                  <video
+                    key={latestMedia.media_url}
+                    src={latestMedia.media_url}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    controls={false}
+                    preload="auto"
+                    onError={(e) => console.error('❌ Video error:', e)}
+                    onLoadedData={() => console.log('✅ Video loaded')}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      display: "block",
+                      objectFit: "cover",
+                      backgroundColor: "#000"
+                    }}
+                  />
+                ) : (
+                  <img
+                    src={latestMedia.media_url}
+                    alt="תמונה מהאירוע"
+                    onError={(e) => {
+                      console.error('❌ Image error:', latestMedia.media_url);
+                      e.target.style.display = 'none';
+                    }}
+                    onLoad={() => console.log('✅ Image loaded:', latestMedia.media_url)}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      display: "block",
+                      objectFit: "cover"
+                    }}
+                  />
+                )}
               </div>
             </motion.div>
           )}
@@ -320,13 +307,13 @@ export default function Audience() {
             width: latestMedia ? "auto" : "100%",
             maxWidth: latestMedia ? "none" : "1200px",
             flex: latestMedia ? "0 0 auto" : undefined,
-            minWidth: latestMedia ? "280px" : undefined
+            minWidth: latestMedia ? "240px" : undefined
           }}>
             {/* QR Code for Join Queue */}
             <div style={{
                 background: "rgba(15, 23, 42, 0.5)",
-                borderRadius: "16px",
-                padding: "8px",
+                borderRadius: "12px",
+                padding: "6px",
                 border: "2px solid rgba(16, 185, 129, 0.4)",
                 textAlign: "center",
                 display: "flex",
@@ -338,9 +325,9 @@ export default function Audience() {
               }}
             >
               <div style={{ 
-                fontSize: "0.9rem", 
+                fontSize: "0.8rem", 
                 color: "#10b981", 
-                marginBottom: "4px",
+                marginBottom: "3px",
                 fontWeight: "700",
                 textShadow: "0 0 10px rgba(16, 185, 129, 0.7)"
               }}>
@@ -348,26 +335,26 @@ export default function Audience() {
               </div>
 
               <div style={{
-                width: "120px",
-                height: "120px",
+                width: "100px",
+                height: "100px",
                 background: "#fff",
-                borderRadius: "12px",
+                borderRadius: "10px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                marginBottom: "4px",
+                marginBottom: "3px",
                 boxShadow: "0 0 15px rgba(16, 185, 129, 0.3)",
                 border: "2px solid #10b981"
               }}>
                 <img 
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${window.location.origin}/Home`}
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${window.location.origin}/Home`}
                   alt="QR Code להצטרפות לתור"
-                  style={{ width: "110px", height: "110px" }}
+                  style={{ width: "90px", height: "90px" }}
                 />
               </div>
 
               <div style={{ 
-                fontSize: "0.75rem", 
+                fontSize: "0.7rem", 
                 color: "#cbd5e1",
                 fontWeight: "600"
               }}>
@@ -378,8 +365,8 @@ export default function Audience() {
             {/* QR Code for WhatsApp */}
             <div style={{
                 background: "rgba(15, 23, 42, 0.5)",
-                borderRadius: "16px",
-                padding: "8px",
+                borderRadius: "12px",
+                padding: "6px",
                 border: "2px solid rgba(0, 202, 255, 0.4)",
                 textAlign: "center",
                 display: "flex",
@@ -391,9 +378,9 @@ export default function Audience() {
               }}
             >
               <div style={{ 
-                fontSize: "0.9rem", 
+                fontSize: "0.8rem", 
                 color: "#00caff", 
-                marginBottom: "4px",
+                marginBottom: "3px",
                 fontWeight: "700",
                 textShadow: "0 0 10px rgba(0, 202, 255, 0.7)"
               }}>
@@ -401,26 +388,26 @@ export default function Audience() {
               </div>
 
               <div style={{
-                width: "120px",
-                height: "120px",
+                width: "100px",
+                height: "100px",
                 background: "#fff",
-                borderRadius: "12px",
+                borderRadius: "10px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                marginBottom: "4px",
+                marginBottom: "3px",
                 boxShadow: "0 0 15px rgba(0, 202, 255, 0.3)",
                 border: "2px solid #00caff"
               }}>
                 <img 
-                  src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15"
+                  src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15"
                   alt="QR Code WhatsApp"
-                  style={{ width: "110px", height: "110px" }}
+                  style={{ width: "90px", height: "90px" }}
                 />
               </div>
 
               <div style={{ 
-                fontSize: "0.75rem", 
+                fontSize: "0.7rem", 
                 color: "#cbd5e1",
                 fontWeight: "600"
               }}>
@@ -431,8 +418,8 @@ export default function Audience() {
             {/* QR Code for TikTok */}
             <div style={{
                 background: "rgba(15, 23, 42, 0.5)",
-                borderRadius: "16px",
-                padding: "8px",
+                borderRadius: "12px",
+                padding: "6px",
                 border: "2px solid rgba(255, 0, 80, 0.4)",
                 textAlign: "center",
                 display: "flex",
@@ -444,9 +431,9 @@ export default function Audience() {
               }}
             >
               <div style={{ 
-                fontSize: "0.9rem", 
+                fontSize: "0.8rem", 
                 color: "#ff0050", 
-                marginBottom: "4px",
+                marginBottom: "3px",
                 fontWeight: "700",
                 textShadow: "0 0 10px rgba(255, 0, 80, 0.7)"
               }}>
@@ -454,26 +441,26 @@ export default function Audience() {
               </div>
 
               <div style={{
-                width: "120px",
-                height: "120px",
+                width: "100px",
+                height: "100px",
                 background: "#fff",
-                borderRadius: "12px",
+                borderRadius: "10px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                marginBottom: "4px",
+                marginBottom: "3px",
                 boxShadow: "0 0 15px rgba(255, 0, 80, 0.3)",
                 border: "2px solid #ff0050"
               }}>
                 <img 
-                  src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://www.tiktok.com/@apiryon.club"
+                  src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://www.tiktok.com/@apiryon.club"
                   alt="QR Code TikTok"
-                  style={{ width: "110px", height: "110px" }}
+                  style={{ width: "90px", height: "90px" }}
                 />
               </div>
 
               <div style={{ 
-                fontSize: "0.75rem", 
+                fontSize: "0.7rem", 
                 color: "#cbd5e1",
                 fontWeight: "600"
               }}>
