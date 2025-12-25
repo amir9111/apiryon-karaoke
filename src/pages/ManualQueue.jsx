@@ -4,37 +4,13 @@ import NavigationMenu from "../components/NavigationMenu";
 
 export default function ManualQueue() {
   const [numPages, setNumPages] = React.useState(1);
-  const [startNumber, setStartNumber] = React.useState(1);
   const todayDate = new Date().toISOString().split('T')[0];
 
-  React.useEffect(() => {
-    try {
-      const savedLastDate = localStorage.getItem('manual_queue_last_date') || "";
-      const savedLastNumber = parseInt(localStorage.getItem('manual_queue_last_number') || "0");
-
-      // אם התאריך זהה, המשך מהמספר האחרון
-      if (todayDate === savedLastDate) {
-        setStartNumber(savedLastNumber + 1);
-      } else {
-        setStartNumber(1);
-      }
-    } catch (e) {
-      // silent fail
-    }
-  }, [todayDate]);
-
   const handlePrint = () => {
-    try {
-      localStorage.setItem('manual_queue_last_date', todayDate);
-      localStorage.setItem('manual_queue_last_number', (startNumber + totalCards - 1).toString());
-    } catch (e) {
-      // silent fail
-    }
     window.print();
   };
 
   const totalCards = numPages * 4;
-  const allCardNumbers = Array.from({ length: totalCards }, (_, i) => startNumber + i);
 
   return (
     <div dir="rtl" style={{
@@ -66,27 +42,7 @@ export default function ManualQueue() {
           הדפס דפים אלו, גזור לכרטיסים קטנים וחלק בין האנשים למילוי ידני
         </p>
 
-        <div style={{
-          background: "rgba(15, 23, 42, 0.9)",
-          borderRadius: "16px",
-          padding: "25px",
-          marginBottom: "25px",
-          border: "2px solid rgba(0, 202, 255, 0.3)",
-          maxWidth: "500px",
-          margin: "0 auto 25px"
-        }}>
-          <div style={{
-            padding: "12px",
-            background: "rgba(251, 191, 36, 0.1)",
-            borderRadius: "8px",
-            border: "1px solid rgba(251, 191, 36, 0.3)",
-            textAlign: "center"
-          }}>
-            <div style={{ color: "#fbbf24", fontSize: "0.9rem", fontWeight: "600" }}>
-              📝 המספור יתחיל מ-{startNumber} ויסתיים ב-{startNumber + totalCards - 1}
-            </div>
-          </div>
-        </div>
+
         
         <div style={{ 
           display: "flex", 
@@ -150,35 +106,16 @@ export default function ManualQueue() {
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
             gap: "5mm"
-          }}>
-            {allCardNumbers.slice(pageIndex * 4, (pageIndex + 1) * 4).map((num) => (
-            <div key={num} style={{
-              border: "2px dashed #00caff",
-              borderRadius: "8px",
-              padding: "8mm",
-              background: "#f8fafc",
-              pageBreakInside: "avoid",
-              position: "relative"
             }}>
-              {/* מספר סידורי בפינה */}
-              <div style={{
-                position: "absolute",
-                top: "3mm",
-                left: "3mm",
-                width: "12mm",
-                height: "12mm",
-                borderRadius: "50%",
-                background: "linear-gradient(135deg, #00caff, #0088ff)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "1.3rem",
-                fontWeight: "900",
-                color: "#fff",
-                boxShadow: "0 2px 8px rgba(0, 202, 255, 0.3)"
-              }}>
-                {num}
-              </div>
+            {Array.from({ length: 4 }).map((_, cardIndex) => (
+            <div key={cardIndex} style={{
+            border: "2px dashed #00caff",
+            borderRadius: "8px",
+            padding: "8mm",
+            background: "#f8fafc",
+            pageBreakInside: "avoid",
+            position: "relative"
+            }}>
 
               {/* כותרת */}
               <div style={{
