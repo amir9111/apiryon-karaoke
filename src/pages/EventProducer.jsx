@@ -880,9 +880,9 @@ function InvitationCard({ refObj, data }) {
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              gap: "10px",
+              gap: "8px",
               background: "rgba(0,0,0,0.6)",
-              padding: "20px 25px",
+              padding: "15px 20px",
               borderRadius: "14px",
               border: `2px solid ${rgba(accent, 0.4)}`,
               boxShadow: `0 0 20px ${rgba(accent, 0.3)}`
@@ -917,9 +917,9 @@ function InvitationCard({ refObj, data }) {
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              gap: "10px",
+              gap: "8px",
               background: "rgba(0,0,0,0.6)",
-              padding: "20px 25px",
+              padding: "15px 20px",
               borderRadius: "14px",
               border: `2px solid ${rgba(accent, 0.4)}`,
               boxShadow: `0 0 20px ${rgba(accent, 0.3)}`
