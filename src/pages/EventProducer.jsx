@@ -464,31 +464,6 @@ function InvitationCard({ refObj, data }) {
         padding: "30px 30px 20px"
       }}>
 
-        {/* תג LIMITED EDITION */}
-        <div style={{
-          position: "absolute",
-          top: "15px",
-          left: "50%",
-          transform: "translateX(-50%)",
-          background: "linear-gradient(135deg, #000 0%, #1a1a1a 100%)",
-          padding: "8px 20px",
-          borderRadius: "8px",
-          border: `2px solid ${accent}`,
-          boxShadow: `0 0 20px ${accent}, inset 0 0 10px rgba(255, 215, 0, 0.1)`,
-          zIndex: 20
-        }}>
-          <div style={{
-            fontSize: "0.7rem",
-            fontWeight: "900",
-            color: accent,
-            letterSpacing: "0.2em",
-            textTransform: "uppercase",
-            textShadow: `0 0 10px ${accent}`
-          }}>
-            ⚡ LIMITED EDITION ⚡
-          </div>
-        </div>
-
         {/* פסי זהב דקורטיביים - פינות */}
         <div style={{
           position: "absolute",
