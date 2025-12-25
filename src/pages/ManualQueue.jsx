@@ -5,7 +5,6 @@ import NavigationMenu from "../components/NavigationMenu";
 export default function ManualQueue() {
   const [numPages, setNumPages] = React.useState(1);
   const todayDate = new Date().toISOString().split('T')[0];
-  const todayDate = new Date().toISOString().split('T')[0];
 
   const handlePrint = () => {
     window.print();
