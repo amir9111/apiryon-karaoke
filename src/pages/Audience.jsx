@@ -58,9 +58,13 @@ export default function Audience() {
   return (
     <div dir="rtl" style={{
       minHeight: "100vh",
+      height: "100vh",
       background: "linear-gradient(135deg, #020617 0%, #0a1929 50%, #020617 100%)",
       color: "#fff",
-      position: "relative"
+      position: "relative",
+      overflow: "hidden",
+      display: "flex",
+      flexDirection: "column"
     }}>
       {/* Fixed Menu */}
       <div style={{ position: "fixed", top: "20px", right: "20px", zIndex: 10000 }}>
@@ -215,51 +219,54 @@ export default function Audience() {
 
         <main role="main" style={{ 
           display: "flex", 
-          flexDirection: "column", 
-          alignItems: "center", 
-          justifyContent: "flex-start",
-          padding: "0 20px 2vh",
+          flexDirection: latestMedia ? "row" : "column",
+          alignItems: "stretch", 
+          justifyContent: "space-between",
+          padding: latestMedia ? "0 20px" : "0 20px 2vh",
           width: "100%",
-          minHeight: "0"
+          flex: 1,
+          overflow: "hidden",
+          gap: "20px"
         }}>
 
           {/* Media Display Section */}
           {latestMedia && (
             <motion.div
               key={latestMedia.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.6 }}
               style={{
-                width: "100%",
-                maxWidth: "1200px",
-                marginBottom: "3vh",
-                position: "relative"
+                flex: "1 1 65%",
+                display: "flex",
+                flexDirection: "column",
+                minWidth: 0
               }}
             >
               <div style={{
                 background: "rgba(15, 23, 42, 0.95)",
-                borderRadius: "28px",
-                padding: "24px",
+                borderRadius: "24px",
+                padding: "16px",
                 border: "3px solid rgba(0, 202, 255, 0.5)",
-                boxShadow: "0 0 80px rgba(0, 202, 255, 0.5), inset 0 0 40px rgba(0, 202, 255, 0.1)",
+                boxShadow: "0 0 80px rgba(0, 202, 255, 0.5)",
                 backdropFilter: "blur(30px)",
-                overflow: "hidden",
-                position: "relative"
+                height: "100%",
+                display: "flex",
+                flexDirection: "column"
               }}>
                 {/* Header Badge */}
                 <div style={{
                   textAlign: "center",
-                  marginBottom: "16px"
+                  marginBottom: "12px"
                 }}>
                   <div style={{
                     display: "inline-block",
                     background: "linear-gradient(135deg, #00caff, #0088ff)",
                     color: "#001a2e",
-                    padding: "8px 24px",
+                    padding: "6px 20px",
                     borderRadius: "12px",
-                    fontSize: "clamp(0.9rem, 1.5vw, 1.1rem)",
+                    fontSize: "1rem",
                     fontWeight: "800",
                     textTransform: "uppercase",
                     letterSpacing: "0.1em",
@@ -272,11 +279,11 @@ export default function Audience() {
                 {/* Media Container */}
                 <div style={{
                   background: "#000",
-                  borderRadius: "20px",
+                  borderRadius: "16px",
                   overflow: "hidden",
                   border: "2px solid rgba(0, 202, 255, 0.3)",
                   boxShadow: "0 10px 50px rgba(0, 0, 0, 0.7)",
-                  minHeight: "300px",
+                  flex: 1,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center"
@@ -295,9 +302,9 @@ export default function Audience() {
                       onLoadedData={() => console.log('✅ Video loaded')}
                       style={{
                         width: "100%",
-                        maxHeight: "75vh",
+                        height: "100%",
                         display: "block",
-                        objectFit: "contain",
+                        objectFit: "cover",
                         backgroundColor: "#000"
                       }}
                     />
@@ -312,36 +319,27 @@ export default function Audience() {
                       onLoad={() => console.log('✅ Image loaded:', latestMedia.media_url)}
                       style={{
                         width: "100%",
-                        maxHeight: "75vh",
+                        height: "100%",
                         display: "block",
-                        objectFit: "contain"
+                        objectFit: "cover"
                       }}
                     />
                   )}
                 </div>
-
-                {/* Decorative Glow Effect */}
-                <div style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  background: "radial-gradient(circle at 50% 50%, rgba(0, 202, 255, 0.1), transparent 70%)",
-                  pointerEvents: "none",
-                  zIndex: -1
-                }} />
               </div>
             </motion.div>
           )}
 
           {/* QR Codes Row */}
           <div style={{ 
-            display: "grid", 
-            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 220px), 1fr))", 
+            display: latestMedia ? "flex" : "grid",
+            flexDirection: latestMedia ? "column" : undefined,
+            gridTemplateColumns: latestMedia ? undefined : "repeat(auto-fit, minmax(min(100%, 220px), 1fr))",
             gap: "15px",
-            width: "100%",
-            maxWidth: "1200px"
+            width: latestMedia ? "auto" : "100%",
+            maxWidth: latestMedia ? "none" : "1200px",
+            flex: latestMedia ? "0 0 auto" : undefined,
+            minWidth: latestMedia ? "280px" : undefined
           }}>
             {/* QR Code for Join Queue */}
             <div style={{
