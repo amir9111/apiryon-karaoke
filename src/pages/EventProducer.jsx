@@ -601,13 +601,13 @@ function InvitationCard({ refObj, data }) {
             <div style={{
               position: "relative",
               background: "rgba(0,0,0,0.85)",
-              padding: "18px 24px",
-              borderRadius: "14px",
+              padding: "12px 18px",
+              borderRadius: "12px",
               border: `3px solid ${accent}`,
               boxShadow: `0 0 30px ${rgba(accent, 0.6)}, inset 0 0 20px rgba(0,0,0,0.5)`
             }}>
               <div style={{
-                fontSize: "4rem",
+                fontSize: "3rem",
                 fontWeight: "900",
                 lineHeight: 0.8,
                 background: `linear-gradient(135deg, ${accent} 0%, #FFA500 50%, ${accent} 100%)`,
@@ -633,7 +633,7 @@ function InvitationCard({ refObj, data }) {
               </div>
               {data.time && (
                 <div style={{
-                  fontSize: "1.6rem",
+                  fontSize: "1.3rem",
                   color: primaryText,
                   fontWeight: "900",
                   marginTop: "5px",
@@ -644,9 +644,9 @@ function InvitationCard({ refObj, data }) {
                 </div>
               )}
               <div style={{
-                fontSize: "0.7rem",
+                fontSize: "0.65rem",
                 color: "rgba(255, 215, 0, 0.8)",
-                marginTop: "8px",
+                marginTop: "6px",
                 fontWeight: "600",
                 textAlign: "center"
               }}>
@@ -655,38 +655,6 @@ function InvitationCard({ refObj, data }) {
             </div>
           </div>
         )}
-
-        {/* תג גיל מינימום - פינה ימנית עליונה */}
-        <div style={{
-          position: "absolute",
-          top: "190px",
-          right: "30px",
-          zIndex: 10
-        }}>
-          <div style={{
-            background: "rgba(0,0,0,0.9)",
-            padding: "10px 18px",
-            borderRadius: "12px",
-            border: `2px solid ${accent}`,
-            boxShadow: `0 0 20px ${rgba(accent, 0.4)}`,
-            textAlign: "center"
-          }}>
-            <div style={{
-              fontSize: "1.8rem",
-              fontWeight: "900",
-              color: accent,
-              lineHeight: 1,
-              marginBottom: "4px",
-              textShadow: `0 0 15px ${accent}`
-            }}>18+</div>
-            <div style={{
-              fontSize: "0.6rem",
-              color: "rgba(255, 215, 0, 0.7)",
-              fontWeight: "600",
-              letterSpacing: "0.05em"
-            }}>גיל מינימום</div>
-          </div>
-        </div>
 
         {/* כותרת HERO דרמטית - רבודה */}
         <div style={{
@@ -1172,12 +1140,12 @@ function InvitationCard({ refObj, data }) {
             margin: "10px 0"
           }} />
 
-          {/* שורה שנייה: QR codes קטנים */}
+          {/* שורה שנייה: QR codes + תג 18+ */}
           <div style={{
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            gap: "30px",
+            gap: "20px",
             marginBottom: "10px"
           }}>
             <div style={{ textAlign: "center" }}>
@@ -1205,7 +1173,40 @@ function InvitationCard({ refObj, data }) {
                 textShadow: `0 0 10px ${accent}`
               }}>WhatsApp</div>
             </div>
-            
+
+            {/* תג 18+ */}
+            <div style={{ textAlign: "center" }}>
+              <div style={{
+                width: "70px",
+                height: "70px",
+                background: "rgba(0,0,0,0.9)",
+                padding: "5px",
+                borderRadius: "10px",
+                border: `2px solid ${accent}`,
+                boxShadow: `0 0 15px ${rgba(accent, 0.4)}`,
+                marginBottom: "6px",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center"
+              }}>
+                <div style={{
+                  fontSize: "1.8rem",
+                  fontWeight: "900",
+                  color: accent,
+                  lineHeight: 1,
+                  textShadow: `0 0 15px ${accent}`
+                }}>18+</div>
+              </div>
+              <div style={{
+                fontSize: "0.65rem",
+                color: accent,
+                fontWeight: "700",
+                letterSpacing: "0.05em",
+                textShadow: `0 0 10px ${accent}`
+              }}>גיל מינימום</div>
+            </div>
+
             <div style={{ textAlign: "center" }}>
               <div style={{
                 width: "70px",
