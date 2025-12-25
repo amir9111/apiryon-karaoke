@@ -40,7 +40,6 @@ export default function EventProducerV2() {
 
     setIsAnalyzing(true);
     try {
-      // ✅ 1) Rules engine first (stable decisions)
       const signals = deriveSignalsFromText(inputText);
 
       const prompt = `
@@ -54,7 +53,7 @@ export default function EventProducerV2() {
 ${inputText}
 """
 
-אותות שחולצו מהטקסט (Signals) — השתמש בהם כדי לבחור mood/effects ותוכן מתאים:
+אותות שחולצו מהטקסט (Signals):
 ${JSON.stringify(signals, null, 2)}
 
 כללי איכות:
@@ -77,18 +76,15 @@ ${JSON.stringify(signals, null, 2)}
             description: { type: "string" },
             highlights: { type: "array", items: { type: "string" } },
             callToAction: { type: "string" },
-
             date: { type: "string" },
             time: { type: "string" },
             location: { type: "string" },
             contact: { type: "string" },
-
-            // AI design suggestion (we will merge with rules)
             design: {
               type: "object",
               properties: {
                 mood: { type: "string", enum: ["hot_stage", "dark_club", "premium", "festive"] },
-                accentColor: { type: "string", description: "HEX like #FFA500" },
+                accentColor: { type: "string" },
                 effects: {
                   type: "array",
                   items: { type: "string", enum: ["stage_lights", "glow", "smoke", "sparks", "bokeh"] }
@@ -96,15 +92,12 @@ ${JSON.stringify(signals, null, 2)}
               },
               required: ["mood", "accentColor", "effects"]
             },
-
-            // optional: AI can add extra elements too
             elements: { type: "array", items: { type: "string" } }
           },
           required: ["title", "subtitle", "description", "callToAction", "design"]
         }
       });
 
-      // ✅ 2) Merge AI + rules (rules keep it stable & psychological)
       const finalDesign = mergeDesign(result.design, signals.rulesDesign);
       const finalElements = Array.from(new Set([...(signals.elements || []), ...((result.elements || []) ? result.elements : [])]));
 
@@ -167,7 +160,6 @@ ${JSON.stringify(signals, null, 2)}
   const moodTheme = invitation?.design?.mood || "hot_stage";
   const accent = invitation?.design?.accentColor || "#FFA500";
   const effects = invitation?.design?.effects || ["stage_lights", "glow"];
-
   const theme = getTheme(moodTheme, accent);
 
   return (
@@ -213,11 +205,11 @@ ${JSON.stringify(signals, null, 2)}
               WebkitTextFillColor: "transparent",
               margin: 0
             }}>
-              יוצר הזמנות V2 (חוקים + DNA)
+              יוצר הזמנות V3 (Hero Layer)
             </h1>
           </div>
           <p style={{ color: "#94a3b8", fontSize: "1.05rem" }}>
-            אתה כותב טקסט → המערכת בוחרת אלמנטים אוטומטית (חג/ריקודים/DJ/VIP/מוגבל) 🎛️
+            עכשיו נוסף אלמנט מרכזי ענק שמגביר "וואו" לפי הטקסט 🎭
           </p>
         </div>
 
@@ -249,7 +241,7 @@ ${JSON.stringify(signals, null, 2)}
                     🎨 העלה תבנית להשראה (אופציונלי)
                   </div>
                   <div style={{ fontSize: "0.9rem", color: "#94a3b8" }}>
-                    ה-AI ילמד גם על טון וגם על קונספט
+                    ה-AI ילמד גם סגנון וגם קונספט
                   </div>
                 </div>
 
@@ -306,7 +298,7 @@ ${JSON.stringify(signals, null, 2)}
                       ✓ התבנית נטענה בהצלחה
                     </div>
                     <div style={{ color: "#94a3b8", fontSize: "0.85rem" }}>
-                      AI + חוקים יקבעו גם אלמנטים
+                      חוקים + Hero יקבעו וואו
                     </div>
                   </div>
                   <button
@@ -386,7 +378,7 @@ DJ LIVE • ריקודים • קריוקי
               ) : (
                 <>
                   <Sparkles size={20} />
-                  <span>🎨 בנה לי הזמנה (V2)</span>
+                  <span>🎨 בנה לי הזמנה (V3)</span>
                 </>
               )}
             </button>
@@ -455,7 +447,10 @@ DJ LIVE • ריקודים • קריוקי
                 {effects.includes("sparks") && <Sparks accent={accent} />}
                 {effects.includes("smoke") && <Smoke />}
 
-                {/* ✅ Overlay elements (badges/icons/holiday strip) */}
+                {/* ✅ NEW: Hero Layer */}
+                <HeroLayer signals={invitation.signals} accent={accent} mood={moodTheme} />
+
+                {/* Overlay elements */}
                 <OverlayElements elements={invitation.elements || []} accent={accent} />
 
                 <div style={{
@@ -558,6 +553,209 @@ DJ LIVE • ריקודים • קריוקי
   );
 }
 
+/* ------------------ HERO LAYER ------------------ */
+function HeroLayer({ signals, accent, mood }) {
+  const holiday = signals?.holiday || null;
+  const vibe = signals?.vibe || "karaoke";
+  const intensity = signals?.intensity || "mid";
+
+  // Choose hero type
+  let hero = "mic";
+  if (holiday === "hanukkah") hero = "hanukkah";
+  else if (holiday) hero = "holiday";
+  else if (vibe === "club") hero = "laser";
+  else if (vibe === "premium") hero = "premium";
+  else if (vibe === "hafla") hero = "stars";
+  else hero = "mic";
+
+  // Big watermark in center (behind text)
+  const base = {
+    position: "absolute",
+    inset: 0,
+    pointerEvents: "none",
+    zIndex: 2
+  };
+
+  // Stronger visibility if high intensity
+  const alpha = intensity === "high" ? 0.22 : intensity === "low" ? 0.12 : 0.18;
+
+  return (
+    <div style={base}>
+      {hero === "hanukkah" && <HeroHanukkah accent={accent} alpha={alpha} />}
+      {hero === "holiday" && <HeroHoliday accent={accent} alpha={alpha} holiday={holiday} />}
+      {hero === "laser" && <HeroLaser accent={accent} alpha={alpha} mood={mood} />}
+      {hero === "premium" && <HeroPremium accent={accent} alpha={alpha} />}
+      {hero === "stars" && <HeroStars accent={accent} alpha={alpha} />}
+      {hero === "mic" && <HeroMic accent={accent} alpha={alpha} />}
+    </div>
+  );
+}
+
+function HeroMic({ accent, alpha }) {
+  return (
+    <>
+      <div style={{
+        position: "absolute",
+        left: "50%",
+        top: "42%",
+        transform: "translate(-50%, -50%) rotate(-18deg)",
+        fontSize: "min(420px, 34vw)",
+        opacity: alpha,
+        filter: `drop-shadow(0 0 50px ${hexToRgba(accent, 0.35)})`
+      }}>
+        🎤
+      </div>
+      <div style={{
+        position: "absolute",
+        inset: 0,
+        background: `radial-gradient(circle at 50% 40%, ${hexToRgba(accent, 0.14)}, transparent 58%)`
+      }} />
+    </>
+  );
+}
+
+function HeroHanukkah({ accent, alpha }) {
+  return (
+    <>
+      <div style={{
+        position: "absolute",
+        left: "50%",
+        top: "40%",
+        transform: "translate(-50%, -50%)",
+        fontSize: "min(420px, 34vw)",
+        opacity: alpha,
+        filter: `drop-shadow(0 0 60px ${hexToRgba("#FFD700", 0.45)})`
+      }}>
+        🕎
+      </div>
+      <div style={{
+        position: "absolute",
+        inset: 0,
+        background: `
+          radial-gradient(circle at 50% 38%, ${hexToRgba("#FFD700", 0.14)}, transparent 60%),
+          radial-gradient(circle at 40% 30%, ${hexToRgba(accent, 0.10)}, transparent 55%)
+        `
+      }} />
+    </>
+  );
+}
+
+function HeroHoliday({ accent, alpha, holiday }) {
+  const map = {
+    purim: "🎭",
+    independence: "🇮🇱",
+    newyear: "🎆",
+    passover: "🍷",
+    ramadan: "🌙"
+  };
+  const icon = map[holiday] || "✨";
+  return (
+    <>
+      <div style={{
+        position: "absolute",
+        left: "50%",
+        top: "40%",
+        transform: "translate(-50%, -50%)",
+        fontSize: "min(420px, 34vw)",
+        opacity: alpha,
+        filter: `drop-shadow(0 0 55px ${hexToRgba(accent, 0.35)})`
+      }}>
+        {icon}
+      </div>
+      <div style={{
+        position: "absolute",
+        inset: 0,
+        background: `radial-gradient(circle at 50% 40%, ${hexToRgba(accent, 0.12)}, transparent 62%)`
+      }} />
+    </>
+  );
+}
+
+function HeroLaser({ accent, alpha, mood }) {
+  const a = Math.min(0.26, alpha + 0.06);
+  return (
+    <>
+      <div style={{
+        position: "absolute",
+        inset: 0,
+        opacity: a,
+        background: `
+          linear-gradient(115deg, transparent 0%, ${hexToRgba(accent, 0.22)} 35%, transparent 70%),
+          linear-gradient(65deg, transparent 0%, ${hexToRgba("#7C3AED", 0.18)} 40%, transparent 75%),
+          linear-gradient(145deg, transparent 0%, ${hexToRgba("#22C55E", 0.12)} 35%, transparent 70%)
+        `,
+        filter: "blur(0.2px)"
+      }} />
+      <div style={{
+        position: "absolute",
+        left: "50%",
+        top: "44%",
+        transform: "translate(-50%, -50%) rotate(-12deg)",
+        width: "min(780px, 70vw)",
+        height: "min(520px, 52vw)",
+        borderRadius: 999,
+        border: `2px solid ${hexToRgba(accent, 0.25)}`,
+        boxShadow: `0 0 80px ${hexToRgba(accent, 0.22)}`
+      }} />
+    </>
+  );
+}
+
+function HeroPremium({ accent, alpha }) {
+  return (
+    <>
+      <div style={{
+        position: "absolute",
+        left: "50%",
+        top: "40%",
+        transform: "translate(-50%, -50%)",
+        width: "min(780px, 72vw)",
+        height: "min(520px, 48vw)",
+        borderRadius: 36,
+        opacity: alpha,
+        background: `linear-gradient(135deg, ${hexToRgba(accent, 0.22)}, rgba(0,0,0,0))`,
+        border: `1px solid ${hexToRgba(accent, 0.28)}`,
+        boxShadow: `0 0 90px ${hexToRgba(accent, 0.20)}`
+      }} />
+      <div style={{
+        position: "absolute",
+        left: "50%",
+        top: "40%",
+        transform: "translate(-50%, -50%)",
+        fontSize: "min(360px, 30vw)",
+        opacity: alpha * 0.85
+      }}>
+        ✨
+      </div>
+    </>
+  );
+}
+
+function HeroStars({ accent, alpha }) {
+  return (
+    <>
+      <div style={{
+        position: "absolute",
+        left: "50%",
+        top: "40%",
+        transform: "translate(-50%, -50%) rotate(-8deg)",
+        fontSize: "min(420px, 34vw)",
+        opacity: alpha
+      }}>
+        ✨
+      </div>
+      <div style={{
+        position: "absolute",
+        inset: 0,
+        background: `
+          radial-gradient(circle at 35% 35%, ${hexToRgba(accent, 0.10)}, transparent 52%),
+          radial-gradient(circle at 65% 45%, ${hexToRgba("#FFD700", 0.10)}, transparent 55%)
+        `
+      }} />
+    </>
+  );
+}
+
 /* ------------------ Buttons ------------------ */
 function btnStyle(type) {
   const base = {
@@ -604,7 +802,7 @@ function getTheme(mood, accent) {
   };
 }
 
-/* ------------------ Typography styles ------------------ */
+/* ------------------ Typography ------------------ */
 function topBrandStyle(accent) {
   return {
     fontSize: "clamp(.9rem, 1.8vw, 1.2rem)",
@@ -705,7 +903,7 @@ function InfoPill({ icon, label, value, accent }) {
   );
 }
 
-/* ------------------ FX Components ------------------ */
+/* ------------------ FX ------------------ */
 function StageLights({ accent, mood }) {
   const top = mood === "dark_club" ? 0.45 : 0.35;
   return (
@@ -783,7 +981,7 @@ function Smoke() {
   );
 }
 
-/* ------------------ Overlay Elements (badges/icons/holiday strip) ------------------ */
+/* ------------------ Overlay Elements ------------------ */
 function OverlayElements({ elements, accent }) {
   const has = (x) => elements.includes(x);
   const holiday = elements.find((e) => e.startsWith("holiday:"))?.split(":")[1];
@@ -839,10 +1037,10 @@ function OverlayElements({ elements, accent }) {
 function CornerBadge({ show, text, accent, pos }) {
   if (!show) return null;
   const map = {
-    right:  { top: 90, right: 24 },
-    left:   { top: 90, left: 24 },
+    right: { top: 90, right: 24 },
+    left: { top: 90, left: 24 },
     right2: { top: 150, right: 24 },
-    left2:  { top: 150, left: 24 }
+    left2: { top: 150, left: 24 }
   };
   return (
     <div style={{
