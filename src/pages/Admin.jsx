@@ -9,6 +9,7 @@ import { createPageUrl } from "@/utils";
 import StatsCard from "../components/admin/StatsCard";
 import PerformanceTimer from "../components/admin/PerformanceTimer";
 import SongHistory from "../components/admin/SongHistory";
+import MediaUploader from "../components/admin/MediaUploader";
 
 export default function Admin() {
   const [user, setUser] = useState(null);
@@ -399,6 +400,11 @@ export default function Admin() {
             color="#8b5cf6"
             delay={0.5}
           />
+        </div>
+
+        {/* Media Uploader */}
+        <div style={{ marginBottom: "24px" }}>
+          <MediaUploader />
         </div>
 
         {/* Main Content */}
