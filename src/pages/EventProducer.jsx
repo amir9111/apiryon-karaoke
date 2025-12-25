@@ -104,7 +104,6 @@ ${formData.artists && formData.artists.length > 0 ? `- זמרים: ${formData.ar
         response_json_schema: {
           type: "object",
           properties: {
-            title: { type: "string", description: "כותרת דרמטית 2-4 מילים שמפעילה רגש חזק" },
             subtitle: { type: "string", description: "משפט אחד שמתאר חוויה או תחושה, לא רק מידע" },
             highlights: { 
               type: "array", 
@@ -115,7 +114,7 @@ ${formData.artists && formData.artists.length > 0 ? `- זמרים: ${formData.ar
             },
             cta: { type: "string", description: "משפט CTA מתוחכם עם FOMO חכם ודחיפות" }
           },
-          required: ["title", "subtitle", "highlights", "cta"]
+          required: ["subtitle", "highlights", "cta"]
         }
       });
 
