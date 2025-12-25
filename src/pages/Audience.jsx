@@ -191,10 +191,10 @@ export default function Audience() {
                     e.target.playbackRate = 1.0;
                   }}
                   style={{
-                    width: "100%",
-                    height: "100%",
+                    width: "100vw",
+                    height: "100vh",
                     display: "block",
-                    objectFit: "contain",
+                    objectFit: "cover",
                     backgroundColor: "#000",
                     imageRendering: "high-quality",
                     willChange: "transform",
@@ -215,13 +215,12 @@ export default function Audience() {
                   }}
                   onLoad={() => console.log('✅ Image loaded:', latestMedia.media_url)}
                   style={{
-                    width: "100%",
-                    height: "100%",
+                    width: "100vw",
+                    height: "100vh",
                     display: "block",
-                    objectFit: "contain",
-                    imageRendering: "-webkit-optimize-contrast",
-                    imageRendering: "high-quality",
-                    imageRendering: "crisp-edges"
+                    objectFit: "cover",
+                    backgroundColor: "#000",
+                    imageRendering: "high-quality"
                   }}
                 />
               )}
