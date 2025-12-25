@@ -13,7 +13,6 @@ export default function EventProducerV2() {
 
   const [templateImage, setTemplateImage] = useState(null);
   const [isUploadingTemplate, setIsUploadingTemplate] = useState(false);
-  const [signals, setSignals] = useState(null);
 
   const cardRef = useRef(null);
 
@@ -40,12 +39,10 @@ export default function EventProducerV2() {
     }
 
     setIsAnalyzing(true);
-    
-    // שלב 1: נתח טקסט לפי חוקים קשיחים
-    const detectedSignals = deriveSignalsFromText(inputText);
-    setSignals(detectedSignals);
-
     try {
+      // ✅ 1) Rules engine first (stable decisions)
+      const signals = deriveSignalsFromText(inputText);
+
       const prompt = `
 אתה מומחה להפקת ליינים ועיצוב הזמנות למועדוני קריוקי בישראל.
 המטרה: להחזיר גם טקסט שיווקי וגם "DNA עיצובי" (קונספט) כדי שהפלייר ירגיש כמו במה/אורות/חום/חג.
@@ -57,16 +54,15 @@ export default function EventProducerV2() {
 ${inputText}
 """
 
+אותות שחולצו מהטקסט (Signals) — השתמש בהם כדי לבחור mood/effects ותוכן מתאים:
+${JSON.stringify(signals, null, 2)}
+
 כללי איכות:
 - כותרת קצרה, חזקה, מושכת עין.
 - תת-כותרת משלימה שנותנת "סיבה לבוא".
 - 3-5 Highlights קצרים, חדים.
 - CTA קצר, פוקד, עם FOMO קל.
-- אם יש חג (חנוכה/פורים/עצמאות) תתאים mood="festive".
-- אם זה "חם/מפוצץ/חפלה" mood="hot_stage".
-- אם זה לילה כהה/מסיבה mood="dark_club".
-- אם זה יוקרתי/אלגנטי mood="premium".
-
+- אם יש חג (חנוכה/פורים/עצמאות/וכו') תן לזה עדיפות.
 החזר JSON בלבד.
 `;
 
@@ -87,6 +83,7 @@ ${inputText}
             location: { type: "string" },
             contact: { type: "string" },
 
+            // AI design suggestion (we will merge with rules)
             design: {
               type: "object",
               properties: {
@@ -98,20 +95,27 @@ ${inputText}
                 }
               },
               required: ["mood", "accentColor", "effects"]
-            }
+            },
+
+            // optional: AI can add extra elements too
+            elements: { type: "array", items: { type: "string" } }
           },
           required: ["title", "subtitle", "description", "callToAction", "design"]
         }
       });
 
-      // שלב 2: מיזוג AI + חוקים קשיחים
-      const mergedDesign = mergeDesign(result.design, detectedSignals.rulesDesign);
-      
-      setInvitation({
+      // ✅ 2) Merge AI + rules (rules keep it stable & psychological)
+      const finalDesign = mergeDesign(result.design, signals.rulesDesign);
+      const finalElements = Array.from(new Set([...(signals.elements || []), ...((result.elements || []) ? result.elements : [])]));
+
+      const final = {
         ...result,
-        design: mergedDesign,
-        signals: detectedSignals
-      });
+        design: finalDesign,
+        elements: finalElements,
+        signals
+      };
+
+      setInvitation(final);
     } catch (error) {
       console.error(error);
       alert("אירעה שגיאה בניתוח הטקסט. נסה שוב.");
@@ -209,11 +213,11 @@ ${inputText}
               WebkitTextFillColor: "transparent",
               margin: 0
             }}>
-              יוצר הזמנות V2 (DNA עיצובי)
+              יוצר הזמנות V2 (חוקים + DNA)
             </h1>
           </div>
           <p style={{ color: "#94a3b8", fontSize: "1.05rem" }}>
-            אתה כותב טקסט → ה-AI מחליט גם על קונספט (חום/במה/חג) 🎛️
+            אתה כותב טקסט → המערכת בוחרת אלמנטים אוטומטית (חג/ריקודים/DJ/VIP/מוגבל) 🎛️
           </p>
         </div>
 
@@ -242,7 +246,7 @@ ${inputText}
               }}>
                 <div>
                   <div style={{ fontSize: "1.05rem", fontWeight: "800", color: "#a78bfa", marginBottom: 6 }}>
-                    <span style={{ marginInlineEnd: 8 }}>🎨</span> העלה תבנית להשראה (אופציונלי)
+                    🎨 העלה תבנית להשראה (אופציונלי)
                   </div>
                   <div style={{ fontSize: "0.9rem", color: "#94a3b8" }}>
                     ה-AI ילמד גם על טון וגם על קונספט
@@ -302,7 +306,7 @@ ${inputText}
                       ✓ התבנית נטענה בהצלחה
                     </div>
                     <div style={{ color: "#94a3b8", fontSize: "0.85rem" }}>
-                      ה-AI ידמה סגנון + mood
+                      AI + חוקים יקבעו גם אלמנטים
                     </div>
                   </div>
                   <button
@@ -332,9 +336,10 @@ ${inputText}
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
               placeholder={`לדוגמה:
-ערב קריוקי מטורף באפריון!
+מסיבת חנוכה באפריון!
 חמישי הקרוב בשעה 21:00
-מוזיקה מזרחית • חפלות • ריקודים
+DJ LIVE • ריקודים • קריוקי
+מקומות מוגבלים - הזמנה מראש
 להזמנות: 050-1234567`}
               style={{
                 width: "100%",
@@ -387,10 +392,7 @@ ${inputText}
             </button>
 
             <style>{`
-              @keyframes spin {
-                from { transform: rotate(0deg); }
-                to { transform: rotate(360deg); }
-              }
+              @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
             `}</style>
           </div>
         )}
@@ -398,19 +400,11 @@ ${inputText}
         {invitation && (
           <div>
             <div style={{ display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap", justifyContent: "center" }}>
-              <button
-                onClick={() => exportPng(1080, 1350, "apiryon-invitation.png")}
-                disabled={isExporting}
-                style={btnStyle("green")}
-              >
+              <button onClick={() => exportPng(1080, 1350, "apiryon-invitation.png")} disabled={isExporting} style={btnStyle("green")}>
                 <Download size={18} /> הורד תמונה (1080×1350)
               </button>
 
-              <button
-                onClick={() => exportPng(1080, 1920, "apiryon-story.png")}
-                disabled={isExporting}
-                style={btnStyle("purple")}
-              >
+              <button onClick={() => exportPng(1080, 1920, "apiryon-story.png")} disabled={isExporting} style={btnStyle("purple")}>
                 <Download size={18} /> הורד סטורי (1080×1920)
               </button>
 
@@ -418,22 +412,12 @@ ${inputText}
                 <Share2 size={18} /> שתף
               </button>
 
-              <button
-                onClick={() => { setInvitation(null); setInputText(""); }}
-                style={btnStyle("redOutline")}
-              >
+              <button onClick={() => { setInvitation(null); setInputText(""); }} style={btnStyle("redOutline")}>
                 ✕ התחל מחדש
               </button>
             </div>
 
-            {/* DNA badge + Signals */}
-            <div style={{
-              display: "flex",
-              justifyContent: "center",
-              marginBottom: 12,
-              flexWrap: "wrap",
-              gap: 10
-            }}>
+            <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
               <div style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -443,55 +427,11 @@ ${inputText}
                 background: "rgba(15, 23, 42, 0.7)",
                 border: `1px solid ${hexToRgba(accent, 0.5)}`,
                 color: "#e2e8f0",
-                fontWeight: 800
+                fontWeight: 900
               }}>
                 <Palette size={18} />
                 <span>DNA: {invitation.design.mood} • Accent: {accent}</span>
               </div>
-              
-              {invitation.signals && (
-                <>
-                  {invitation.signals.holiday && (
-                    <div style={{
-                      padding: "8px 12px",
-                      borderRadius: 999,
-                      background: "rgba(251, 191, 36, 0.2)",
-                      border: "1px solid rgba(251, 191, 36, 0.5)",
-                      color: "#fbbf24",
-                      fontSize: "0.85rem",
-                      fontWeight: 900
-                    }}>
-                      🎉 {invitation.signals.holiday}
-                    </div>
-                  )}
-                  {invitation.signals.vibe && (
-                    <div style={{
-                      padding: "8px 12px",
-                      borderRadius: 999,
-                      background: "rgba(139, 92, 246, 0.2)",
-                      border: "1px solid rgba(139, 92, 246, 0.5)",
-                      color: "#a78bfa",
-                      fontSize: "0.85rem",
-                      fontWeight: 900
-                    }}>
-                      {invitation.signals.vibe}
-                    </div>
-                  )}
-                  {invitation.signals.intensity && (
-                    <div style={{
-                      padding: "8px 12px",
-                      borderRadius: 999,
-                      background: "rgba(239, 68, 68, 0.2)",
-                      border: "1px solid rgba(239, 68, 68, 0.5)",
-                      color: "#ef4444",
-                      fontSize: "0.85rem",
-                      fontWeight: 900
-                    }}>
-                      🔥 {invitation.signals.intensity}
-                    </div>
-                  )}
-                </>
-              )}
             </div>
 
             <div style={{ display: "flex", justifyContent: "center" }}>
@@ -508,12 +448,15 @@ ${inputText}
                   boxShadow: theme.outerShadow
                 }}
               >
-                {/* FX layers */}
+                {/* FX */}
                 {effects.includes("stage_lights") && <StageLights accent={accent} mood={moodTheme} />}
                 {effects.includes("glow") && <Glow accent={accent} />}
                 {effects.includes("bokeh") && <Bokeh accent={accent} />}
                 {effects.includes("sparks") && <Sparks accent={accent} />}
                 {effects.includes("smoke") && <Smoke />}
+
+                {/* ✅ Overlay elements (badges/icons/holiday strip) */}
+                <OverlayElements elements={invitation.elements || []} accent={accent} />
 
                 <div style={{
                   position: "relative",
@@ -555,7 +498,7 @@ ${inputText}
                       lineHeight: 1.6,
                       marginBottom: 18,
                       textAlign: "center",
-                      fontWeight: 600
+                      fontWeight: 650
                     }}>
                       {invitation.description}
                     </div>
@@ -569,7 +512,7 @@ ${inputText}
                             gap: 10,
                             fontSize: "clamp(0.95rem, 1.6vw, 1.15rem)",
                             color: "#cbd5e1",
-                            fontWeight: 800
+                            fontWeight: 900
                           }}>
                             <span style={{ color: accent, fontSize: "1.2em" }}>✓</span>
                             <span>{h}</span>
@@ -582,7 +525,7 @@ ${inputText}
                       <div style={{
                         fontSize: "clamp(1rem, 1.8vw, 1.25rem)",
                         color: "#fbbf24",
-                        fontWeight: 900,
+                        fontWeight: 950,
                         textAlign: "center",
                         marginBottom: 14
                       }}>
@@ -599,7 +542,7 @@ ${inputText}
                     fontSize: "clamp(0.85rem, 1.5vw, 1.1rem)",
                     color: "#94a3b8",
                     textAlign: "center",
-                    fontWeight: 700,
+                    fontWeight: 800,
                     marginTop: 18
                   }}>
                     ✨ APIRYON • המועדון הקריוקי שלכם ✨
@@ -615,6 +558,7 @@ ${inputText}
   );
 }
 
+/* ------------------ Buttons ------------------ */
 function btnStyle(type) {
   const base = {
     padding: "14px 24px",
@@ -634,6 +578,7 @@ function btnStyle(type) {
   return base;
 }
 
+/* ------------------ Theme ------------------ */
 function getTheme(mood, accent) {
   if (mood === "dark_club") {
     return {
@@ -653,17 +598,17 @@ function getTheme(mood, accent) {
       outerShadow: `0 0 70px ${hexToRgba(accent, 0.28)}, 0 0 120px rgba(0,0,0,.55)`
     };
   }
-  // hot_stage default
   return {
     baseBg: "linear-gradient(135deg,#1a0f0a 0%, #2d1810 40%, #0a0604 100%)",
     outerShadow: `0 0 70px ${hexToRgba(accent, 0.28)}, 0 0 130px rgba(0,0,0,.6)`
   };
 }
 
+/* ------------------ Typography styles ------------------ */
 function topBrandStyle(accent) {
   return {
     fontSize: "clamp(.9rem, 1.8vw, 1.2rem)",
-    fontWeight: 900,
+    fontWeight: 950,
     textTransform: "uppercase",
     letterSpacing: ".15em",
     textAlign: "center",
@@ -693,7 +638,7 @@ function titleStyle(accent) {
 function subtitleStyle(accent) {
   return {
     fontSize: "clamp(1.3rem, 2.8vw, 2.3rem)",
-    fontWeight: 900,
+    fontWeight: 950,
     color: "#fff",
     textAlign: "center",
     marginBottom: "clamp(26px, 4%, 48px)",
@@ -725,6 +670,7 @@ function ctaStyle(accent) {
   };
 }
 
+/* ------------------ Info pill ------------------ */
 function InfoPill({ icon, label, value, accent }) {
   return (
     <div style={{
@@ -739,7 +685,7 @@ function InfoPill({ icon, label, value, accent }) {
       <div style={{
         fontSize: "0.7rem",
         color: accent,
-        fontWeight: 900,
+        fontWeight: 950,
         marginBottom: 4,
         textTransform: "uppercase",
         letterSpacing: ".08em",
@@ -759,8 +705,7 @@ function InfoPill({ icon, label, value, accent }) {
   );
 }
 
-/* FX Components */
-
+/* ------------------ FX Components ------------------ */
 function StageLights({ accent, mood }) {
   const top = mood === "dark_club" ? 0.45 : 0.35;
   return (
@@ -838,22 +783,104 @@ function Smoke() {
   );
 }
 
-function hexToRgba(hex, a) {
-  try {
-    const h = hex.replace("#", "").trim();
-    const full = h.length === 3 ? h.split("").map((c) => c + c).join("") : h;
-    const r = parseInt(full.slice(0, 2), 16);
-    const g = parseInt(full.slice(2, 4), 16);
-    const b = parseInt(full.slice(4, 6), 16);
-    return `rgba(${r}, ${g}, ${b}, ${a})`;
-  } catch {
-    return `rgba(255,165,0,${a})`;
-  }
+/* ------------------ Overlay Elements (badges/icons/holiday strip) ------------------ */
+function OverlayElements({ elements, accent }) {
+  const has = (x) => elements.includes(x);
+  const holiday = elements.find((e) => e.startsWith("holiday:"))?.split(":")[1];
+
+  return (
+    <>
+      {holiday && (
+        <div style={{
+          position: "absolute",
+          top: 26,
+          left: "50%",
+          transform: "translateX(-50%)",
+          padding: "10px 16px",
+          borderRadius: 999,
+          background: "rgba(0,0,0,.45)",
+          border: `1px solid ${hexToRgba(accent, .55)}`,
+          color: "#fff",
+          fontWeight: 950,
+          letterSpacing: ".04em",
+          textShadow: `0 0 12px ${hexToRgba(accent, .5)}`
+        }}>
+          {holiday === "hanukkah" ? "🕎 מסיבת חנוכה" :
+           holiday === "purim" ? "🎭 מסיבת פורים" :
+           holiday === "independence" ? "🇮🇱 חגיגות עצמאות" :
+           holiday === "newyear" ? "🎆 ניו-יאר" :
+           holiday === "passover" ? "🍷 פסח" :
+           holiday === "ramadan" ? "🌙 רמדאן" :
+           "✨ חגיגות"}
+        </div>
+      )}
+
+      <CornerBadge show={has("badge:limited")} text="מקומות מוגבלים" accent={accent} pos="right" />
+      <CornerBadge show={has("badge:free")} text="כניסה חינם" accent={accent} pos="left" />
+      <CornerBadge show={has("badge:vip")} text="VIP" accent={accent} pos="right2" />
+      <CornerBadge show={has("badge:surprises")} text="הפתעות!" accent={accent} pos="left2" />
+
+      <div style={{
+        position: "absolute",
+        bottom: 26,
+        left: 26,
+        display: "flex",
+        gap: 10,
+        opacity: 0.95
+      }}>
+        {has("icon:mic") && <IconChip label="🎤 קריוקי" accent={accent} />}
+        {has("icon:dj") && <IconChip label="🎧 DJ" accent={accent} />}
+        {has("icon:dance") && <IconChip label="💃 ריקודים" accent={accent} />}
+      </div>
+    </>
+  );
 }
 
+function CornerBadge({ show, text, accent, pos }) {
+  if (!show) return null;
+  const map = {
+    right:  { top: 90, right: 24 },
+    left:   { top: 90, left: 24 },
+    right2: { top: 150, right: 24 },
+    left2:  { top: 150, left: 24 }
+  };
+  return (
+    <div style={{
+      position: "absolute",
+      ...map[pos],
+      padding: "10px 14px",
+      borderRadius: 14,
+      background: `linear-gradient(135deg, ${hexToRgba(accent, .25)}, rgba(0,0,0,.55))`,
+      border: `1px solid ${hexToRgba(accent, .55)}`,
+      color: "#fff",
+      fontWeight: 950,
+      boxShadow: `0 0 22px ${hexToRgba(accent, .25)}`,
+      textShadow: "0 2px 10px rgba(0,0,0,.8)"
+    }}>
+      {text}
+    </div>
+  );
+}
+
+function IconChip({ label, accent }) {
+  return (
+    <div style={{
+      padding: "10px 12px",
+      borderRadius: 999,
+      background: "rgba(0,0,0,.5)",
+      border: `1px solid ${hexToRgba(accent, .5)}`,
+      color: "#fff",
+      fontWeight: 950,
+      fontSize: 14
+    }}>
+      {label}
+    </div>
+  );
+}
+
+/* ------------------ RULES ENGINE ------------------ */
 function deriveSignalsFromText(raw) {
   const t = (raw || "").toLowerCase();
-
   const hasAny = (arr) => arr.some((w) => t.includes(w));
 
   const holiday =
@@ -881,11 +908,6 @@ function deriveSignalsFromText(raw) {
     hasAny(["20", "21", "ערב"]) ? "evening" :
     hasAny(["צהריים", "בוקר"]) ? "day" :
     "unknown";
-
-  const crowd =
-    hasAny(["כולם", "כל העיר", "מלא אנשים", "קהל"]) ? "big" :
-    hasAny(["אינטימי", "מצומצם", "מעט מקומות"]) ? "small" :
-    "normal";
 
   const elements = [];
   if (holiday) elements.push(`holiday:${holiday}`);
@@ -915,28 +937,32 @@ function deriveSignalsFromText(raw) {
   if (mood === "premium") effects.push("glow", "smoke");
   if (mood === "festive") effects.push("stage_lights", "glow", "bokeh", "sparks");
 
-  return {
-    holiday,
-    vibe,
-    intensity,
-    timeOfDay,
-    crowd,
-    elements,
-    rulesDesign: { mood, accentColor, effects }
-  };
+  return { holiday, vibe, intensity, timeOfDay, elements, rulesDesign: { mood, accentColor, effects } };
 }
 
 function mergeDesign(aiDesign, rulesDesign) {
   const out = { ...(aiDesign || {}) };
+  const isHex = (x) => typeof x === "string" && /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(x.trim());
 
   if (rulesDesign?.mood) out.mood = rulesDesign.mood;
-
-  const isHex = (x) => typeof x === "string" && /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(x.trim());
   if (!isHex(out.accentColor) && rulesDesign?.accentColor) out.accentColor = rulesDesign.accentColor;
-
   if (!Array.isArray(out.effects) || out.effects.length === 0) out.effects = rulesDesign?.effects || ["stage_lights", "glow"];
 
   return out;
+}
+
+/* ------------------ Utils ------------------ */
+function hexToRgba(hex, a) {
+  try {
+    const h = (hex || "#FFA500").replace("#", "").trim();
+    const full = h.length === 3 ? h.split("").map((c) => c + c).join("") : h;
+    const r = parseInt(full.slice(0, 2), 16);
+    const g = parseInt(full.slice(2, 4), 16);
+    const b = parseInt(full.slice(4, 6), 16);
+    return `rgba(${r}, ${g}, ${b}, ${a})`;
+  } catch {
+    return `rgba(255,165,0,${a})`;
+  }
 }
 
 EventProducerV2.isPublic = true;
