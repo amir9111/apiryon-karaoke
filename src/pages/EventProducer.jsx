@@ -139,17 +139,15 @@ ${formData.artists && formData.artists.length > 0 ? `- זמרים: ${formData.ar
     try {
       let width, height, filename;
       
+      // כל הפורמטים יהיו 9:16 (מסך טלפון מלא)
+      width = 1080;
+      height = 1920;
+      
       if (format === 'whatsapp') {
-        width = 1080;
-        height = 1350; // גודל מלא של הפלייר - מתאים לווטסאפ
         filename = 'apiryon-whatsapp.png';
       } else if (format === 'story') {
-        width = 1080;
-        height = 1920; // 9:16 לסטורי
         filename = 'apiryon-story.png';
       } else {
-        width = 1080;
-        height = 1350; // ברירת מחדל
         filename = 'apiryon-invitation.png';
       }
       
@@ -410,10 +408,7 @@ ${formData.artists && formData.artists.length > 0 ? `- זמרים: ${formData.ar
           <div>
             <div style={{ display: "flex", gap: "12px", marginBottom: "20px", flexWrap: "wrap", justifyContent: "center" }}>
               <button onClick={() => exportPng('whatsapp')} disabled={isExporting} style={btnStyle("green")}>
-                <Download size={18} /> הורד לווטסאפ
-              </button>
-              <button onClick={() => exportPng('story')} disabled={isExporting} style={btnStyle("purple")}>
-                <Download size={18} /> הורד סטורי
+                <Download size={18} /> הורד תמונה
               </button>
               <button onClick={shareImage} style={btnStyle("cyanOutline")}>
                 <Share2 size={18} /> שתף
@@ -442,7 +437,7 @@ function InvitationCard({ refObj, data }) {
       ref={refObj}
       style={{
         width: "1080px",
-        height: "1350px",
+        height: "1920px",
         position: "relative",
         overflow: "hidden",
         background: "#000",
@@ -472,7 +467,7 @@ function InvitationCard({ refObj, data }) {
         height: "100%",
         display: "flex",
         flexDirection: "column",
-        padding: "30px 30px 20px"
+        padding: "40px 30px 30px"
       }}>
         
         {/* פסי זהב דקורטיביים - פינות */}
@@ -658,8 +653,8 @@ function InvitationCard({ refObj, data }) {
 
         {/* כותרת HERO דרמטית - רבודה */}
         <div style={{
-          marginTop: "160px",
-          marginBottom: "25px",
+          marginTop: "200px",
+          marginBottom: "30px",
           position: "relative",
           padding: "0 25px"
         }}>
@@ -762,8 +757,8 @@ function InvitationCard({ refObj, data }) {
           <div style={{
             display: "flex",
             justifyContent: "center",
-            gap: "20px",
-            marginBottom: "20px",
+            gap: "25px",
+            marginBottom: "30px",
             flexWrap: "wrap",
             padding: "0 20px"
           }}>
@@ -809,7 +804,7 @@ function InvitationCard({ refObj, data }) {
         {/* Highlights מעוצבים */}
         {data.highlights && data.highlights.length > 0 && (
           <div style={{
-            marginBottom: "18px",
+            marginBottom: "25px",
             padding: "0 35px",
             position: "relative"
           }}>
@@ -877,7 +872,7 @@ function InvitationCard({ refObj, data }) {
           justifyContent: "center",
           alignItems: "stretch",
           gap: "12px",
-          marginBottom: "15px",
+          marginBottom: "25px",
           padding: "0 25px",
           flexWrap: "wrap"
         }}>
@@ -972,7 +967,7 @@ function InvitationCard({ refObj, data }) {
         {/* CTA מסוגנן מושך */}
         <div style={{
           position: "relative",
-          marginBottom: "15px",
+          marginBottom: "25px",
           padding: "0 25px"
         }}>
           {/* זוהר עדין */}
@@ -1077,7 +1072,7 @@ function InvitationCard({ refObj, data }) {
         {/* Footer קומפקטי */}
         <div style={{
           background: "linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.95) 100%)",
-          padding: "12px 12px 10px",
+          padding: "18px 15px 15px",
           borderRadius: "16px",
           border: `2px solid ${rgba(accent, 0.3)}`,
           boxShadow: `0 -5px 30px ${rgba(accent, 0.2)}`,
