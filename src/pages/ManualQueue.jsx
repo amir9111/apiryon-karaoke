@@ -4,13 +4,57 @@ import NavigationMenu from "../components/NavigationMenu";
 
 export default function ManualQueue() {
   const [numPages, setNumPages] = React.useState(1);
+  const [eventName, setEventName] = React.useState("");
+  const [eventDate, setEventDate] = React.useState("");
+  const [startNumber, setStartNumber] = React.useState(1);
+
+  React.useEffect(() => {
+    try {
+      const savedEventName = localStorage.getItem('manual_queue_event_name') || "";
+      const savedEventDate = localStorage.getItem('manual_queue_event_date') || "";
+      const savedLastDate = localStorage.getItem('manual_queue_last_date') || "";
+      const savedLastNumber = parseInt(localStorage.getItem('manual_queue_last_number') || "0");
+
+      setEventName(savedEventName);
+      setEventDate(savedEventDate);
+
+      // אם התאריך זהה, המשך מהמספר האחרון
+      if (savedEventDate && savedEventDate === savedLastDate) {
+        setStartNumber(savedLastNumber + 1);
+      } else {
+        setStartNumber(1);
+      }
+    } catch (e) {
+      // silent fail
+    }
+  }, []);
+
+  React.useEffect(() => {
+    // כשמשנים תאריך, אפס את המספור
+    try {
+      const savedLastDate = localStorage.getItem('manual_queue_last_date') || "";
+      if (eventDate && eventDate !== savedLastDate) {
+        setStartNumber(1);
+      }
+    } catch (e) {
+      // silent fail
+    }
+  }, [eventDate]);
 
   const handlePrint = () => {
+    try {
+      localStorage.setItem('manual_queue_event_name', eventName);
+      localStorage.setItem('manual_queue_event_date', eventDate);
+      localStorage.setItem('manual_queue_last_date', eventDate);
+      localStorage.setItem('manual_queue_last_number', (startNumber + totalCards - 1).toString());
+    } catch (e) {
+      // silent fail
+    }
     window.print();
   };
 
   const totalCards = numPages * 8;
-  const allCardNumbers = Array.from({ length: totalCards }, (_, i) => i + 1);
+  const allCardNumbers = Array.from({ length: totalCards }, (_, i) => startNumber + i);
 
   return (
     <div dir="rtl" style={{
@@ -41,6 +85,81 @@ export default function ManualQueue() {
         <p style={{ color: "#cbd5e1", fontSize: "1.1rem", marginBottom: "25px" }}>
           הדפס דפים אלו, גזור לכרטיסים קטנים וחלק בין האנשים למילוי ידני
         </p>
+
+        <div style={{
+          background: "rgba(15, 23, 42, 0.9)",
+          borderRadius: "16px",
+          padding: "25px",
+          marginBottom: "25px",
+          border: "2px solid rgba(0, 202, 255, 0.3)",
+          maxWidth: "500px",
+          margin: "0 auto 25px"
+        }}>
+          <div style={{ marginBottom: "20px" }}>
+            <label style={{ 
+              display: "block",
+              color: "#00caff", 
+              fontSize: "0.95rem", 
+              fontWeight: "700",
+              marginBottom: "8px"
+            }}>
+              שם הליין / האירוע
+            </label>
+            <input
+              type="text"
+              value={eventName}
+              onChange={(e) => setEventName(e.target.value)}
+              placeholder="לדוגמה: ערב קריוקי - האפריון"
+              style={{
+                width: "100%",
+                padding: "12px 16px",
+                borderRadius: "10px",
+                border: "2px solid rgba(0, 202, 255, 0.3)",
+                background: "rgba(2, 6, 23, 0.8)",
+                color: "#fff",
+                fontSize: "1rem"
+              }}
+            />
+          </div>
+
+          <div style={{ marginBottom: "20px" }}>
+            <label style={{ 
+              display: "block",
+              color: "#00caff", 
+              fontSize: "0.95rem", 
+              fontWeight: "700",
+              marginBottom: "8px"
+            }}>
+              תאריך
+            </label>
+            <input
+              type="date"
+              value={eventDate}
+              onChange={(e) => setEventDate(e.target.value)}
+              style={{
+                width: "100%",
+                padding: "12px 16px",
+                borderRadius: "10px",
+                border: "2px solid rgba(0, 202, 255, 0.3)",
+                background: "rgba(2, 6, 23, 0.8)",
+                color: "#fff",
+                fontSize: "1rem"
+              }}
+            />
+          </div>
+
+          <div style={{
+            padding: "12px",
+            background: "rgba(251, 191, 36, 0.1)",
+            borderRadius: "8px",
+            border: "1px solid rgba(251, 191, 36, 0.3)",
+            textAlign: "center"
+          }}>
+            <div style={{ color: "#fbbf24", fontSize: "0.9rem", fontWeight: "600" }}>
+              📝 המספור יתחיל מ-{startNumber} ויסתיים ב-{startNumber + totalCards - 1}
+            </div>
+          </div>
+        </div>
         
         <div style={{ 
           display: "flex", 
@@ -100,6 +219,41 @@ export default function ManualQueue() {
           minHeight: "297mm",
           pageBreakAfter: pageIndex < numPages - 1 ? "always" : "auto"
         }}>
+          {/* כותרת עליונה */}
+          {(eventName || eventDate) && (
+            <div style={{
+              textAlign: "center",
+              marginBottom: "8mm",
+              paddingBottom: "5mm",
+              borderBottom: "2px solid #00caff"
+            }}>
+              {eventName && (
+                <div style={{
+                  fontSize: "1.2rem",
+                  fontWeight: "900",
+                  color: "#00caff",
+                  marginBottom: "2mm"
+                }}>
+                  {eventName}
+                </div>
+              )}
+              {eventDate && (
+                <div style={{
+                  fontSize: "0.95rem",
+                  color: "#64748b",
+                  fontWeight: "600"
+                }}>
+                  📅 {new Date(eventDate + 'T00:00:00').toLocaleDateString('he-IL', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                  })}
+                </div>
+              )}
+            </div>
+          )}
+
           <div style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
