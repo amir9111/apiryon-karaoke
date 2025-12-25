@@ -237,36 +237,43 @@ export default function Audience() {
                   }}
                 />
               ) : (
-                <img
+<img
                   src={latestMedia.media_url}
                   alt="תמונה מהאירוע"
                   loading="eager"
                   fetchpriority="high"
                   decoding="sync"
+                  crossOrigin="anonymous"
                   onError={(e) => {
                     console.error('❌ Image error:', latestMedia.media_url);
                     e.target.style.display = 'none';
                   }}
-                  onLoad={() => console.log('✅ Image loaded:', latestMedia.media_url)}
+                  onLoad={(e) => {
+                    console.log('✅ Image loaded:', latestMedia.media_url);
+                    // Force maximum quality rendering
+                    e.target.style.imageRendering = 'high-quality';
+                    e.target.style.transform = 'translateZ(0) scale(1.0005)';
+                  }}
                   style={{
-                    width: "100vw",
-                    height: "100vh",
-                    maxWidth: "100vw",
-                    maxHeight: "100vh",
+                    width: "100%",
+                    height: "100%",
+                    minWidth: "100vw",
+                    minHeight: "100vh",
                     display: "block",
-                    objectFit: "cover",
+                    objectFit: "contain",
                     objectPosition: "center",
                     backgroundColor: "#000",
-                    imageRendering: "-webkit-optimize-contrast",
-                    imageRendering: "crisp-edges",
                     imageRendering: "high-quality",
+                    MozImageRendering: "crisp-edges",
+                    WebkitImageRendering: "-webkit-optimize-contrast",
+                    msInterpolationMode: "bicubic",
                     WebkitBackfaceVisibility: "hidden",
                     backfaceVisibility: "hidden",
-                    transform: "translateZ(0) scale(1.001)",
-                    filter: "contrast(1.18) brightness(1.1) saturate(1.25) unsharp-mask(1.5px, 0.8, 0)",
-                    WebkitFilter: "contrast(1.18) brightness(1.1) saturate(1.25)",
+                    transform: "translateZ(0) scale(1.0005)",
+                    filter: "contrast(1.2) brightness(1.12) saturate(1.3) sharpen(2px)",
+                    WebkitFilter: "contrast(1.2) brightness(1.12) saturate(1.3)",
                     willChange: "transform",
-                    imageSmoothing: false
+                    imageSmoothing: "high"
                   }}
                 />
               )}
