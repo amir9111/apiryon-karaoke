@@ -74,15 +74,42 @@ export default function MediaUploader() {
     setShowCamera(true);
     try {
       const constraints = isVideo 
-        ? { video: { facingMode: 'environment' }, audio: false }
-        : { video: { facingMode: 'environment' } };
+        ? { 
+            video: { 
+              facingMode: 'environment',
+              width: { ideal: 3840 },
+              height: { ideal: 2160 },
+              frameRate: { ideal: 60 }
+            }, 
+            audio: false 
+          }
+        : { 
+            video: { 
+              facingMode: 'environment',
+              width: { ideal: 3840 },
+              height: { ideal: 2160 }
+            } 
+          };
       
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      
+      // Enable torch/flash if available
+      const videoTrack = stream.getVideoTracks()[0];
+      const capabilities = videoTrack.getCapabilities();
+      if (capabilities.torch) {
+        await videoTrack.applyConstraints({
+          advanced: [{ torch: true }]
+        });
+      }
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         
         if (isVideo) {
-          const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+          const options = { 
+            mimeType: 'video/webm;codecs=vp9',
+            videoBitsPerSecond: 8000000 // 8 Mbps for high quality
+          };
+          const recorder = new MediaRecorder(stream, options);
           const chunks = [];
           
           recorder.ondataavailable = (e) => chunks.push(e.data);
@@ -108,15 +135,24 @@ export default function MediaUploader() {
     const canvas = canvasRef.current;
     if (!video || !canvas) return;
     
+    // Use full resolution
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { 
+      alpha: false,
+      willReadFrequently: false 
+    });
+    
+    // Enable image smoothing for better quality
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    
     ctx.drawImage(video, 0, 0);
     
     canvas.toBlob(async (blob) => {
       await uploadMedia(blob, 'image');
       stopCamera();
-    }, 'image/jpeg', 0.9);
+    }, 'image/jpeg', 0.98); // Maximum quality
   };
 
   const startRecording = () => {
