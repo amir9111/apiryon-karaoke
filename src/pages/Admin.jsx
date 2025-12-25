@@ -60,6 +60,29 @@ export default function Admin() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['karaoke-requests'] }),
   });
 
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
+
+  const resetAllStatistics = async () => {
+    setIsResetting(true);
+    try {
+      const allRequests = await base44.entities.KaraokeRequest.list('-created_date', 500);
+      
+      for (const req of allRequests) {
+        await base44.entities.KaraokeRequest.delete(req.id);
+      }
+      
+      await queryClient.invalidateQueries({ queryKey: ['karaoke-requests'] });
+      setShowResetConfirm(false);
+      alert('✅ כל הסטטיסטיקות אופסו בהצלחה!');
+    } catch (error) {
+      console.error('Error resetting statistics:', error);
+      alert('❌ שגיאה באיפוס הסטטיסטיקות');
+    } finally {
+      setIsResetting(false);
+    }
+  };
+
   const setStatus = (id, status) => {
     updateMutation.mutate({ id, data: { status } });
   };
@@ -197,10 +220,135 @@ export default function Admin() {
           <h1 style={{ fontSize: "2rem", fontWeight: "700", margin: "0 0 8px 0", color: "#00caff", textShadow: "0 0 20px rgba(0, 202, 255, 0.5)" }}>
             🎤 מסך ניהול מקצועי
           </h1>
-          <p style={{ color: "#94a3b8", fontSize: "0.95rem", margin: 0 }}>
+          <p style={{ color: "#94a3b8", fontSize: "0.95rem", margin: "0 0 12px 0" }}>
             ניהול, סטטיסטיקות וניתוח נתונים בזמן אמת
           </p>
+          
+          {/* Reset Button */}
+          <button
+            onClick={() => setShowResetConfirm(true)}
+            style={{
+              padding: "10px 20px",
+              borderRadius: "10px",
+              border: "1px solid rgba(248, 113, 113, 0.4)",
+              background: "rgba(248, 113, 113, 0.1)",
+              color: "#f87171",
+              fontSize: "0.85rem",
+              fontWeight: "700",
+              cursor: "pointer",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "6px"
+            }}
+          >
+            🗑️ איפוס סטטיסטיקה
+          </button>
         </div>
+
+        {/* Reset Confirmation Modal */}
+        {showResetConfirm && (
+          <div style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0, 0, 0, 0.8)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 9999,
+            padding: "20px"
+          }}>
+            <div style={{
+              background: "rgba(15, 23, 42, 0.98)",
+              borderRadius: "20px",
+              padding: "30px",
+              maxWidth: "500px",
+              width: "100%",
+              border: "2px solid rgba(248, 113, 113, 0.4)",
+              boxShadow: "0 0 60px rgba(248, 113, 113, 0.3)"
+            }}>
+              <div style={{ textAlign: "center", marginBottom: "24px" }}>
+                <div style={{ fontSize: "3rem", marginBottom: "12px" }}>⚠️</div>
+                <h2 style={{ fontSize: "1.5rem", fontWeight: "700", color: "#f87171", marginBottom: "8px" }}>
+                  אזהרה: איפוס מלא
+                </h2>
+                <p style={{ color: "#94a3b8", fontSize: "0.95rem" }}>
+                  פעולה זו תמחק את כל הנתונים הבאים:
+                </p>
+              </div>
+
+              <div style={{
+                background: "rgba(248, 113, 113, 0.1)",
+                borderRadius: "12px",
+                padding: "16px",
+                marginBottom: "24px"
+              }}>
+                <div style={{ color: "#e2e8f0", fontSize: "0.9rem", lineHeight: "1.8" }}>
+                  ✓ כל השירים שבוצעו<br />
+                  ✓ כל הדירוגים<br />
+                  ✓ כל הסטטיסטיקות<br />
+                  ✓ השירים הממתינים והדלוגים<br />
+                  ✓ היסטוריית ביצועים<br />
+                </div>
+              </div>
+
+              <div style={{
+                background: "rgba(251, 191, 36, 0.1)",
+                border: "1px solid rgba(251, 191, 36, 0.3)",
+                borderRadius: "12px",
+                padding: "12px",
+                marginBottom: "24px"
+              }}>
+                <div style={{ color: "#fbbf24", fontSize: "0.85rem", fontWeight: "600", textAlign: "center" }}>
+                  ⚠️ פעולה זו לא ניתנת לביטול!
+                </div>
+              </div>
+
+              <div style={{ display: "flex", gap: "12px" }}>
+                <button
+                  onClick={() => setShowResetConfirm(false)}
+                  disabled={isResetting}
+                  style={{
+                    flex: 1,
+                    padding: "14px",
+                    borderRadius: "12px",
+                    border: "1px solid rgba(51, 65, 85, 0.5)",
+                    background: "rgba(30, 41, 59, 0.5)",
+                    color: "#e2e8f0",
+                    fontSize: "1rem",
+                    fontWeight: "700",
+                    cursor: isResetting ? "not-allowed" : "pointer",
+                    opacity: isResetting ? 0.5 : 1
+                  }}
+                >
+                  ביטול
+                </button>
+                <button
+                  onClick={resetAllStatistics}
+                  disabled={isResetting}
+                  style={{
+                    flex: 1,
+                    padding: "14px",
+                    borderRadius: "12px",
+                    border: "none",
+                    background: isResetting 
+                      ? "rgba(248, 113, 113, 0.3)" 
+                      : "linear-gradient(135deg, #f87171, #dc2626)",
+                    color: "#fff",
+                    fontSize: "1rem",
+                    fontWeight: "700",
+                    cursor: isResetting ? "not-allowed" : "pointer",
+                    boxShadow: isResetting ? "none" : "0 0 30px rgba(248, 113, 113, 0.4)"
+                  }}
+                >
+                  {isResetting ? "מאפס..." : "🗑️ אפס הכל"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Stats Dashboard */}
         <div style={{ 
