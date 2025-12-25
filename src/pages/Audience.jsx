@@ -181,15 +181,26 @@ export default function Audience() {
                   playsInline
                   controls={false}
                   preload="auto"
+                  disablePictureInPicture
+                  disableRemotePlayback
+                  webkit-playsinline="true"
+                  x5-playsinline="true"
                   onError={(e) => console.error('❌ Video error:', e)}
-                  onLoadedData={() => console.log('✅ Video loaded')}
+                  onLoadedData={(e) => {
+                    console.log('✅ Video loaded');
+                    e.target.playbackRate = 1.0;
+                  }}
                   style={{
                     width: "100%",
                     height: "100%",
                     display: "block",
                     objectFit: "contain",
                     backgroundColor: "#000",
-                    imageRendering: "high-quality"
+                    imageRendering: "high-quality",
+                    willChange: "transform",
+                    backfaceVisibility: "hidden",
+                    perspective: "1000px",
+                    transform: "translateZ(0)"
                   }}
                 />
               ) : (
