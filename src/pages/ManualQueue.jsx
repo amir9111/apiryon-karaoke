@@ -73,8 +73,29 @@ export default function ManualQueue() {
               borderRadius: "8px",
               padding: "8mm",
               background: "#f8fafc",
-              pageBreakInside: "avoid"
+              pageBreakInside: "avoid",
+              position: "relative"
             }}>
+              {/* מספר סידורי בפינה */}
+              <div style={{
+                position: "absolute",
+                top: "3mm",
+                left: "3mm",
+                width: "12mm",
+                height: "12mm",
+                borderRadius: "50%",
+                background: "linear-gradient(135deg, #00caff, #0088ff)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "1.3rem",
+                fontWeight: "900",
+                color: "#fff",
+                boxShadow: "0 2px 8px rgba(0, 202, 255, 0.3)"
+              }}>
+                {num}
+              </div>
+
               {/* Logo */}
               <div style={{
                 display: "flex",
@@ -137,14 +158,22 @@ export default function ManualQueue() {
                 </div>
               </div>
 
-              {/* Card Number */}
+              {/* הנחיות מילוי */}
               <div style={{
-                textAlign: "center",
                 marginTop: "5mm",
-                fontSize: "0.7rem",
-                color: "#94a3b8"
+                padding: "3mm",
+                background: "rgba(0, 202, 255, 0.05)",
+                borderRadius: "4px",
+                textAlign: "center"
               }}>
-                כרטיס #{num}
+                <div style={{
+                  fontSize: "0.65rem",
+                  color: "#64748b",
+                  fontWeight: "600",
+                  lineHeight: "1.4"
+                }}>
+                  ✍️ אנא מלא בכתב יד ברור וקריא
+                </div>
               </div>
             </div>
           ))}
