@@ -4,22 +4,16 @@ import NavigationMenu from "../components/NavigationMenu";
 
 export default function ManualQueue() {
   const [numPages, setNumPages] = React.useState(1);
-  const [eventName, setEventName] = React.useState("");
-  const [eventDate, setEventDate] = React.useState("");
   const [startNumber, setStartNumber] = React.useState(1);
+  const todayDate = new Date().toISOString().split('T')[0];
 
   React.useEffect(() => {
     try {
-      const savedEventName = localStorage.getItem('manual_queue_event_name') || "";
-      const savedEventDate = localStorage.getItem('manual_queue_event_date') || "";
       const savedLastDate = localStorage.getItem('manual_queue_last_date') || "";
       const savedLastNumber = parseInt(localStorage.getItem('manual_queue_last_number') || "0");
 
-      setEventName(savedEventName);
-      setEventDate(savedEventDate);
-
       // אם התאריך זהה, המשך מהמספר האחרון
-      if (savedEventDate && savedEventDate === savedLastDate) {
+      if (todayDate === savedLastDate) {
         setStartNumber(savedLastNumber + 1);
       } else {
         setStartNumber(1);
@@ -27,25 +21,11 @@ export default function ManualQueue() {
     } catch (e) {
       // silent fail
     }
-  }, []);
-
-  React.useEffect(() => {
-    // כשמשנים תאריך, אפס את המספור
-    try {
-      const savedLastDate = localStorage.getItem('manual_queue_last_date') || "";
-      if (eventDate && eventDate !== savedLastDate) {
-        setStartNumber(1);
-      }
-    } catch (e) {
-      // silent fail
-    }
-  }, [eventDate]);
+  }, [todayDate]);
 
   const handlePrint = () => {
     try {
-      localStorage.setItem('manual_queue_event_name', eventName);
-      localStorage.setItem('manual_queue_event_date', eventDate);
-      localStorage.setItem('manual_queue_last_date', eventDate);
+      localStorage.setItem('manual_queue_last_date', todayDate);
       localStorage.setItem('manual_queue_last_number', (startNumber + totalCards - 1).toString());
     } catch (e) {
       // silent fail
@@ -95,59 +75,6 @@ export default function ManualQueue() {
           maxWidth: "500px",
           margin: "0 auto 25px"
         }}>
-          <div style={{ marginBottom: "20px" }}>
-            <label style={{ 
-              display: "block",
-              color: "#00caff", 
-              fontSize: "0.95rem", 
-              fontWeight: "700",
-              marginBottom: "8px"
-            }}>
-              שם הליין / האירוע
-            </label>
-            <input
-              type="text"
-              value={eventName}
-              onChange={(e) => setEventName(e.target.value)}
-              placeholder="לדוגמה: ערב קריוקי - האפריון"
-              style={{
-                width: "100%",
-                padding: "12px 16px",
-                borderRadius: "10px",
-                border: "2px solid rgba(0, 202, 255, 0.3)",
-                background: "rgba(2, 6, 23, 0.8)",
-                color: "#fff",
-                fontSize: "1rem"
-              }}
-            />
-          </div>
-
-          <div style={{ marginBottom: "20px" }}>
-            <label style={{ 
-              display: "block",
-              color: "#00caff", 
-              fontSize: "0.95rem", 
-              fontWeight: "700",
-              marginBottom: "8px"
-            }}>
-              תאריך
-            </label>
-            <input
-              type="date"
-              value={eventDate}
-              onChange={(e) => setEventDate(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "12px 16px",
-                borderRadius: "10px",
-                border: "2px solid rgba(0, 202, 255, 0.3)",
-                background: "rgba(2, 6, 23, 0.8)",
-                color: "#fff",
-                fontSize: "1rem"
-              }}
-            />
-          </div>
-
           <div style={{
             padding: "12px",
             background: "rgba(251, 191, 36, 0.1)",
@@ -253,50 +180,45 @@ export default function ManualQueue() {
                 {num}
               </div>
 
+              {/* כותרת */}
+              <div style={{
+                textAlign: "center",
+                marginBottom: "5mm",
+                paddingBottom: "4mm",
+                borderBottom: "2px solid #00caff"
+              }}>
+                <div style={{
+                  fontSize: "1.1rem",
+                  fontWeight: "900",
+                  color: "#00caff",
+                  marginBottom: "2mm",
+                  letterSpacing: "0.02em"
+                }}>
+                  🎤 רישום לתור קריוקי 🎤
+                </div>
+                <div style={{
+                  fontSize: "0.7rem",
+                  color: "#64748b",
+                  fontWeight: "600"
+                }}>
+                  📅 {new Date(todayDate).toLocaleDateString('he-IL', { 
+                    day: 'numeric',
+                    month: 'numeric',
+                    year: 'numeric'
+                  })}
+                </div>
+              </div>
+
               {/* Logo */}
               <div style={{
                 display: "flex",
                 justifyContent: "center",
                 marginBottom: "6mm"
               }}>
-                <div style={{ transform: "scale(0.6)" }}>
+                <div style={{ transform: "scale(0.5)" }}>
                   <ApyironLogo size="small" showCircle={true} />
                 </div>
               </div>
-
-              {/* שם ליין ותאריך */}
-              {(eventName || eventDate) && (
-                <div style={{
-                  textAlign: "center",
-                  marginBottom: "6mm",
-                  paddingBottom: "4mm",
-                  borderBottom: "1px solid #cbd5e1"
-                }}>
-                  {eventName && (
-                    <div style={{
-                      fontSize: "0.85rem",
-                      fontWeight: "800",
-                      color: "#00caff",
-                      marginBottom: "2mm"
-                    }}>
-                      {eventName}
-                    </div>
-                  )}
-                  {eventDate && (
-                    <div style={{
-                      fontSize: "0.65rem",
-                      color: "#64748b",
-                      fontWeight: "600"
-                    }}>
-                      📅 {new Date(eventDate + 'T00:00:00').toLocaleDateString('he-IL', { 
-                        day: 'numeric',
-                        month: 'numeric',
-                        year: 'numeric'
-                      })}
-                    </div>
-                  )}
-                </div>
-              )}
 
               {/* Form Fields */}
               <div style={{ display: "flex", flexDirection: "column", gap: "6mm" }}>
