@@ -383,6 +383,23 @@ function InvitationCard({ refObj, data }) {
         filter: "brightness(0.7) contrast(1.15) saturate(1.1)"
       }} />
 
+      {/* לוגו אפריון - watermark */}
+      <div style={{
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%) rotate(-15deg)",
+        fontSize: "clamp(180px, 25vw, 350px)",
+        fontWeight: "900",
+        color: "rgba(255,255,255,0.04)",
+        letterSpacing: "0.05em",
+        pointerEvents: "none",
+        textTransform: "uppercase",
+        zIndex: 0
+      }}>
+        APIRYON
+      </div>
+
       {/* שכבת קריאות */}
       <div style={{
         position: "absolute",
@@ -468,9 +485,11 @@ function InvitationCard({ refObj, data }) {
                 <div style={{
                   fontSize: "clamp(2rem, 4vw, 3.2rem)",
                   fontWeight: "900",
-                  color: "#fff",
+                  background: `linear-gradient(135deg, #fff 0%, ${accent} 100%)`,
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
                   lineHeight: 1,
-                  textShadow: `2px 2px 0px rgba(0,0,0,0.7), 0 0 20px ${rgba(accent, 0.6)}`
+                  filter: `drop-shadow(2px 2px 0px rgba(0,0,0,0.7)) drop-shadow(0 0 20px ${rgba(accent, 0.6)})`
                 }}>
                   {data.date}
                 </div>
@@ -493,9 +512,11 @@ function InvitationCard({ refObj, data }) {
                 <div style={{
                   fontSize: "clamp(2rem, 4vw, 3.2rem)",
                   fontWeight: "900",
-                  color: "#fff",
+                  background: `linear-gradient(135deg, ${accent} 0%, #FFD700 100%)`,
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
                   lineHeight: 1,
-                  textShadow: `2px 2px 0px rgba(0,0,0,0.7), 0 0 20px ${rgba(accent, 0.6)}`
+                  filter: `drop-shadow(2px 2px 0px rgba(0,0,0,0.7)) drop-shadow(0 0 20px ${rgba(accent, 0.6)})`
                 }}>
                   {data.time}
                 </div>
@@ -518,9 +539,11 @@ function InvitationCard({ refObj, data }) {
                 <div style={{
                   fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)",
                   fontWeight: "900",
-                  color: "#fff",
+                  background: `linear-gradient(135deg, #FFD700 0%, #fff 50%, ${accent} 100%)`,
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
                   lineHeight: 1,
-                  textShadow: `2px 2px 0px rgba(0,0,0,0.7), 0 0 20px ${rgba(accent, 0.6)}`
+                  filter: `drop-shadow(2px 2px 0px rgba(0,0,0,0.7)) drop-shadow(0 0 20px ${rgba(accent, 0.6)})`
                 }}>
                   {data.location}
                 </div>
@@ -550,8 +573,10 @@ function InvitationCard({ refObj, data }) {
                 <span style={{
                   fontSize: "clamp(1.3rem, 2.6vw, 2rem)",
                   fontWeight: "900",
-                  color: "#fff",
-                  textShadow: `2px 2px 0px rgba(0,0,0,0.8), 0 0 15px ${rgba(accent, 0.5)}`
+                  background: `linear-gradient(90deg, #fff 0%, ${accent} 50%, #FFD700 100%)`,
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  filter: `drop-shadow(2px 2px 0px rgba(0,0,0,0.8)) drop-shadow(0 0 15px ${rgba(accent, 0.5)})`
                 }}>
                   {h}
                 </span>
@@ -672,15 +697,15 @@ function btnStyle(type) {
 
 function getBgPrompt(styleId, eventName) {
   const prompts = {
-    karaoke: "Vibrant karaoke club atmosphere with stage lights, microphones, neon glow, warm orange and gold lighting, energetic nightlife vibe, professional photography",
-    birthday: "Festive birthday party atmosphere with colorful balloons, confetti, warm lighting, celebration vibes, joyful energy, professional event photography",
-    mizrahi: "Middle Eastern party celebration, warm stage lights, traditional ornate decorations, golden and orange hues, festive dance floor, oriental patterns, premium club atmosphere",
-    club: "Modern nightclub with laser lights, DJ booth, neon blue and purple lighting, fog effects, energetic dance floor, techno atmosphere, professional club photography",
-    premium: "Luxury elegant venue, sophisticated golden lighting, premium interior, champagne vibes, classy atmosphere, high-end event space",
-    holiday: "Festive celebration atmosphere, decorative lights, party decorations, warm joyful colors, celebratory mood, special occasion vibes"
+    karaoke: "Vibrant karaoke club atmosphere with stage lights, microphones, neon glow, warm orange and gold lighting, energetic nightlife vibe, professional photography, abstract background without text or letters",
+    birthday: "Festive birthday party atmosphere with colorful balloons, confetti, warm lighting, celebration vibes, joyful energy, professional event photography, abstract background without text or letters",
+    mizrahi: "Middle Eastern party celebration, warm stage lights, traditional ornate decorations, golden and orange hues, festive dance floor, oriental patterns, premium club atmosphere, abstract background without text or letters",
+    club: "Modern nightclub with laser lights, DJ booth, neon blue and purple lighting, fog effects, energetic dance floor, techno atmosphere, professional club photography, abstract background without text or letters",
+    premium: "Luxury elegant venue, sophisticated golden lighting, premium interior, champagne vibes, classy atmosphere, high-end event space, abstract background without text or letters",
+    holiday: "Festive celebration atmosphere, decorative lights, party decorations, warm joyful colors, celebratory mood, special occasion vibes, abstract background without text or letters"
   };
 
-  return `${prompts[styleId] || prompts.karaoke}. High quality, professional event photography, 4K resolution, cinematic lighting. Event theme: ${eventName}`;
+  return `${prompts[styleId] || prompts.karaoke}. High quality, professional event photography, 4K resolution, cinematic lighting, NO TEXT, NO WORDS, NO LETTERS in the image. Pure visual atmosphere only. Event theme: ${eventName}`;
 }
 
 const inputStyle = {
