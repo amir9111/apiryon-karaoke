@@ -6,7 +6,6 @@ import ManualQueue from './pages/ManualQueue';
 import Player from './pages/Player';
 import Profile from './pages/Profile';
 import QueueManager from './pages/QueueManager';
-import SongManager from './pages/SongManager';
 import Terms from './pages/Terms';
 import UserManagement from './pages/UserManagement';
 
@@ -20,7 +19,6 @@ export const PAGES = {
     "Player": Player,
     "Profile": Profile,
     "QueueManager": QueueManager,
-    "SongManager": SongManager,
     "Terms": Terms,
     "UserManagement": UserManagement,
 }
