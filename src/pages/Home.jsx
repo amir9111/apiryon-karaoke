@@ -780,6 +780,24 @@ export default function Home() {
               {isSubmitting ? "שולח..." : "שלחו אותי לתור 🎵"}
             </button>
 
+            {/* Upload to Screen CTA */}
+            <Link
+              to={createPageUrl("UploadToScreen")}
+              className="w-full mt-3 py-[11px] px-[14px] rounded-full border-none font-semibold text-base block text-center"
+              style={{
+                background: "linear-gradient(135deg, #8b5cf6, #6d28d9)",
+                color: "#fff",
+                textDecoration: "none",
+                boxShadow: "0 0 20px rgba(139, 92, 246, 0.4)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "8px"
+              }}
+            >
+              📺 רוצה להופיע על מסך הקהל? לחץ כאן!
+            </Link>
+
               {status.type && (
                 <div 
                   className="mt-2.5 text-[0.9rem] text-center"
@@ -791,24 +809,7 @@ export default function Home() {
             </form>
           )}
 
-          <hr 
-            className="my-[18px] md:my-3 h-px border-0"
-            style={{ background: "radial-gradient(circle, #4b5563 0, transparent 70%)" }}
-          />
 
-          <div className="text-center text-[0.9rem]" style={{ color: "#94a3b8" }}>
-            רוצה להופיע על מסך הקהל?{" "}
-            <Link 
-              to={createPageUrl("UploadToScreen")}
-              style={{
-                color: "#00caff",
-                fontWeight: "700",
-                textDecoration: "underline"
-              }}
-            >
-              לחץ כאן
-            </Link>
-          </div>
         </div>
 
         </div>
