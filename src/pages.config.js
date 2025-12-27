@@ -7,6 +7,7 @@ import QueueManager from './pages/QueueManager';
 import Terms from './pages/Terms';
 import UserManagement from './pages/UserManagement';
 import UploadToScreen from './pages/UploadToScreen';
+import Statistics from './pages/Statistics';
 
 
 export const PAGES = {
@@ -19,6 +20,7 @@ export const PAGES = {
     "Terms": Terms,
     "UserManagement": UserManagement,
     "UploadToScreen": UploadToScreen,
+    "Statistics": Statistics,
 }
 
 export const pagesConfig = {

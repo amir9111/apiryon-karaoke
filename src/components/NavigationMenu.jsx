@@ -151,6 +151,36 @@ export default function NavigationMenu({ onSummaryClick }) {
               </Link>
 
               <Link
+                to={createPageUrl("Statistics")}
+                onClick={() => setIsOpen(false)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "12px",
+                  padding: "16px 20px",
+                  borderRadius: "12px",
+                  background: "rgba(251, 191, 36, 0.1)",
+                  border: "1px solid rgba(251, 191, 36, 0.3)",
+                  color: "#fbbf24",
+                  textDecoration: "none",
+                  fontSize: "1.1rem",
+                  fontWeight: "600",
+                  transition: "all 0.2s"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "rgba(251, 191, 36, 0.2)";
+                  e.currentTarget.style.transform = "translateX(-5px)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "rgba(251, 191, 36, 0.1)";
+                  e.currentTarget.style.transform = "translateX(0)";
+                }}
+              >
+                <BarChart3 className="w-5 h-5" />
+                <span>סטטיסטיקות ותחרות</span>
+              </Link>
+
+              <Link
                 to={createPageUrl("UserManagement")}
                 onClick={() => setIsOpen(false)}
                 style={{
