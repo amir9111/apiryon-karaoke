@@ -58,8 +58,9 @@ export default function Audience() {
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
-  const [currentMode, setCurrentMode] = useState("queue"); // "media", "queue", "qr"
+  const [currentMode, setCurrentMode] = useState("queue"); // "media", "queue", "messages", "qr"
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
+  const [displayedMessages, setDisplayedMessages] = useState([]);
 
   const { data: requests = [] } = useQuery({
     queryKey: ['karaoke-requests'],
@@ -88,6 +89,26 @@ export default function Audience() {
   const currentSong = requests.find(r => r.status === "performing");
   const waitingQueue = requests.filter(r => r.status === "waiting").slice(0, 4);
 
+  // Delete displayed messages when mode changes
+  React.useEffect(() => {
+    const deleteMessages = async () => {
+      if (displayedMessages.length > 0) {
+        for (const msgId of displayedMessages) {
+          try {
+            await base44.entities.Message.delete(msgId);
+          } catch (err) {
+            console.error("Failed to delete message:", err);
+          }
+        }
+        setDisplayedMessages([]);
+      }
+    };
+
+    if (currentMode !== "messages") {
+      deleteMessages();
+    }
+  }, [currentMode]);
+
   // Smart rotation logic
   React.useEffect(() => {
     const interval = setInterval(() => {
@@ -97,24 +118,30 @@ export default function Audience() {
           setCurrentMediaIndex(0);
           return "media";
         }
-        // After media, show queue with messages
+        // After media, check for messages
         if (prev === "media") {
           // Cycle through all media
           if (currentMediaIndex < mediaUploads.length - 1) {
             setCurrentMediaIndex(currentMediaIndex + 1);
             return "media";
           }
+          // Check if there are new messages
+          if (messages.length > 0) {
+            return "messages";
+          }
           return "queue";
         }
+        // After messages, show queue
+        if (prev === "messages") return "queue";
         // After queue, show QR codes
         if (prev === "queue") return "qr";
         // Back to queue
         return "queue";
       });
-    }, currentMode === "media" ? 30000 : currentMode === "queue" ? 25000 : 15000);
+    }, currentMode === "media" ? 30000 : currentMode === "messages" ? 20000 : currentMode === "queue" ? 25000 : 15000);
 
     return () => clearInterval(interval);
-  }, [currentMode, mediaUploads.length, currentMediaIndex]);
+  }, [currentMode, mediaUploads.length, currentMediaIndex, messages.length]);
 
   return (
     <div dir="rtl" style={{
@@ -281,7 +308,7 @@ export default function Audience() {
             </motion.div>
           )}
 
-          {/* Mode 2: Queue + Messages (25 seconds) */}
+          {/* Mode 2: Queue (25 seconds) */}
           {currentMode === "queue" && (
             <motion.div
               key="queue"
@@ -292,179 +319,206 @@ export default function Audience() {
               style={{
                 width: "100%",
                 height: "100%",
-                display: "grid",
-                gridTemplateColumns: "1fr 400px",
-                gap: "30px",
+                display: "flex",
+                flexDirection: "column",
+                gap: "20px",
                 padding: "40px"
               }}
             >
-              {/* Left: Current Song + Queue */}
-              <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-                {/* Current Song */}
-                {currentSong && (
-                  <div style={{
-                    background: "rgba(15, 23, 42, 0.9)",
-                    borderRadius: "24px",
-                    padding: "30px",
-                    border: "3px solid rgba(0, 202, 255, 0.5)",
-                    boxShadow: "0 0 60px rgba(0, 202, 255, 0.4)"
-                  }}>
-                    <div style={{
-                      fontSize: "1.2rem",
-                      color: "#00caff",
-                      marginBottom: "12px",
-                      fontWeight: "700"
-                    }}>
-                      🎤 שר עכשיו
-                    </div>
-                    <div style={{
-                      fontSize: "clamp(2rem, 4vw, 3.5rem)",
-                      fontWeight: "900",
-                      color: "#fff",
-                      marginBottom: "12px"
-                    }}>
-                      {currentSong.singer_name}
-                    </div>
-                    <div style={{
-                      fontSize: "clamp(1.2rem, 2vw, 2rem)",
-                      color: "#cbd5e1",
-                      fontWeight: "600"
-                    }}>
-                      {currentSong.song_title}
-                    </div>
-                    {currentSong.song_artist && (
-                      <div style={{
-                        fontSize: "1.2rem",
-                        color: "#94a3b8",
-                        marginTop: "8px"
-                      }}>
-                        {currentSong.song_artist}
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {/* Next in Queue */}
+              {/* Current Song */}
+              {currentSong && (
                 <div style={{
                   background: "rgba(15, 23, 42, 0.9)",
                   borderRadius: "24px",
                   padding: "30px",
-                  border: "2px solid rgba(251, 191, 36, 0.3)",
-                  flex: 1
+                  border: "3px solid rgba(0, 202, 255, 0.5)",
+                  boxShadow: "0 0 60px rgba(0, 202, 255, 0.4)"
                 }}>
                   <div style={{
                     fontSize: "1.2rem",
-                    color: "#fbbf24",
-                    marginBottom: "16px",
+                    color: "#00caff",
+                    marginBottom: "12px",
                     fontWeight: "700"
                   }}>
-                    📋 הבאים בתור
+                    🎤 שר עכשיו
                   </div>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                    {waitingQueue.map((req, idx) => (
-                      <div
-                        key={req.id}
-                        style={{
-                          background: "rgba(30, 41, 59, 0.5)",
-                          borderRadius: "16px",
-                          padding: "16px",
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "16px"
-                        }}
-                      >
-                        <div style={{
-                          width: "40px",
-                          height: "40px",
-                          borderRadius: "12px",
-                          background: "linear-gradient(135deg, #fbbf24, #f59e0b)",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          fontSize: "1.2rem",
-                          fontWeight: "900",
-                          color: "#001a2e"
-                        }}>
-                          {idx + 1}
-                        </div>
-                        <div style={{ flex: 1 }}>
-                          <div style={{
-                            fontSize: "1.3rem",
-                            fontWeight: "700",
-                            color: "#fff",
-                            marginBottom: "4px"
-                          }}>
-                            {req.singer_name}
-                          </div>
-                          <div style={{
-                            fontSize: "1rem",
-                            color: "#cbd5e1"
-                          }}>
-                            {req.song_title}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
+                  <div style={{
+                    fontSize: "clamp(2rem, 4vw, 3.5rem)",
+                    fontWeight: "900",
+                    color: "#fff",
+                    marginBottom: "12px"
+                  }}>
+                    {currentSong.singer_name}
                   </div>
+                  <div style={{
+                    fontSize: "clamp(1.2rem, 2vw, 2rem)",
+                    color: "#cbd5e1",
+                    fontWeight: "600"
+                  }}>
+                    {currentSong.song_title}
+                  </div>
+                  {currentSong.song_artist && (
+                    <div style={{
+                      fontSize: "1.2rem",
+                      color: "#94a3b8",
+                      marginTop: "8px"
+                    }}>
+                      {currentSong.song_artist}
+                    </div>
+                  )}
                 </div>
-              </div>
+              )}
 
-              {/* Right: Messages Feed */}
+              {/* Next in Queue */}
               <div style={{
                 background: "rgba(15, 23, 42, 0.9)",
                 borderRadius: "24px",
                 padding: "30px",
-                border: "2px solid rgba(139, 92, 246, 0.3)",
-                display: "flex",
-                flexDirection: "column",
-                gap: "16px",
-                maxHeight: "100%",
-                overflow: "hidden"
+                border: "2px solid rgba(251, 191, 36, 0.3)",
+                flex: 1
               }}>
                 <div style={{
                   fontSize: "1.2rem",
-                  color: "#a78bfa",
-                  fontWeight: "700",
-                  marginBottom: "8px"
+                  color: "#fbbf24",
+                  marginBottom: "16px",
+                  fontWeight: "700"
                 }}>
-                  💬 הודעות מהקהל
+                  📋 הבאים בתור
                 </div>
-                <div style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "12px",
-                  overflow: "auto"
-                }}>
-                  {messages.slice(0, 6).map((msg) => (
-                    <motion.div
-                      key={msg.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
+                <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                  {waitingQueue.map((req, idx) => (
+                    <div
+                      key={req.id}
                       style={{
-                        background: "rgba(139, 92, 246, 0.1)",
-                        border: "1px solid rgba(139, 92, 246, 0.3)",
+                        background: "rgba(30, 41, 59, 0.5)",
                         borderRadius: "16px",
-                        padding: "16px"
+                        padding: "16px",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "16px"
                       }}
                     >
                       <div style={{
-                        fontSize: "0.9rem",
-                        color: "#a78bfa",
-                        marginBottom: "6px",
-                        fontWeight: "600"
+                        width: "40px",
+                        height: "40px",
+                        borderRadius: "12px",
+                        background: "linear-gradient(135deg, #fbbf24, #f59e0b)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "1.2rem",
+                        fontWeight: "900",
+                        color: "#001a2e"
                       }}>
-                        {msg.sender_name}
+                        {idx + 1}
                       </div>
-                      <div style={{
-                        fontSize: "1.1rem",
-                        color: "#e2e8f0",
-                        lineHeight: "1.5"
-                      }}>
-                        {msg.message}
+                      <div style={{ flex: 1 }}>
+                        <div style={{
+                          fontSize: "1.3rem",
+                          fontWeight: "700",
+                          color: "#fff",
+                          marginBottom: "4px"
+                        }}>
+                          {req.singer_name}
+                        </div>
+                        <div style={{
+                          fontSize: "1rem",
+                          color: "#cbd5e1"
+                        }}>
+                          {req.song_title}
+                        </div>
                       </div>
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* Mode 2.5: Big Bold Messages (20 seconds) */}
+          {currentMode === "messages" && messages.length > 0 && (
+            <motion.div
+              key="messages"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.8 }}
+              onAnimationComplete={() => {
+                // Save which messages were displayed
+                const msgsToDisplay = messages.slice(0, 3);
+                setDisplayedMessages(msgsToDisplay.map(m => m.id));
+              }}
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "60px",
+                gap: "40px"
+              }}
+            >
+              {/* Title */}
+              <motion.div
+                animate={{
+                  scale: [1, 1.05, 1]
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity
+                }}
+                style={{
+                  fontSize: "clamp(2rem, 5vw, 4rem)",
+                  fontWeight: "900",
+                  color: "#a78bfa",
+                  textShadow: "0 0 40px rgba(139, 92, 246, 0.8)",
+                  marginBottom: "20px"
+                }}
+              >
+                💬 הודעות מהקהל 💜
+              </motion.div>
+
+              {/* Display 2-3 messages in big bold format */}
+              <div style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "30px",
+                width: "100%",
+                maxWidth: "1200px"
+              }}>
+                {messages.slice(0, 3).map((msg, idx) => (
+                  <motion.div
+                    key={msg.id}
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.3 }}
+                    style={{
+                      background: "rgba(139, 92, 246, 0.2)",
+                      border: "3px solid rgba(139, 92, 246, 0.5)",
+                      borderRadius: "24px",
+                      padding: "40px",
+                      boxShadow: "0 0 60px rgba(139, 92, 246, 0.4)"
+                    }}
+                  >
+                    <div style={{
+                      fontSize: "clamp(1.5rem, 3vw, 2rem)",
+                      color: "#a78bfa",
+                      marginBottom: "16px",
+                      fontWeight: "800"
+                    }}>
+                      {msg.sender_name}
+                    </div>
+                    <div style={{
+                      fontSize: "clamp(2rem, 4vw, 3.5rem)",
+                      color: "#fff",
+                      fontWeight: "700",
+                      lineHeight: "1.4"
+                    }}>
+                      {msg.message}
+                    </div>
+                  </motion.div>
+                ))}
               </div>
             </motion.div>
           )}
