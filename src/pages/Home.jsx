@@ -467,25 +467,49 @@ export default function Home() {
 
         {/* Waiting Count */}
         <div style={{
-          background: "rgba(251, 191, 36, 0.1)",
+          background: "linear-gradient(135deg, rgba(251, 191, 36, 0.15), rgba(245, 158, 11, 0.12))",
           border: "2px solid rgba(251, 191, 36, 0.3)",
-          borderRadius: "16px",
-          padding: "12px",
+          borderRadius: "24px",
+          padding: "20px",
           marginBottom: "20px",
-          textAlign: "center"
+          textAlign: "center",
+          boxShadow: "0 10px 40px rgba(251, 191, 36, 0.2), 0 0 60px rgba(245, 158, 11, 0.1)",
+          backdropFilter: "blur(12px)",
+          position: "relative",
+          overflow: "hidden"
         }}>
+          {/* Animated glow background */}
           <div style={{
-            fontSize: "2rem",
-            fontWeight: "900",
-            color: "#fbbf24"
-          }}>
-            {waitingCount}
-          </div>
-          <div style={{
-            fontSize: "0.9rem",
-            color: "#cbd5e1"
-          }}>
-            ממתינים בתור
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "radial-gradient(circle at 50% 50%, rgba(251, 191, 36, 0.1) 0%, transparent 70%)",
+            pointerEvents: "none",
+            zIndex: 0
+          }} />
+          
+          <div style={{ position: "relative", zIndex: 1 }}>
+            <div style={{
+              fontSize: "3rem",
+              fontWeight: "900",
+              background: "linear-gradient(135deg, #fbbf24, #f59e0b)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              marginBottom: "8px",
+              textShadow: "0 0 30px rgba(251, 191, 36, 0.3)"
+            }}>
+              {waitingCount}
+            </div>
+            <div style={{
+              fontSize: "1rem",
+              color: "#cbd5e1",
+              fontWeight: "700",
+              letterSpacing: "0.05em"
+            }}>
+              ממתינים בתור
+            </div>
           </div>
         </div>
 
