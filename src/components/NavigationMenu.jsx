@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Menu, X, Tv, Shield, Play, BarChart3, UserPlus, Sparkles } from "lucide-react";
+import { Menu, X, Tv, Shield, BarChart3, UserPlus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
@@ -182,35 +182,7 @@ export default function NavigationMenu({ onSummaryClick }) {
 
 
 
-              <Link
-                to={createPageUrl("EventProducer")}
-                onClick={() => setIsOpen(false)}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "12px",
-                  padding: "16px 20px",
-                  borderRadius: "12px",
-                  background: "rgba(236, 72, 153, 0.1)",
-                  border: "1px solid rgba(236, 72, 153, 0.3)",
-                  color: "#f472b6",
-                  textDecoration: "none",
-                  fontSize: "1.1rem",
-                  fontWeight: "600",
-                  transition: "all 0.2s"
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "rgba(236, 72, 153, 0.2)";
-                  e.currentTarget.style.transform = "translateX(-5px)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "rgba(236, 72, 153, 0.1)";
-                  e.currentTarget.style.transform = "translateX(0)";
-                }}
-              >
-                <Sparkles className="w-5 h-5" />
-                <span>הפקת לין</span>
-              </Link>
+
 
               <Link
                 to={createPageUrl("ManualQueue")}
@@ -242,35 +214,7 @@ export default function NavigationMenu({ onSummaryClick }) {
                 <span>ניהול קריוקי ידני</span>
               </Link>
 
-              <Link
-                to={createPageUrl("Player")}
-                onClick={() => setIsOpen(false)}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "12px",
-                  padding: "16px 20px",
-                  borderRadius: "12px",
-                  background: "rgba(16, 185, 129, 0.1)",
-                  border: "1px solid rgba(16, 185, 129, 0.3)",
-                  color: "#34d399",
-                  textDecoration: "none",
-                  fontSize: "1.1rem",
-                  fontWeight: "600",
-                  transition: "all 0.2s"
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "rgba(16, 185, 129, 0.2)";
-                  e.currentTarget.style.transform = "translateX(-5px)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "rgba(16, 185, 129, 0.1)";
-                  e.currentTarget.style.transform = "translateX(0)";
-                }}
-              >
-                <Play className="w-5 h-5" />
-                <span>מסך נגן</span>
-              </Link>
+
 
               <Link
                 to={createPageUrl("Home")}
