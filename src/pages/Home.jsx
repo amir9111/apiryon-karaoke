@@ -5,10 +5,6 @@ import { createPageUrl } from "@/utils";
 import ApyironLogo from "../components/ApyironLogo";
 import TermsModal from "../components/TermsModal";
 import MenuButton from "../components/MenuButton";
-import AudienceRating from "../components/AudienceRating";
-import AudioWave from "../components/AudioWave";
-import MyQueueStatus from "../components/MyQueueStatus";
-
 
 import PWAInstallPrompt from "../components/PWAInstallPrompt";
 import PWASetup from "../components/PWASetup";
@@ -16,7 +12,6 @@ import ServiceWorkerRegistration from "../components/ServiceWorkerRegistration";
 import PushNotifications from "../components/PushNotifications";
 import AccessibilityHelper from "../components/AccessibilityHelper";
 import PWADebugger from "../components/PWADebugger";
-import { QrCode } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 export default function Home() {
@@ -49,18 +44,7 @@ export default function Home() {
   });
 
   const currentSong = requests.find(r => r.status === "performing");
-  
-  const hasUserRatedCurrentSong = () => {
-    try {
-      if (!currentSong) return false;
-      if (typeof window === 'undefined') return false;
-      const userId = localStorage.getItem('apiryon_user_id');
-      if (!userId) return false;
-      return currentSong.ratings?.some(r => r.user_id === userId) || false;
-    } catch (e) {
-      return false;
-    }
-  };
+  const waitingCount = requests.filter(r => r.status === "waiting").length;
 
   React.useEffect(() => {
     let timer;
@@ -440,82 +424,70 @@ export default function Home() {
 
       <div className="w-full max-w-[480px]">
         {/* Logo Section */}
-        <div className="flex justify-center mb-6">
+        <div className="flex justify-center mb-4">
           <ApyironLogo size="medium" showCircle={true} />
         </div>
 
-        {/* My Queue Status */}
-        <MyQueueStatus 
-          requests={requests}
-          onRequestDeleted={() => {
-            queryClient.invalidateQueries({ queryKey: ['karaoke-requests'] });
-            setStatus({ type: "ok", message: "התור בוטל בהצלחה" });
-            setTimeout(() => setStatus({ type: null, message: "" }), 3000);
-          }}
-        />
-
-
-
-        {/* Now Playing Section */}
-        {currentSong && !hasUserRatedCurrentSong() && (
+        {/* Now Playing + Queue Status */}
+        {currentSong && (
           <div style={{
             background: "rgba(15, 23, 42, 0.95)",
             borderRadius: "20px",
-            padding: "20px",
-            marginBottom: "20px",
+            padding: "16px",
+            marginBottom: "16px",
             border: "2px solid rgba(0, 202, 255, 0.3)",
-            boxShadow: "0 0 40px rgba(0, 202, 255, 0.2)"
+            boxShadow: "0 0 40px rgba(0, 202, 255, 0.2)",
+            textAlign: "center"
           }}>
-            <div style={{ display: "flex", justifyContent: "center", marginBottom: "12px" }}>
-              <AudioWave isPlaying={true} />
-            </div>
             <div style={{
-              fontSize: "1rem",
+              fontSize: "0.85rem",
               textTransform: "uppercase",
-              letterSpacing: "0.1em",
+              letterSpacing: "0.08em",
               color: "#00caff",
-              marginBottom: "8px",
-              textAlign: "center",
-              textShadow: "0 0 15px rgba(0, 202, 255, 0.6)"
+              marginBottom: "6px"
             }}>
-              🎤 שר עכשיו על הבמה
+              🎤 שר עכשיו
             </div>
             <div style={{
-              fontSize: "1.8rem",
+              fontSize: "1.4rem",
               fontWeight: "800",
-              marginBottom: "8px",
-              textAlign: "center",
               color: "#ffffff",
-              textShadow: "0 0 20px rgba(0, 202, 255, 0.4)"
+              marginBottom: "4px"
             }}>
               {currentSong.singer_name}
             </div>
             <div style={{
-              fontSize: "1.2rem",
-              color: "#e2e8f0",
-              marginBottom: "4px",
-              textAlign: "center",
-              fontWeight: "600"
+              fontSize: "1rem",
+              color: "#cbd5e1"
             }}>
               {currentSong.song_title}
             </div>
-            {currentSong.song_artist && (
-              <div style={{
-                fontSize: "1rem",
-                color: "#94a3b8",
-                textAlign: "center",
-                marginBottom: "16px"
-              }}>
-                {currentSong.song_artist}
-              </div>
-            )}
-            
-            <AudienceRating 
-              currentSong={currentSong}
-              onRatingSubmitted={() => queryClient.invalidateQueries({ queryKey: ['karaoke-requests'] })}
-            />
           </div>
         )}
+
+        {/* Waiting Count */}
+        <div style={{
+          background: "rgba(251, 191, 36, 0.1)",
+          border: "2px solid rgba(251, 191, 36, 0.3)",
+          borderRadius: "16px",
+          padding: "12px",
+          marginBottom: "20px",
+          textAlign: "center"
+        }}>
+          <div style={{
+            fontSize: "2rem",
+            fontWeight: "900",
+            color: "#fbbf24"
+          }}>
+            {waitingCount}
+          </div>
+          <div style={{
+            fontSize: "0.9rem",
+            color: "#cbd5e1"
+          }}>
+            ממתינים בתור
+          </div>
+        </div>
 
         <div
           className="rounded-[18px] p-5 md:p-6"
@@ -530,10 +502,10 @@ export default function Home() {
             color: "#00caff",
             textShadow: "0 0 20px rgba(0, 202, 255, 0.5)"
           }}>
-            תור קריוקי 🎤
+            הצטרף לתור! 🎤
           </h1>
           <p className="text-[0.9rem] text-center mb-4" style={{ color: "#cbd5f5" }}>
-            ממלאים, מצטרפים לתור – ומחכים שיקראו לכם
+            מלא פרטים והצטרף למסיבה
           </p>
 
           {!capturedPhoto && !photoUploaded ? (
@@ -824,34 +796,18 @@ export default function Home() {
             style={{ background: "radial-gradient(circle, #4b5563 0, transparent 70%)" }}
           />
 
-          <div className="flex flex-col items-center gap-3 text-[0.9rem]">
-            <div className="text-center">
-              <div className="mb-2">רוצים להתעדכן בכל ערבי הקריוקי?</div>
-              <a
-                href="https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15?mode=hqrt3"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 py-[9px] px-[14px] rounded-full no-underline font-semibold text-[0.9rem] whitespace-nowrap"
-                style={{
-                  background: "linear-gradient(135deg, #00caff, #0088ff)",
-                  color: "#001a2e",
-                  boxShadow: "0 0 15px rgba(0, 202, 255, 0.3)"
-                }}
-              >
-                <span className="text-[1.1rem]">💬</span>
-                <span>להצטרפות לקבוצת הווטסאפ</span>
-              </a>
-            </div>
-
-            <div className="flex flex-col items-center gap-2 p-4 rounded-xl" style={{
-              background: "rgba(0, 202, 255, 0.05)",
-              border: "1px solid rgba(0, 202, 255, 0.2)"
-            }}>
-              <QrCode className="w-16 h-16" style={{ color: "#00caff" }} />
-              <div className="text-center text-[0.85rem]" style={{ color: "#94a3b8" }}>
-                סרקו להצטרפות מהירה לתור
-              </div>
-            </div>
+          <div className="text-center text-[0.9rem]" style={{ color: "#94a3b8" }}>
+            רוצה להופיע על מסך הקהל?{" "}
+            <Link 
+              to={createPageUrl("UploadToScreen")}
+              style={{
+                color: "#00caff",
+                fontWeight: "700",
+                textDecoration: "underline"
+              }}
+            >
+              לחץ כאן
+            </Link>
           </div>
         </div>
 

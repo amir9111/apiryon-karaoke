@@ -58,38 +58,63 @@ export default function Audience() {
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
+  const [currentMode, setCurrentMode] = useState("queue"); // "media", "queue", "qr"
+  const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
+
   const { data: requests = [] } = useQuery({
     queryKey: ['karaoke-requests'],
     queryFn: () => base44.entities.KaraokeRequest.list('-created_date', 100),
-    refetchInterval: 5000,
-    staleTime: 4000,
+    refetchInterval: 3000,
+    staleTime: 2000,
   });
 
   const { data: mediaUploads = [] } = useQuery({
     queryKey: ['media-uploads'],
     queryFn: async () => {
-      const data = await base44.entities.MediaUpload.list('-created_date', 1);
-      console.log('📸 Media uploads:', data);
+      const data = await base44.entities.MediaUpload.filter({ is_active: true }, '-created_date', 50);
       return data;
     },
+    refetchInterval: 5000,
+    staleTime: 4000,
+  });
+
+  const { data: messages = [] } = useQuery({
+    queryKey: ['messages'],
+    queryFn: () => base44.entities.Message.list('-created_date', 20),
     refetchInterval: 3000,
     staleTime: 2000,
   });
 
-  const latestMedia = mediaUploads[0];
-  
-  console.log('🎬 Latest media:', latestMedia);
+  const currentSong = requests.find(r => r.status === "performing");
+  const waitingQueue = requests.filter(r => r.status === "waiting").slice(0, 4);
 
-  // Cycle between media and QR codes
+  // Smart rotation logic
   React.useEffect(() => {
-    if (!latestMedia) return;
-    
     const interval = setInterval(() => {
-      setShowMedia(prev => !prev);
-    }, showMedia ? 30000 : 10000); // 30 seconds media, 10 seconds QR codes
-    
+      setCurrentMode(prev => {
+        // If we have media, show it
+        if (prev === "queue" && mediaUploads.length > 0) {
+          setCurrentMediaIndex(0);
+          return "media";
+        }
+        // After media, show queue with messages
+        if (prev === "media") {
+          // Cycle through all media
+          if (currentMediaIndex < mediaUploads.length - 1) {
+            setCurrentMediaIndex(currentMediaIndex + 1);
+            return "media";
+          }
+          return "queue";
+        }
+        // After queue, show QR codes
+        if (prev === "queue") return "qr";
+        // Back to queue
+        return "queue";
+      });
+    }, currentMode === "media" ? 30000 : currentMode === "queue" ? 25000 : 15000);
+
     return () => clearInterval(interval);
-  }, [showMedia, latestMedia]);
+  }, [currentMode, mediaUploads.length, currentMediaIndex]);
 
   return (
     <div dir="rtl" style={{
@@ -180,13 +205,13 @@ export default function Audience() {
           overflow: "hidden"
         }}>
 
-          {/* Media Display (30 seconds) - Full Screen */}
-          {latestMedia && showMedia && (
+          {/* Mode 1: Media Display (30 seconds each) */}
+          {currentMode === "media" && mediaUploads[currentMediaIndex] && (
             <motion.div
-              key="media"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              key={`media-${currentMediaIndex}`}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 1 }}
               style={{
                 position: "fixed",
@@ -201,74 +226,251 @@ export default function Audience() {
                 zIndex: 1
               }}
             >
-              {latestMedia.media_type === 'video' ? (
+              {mediaUploads[currentMediaIndex].media_type === 'video' ? (
                 <video
-                  key={latestMedia.media_url}
-                  src={latestMedia.media_url}
+                  key={mediaUploads[currentMediaIndex].media_url}
+                  src={mediaUploads[currentMediaIndex].media_url}
                   autoPlay
                   loop
                   muted
                   playsInline
-                  controls={false}
-                  preload="auto"
-                  disablePictureInPicture
-                  disableRemotePlayback
-                  webkit-playsinline="true"
-                  x5-playsinline="true"
-                  onError={(e) => console.error('❌ Video error:', e)}
-                  onLoadedData={(e) => {
-                    console.log('✅ Video loaded');
-                    e.target.playbackRate = 1.0;
-                  }}
                   style={{
-                    width: "100vw",
-                    height: "100vh",
-                    display: "block",
-                    objectFit: "contain",
-                    objectPosition: "center",
-                    backgroundColor: "#000",
-                    imageRendering: "high-quality",
-                    WebkitBackfaceVisibility: "hidden",
-                    backfaceVisibility: "hidden",
-                    transform: "translateZ(0)",
-                    willChange: "transform"
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "contain"
                   }}
                 />
               ) : (
                 <img
-                  src={latestMedia.media_url}
-                  alt="תמונה מהאירוע"
-                  loading="eager"
-                  fetchpriority="high"
-                  decoding="sync"
-                  crossOrigin="anonymous"
-                  onError={(e) => {
-                    console.error('❌ Image error:', latestMedia.media_url);
-                    e.target.style.display = 'none';
-                  }}
-                  onLoad={(e) => {
-                    console.log('✅ Image loaded:', latestMedia.media_url);
-                  }}
+                  src={mediaUploads[currentMediaIndex].media_url}
+                  alt="מהקהל"
                   style={{
-                    width: "100vw",
-                    height: "100vh",
-                    display: "block",
-                    objectFit: "contain",
-                    objectPosition: "center",
-                    backgroundColor: "#000",
-                    imageRendering: "-webkit-optimize-contrast",
-                    WebkitBackfaceVisibility: "hidden",
-                    backfaceVisibility: "hidden",
-                    transform: "translateZ(0) scale(1.15)",
-                    willChange: "transform"
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "contain"
                   }}
                 />
               )}
+              
+              {/* Flash Text */}
+              <motion.div
+                animate={{
+                  scale: [1, 1.1, 1],
+                  opacity: [0.8, 1, 0.8]
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity
+                }}
+                style={{
+                  position: "absolute",
+                  top: "40px",
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  fontSize: "clamp(1.5rem, 4vw, 3rem)",
+                  fontWeight: "900",
+                  color: "#fff",
+                  textShadow: "0 0 40px rgba(0, 202, 255, 0.8), 0 0 80px rgba(0, 202, 255, 0.5)",
+                  background: "rgba(0, 0, 0, 0.6)",
+                  padding: "12px 32px",
+                  borderRadius: "20px"
+                }}
+              >
+                📸 אתה במצלמה! 🎉
+              </motion.div>
             </motion.div>
           )}
 
-          {/* QR Codes Display (10 seconds) */}
-          {(!latestMedia || !showMedia) && (
+          {/* Mode 2: Queue + Messages (25 seconds) */}
+          {currentMode === "queue" && (
+            <motion.div
+              key="queue"
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -50 }}
+              transition={{ duration: 0.8 }}
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "grid",
+                gridTemplateColumns: "1fr 400px",
+                gap: "30px",
+                padding: "40px"
+              }}
+            >
+              {/* Left: Current Song + Queue */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+                {/* Current Song */}
+                {currentSong && (
+                  <div style={{
+                    background: "rgba(15, 23, 42, 0.9)",
+                    borderRadius: "24px",
+                    padding: "30px",
+                    border: "3px solid rgba(0, 202, 255, 0.5)",
+                    boxShadow: "0 0 60px rgba(0, 202, 255, 0.4)"
+                  }}>
+                    <div style={{
+                      fontSize: "1.2rem",
+                      color: "#00caff",
+                      marginBottom: "12px",
+                      fontWeight: "700"
+                    }}>
+                      🎤 שר עכשיו
+                    </div>
+                    <div style={{
+                      fontSize: "clamp(2rem, 4vw, 3.5rem)",
+                      fontWeight: "900",
+                      color: "#fff",
+                      marginBottom: "12px"
+                    }}>
+                      {currentSong.singer_name}
+                    </div>
+                    <div style={{
+                      fontSize: "clamp(1.2rem, 2vw, 2rem)",
+                      color: "#cbd5e1",
+                      fontWeight: "600"
+                    }}>
+                      {currentSong.song_title}
+                    </div>
+                    {currentSong.song_artist && (
+                      <div style={{
+                        fontSize: "1.2rem",
+                        color: "#94a3b8",
+                        marginTop: "8px"
+                      }}>
+                        {currentSong.song_artist}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Next in Queue */}
+                <div style={{
+                  background: "rgba(15, 23, 42, 0.9)",
+                  borderRadius: "24px",
+                  padding: "30px",
+                  border: "2px solid rgba(251, 191, 36, 0.3)",
+                  flex: 1
+                }}>
+                  <div style={{
+                    fontSize: "1.2rem",
+                    color: "#fbbf24",
+                    marginBottom: "16px",
+                    fontWeight: "700"
+                  }}>
+                    📋 הבאים בתור
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                    {waitingQueue.map((req, idx) => (
+                      <div
+                        key={req.id}
+                        style={{
+                          background: "rgba(30, 41, 59, 0.5)",
+                          borderRadius: "16px",
+                          padding: "16px",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "16px"
+                        }}
+                      >
+                        <div style={{
+                          width: "40px",
+                          height: "40px",
+                          borderRadius: "12px",
+                          background: "linear-gradient(135deg, #fbbf24, #f59e0b)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: "1.2rem",
+                          fontWeight: "900",
+                          color: "#001a2e"
+                        }}>
+                          {idx + 1}
+                        </div>
+                        <div style={{ flex: 1 }}>
+                          <div style={{
+                            fontSize: "1.3rem",
+                            fontWeight: "700",
+                            color: "#fff",
+                            marginBottom: "4px"
+                          }}>
+                            {req.singer_name}
+                          </div>
+                          <div style={{
+                            fontSize: "1rem",
+                            color: "#cbd5e1"
+                          }}>
+                            {req.song_title}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Right: Messages Feed */}
+              <div style={{
+                background: "rgba(15, 23, 42, 0.9)",
+                borderRadius: "24px",
+                padding: "30px",
+                border: "2px solid rgba(139, 92, 246, 0.3)",
+                display: "flex",
+                flexDirection: "column",
+                gap: "16px",
+                maxHeight: "100%",
+                overflow: "hidden"
+              }}>
+                <div style={{
+                  fontSize: "1.2rem",
+                  color: "#a78bfa",
+                  fontWeight: "700",
+                  marginBottom: "8px"
+                }}>
+                  💬 הודעות מהקהל
+                </div>
+                <div style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "12px",
+                  overflow: "auto"
+                }}>
+                  {messages.slice(0, 6).map((msg) => (
+                    <motion.div
+                      key={msg.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      style={{
+                        background: "rgba(139, 92, 246, 0.1)",
+                        border: "1px solid rgba(139, 92, 246, 0.3)",
+                        borderRadius: "16px",
+                        padding: "16px"
+                      }}
+                    >
+                      <div style={{
+                        fontSize: "0.9rem",
+                        color: "#a78bfa",
+                        marginBottom: "6px",
+                        fontWeight: "600"
+                      }}>
+                        {msg.sender_name}
+                      </div>
+                      <div style={{
+                        fontSize: "1.1rem",
+                        color: "#e2e8f0",
+                        lineHeight: "1.5"
+                      }}>
+                        {msg.message}
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* Mode 3: QR Codes (15 seconds) */}
+          {currentMode === "qr" && (
             <motion.div
               key="qrcodes"
               initial={{ opacity: 0 }}
