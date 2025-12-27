@@ -1,15 +1,11 @@
 import React, { useState, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Play, Check, SkipForward, UserPlus, Search, X, Music2 } from "lucide-react";
+import { Play, Check, SkipForward, UserPlus, Search, X } from "lucide-react";
 import ApyironLogo from "../components/ApyironLogo";
 import NavigationMenu from "../components/NavigationMenu";
-import { Link } from "react-router-dom";
-import { createPageUrl } from "@/utils";
-import StatsCard from "../components/admin/StatsCard";
 import PerformanceTimer from "../components/admin/PerformanceTimer";
 import SongHistory from "../components/admin/SongHistory";
-import MediaUploader from "../components/admin/MediaUploader";
 
 export default function Admin() {
   const [user, setUser] = useState(null);
@@ -135,52 +131,6 @@ export default function Admin() {
   const doneList = requests.filter(r => r.status === "done");
   const skippedList = requests.filter(r => r.status === "skipped");
 
-  // Statistics
-  const stats = useMemo(() => {
-    const completed = requests.filter(r => r.status === "done");
-    
-    // Top singer
-    const singerCounts = {};
-    completed.forEach(r => {
-      singerCounts[r.singer_name] = (singerCounts[r.singer_name] || 0) + 1;
-    });
-    const topSinger = Object.entries(singerCounts).sort((a, b) => b[1] - a[1])[0];
-    
-    // Top song
-    const songCounts = {};
-    completed.forEach(r => {
-      const key = `${r.song_title} - ${r.song_artist || 'לא ידוע'}`;
-      songCounts[key] = (songCounts[key] || 0) + 1;
-    });
-    const topSong = Object.entries(songCounts).sort((a, b) => b[1] - a[1])[0];
-    
-    // Average duration
-    const durations = completed.filter(r => r.performance_duration_seconds).map(r => r.performance_duration_seconds);
-    const avgDuration = durations.length > 0 ? Math.floor(durations.reduce((a, b) => a + b, 0) / durations.length) : 0;
-    
-    // Average rating
-    const ratings = completed.filter(r => r.average_rating > 0).map(r => r.average_rating);
-    const avgRating = ratings.length > 0 ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1) : 0;
-    
-    // Unique singers
-    const uniqueSingers = new Set(completed.map(r => r.singer_name)).size;
-    
-    return {
-      topSinger,
-      topSong,
-      avgDuration,
-      avgRating,
-      totalCompleted: completed.length,
-      uniqueSingers
-    };
-  }, [requests]);
-
-  const formatDuration = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
-
   // Filtered lists
   const filteredWaiting = waitingList.filter(r => 
     r.singer_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -196,14 +146,14 @@ export default function Admin() {
     );
   }
 
-  if (!user || (user.email !== "amir.abu300@gmail.com" && user.email !== "amit595959@gmail.com")) {
+  if (!user || user.role !== 'admin') {
     return (
       <div dir="rtl" style={{ background: "#020617", color: "#e5e7eb", minHeight: "100vh", padding: "12px", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <NavigationMenu />
         <div style={{ textAlign: "center" }}>
           <div style={{ fontSize: "1.5rem", marginBottom: "10px" }}>🚫</div>
           <div style={{ fontSize: "1.2rem", fontWeight: "600", marginBottom: "8px" }}>אין לך הרשאה</div>
-          <div style={{ fontSize: "0.9rem", color: "#9ca3af" }}>רק המנהל יכול לגשת למסך הניהול</div>
+          <div style={{ fontSize: "0.9rem", color: "#9ca3af" }}>רק מנהלים יכולים לגשת למסך הניהול</div>
         </div>
       </div>
     );
@@ -219,10 +169,10 @@ export default function Admin() {
             <ApyironLogo size="small" showCircle={false} />
           </div>
           <h1 style={{ fontSize: "2rem", fontWeight: "700", margin: "0 0 8px 0", color: "#00caff", textShadow: "0 0 20px rgba(0, 202, 255, 0.5)" }}>
-            🎤 מסך ניהול מקצועי
+            🎤 ניהול קריוקי
           </h1>
           <p style={{ color: "#94a3b8", fontSize: "0.95rem", margin: "0 0 12px 0" }}>
-            ניהול, סטטיסטיקות וניתוח נתונים בזמן אמת
+            ניהול תור ושירים בזמן אמת
           </p>
           
           {/* Reset Button */}
@@ -351,60 +301,46 @@ export default function Admin() {
           </div>
         )}
 
-        {/* Stats Dashboard */}
+        {/* Quick Stats */}
         <div style={{ 
           display: "grid", 
-          gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
-          gap: "16px",
+          gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))",
+          gap: "12px",
           marginBottom: "24px"
         }}>
-          <StatsCard 
-            icon="🏆" 
-            label="זמר השיא" 
-            value={stats.topSinger ? `${stats.topSinger[0].split(' ')[0]} (${stats.topSinger[1]})` : "-"}
-            color="#00caff"
-            delay={0}
-          />
-          <StatsCard 
-            icon="🎵" 
-            label="שיר פופולרי" 
-            value={stats.topSong ? `${stats.topSong[1]}x` : "-"}
-            color="#8b5cf6"
-            delay={0.1}
-          />
-          <StatsCard 
-            icon="⏱️" 
-            label="זמן ממוצע" 
-            value={stats.avgDuration > 0 ? formatDuration(stats.avgDuration) : "-"}
-            color="#10b981"
-            delay={0.2}
-          />
-          <StatsCard 
-            icon="⭐" 
-            label="ציון ממוצע" 
-            value={stats.avgRating > 0 ? stats.avgRating : "-"}
-            color="#f59e0b"
-            delay={0.3}
-          />
-          <StatsCard 
-            icon="📈" 
-            label='סה"כ שירים' 
-            value={stats.totalCompleted}
-            color="#00caff"
-            delay={0.4}
-          />
-          <StatsCard 
-            icon="👥" 
-            label="זמרים ייחודיים" 
-            value={stats.uniqueSingers}
-            color="#8b5cf6"
-            delay={0.5}
-          />
-        </div>
-
-        {/* Media Uploader */}
-        <div style={{ marginBottom: "24px" }}>
-          <MediaUploader />
+          <div style={{
+            background: "rgba(0, 202, 255, 0.1)",
+            border: "1px solid rgba(0, 202, 255, 0.3)",
+            borderRadius: "12px",
+            padding: "16px",
+            textAlign: "center"
+          }}>
+            <div style={{ fontSize: "2rem", marginBottom: "4px" }}>📋</div>
+            <div style={{ fontSize: "1.5rem", fontWeight: "700", color: "#00caff" }}>{waitingList.length}</div>
+            <div style={{ fontSize: "0.8rem", color: "#94a3b8" }}>ממתינים</div>
+          </div>
+          <div style={{
+            background: "rgba(16, 185, 129, 0.1)",
+            border: "1px solid rgba(16, 185, 129, 0.3)",
+            borderRadius: "12px",
+            padding: "16px",
+            textAlign: "center"
+          }}>
+            <div style={{ fontSize: "2rem", marginBottom: "4px" }}>✅</div>
+            <div style={{ fontSize: "1.5rem", fontWeight: "700", color: "#10b981" }}>{doneList.length}</div>
+            <div style={{ fontSize: "0.8rem", color: "#94a3b8" }}>הושלמו</div>
+          </div>
+          <div style={{
+            background: "rgba(248, 113, 113, 0.1)",
+            border: "1px solid rgba(248, 113, 113, 0.3)",
+            borderRadius: "12px",
+            padding: "16px",
+            textAlign: "center"
+          }}>
+            <div style={{ fontSize: "2rem", marginBottom: "4px" }}>⏭️</div>
+            <div style={{ fontSize: "1.5rem", fontWeight: "700", color: "#f87171" }}>{skippedList.length}</div>
+            <div style={{ fontSize: "0.8rem", color: "#94a3b8" }}>דולגו</div>
+          </div>
         </div>
 
         {/* Main Content */}
