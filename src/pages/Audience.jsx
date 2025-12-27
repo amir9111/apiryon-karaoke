@@ -515,9 +515,9 @@ export default function Audience() {
               {/* QR Codes Grid */}
               <div style={{ 
                 display: "grid",
-                gridTemplateColumns: "repeat(3, 1fr)",
-                gap: "40px",
-                maxWidth: "1400px",
+                gridTemplateColumns: "repeat(4, 1fr)",
+                gap: "30px",
+                maxWidth: "1600px",
                 width: "100%"
               }}>
                 {/* QR Code for Join Queue */}
@@ -678,7 +678,95 @@ export default function Audience() {
                     תראו את עצמכם בסרטונים! 📸
                   </div>
                 </div>
+
+                {/* QR Code for Upload to Screen */}
+                <div style={{
+                    background: "rgba(15, 23, 42, 0.8)",
+                    borderRadius: "24px",
+                    padding: "30px",
+                    border: "3px solid rgba(139, 92, 246, 0.5)",
+                    textAlign: "center",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    boxShadow: "0 10px 60px rgba(139, 92, 246, 0.3)",
+                    backdropFilter: "blur(30px)"
+                  }}
+                >
+                  <div style={{ 
+                    fontSize: "clamp(1.5rem, 3vw, 2.5rem)", 
+                    color: "#a78bfa", 
+                    marginBottom: "20px",
+                    fontWeight: "800",
+                    textShadow: "0 0 20px rgba(139, 92, 246, 0.8)"
+                  }}>
+                    📺 הופיעו פה!
+                  </div>
+
+                  <div style={{
+                    width: "clamp(200px, 20vw, 300px)",
+                    height: "clamp(200px, 20vw, 300px)",
+                    background: "#fff",
+                    borderRadius: "20px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: "20px",
+                    boxShadow: "0 0 40px rgba(139, 92, 246, 0.4)",
+                    border: "4px solid #a78bfa"
+                  }}>
+                    <img 
+                      src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${window.location.origin}/UploadToScreen`}
+                      alt="QR Code העלאה למסך"
+                      style={{ width: "90%", height: "90%" }}
+                    />
+                  </div>
+
+                  <div style={{ 
+                    fontSize: "clamp(1.2rem, 2vw, 1.8rem)", 
+                    color: "#cbd5e1",
+                    fontWeight: "700",
+                    lineHeight: "1.4"
+                  }}>
+                    העלה תמונות והודעות למסך!
+                  </div>
+                </div>
               </div>
+
+              {/* Rating Reminder */}
+              <motion.div
+                animate={{
+                  scale: [1, 1.05, 1]
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity
+                }}
+                style={{
+                  marginTop: "40px",
+                  padding: "20px 40px",
+                  background: "rgba(251, 191, 36, 0.15)",
+                  border: "2px solid rgba(251, 191, 36, 0.4)",
+                  borderRadius: "20px",
+                  textAlign: "center"
+                }}
+              >
+                <div style={{
+                  fontSize: "clamp(1.5rem, 3vw, 2.5rem)",
+                  fontWeight: "900",
+                  color: "#fbbf24",
+                  marginBottom: "10px"
+                }}>
+                  ⭐ אל תשכחו לדרג את הזמרים! ⭐
+                </div>
+                <div style={{
+                  fontSize: "clamp(1rem, 2vw, 1.5rem)",
+                  color: "#cbd5e1"
+                }}>
+                  סרקו את הQR בתור והצביעו לזמרים האהובים עליכם
+                </div>
+              </motion.div>
             </motion.div>
           )}
         </main>
