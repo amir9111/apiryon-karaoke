@@ -46,10 +46,10 @@ export default function Terms() {
             textShadow: "0 0 30px rgba(0, 202, 255, 0.5)",
             marginBottom: "8px"
           }}>
-            תנאי שימוש והסכם משתמש
+            תקנון ותנאי בילוי
           </h1>
           <p style={{ fontSize: "1rem", color: "#94a3b8" }}>
-            מסמך משפטי המסדיר את השימוש באפליקציה
+            מועדון אפריון (Apiryon Club)
           </p>
         </div>
 
@@ -71,222 +71,124 @@ export default function Terms() {
                 fontWeight: "700",
                 textShadow: "0 0 15px rgba(0, 202, 255, 0.3)"
               }}>
-                📜 הסכם רישיון שימוש באפליקציה
+                1️⃣ כללי
               </h2>
-              <p style={{ color: "#cbd5e1" }}>
-                ברוכים הבאים לאפליקציית "האפריון - מערכת קריוקי". מסמך זה מהווה הסכם משפטי מחייב 
-                בינך לבין הבעלים של האפליקציה. השימוש באפליקציה מעיד על הסכמתך לכל התנאים המפורטים להלן.
-              </p>
+              <div style={{ color: "#cbd5e1" }}>
+                <p style={{ marginBottom: "10px" }}>
+                  <strong>1.1.</strong> הוראות תקנון זה חלות על כל אדם הנכנס לשטח מועדון "אפריון" (להלן: "המועדון" או "המקום") ו/או המבצע הזמנת מקום.
+                </p>
+                <p style={{ marginBottom: "10px" }}>
+                  <strong>1.2.</strong> עצם הכניסה למועדון ו/או רכישת כרטיס מהווה הסכמה מלאה ובלתי מסויגת לכל תנאי התקנון.
+                </p>
+                <p>
+                  <strong>1.3.</strong> הנהלת המועדון שומרת לעצמה את הזכות לשנות את התקנון בכל עת וללא הודעה מוקדמת.
+                </p>
+              </div>
             </section>
 
             <section style={{ marginBottom: "28px" }}>
               <h3 style={{ color: "#00caff", fontSize: "1.2rem", marginBottom: "12px", fontWeight: "700" }}>
-                🏢 בעלות ורישיון
-              </h3>
-              <p style={{ color: "#cbd5e1", marginBottom: "12px" }}>
-                אפליקציה זו ("האפריון - מערכת קריוקי") הנה קניינו הבלעדי של <strong>אמיר (ת.ז. 203687355)</strong> ("הבעלים"). 
-              </p>
-              <p style={{ color: "#cbd5e1" }}>
-                כל הזכויות הקשורות באפליקציה, לרבות ומבלי לגרוע: זכויות יוצרים, סימני מסחר (כולל "APIRYON"), 
-                עיצוב ממשק משתמש, קוד מקור, קוד אובייקט, בסיסי נתונים, אלגוריתמים, ומתודולוגיות - 
-                כל אלה ועוד הינם קניין רוחני השמור לבעלים בלבד.
-              </p>
-            </section>
-
-            <section style={{ marginBottom: "28px" }}>
-              <h3 style={{ color: "#00caff", fontSize: "1.2rem", marginBottom: "12px", fontWeight: "700" }}>
-                ✅ תנאי השימוש המותרים
-              </h3>
-              <ul style={{ paddingRight: "20px", color: "#cbd5e1" }}>
-                <li style={{ marginBottom: "8px" }}>השימוש באפליקציה מותר אך ורק למטרות אישיות וחוקיות</li>
-                <li style={{ marginBottom: "8px" }}>רישום בקשות קריוקי במסגרת אירועים שבהם משתמשים באפליקציה</li>
-                <li style={{ marginBottom: "8px" }}>צפייה במידע המוצג באפליקציה</li>
-                <li style={{ marginBottom: "8px" }}>שימוש בפונקציונליות הבסיסית של האפליקציה כפי שתוכננה</li>
-              </ul>
-            </section>
-
-            <section style={{ marginBottom: "28px" }}>
-              <h3 style={{ color: "#00caff", fontSize: "1.2rem", marginBottom: "12px", fontWeight: "700" }}>
-                🚫 שימושים אסורים בהחלט
-              </h3>
-              <ul style={{ paddingRight: "20px", color: "#cbd5e1" }}>
-                <li style={{ marginBottom: "8px" }}><strong>אסור בהחלט</strong> להעתיק, לשכפל, להפיץ, למכור או להשכיר את האפליקציה או כל חלק ממנה</li>
-                <li style={{ marginBottom: "8px" }}><strong>אסור בהחלט</strong> לבצע הנדסה לאחור (Reverse Engineering), לפרק, לנתח או לנסות לחלץ קוד מקור</li>
-                <li style={{ marginBottom: "8px" }}><strong>אסור בהחלט</strong> ליצור יצירות נגזרות או לבצע שינויים באפליקציה</li>
-                <li style={{ marginBottom: "8px" }}><strong>אסור בהחלט</strong> להסיר, לשנות או להסתיר כל סימן זכויות יוצרים או קניין רוחני</li>
-                <li style={{ marginBottom: "8px" }}><strong>אסור בהחלט</strong> לעשות שימוש מסחרי באפליקציה ללא אישור בכתב מהבעלים</li>
-                <li style={{ marginBottom: "8px" }}><strong>אסור בהחלט</strong> לנסות לפגוע, להציף או להפריע לפעילות התקינה של האפליקציה</li>
-              </ul>
-            </section>
-
-            <section style={{ marginBottom: "28px" }}>
-              <h3 style={{ color: "#00caff", fontSize: "1.2rem", marginBottom: "12px", fontWeight: "700" }}>
-                🔒 פרטיות ואבטחת מידע
+                2️⃣ כניסה והגבלת גיל
               </h3>
               <div style={{ color: "#cbd5e1" }}>
-                <p style={{ marginBottom: "12px" }}><strong>איסוף מידע:</strong></p>
-                <ul style={{ paddingRight: "20px", marginBottom: "12px" }}>
-                  <li>האפליקציה אוספת מידע שאתה מספק מרצונך: שם מלא/שם במה, כתובת אימייל (אופציונלי), שם שיר, שם אמן</li>
-                  <li>מידע טכני אוטומטי: זמן גישה, כתובת IP, סוג דפדפן (לצרכי תפעול בלבד)</li>
-                </ul>
-
-                <p style={{ marginBottom: "12px" }}><strong>שימוש במידע:</strong></p>
-                <ul style={{ paddingRight: "20px", marginBottom: "12px" }}>
-                  <li>המידע משמש אך ורק להפעלת מערכת הקריוקי - ניהול תור, הצגת מידע</li>
-                  <li>לא נשתמש במידע למטרות שיווקיות ללא הסכמתך המפורשת</li>
-                  <li>לא נמכור, נשכיר או נעביר את המידע לצדדים שלישיים</li>
-                </ul>
-
-                <p style={{ marginBottom: "12px" }}><strong>אבטחה:</strong></p>
-                <ul style={{ paddingRight: "20px", marginBottom: "12px" }}>
-                  <li>המידע נשמר במערכות ענן מאובטחות (Base44)</li>
-                  <li>גישה למידע מוגבלת למנהל המערכת בלבד</li>
-                  <li>נעשה שימוש בטכנולוגיות הצפנה מתקדמות</li>
-                </ul>
-
-                <p style={{ marginBottom: "12px" }}><strong>זכויותיך:</strong></p>
-                <ul style={{ paddingRight: "20px" }}>
-                  <li>תוכל לבקש מחיקת הנתונים שלך בכל עת</li>
-                  <li>תוכל לבקש עותק של הנתונים השמורים עליך</li>
-                  <li>תוכל לבקש תיקון נתונים שגויים</li>
-                </ul>
+                <p style={{ marginBottom: "10px" }}>
+                  <strong>2.1.</strong> הכניסה למועדון מותרת לגילאי 18 ומעלה בלבד, בהצגת תעודה מזהה רשמית בתוקף (ת.ז., דרכון או רישיון נהיגה).
+                </p>
+                <p style={{ marginBottom: "10px" }}>
+                  <strong>2.2.</strong> הנהלת המועדון ו/או צוות האבטחה (הדורמן) שומרים לעצמם את הזכות הבלעדית למנוע כניסה של אדם ו/או להרחיק מבלים משטח המועדון בשל התנהגות בלתי הולמת, שכרות, אלימות או אי-עמידה בקוד הלבוש, וזאת ללא החזר כספי.
+                </p>
+                <p>
+                  <strong>2.3.</strong> תשלום דמי הכניסה ("תשלום לדורמן") הינו עבור הכניסה והאווירה בלבד ואינו ניתן להחזרה במקרה של עזיבה מוקדמת.
+                </p>
               </div>
             </section>
 
             <section style={{ marginBottom: "28px" }}>
               <h3 style={{ color: "#00caff", fontSize: "1.2rem", marginBottom: "12px", fontWeight: "700" }}>
-                ⚠️ הגבלת אחריות וכתב שיפוי
+                3️⃣ התנהגות ובטיחות
               </h3>
               <div style={{ color: "#cbd5e1" }}>
-                <p style={{ marginBottom: "12px" }}>
-                  האפליקציה מסופקת <strong>"כמות שהיא" (AS IS)</strong> וללא כל אחריות מסוג כלשהו, 
-                  בין אם מפורשת ובין אם משתמעת.
+                <p style={{ marginBottom: "10px" }}>
+                  <strong>3.1.</strong> חל איסור מוחלט על הכנסת נשק, סמים, חפצים חדים או כל חומר מסוכן אחר לשטח המועדון.
                 </p>
-                <p style={{ marginBottom: "12px" }}>
-                  הבעלים לא יהיה אחראי, בשום מקרה ובכל תנאי, לכל נזק מכל סוג שהוא, לרבות:
+                <p style={{ marginBottom: "10px" }}>
+                  <strong>3.2.</strong> המועדון נוקט במדיניות "אפס סובלנות" כלפי אלימות פיזית או מילולית, הטרדות מכל סוג שהוא, או התנהגות המסכנת את יתר המבלים. עבירה על סעיף זה תגרור הרחקה מיידית ודיווח לרשויות החוק במידת הצורך.
                 </p>
-                <ul style={{ paddingRight: "20px" }}>
-                  <li>נזק ישיר, עקיף, מקרי, מיוחד, עונשי או תוצאתי</li>
-                  <li>אובדן רווחים, נתונים, מוניטין או הזדמנויות עסקיות</li>
-                  <li>הפסקת שירות, איטיות, תקלות טכניות או בעיות ביצועים</li>
-                  <li>נזקים הנובעים משימוש או מחוסר יכולת להשתמש באפליקציה</li>
-                </ul>
+                <p>
+                  <strong>3.3.</strong> יש להישמע להוראות המאבטחים וצוות המקום בכל עת.
+                </p>
               </div>
             </section>
 
             <section style={{ marginBottom: "28px" }}>
               <h3 style={{ color: "#00caff", fontSize: "1.2rem", marginBottom: "12px", fontWeight: "700" }}>
-                👤 שימוש אחראי והתחייבויות משתמש
+                4️⃣ אלכוהול וצריכה
               </h3>
               <div style={{ color: "#cbd5e1" }}>
-                <p style={{ marginBottom: "12px" }}>בעצם השימוש באפליקציה, אתה מתחייב:</p>
-                <ul style={{ paddingRight: "20px" }}>
-                  <li style={{ marginBottom: "8px" }}>שלא להעלות תוכן פוגעני, מעליב, גזעני, מיני או בלתי חוקי</li>
-                  <li style={{ marginBottom: "8px" }}>שלא להפר זכויות קניין רוחני של אחרים (כגון רישום שירים המפרים זכויות יוצרים)</li>
-                  <li style={{ marginBottom: "8px" }}>שלא להשתמש באפליקציה לשם הטרדה, איומים או ספאם</li>
-                  <li style={{ marginBottom: "8px" }}>שלא לבצע מעשה שעלול לפגוע באבטחה, זמינות או תקינות האפליקציה</li>
-                  <li style={{ marginBottom: "8px" }}>שלא להתחזות למשתמש אחר או לספק מידע כוזב</li>
-                  <li style={{ marginBottom: "8px" }}>לשמור על פרטי הגישה שלך (אם רלוונטי) בסודיות</li>
-                </ul>
-              </div>
-            </section>
-
-            <section style={{ marginBottom: "28px" }}>
-              <h3 style={{ color: "#00caff", fontSize: "1.2rem", marginBottom: "12px", fontWeight: "700" }}>
-                © זכויות יוצרים וקניין רוחני
-              </h3>
-              <div 
-                style={{ 
-                  padding: "20px", 
-                  background: "rgba(0, 202, 255, 0.1)", 
-                  borderRadius: "16px",
-                  border: "2px solid rgba(0, 202, 255, 0.3)"
-                }}
-              >
-                <p style={{ color: "#cbd5e1", marginBottom: "12px" }}>
-                  <strong style={{ color: "#00caff", fontSize: "1.1rem" }}>
-                    © 2025 אמיר (ת.ז. 203687355) - כל הזכויות שמורות
-                  </strong>
+                <p style={{ marginBottom: "10px" }}>
+                  <strong>4.1.</strong> מכירת אלכוהול אסורה למי שטרם מלאו לו 18 שנים. הברמנים רשאים לדרוש תעודה מזהה בכל הזמנה.
                 </p>
-                <p style={{ color: "#cbd5e1" }}>
-                  כל התוכן, העיצוב, הקוד, הלוגו ("APIRYON"), הפונקציונליות והמראה החזותי של האפליקציה 
-                  מוגנים בחוקי זכויות יוצרים, סימני מסחר וקניין רוחני במדינת ישראל ובעולם. 
-                  כל שימוש, העתקה או שכפול ללא אישור בכתב מהווה הפרה של חוקי זכויות יוצרים 
-                  ועלול לגרור הליכים משפטיים.
+                <p style={{ marginBottom: "10px" }}>
+                  <strong>4.2.</strong> הנהלת המועדון רשאית לסרב להגיש אלכוהול למבלה הנראה במצב של שכרות יתר, על פי שיקול דעתה הבלעדי ולשם שמירה על ביטחונו וביטחון הסובבים.
+                </p>
+                <p>
+                  <strong>4.3.</strong> לא תתאפשר הכנסת שתייה או מזון מבחוץ לשטח המועדון.
                 </p>
               </div>
             </section>
 
             <section style={{ marginBottom: "28px" }}>
               <h3 style={{ color: "#00caff", fontSize: "1.2rem", marginBottom: "12px", fontWeight: "700" }}>
-                🔄 שינויים בתנאי השימוש
+                5️⃣ ציוד ורכוש
               </h3>
-              <p style={{ color: "#cbd5e1" }}>
-                הבעלים שומר לעצמו את הזכות לעדכן, לשנות או להחליף תנאים אלה בכל עת וללא הודעה מוקדמת. 
-                המשך שימוש באפליקציה לאחר ביצוע שינויים מהווה הסכמה אוטומטית לתנאים המעודכנים. 
-                מומלץ לבדוק עמוד זה מעת לעת.
-              </p>
-            </section>
-
-            <section style={{ marginBottom: "28px" }}>
-              <h3 style={{ color: "#00caff", fontSize: "1.2rem", marginBottom: "12px", fontWeight: "700" }}>
-                ⚖️ סמכות שיפוט וחוק החל
-              </h3>
-              <p style={{ color: "#cbd5e1" }}>
-                הסכם זה כפוף לדיני מדינת ישראל בלבד. כל סכסוך, מחלוקת או תביעה הנובעים מהסכם זה 
-                או מהשימוש באפליקציה יהיו נתונים לסמכות השיפוט הבלעדית והייחודית של בתי המשפט 
-                המוסמכים במחוז תל אביב, ישראל.
-              </p>
-            </section>
-
-            <section style={{ marginBottom: "28px" }}>
-              <h3 style={{ color: "#00caff", fontSize: "1.2rem", marginBottom: "12px", fontWeight: "700" }}>
-                📞 יצירת קשר ובקשות
-              </h3>
-              <div 
-                style={{ 
-                  padding: "16px", 
-                  background: "rgba(30, 41, 59, 0.5)",
-                  borderRadius: "12px",
-                  border: "1px solid rgba(0, 202, 255, 0.2)"
-                }}
-              >
-                <p style={{ color: "#cbd5e1", marginBottom: "8px" }}>
-                  לכל שאלה, בירור, בקשה למחיקת מידע, דיווח על הפרה, או נושא משפטי אחר:
+              <div style={{ color: "#cbd5e1" }}>
+                <p style={{ marginBottom: "10px" }}>
+                  <strong>5.1.</strong> המבלה אחראי באופן אישי לכל נזק שיגרם לרכוש המועדון (לרבות: מיקרופונים, מסכים, רהיטים, ציוד הגברה) כתוצאה מרשלנותו או זדונו. המועדון יחייב את המבלה בעלות התיקון או ההחלפה המלאה.
                 </p>
-                <ul style={{ paddingRight: "20px", color: "#cbd5e1" }}>
-                  <li>ניתן ליצור קשר עם הבעלים דרך פרטי הקשר שבמועדון "האפריון"</li>
-                  <li>או באמצעות קבוצת הווטסאפ המצורפת באפליקציה</li>
-                  <li>מייל: ניתן לבקש דרך המועדון</li>
-                </ul>
+                <p>
+                  <strong>5.2.</strong> השימוש בציוד הקריוקי יעשה בהתאם להוראות הצוות בלבד.
+                </p>
               </div>
             </section>
 
-            <div 
-              style={{
-                marginTop: "32px",
-                padding: "20px",
-                background: "rgba(248, 113, 113, 0.1)",
-                border: "2px solid rgba(248, 113, 113, 0.4)",
-                borderRadius: "16px",
-                fontSize: "0.95rem"
-              }}
-            >
-              <div style={{ 
-                fontSize: "1.2rem", 
-                fontWeight: "700", 
-                color: "#fca5a5", 
-                marginBottom: "12px",
-                textAlign: "center"
-              }}>
-                ⚠️ אזהרה חשובה
+            <section style={{ marginBottom: "28px" }}>
+              <h3 style={{ color: "#00caff", fontSize: "1.2rem", marginBottom: "12px", fontWeight: "700" }}>
+                6️⃣ צילום ותיעוד
+              </h3>
+              <div style={{ color: "#cbd5e1" }}>
+                <p style={{ marginBottom: "10px" }}>
+                  <strong>6.1.</strong> המועדון הינו מקום ציבורי מצולם. בעצם כניסתך למקום, הנך מאשר/ת להנהלת המועדון לצלם אותך (סטילס או וידאו) ולעשות שימוש בחומרים אלו לצרכי פרסום, שיווק ויחסי ציבור ברשתות החברתיות ובכל מדיה אחרת, ללא תמורה וללא הגבלת זמן.
+                </p>
+                <p>
+                  <strong>6.2.</strong> במידה ואינך מעוניין/ת להופיע בפרסומים, יש לפנות לצלם או לצוות הניהול במקום בזמן אמת.
+                </p>
               </div>
-              <p style={{ color: "#fca5a5", textAlign: "center", lineHeight: "1.7" }}>
-                הפרת תנאי שימוש אלה עלולה להוביל לחסימה מיידית מהאפליקציה, 
-                ביטול גישה, ונקיטת הליכים משפטיים אזרחיים ו/או פליליים נגדך, 
-                לרבות תביעות לפיצויים ואכיפה משפטית של זכויות הקניין הרוחני.
-              </p>
-            </div>
+            </section>
+
+            <section style={{ marginBottom: "28px" }}>
+              <h3 style={{ color: "#00caff", fontSize: "1.2rem", marginBottom: "12px", fontWeight: "700" }}>
+                7️⃣ אחריות וחפצים אישיים
+              </h3>
+              <div style={{ color: "#cbd5e1" }}>
+                <p>
+                  <strong>7.1.</strong> הנהלת המועדון אינה אחראית על אובדן, גניבה או נזק לחפצים אישיים של המבלים (טלפונים, ארנקים, תיקים וכו'). המבלים מתבקשים לשמור על חפציהם.
+                </p>
+              </div>
+            </section>
+
+            <section style={{ marginBottom: "28px" }}>
+              <h3 style={{ color: "#00caff", fontSize: "1.2rem", marginBottom: "12px", fontWeight: "700" }}>
+                8️⃣ ביטולים והזמנות
+              </h3>
+              <div style={{ color: "#cbd5e1" }}>
+                <p style={{ marginBottom: "10px" }}>
+                  <strong>8.1.</strong> הזמנת שולחן מותנית בתיאום מראש.
+                </p>
+                <p>
+                  <strong>8.2.</strong> במקרה של ביטול הזמנה פחות מ-24 שעות לפני האירוע, המועדון רשאי לגבות דמי ביטול (או לחילופין: המקדמה לא תוחזר).
+                </p>
+              </div>
+            </section>
 
             <div style={{ 
               marginTop: "32px", 
@@ -294,11 +196,15 @@ export default function Terms() {
               borderTop: "1px solid rgba(0, 202, 255, 0.2)",
               textAlign: "center",
               color: "#94a3b8",
-              fontSize: "0.9rem"
+              fontSize: "1rem",
+              fontWeight: "700"
             }}>
-              <p>מסמך זה עודכן לאחרונה: דצמבר 2025</p>
+              <p style={{ fontSize: "1.2rem", color: "#00caff" }}>ט.ל.ח</p>
+              <p style={{ marginTop: "12px" }}>
+                תנאי שימוש אלה נכנסו לתוקף ביום 31 בדצמבר 2025
+              </p>
               <p style={{ marginTop: "8px" }}>
-                © 2025 אמיר (ת.ז. 203687355) | האפריון - מערכת קריוקי
+                © 2025 מועדון אפריון (Apiryon Club) | כל הזכויות שמורות
               </p>
             </div>
           </div>
