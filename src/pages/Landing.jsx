@@ -108,7 +108,7 @@ export default function Landing() {
               </Link>
 
               <a
-                href="https://wa.me/972507114999?text=היי%20אפריון!%20אשמח%20לקבל%20פרטים%20נוספים%20על%20המועדון%20🎤"
+                href="https://wa.me/972525400396?text=היי%20אפריון!%20אשמח%20לקבל%20פרטים%20נוספים%20על%20המועדון%20🎤"
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{
@@ -358,20 +358,20 @@ export default function Landing() {
             gap: "30px",
             marginBottom: "50px"
           }}>
-            <a href="tel:+972507114999" style={{ textAlign: "center", textDecoration: "none", display: "block" }}>
+            <a href="tel:+972525400396" style={{ textAlign: "center", textDecoration: "none", display: "block" }}>
               <Phone className="w-10 h-10" style={{ color: "#00caff", margin: "0 auto 16px" }} />
               <h3 style={{ fontSize: "1.2rem", fontWeight: "700", color: "#fff", marginBottom: "8px" }}>
                 טלפון
               </h3>
               <span style={{ color: "#cbd5e1", fontSize: "1.3rem", fontWeight: "700" }}>
-                050-711-4999
+                052-540-0396
               </span>
               <p style={{ color: "#64748b", fontSize: "0.9rem", marginTop: "8px" }}>
                 📞 לחץ להתקשר
               </p>
             </a>
 
-            <a href="https://wa.me/972507114999?text=היי%20אפריון!%20אשמח%20לקבל%20פרטים%20נוספים%20🎤" target="_blank" rel="noopener noreferrer" style={{ textAlign: "center", textDecoration: "none", display: "block" }}>
+            <a href="https://wa.me/972525400396?text=היי%20אפריון!%20אשמח%20לקבל%20פרטים%20נוספים%20🎤" target="_blank" rel="noopener noreferrer" style={{ textAlign: "center", textDecoration: "none", display: "block" }}>
               <div style={{
                 width: "60px",
                 height: "60px",

@@ -85,7 +85,7 @@ ${formData.special_requests ? `\n💬 *בקשות מיוחדות:*\n${formData.s
 ⏰ התקבל ב: ${new Date().toLocaleString('he-IL')}`;
 
       const encodedMessage = encodeURIComponent(whatsappMessage);
-      const whatsappUrl = `https://wa.me/972507114999?text=${encodedMessage}`;
+      const whatsappUrl = `https://wa.me/972525400396?text=${encodedMessage}`;
       
       // Open WhatsApp in new tab
       window.open(whatsappUrl, '_blank');
