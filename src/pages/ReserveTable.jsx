@@ -51,13 +51,22 @@ export default function ReserveTable() {
       const price = tableTypes[formData.table_type].price;
       
       await base44.entities.TableReservation.create({
-        ...formData,
+        customer_name: formData.customer_name,
+        customer_phone: formData.customer_phone,
+        customer_email: formData.customer_email || "",
+        reservation_date: formData.reservation_date,
+        reservation_time: formData.reservation_time,
+        number_of_guests: formData.number_of_guests,
+        table_type: formData.table_type,
+        special_requests: formData.special_requests || "",
+        terms_accepted: formData.terms_accepted,
         price,
         status: "pending"
       });
 
       setStep(4); // Success step
     } catch (err) {
+      console.error("Error creating reservation:", err);
       alert("שגיאה בשמירת ההזמנה, נסה שוב");
     }
   };
