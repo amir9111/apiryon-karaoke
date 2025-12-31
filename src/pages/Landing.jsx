@@ -108,14 +108,14 @@ export default function Landing() {
               </Link>
 
               <a
-                href="https://wa.me/972507114999"
+                href="https://wa.me/972507114999?text=היי%20אפריון!%20אשמח%20לקבל%20פרטים%20נוספים%20על%20המועדון%20🎤"
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{
                   padding: "18px 48px",
-                  background: "rgba(255, 255, 255, 0.1)",
+                  background: "rgba(37, 211, 102, 0.2)",
                   color: "#ffffff",
-                  border: "2px solid rgba(255, 255, 255, 0.3)",
+                  border: "2px solid rgba(37, 211, 102, 0.4)",
                   borderRadius: "50px",
                   fontSize: "1.3rem",
                   fontWeight: "800",
@@ -125,15 +125,17 @@ export default function Landing() {
                   transition: "all 0.3s"
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "rgba(255, 255, 255, 0.2)";
+                  e.currentTarget.style.background = "rgba(37, 211, 102, 0.3)";
                   e.currentTarget.style.transform = "scale(1.05)";
+                  e.currentTarget.style.boxShadow = "0 0 30px rgba(37, 211, 102, 0.4)";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "rgba(255, 255, 255, 0.1)";
+                  e.currentTarget.style.background = "rgba(37, 211, 102, 0.2)";
                   e.currentTarget.style.transform = "scale(1)";
+                  e.currentTarget.style.boxShadow = "none";
                 }}
               >
-                💬 דברו איתנו
+                💬 דברו איתנו בווטסאפ
               </a>
             </div>
           </motion.div>
@@ -353,38 +355,93 @@ export default function Landing() {
           <div style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-            gap: "30px"
+            gap: "30px",
+            marginBottom: "50px"
           }}>
-            <div style={{ textAlign: "center" }}>
+            <a href="tel:+972507114999" style={{ textAlign: "center", textDecoration: "none", display: "block" }}>
               <Phone className="w-10 h-10" style={{ color: "#00caff", margin: "0 auto 16px" }} />
               <h3 style={{ fontSize: "1.2rem", fontWeight: "700", color: "#fff", marginBottom: "8px" }}>
                 טלפון
               </h3>
-              <a href="tel:+972507114999" style={{ color: "#cbd5e1", fontSize: "1.1rem", textDecoration: "none" }}>
+              <span style={{ color: "#cbd5e1", fontSize: "1.3rem", fontWeight: "700" }}>
                 050-711-4999
-              </a>
-            </div>
+              </span>
+              <p style={{ color: "#64748b", fontSize: "0.9rem", marginTop: "8px" }}>
+                📞 לחץ להתקשר
+              </p>
+            </a>
 
-            <div style={{ textAlign: "center" }}>
-              <Mail className="w-10 h-10" style={{ color: "#00caff", margin: "0 auto 16px" }} />
+            <a href="https://wa.me/972507114999?text=היי%20אפריון!%20אשמח%20לקבל%20פרטים%20נוספים%20🎤" target="_blank" rel="noopener noreferrer" style={{ textAlign: "center", textDecoration: "none", display: "block" }}>
+              <div style={{
+                width: "60px",
+                height: "60px",
+                margin: "0 auto 16px",
+                background: "linear-gradient(135deg, #25D366, #128C7E)",
+                borderRadius: "50%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "2rem"
+              }}>
+                💬
+              </div>
               <h3 style={{ fontSize: "1.2rem", fontWeight: "700", color: "#fff", marginBottom: "8px" }}>
-                אימייל
+                WhatsApp
               </h3>
-              <a href="mailto:info@apiryon.club" style={{ color: "#cbd5e1", fontSize: "1.1rem", textDecoration: "none" }}>
-                info@apiryon.club
-              </a>
-            </div>
+              <span style={{ color: "#cbd5e1", fontSize: "1.1rem" }}>
+                שלחו הודעה
+              </span>
+              <p style={{ color: "#64748b", fontSize: "0.9rem", marginTop: "8px" }}>
+                💬 תגובה מהירה
+              </p>
+            </a>
 
             <div style={{ textAlign: "center" }}>
               <MapPin className="w-10 h-10" style={{ color: "#00caff", margin: "0 auto 16px" }} />
               <h3 style={{ fontSize: "1.2rem", fontWeight: "700", color: "#fff", marginBottom: "8px" }}>
                 מיקום
               </h3>
-              <p style={{ color: "#cbd5e1", fontSize: "1.1rem" }}>
-                תל אביב, ישראל
+              <p style={{ color: "#cbd5e1", fontSize: "1.1rem", marginBottom: "8px" }}>
+                הגליל העליון, ישראל
+              </p>
+              <p style={{ color: "#64748b", fontSize: "0.9rem" }}>
+                📍 בין מירון לצפת
               </p>
             </div>
           </div>
+
+          {/* Opening Hours */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            style={{
+              background: "rgba(0, 202, 255, 0.1)",
+              border: "2px solid rgba(0, 202, 255, 0.3)",
+              borderRadius: "20px",
+              padding: "40px",
+              maxWidth: "600px",
+              margin: "0 auto"
+            }}
+          >
+            <div style={{ textAlign: "center", marginBottom: "30px" }}>
+              <Clock className="w-12 h-12" style={{ color: "#00caff", margin: "0 auto 16px" }} />
+              <h3 style={{ fontSize: "1.5rem", fontWeight: "800", color: "#fff" }}>
+                שעות פעילות
+              </h3>
+            </div>
+            
+            <div style={{ fontSize: "1.1rem", color: "#cbd5e1", lineHeight: "2" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px" }}>
+                <span style={{ fontWeight: "700" }}>ימי חמישי - שבת:</span>
+                <span>19:00 - 02:00</span>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <span style={{ fontWeight: "700" }}>שאר הימים:</span>
+                <span style={{ color: "#fbbf24" }}>על פי תיאום מראש</span>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </section>
 

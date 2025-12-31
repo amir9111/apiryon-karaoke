@@ -64,6 +64,32 @@ export default function ReserveTable() {
         status: "pending"
       });
 
+      // Send WhatsApp message to owner
+      const tableTypeName = tableTypes[formData.table_type].name;
+      const whatsappMessage = `🎉 *הזמנה חדשה - מועדון אפריון*
+
+📋 *פרטי ההזמנה:*
+━━━━━━━━━━━━━━━━
+👤 *שם:* ${formData.customer_name}
+📞 *טלפון:* ${formData.customer_phone}
+${formData.customer_email ? `📧 *אימייל:* ${formData.customer_email}\n` : ''}
+━━━━━━━━━━━━━━━━
+📅 *תאריך:* ${formData.reservation_date}
+🕐 *שעה:* ${formData.reservation_time}
+👥 *מספר אורחים:* ${formData.number_of_guests}
+🪑 *סוג שולחן:* ${tableTypeName}
+💰 *מחיר:* ₪${price}
+${formData.special_requests ? `\n💬 *בקשות מיוחדות:*\n${formData.special_requests}` : ''}
+
+━━━━━━━━━━━━━━━━
+⏰ התקבל ב: ${new Date().toLocaleString('he-IL')}`;
+
+      const encodedMessage = encodeURIComponent(whatsappMessage);
+      const whatsappUrl = `https://wa.me/972507114999?text=${encodedMessage}`;
+      
+      // Open WhatsApp in new tab
+      window.open(whatsappUrl, '_blank');
+
       setStep(4); // Success step
     } catch (err) {
       console.error("Error creating reservation:", err);
