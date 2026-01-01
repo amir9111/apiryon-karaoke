@@ -58,7 +58,7 @@ export default function Audience() {
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
-  const [currentMode, setCurrentMode] = useState("queue"); // "media", "queue", "messages", "qr"
+  const [currentMode, setCurrentMode] = useState("qr"); // "media", "queue", "messages", "qr" - Start with QR to test
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
   const [displayedMessages, setDisplayedMessages] = useState([]);
 
