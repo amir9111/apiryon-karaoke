@@ -58,7 +58,7 @@ export default function Audience() {
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
-  const [currentMode, setCurrentMode] = useState("qr"); // "media", "queue", "messages", "qr" - Start with QR to test
+  const [currentMode, setCurrentMode] = useState("queue"); // "media", "queue", "qr"
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
   const [displayedMessages, setDisplayedMessages] = useState([]);
 
@@ -109,39 +109,38 @@ export default function Audience() {
     }
   }, [currentMode]);
 
-  // Smart rotation logic
+  // Smart rotation logic - Fixed to show each media once
   React.useEffect(() => {
     const interval = setInterval(() => {
       setCurrentMode(prev => {
-        // If we have media, show it
-        if (prev === "queue" && mediaUploads.length > 0) {
+        // Start with media if available
+        if (prev === "qr" && mediaUploads.length > 0) {
           setCurrentMediaIndex(0);
           return "media";
         }
-        // After media, check for messages
+        // After media, go to next media or move to queue
         if (prev === "media") {
-          // Cycle through all media
           if (currentMediaIndex < mediaUploads.length - 1) {
             setCurrentMediaIndex(currentMediaIndex + 1);
             return "media";
           }
-          // Check if there are new messages
-          if (messages.length > 0) {
-            return "messages";
-          }
+          // All media shown, go to queue
           return "queue";
         }
-        // After messages, show queue
-        if (prev === "messages") return "queue";
         // After queue, show QR codes
         if (prev === "queue") return "qr";
-        // Back to queue
+        // After QR, check for media again
+        if (prev === "qr" && mediaUploads.length > 0) {
+          setCurrentMediaIndex(0);
+          return "media";
+        }
+        // No media, back to queue
         return "queue";
       });
-    }, currentMode === "media" ? 30000 : currentMode === "messages" ? 20000 : currentMode === "queue" ? 25000 : 15000);
+    }, currentMode === "media" ? 30000 : currentMode === "queue" ? 25000 : 15000);
 
     return () => clearInterval(interval);
-  }, [currentMode, mediaUploads.length, currentMediaIndex, messages.length]);
+  }, [currentMode, mediaUploads.length, currentMediaIndex]);
 
   return (
     <div dir="rtl" style={{
