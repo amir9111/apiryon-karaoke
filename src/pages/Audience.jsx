@@ -61,6 +61,7 @@ export default function Audience() {
   const [currentMode, setCurrentMode] = useState("queue"); // "media", "queue", "qr"
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
   const [displayedMessages, setDisplayedMessages] = useState([]);
+  const [displayedMediaIds, setDisplayedMediaIds] = useState(new Set());
 
   const { data: requests = [] } = useQuery({
     queryKey: ['karaoke-requests'],
