@@ -116,14 +116,28 @@ export default function Admin() {
     updateMutation.mutate({ id, data: { status: "waiting" } });
   };
 
-  const addDemoSong = () => {
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newSinger, setNewSinger] = useState({
+    singer_name: "",
+    song_title: "",
+    song_artist: ""
+  });
+
+  const addManualSinger = () => {
+    if (!newSinger.singer_name.trim() || !newSinger.song_title.trim()) {
+      alert("נא למלא שם זמר ושם שיר");
+      return;
+    }
+    
     createMutation.mutate({
-      singer_name: "אורח חדש",
-      song_title: "שיר בדיקה",
-      song_artist: "",
-      notes: "",
+      singer_name: newSinger.singer_name.trim(),
+      song_title: newSinger.song_title.trim(),
+      song_artist: newSinger.song_artist.trim(),
       status: "waiting"
     });
+    
+    setNewSinger({ singer_name: "", song_title: "", song_artist: "" });
+    setShowAddForm(false);
   };
 
   const currentSong = requests.find(r => r.status === "performing");
@@ -516,7 +530,7 @@ export default function Admin() {
                   <div style={{ fontSize: "0.85rem", color: "#94a3b8", marginTop: "4px" }}>רשימת כל הממתינים</div>
                 </div>
                 <button 
-                  onClick={addDemoSong} 
+                  onClick={() => setShowAddForm(true)} 
                   style={{ 
                     border: "1px solid rgba(148,163,184,0.3)", 
                     borderRadius: "10px", 
@@ -531,9 +545,109 @@ export default function Admin() {
                   }}
                 >
                   <UserPlus className="w-4 h-4" />
-                  הוסף
+                  הוסף זמר
                 </button>
               </div>
+
+              {/* Add Singer Form */}
+              {showAddForm && (
+                <div style={{
+                  background: "rgba(0, 202, 255, 0.1)",
+                  border: "2px solid rgba(0, 202, 255, 0.3)",
+                  borderRadius: "16px",
+                  padding: "16px",
+                  marginBottom: "16px"
+                }}>
+                  <div style={{ fontSize: "1rem", fontWeight: "700", color: "#00caff", marginBottom: "12px" }}>
+                    ➕ הוספת זמר חדש
+                  </div>
+                  
+                  <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                    <input
+                      type="text"
+                      placeholder="שם הזמר *"
+                      value={newSinger.singer_name}
+                      onChange={(e) => setNewSinger({...newSinger, singer_name: e.target.value})}
+                      style={{
+                        padding: "10px 12px",
+                        borderRadius: "10px",
+                        border: "1px solid rgba(51, 65, 85, 0.5)",
+                        background: "rgba(15, 23, 42, 0.5)",
+                        color: "#f1f5f9",
+                        fontSize: "0.9rem"
+                      }}
+                    />
+                    
+                    <input
+                      type="text"
+                      placeholder="שם השיר *"
+                      value={newSinger.song_title}
+                      onChange={(e) => setNewSinger({...newSinger, song_title: e.target.value})}
+                      style={{
+                        padding: "10px 12px",
+                        borderRadius: "10px",
+                        border: "1px solid rgba(51, 65, 85, 0.5)",
+                        background: "rgba(15, 23, 42, 0.5)",
+                        color: "#f1f5f9",
+                        fontSize: "0.9rem"
+                      }}
+                    />
+                    
+                    <input
+                      type="text"
+                      placeholder="שם האמן (אופציונלי)"
+                      value={newSinger.song_artist}
+                      onChange={(e) => setNewSinger({...newSinger, song_artist: e.target.value})}
+                      style={{
+                        padding: "10px 12px",
+                        borderRadius: "10px",
+                        border: "1px solid rgba(51, 65, 85, 0.5)",
+                        background: "rgba(15, 23, 42, 0.5)",
+                        color: "#f1f5f9",
+                        fontSize: "0.9rem"
+                      }}
+                    />
+                    
+                    <div style={{ display: "flex", gap: "8px" }}>
+                      <button
+                        onClick={addManualSinger}
+                        style={{
+                          flex: 1,
+                          padding: "10px",
+                          borderRadius: "10px",
+                          border: "none",
+                          background: "linear-gradient(135deg, #00caff, #0088ff)",
+                          color: "#001a2e",
+                          fontSize: "0.9rem",
+                          fontWeight: "700",
+                          cursor: "pointer",
+                          boxShadow: "0 0 20px rgba(0, 202, 255, 0.3)"
+                        }}
+                      >
+                        ✓ הוסף לתור
+                      </button>
+                      <button
+                        onClick={() => {
+                          setShowAddForm(false);
+                          setNewSinger({ singer_name: "", song_title: "", song_artist: "" });
+                        }}
+                        style={{
+                          padding: "10px 16px",
+                          borderRadius: "10px",
+                          border: "1px solid rgba(51, 65, 85, 0.5)",
+                          background: "rgba(30, 41, 59, 0.5)",
+                          color: "#94a3b8",
+                          fontSize: "0.9rem",
+                          fontWeight: "700",
+                          cursor: "pointer"
+                        }}
+                      >
+                        ביטול
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Search */}
               <div style={{ position: "relative", marginBottom: "16px" }}>
