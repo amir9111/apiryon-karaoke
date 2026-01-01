@@ -8,6 +8,21 @@ import ApyironLogo from "../components/ApyironLogo";
 import MenuButton from "../components/MenuButton";
 
 export default function UploadToScreen() {
+  const [isAdmin, setIsAdmin] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    async function checkAdmin() {
+      try {
+        const user = await base44.auth.me();
+        setIsAdmin(user?.role === 'admin');
+      } catch (err) {
+        setIsAdmin(false);
+      }
+      setLoading(false);
+    }
+    checkAdmin();
+  }, []);
   const [activeTab, setActiveTab] = useState("photo");
   const [capturedPhoto, setCapturedPhoto] = useState(null);
   const [showCamera, setShowCamera] = useState(false);
@@ -412,8 +427,8 @@ export default function UploadToScreen() {
             </div>
           )}
 
-          {/* Message Tab */}
-          {activeTab === "message" && (
+          {/* Removed photo tab - only messages allowed */}
+          {false && (
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               <div>
                 <label 

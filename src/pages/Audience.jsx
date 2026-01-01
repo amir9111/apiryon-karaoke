@@ -110,56 +110,34 @@ export default function Audience() {
     }
   }, [currentMode]);
 
-  // Smart rotation logic - Show each media only once per cycle
-  React.useEffect(() => {
-    // Check for new media uploads
-    const newMediaIds = new Set(mediaUploads.map(m => m.id));
-    const hasNewMedia = mediaUploads.some(m => !displayedMediaIds.has(m.id));
-    
-    // Reset displayed media if all current media is new
-    if (hasNewMedia && displayedMediaIds.size > 0 && !Array.from(displayedMediaIds).some(id => newMediaIds.has(id))) {
-      setDisplayedMediaIds(new Set());
-    }
-  }, [mediaUploads, displayedMediaIds]);
-
+  // Simple rotation logic - show latest media always
   React.useEffect(() => {
     const interval = setInterval(() => {
       setCurrentMode(prev => {
-        // Find undisplayed media
-        const undisplayedMedia = mediaUploads.filter(m => !displayedMediaIds.has(m.id));
-        
-        // If we have undisplayed media and we're coming from queue or QR
-        if ((prev === "queue" || prev === "qr") && undisplayedMedia.length > 0) {
-          const firstUndisplayed = mediaUploads.findIndex(m => !displayedMediaIds.has(m.id));
-          setCurrentMediaIndex(firstUndisplayed);
-          // Mark this media as displayed
-          setDisplayedMediaIds(prevSet => new Set([...prevSet, mediaUploads[firstUndisplayed].id]));
+        // If we have media, show it
+        if ((prev === "queue" || prev === "qr") && mediaUploads.length > 0) {
           return "media";
         }
         
-        // After media, check if there's more undisplayed media
+        // After media, go to queue
         if (prev === "media") {
-          const nextUndisplayed = mediaUploads.slice(currentMediaIndex + 1).find(m => !displayedMediaIds.has(m.id));
-          if (nextUndisplayed) {
-            const nextIndex = mediaUploads.indexOf(nextUndisplayed);
-            setCurrentMediaIndex(nextIndex);
-            setDisplayedMediaIds(prevSet => new Set([...prevSet, nextUndisplayed.id]));
-            return "media";
-          }
-          // All media shown, go to queue
           return "queue";
         }
         
         // After queue, show QR codes
         if (prev === "queue") return "qr";
         
-        // After QR, go back to queue (don't repeat media)
+        // After QR, back to media if exists, else queue
+        if (prev === "qr" && mediaUploads.length > 0) {
+          return "media";
+        }
+        
         return "queue";
       });
     }, currentMode === "media" ? 30000 : currentMode === "queue" ? 25000 : 15000);
 
     return () => clearInterval(interval);
-  }, [currentMode, mediaUploads, currentMediaIndex, displayedMediaIds]);
+  }, [currentMode, mediaUploads.length]);
 
   return (
     <div dir="rtl" style={{
@@ -250,10 +228,10 @@ export default function Audience() {
           overflow: "hidden"
         }}>
 
-          {/* Mode 1: Media Display (30 seconds each) */}
-          {currentMode === "media" && mediaUploads[currentMediaIndex] && (
+          {/* Mode 1: Media Display (30 seconds) - Show latest media only */}
+          {currentMode === "media" && mediaUploads.length > 0 && (
             <motion.div
-              key={`media-${currentMediaIndex}`}
+              key={`media-${mediaUploads[0].id}`}
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
@@ -271,58 +249,36 @@ export default function Audience() {
                 zIndex: 1
               }}
             >
-              {mediaUploads[currentMediaIndex].media_type === 'video' ? (
+              {mediaUploads[0].media_type === 'video' ? (
                 <video
-                  key={mediaUploads[currentMediaIndex].media_url}
-                  src={mediaUploads[currentMediaIndex].media_url}
+                  key={mediaUploads[0].media_url}
+                  src={mediaUploads[0].media_url}
                   autoPlay
                   loop
                   muted
                   playsInline
                   style={{
-                    width: "100%",
-                    height: "100%",
+                    maxWidth: "100%",
+                    maxHeight: "100%",
+                    width: "auto",
+                    height: "auto",
                     objectFit: "contain"
                   }}
                 />
               ) : (
                 <img
-                  src={mediaUploads[currentMediaIndex].media_url}
-                  alt="מהקהל"
+                  src={mediaUploads[0].media_url}
+                  alt="מהמנהל"
                   style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "contain"
+                    maxWidth: "100%",
+                    maxHeight: "100%",
+                    width: "auto",
+                    height: "auto",
+                    objectFit: "contain",
+                    imageRendering: "high-quality"
                   }}
                 />
               )}
-              
-              {/* Flash Text */}
-              <motion.div
-                animate={{
-                  scale: [1, 1.1, 1],
-                  opacity: [0.8, 1, 0.8]
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity
-                }}
-                style={{
-                  position: "absolute",
-                  top: "40px",
-                  left: "50%",
-                  transform: "translateX(-50%)",
-                  fontSize: "clamp(1.5rem, 4vw, 3rem)",
-                  fontWeight: "900",
-                  color: "#fff",
-                  textShadow: "0 0 40px rgba(0, 202, 255, 0.8), 0 0 80px rgba(0, 202, 255, 0.5)",
-                  background: "rgba(0, 0, 0, 0.6)",
-                  padding: "12px 32px",
-                  borderRadius: "20px"
-                }}
-              >
-                📸 אתה במצלמה! 🎉
-              </motion.div>
             </motion.div>
           )}
 

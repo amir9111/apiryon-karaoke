@@ -122,6 +122,7 @@ export default function Admin() {
     song_title: "",
     song_artist: ""
   });
+  const [uploadingMedia, setUploadingMedia] = useState(false);
 
   const addManualSinger = () => {
     if (!newSinger.singer_name.trim() || !newSinger.song_title.trim()) {
@@ -138,6 +139,47 @@ export default function Admin() {
     
     setNewSinger({ singer_name: "", song_title: "", song_artist: "" });
     setShowAddForm(false);
+  };
+
+  const handleMediaUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Check if image or video
+    const isImage = file.type.startsWith('image/');
+    const isVideo = file.type.startsWith('video/');
+    
+    if (!isImage && !isVideo) {
+      alert("ניתן להעלות רק תמונות או סרטונים");
+      return;
+    }
+
+    setUploadingMedia(true);
+    try {
+      // Delete all existing media first
+      const existingMedia = await base44.entities.MediaUpload.list('-created_date', 100);
+      for (const media of existingMedia) {
+        await base44.entities.MediaUpload.delete(media.id);
+      }
+
+      // Upload new file
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+
+      // Create new media record
+      await base44.entities.MediaUpload.create({
+        media_url: file_url,
+        media_type: isImage ? 'image' : 'video',
+        is_active: true
+      });
+
+      alert("✅ התמונה הועלתה בהצלחה!");
+    } catch (err) {
+      console.error("Error uploading media:", err);
+      alert("❌ שגיאה בהעלאת התמונה");
+    } finally {
+      setUploadingMedia(false);
+      e.target.value = '';
+    }
   };
 
   const currentSong = requests.find(r => r.status === "performing");
@@ -189,25 +231,53 @@ export default function Admin() {
             ניהול תור ושירים בזמן אמת
           </p>
           
-          {/* Reset Button */}
-          <button
-            onClick={() => setShowResetConfirm(true)}
-            style={{
-              padding: "10px 20px",
-              borderRadius: "10px",
-              border: "1px solid rgba(248, 113, 113, 0.4)",
-              background: "rgba(248, 113, 113, 0.1)",
-              color: "#f87171",
-              fontSize: "0.85rem",
-              fontWeight: "700",
-              cursor: "pointer",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "6px"
-            }}
-          >
-            🗑️ איפוס סטטיסטיקה
-          </button>
+          {/* Action Buttons */}
+          <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}>
+            <button
+              onClick={() => setShowResetConfirm(true)}
+              style={{
+                padding: "10px 20px",
+                borderRadius: "10px",
+                border: "1px solid rgba(248, 113, 113, 0.4)",
+                background: "rgba(248, 113, 113, 0.1)",
+                color: "#f87171",
+                fontSize: "0.85rem",
+                fontWeight: "700",
+                cursor: "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px"
+              }}
+            >
+              🗑️ איפוס סטטיסטיקה
+            </button>
+
+            <label
+              style={{
+                padding: "10px 20px",
+                borderRadius: "10px",
+                border: "1px solid rgba(139, 92, 246, 0.4)",
+                background: "rgba(139, 92, 246, 0.1)",
+                color: "#a78bfa",
+                fontSize: "0.85rem",
+                fontWeight: "700",
+                cursor: uploadingMedia ? "not-allowed" : "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                opacity: uploadingMedia ? 0.5 : 1
+              }}
+            >
+              {uploadingMedia ? "מעלה..." : "📸 העלה תמונה למסך קהל"}
+              <input
+                type="file"
+                accept="image/*,video/*"
+                onChange={handleMediaUpload}
+                disabled={uploadingMedia}
+                style={{ display: "none" }}
+              />
+            </label>
+          </div>
         </div>
 
         {/* Reset Confirmation Modal */}
