@@ -569,64 +569,11 @@ export default function Audience() {
               {/* QR Codes Grid */}
               <div style={{ 
                 display: "grid",
-                gridTemplateColumns: "repeat(4, 1fr)",
+                gridTemplateColumns: "repeat(3, 1fr)",
                 gap: "30px",
-                maxWidth: "1600px",
+                maxWidth: "1200px",
                 width: "100%"
               }}>
-                {/* QR Code for Join Queue */}
-                <div style={{
-                    background: "rgba(15, 23, 42, 0.8)",
-                    borderRadius: "24px",
-                    padding: "30px",
-                    border: "3px solid rgba(16, 185, 129, 0.5)",
-                    textAlign: "center",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    boxShadow: "0 10px 60px rgba(16, 185, 129, 0.3)",
-                    backdropFilter: "blur(30px)"
-                  }}
-                >
-                  <div style={{ 
-                    fontSize: "clamp(1.5rem, 3vw, 2.5rem)", 
-                    color: "#10b981", 
-                    marginBottom: "20px",
-                    fontWeight: "800",
-                    textShadow: "0 0 20px rgba(16, 185, 129, 0.8)"
-                  }}>
-                    🎤 הצטרף לתור
-                  </div>
-
-                  <div style={{
-                    width: "clamp(200px, 20vw, 300px)",
-                    height: "clamp(200px, 20vw, 300px)",
-                    background: "#fff",
-                    borderRadius: "20px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginBottom: "20px",
-                    boxShadow: "0 0 40px rgba(16, 185, 129, 0.4)",
-                    border: "4px solid #10b981"
-                  }}>
-                    <img 
-                      src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${window.location.origin}/Home`}
-                      alt="QR Code להצטרפות לתור"
-                      style={{ width: "90%", height: "90%" }}
-                    />
-                  </div>
-
-                  <div style={{ 
-                    fontSize: "clamp(1.2rem, 2vw, 1.8rem)", 
-                    color: "#cbd5e1",
-                    fontWeight: "700"
-                  }}>
-                    סרוק והצטרף לקריוקי
-                  </div>
-                </div>
-
                 {/* QR Code for WhatsApp */}
                 <div style={{
                     background: "rgba(15, 23, 42, 0.8)",
