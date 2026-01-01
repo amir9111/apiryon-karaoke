@@ -114,22 +114,34 @@ export default function Audience() {
   React.useEffect(() => {
     const interval = setInterval(() => {
       setCurrentMode(prev => {
+        console.log("Current mode:", prev, "Media count:", mediaUploads.length);
+        
         // If we have media, show it
         if ((prev === "queue" || prev === "qr") && mediaUploads.length > 0) {
+          console.log("Switching to media");
           return "media";
         }
         
         // After media, go to queue
         if (prev === "media") {
+          console.log("Switching to queue");
           return "queue";
         }
         
         // After queue, show QR codes
-        if (prev === "queue") return "qr";
+        if (prev === "queue") {
+          console.log("Switching to QR");
+          return "qr";
+        }
         
         // After QR, back to media if exists, else queue
-        if (prev === "qr" && mediaUploads.length > 0) {
-          return "media";
+        if (prev === "qr") {
+          if (mediaUploads.length > 0) {
+            console.log("Switching from QR to media");
+            return "media";
+          }
+          console.log("Switching from QR to queue");
+          return "queue";
         }
         
         return "queue";
