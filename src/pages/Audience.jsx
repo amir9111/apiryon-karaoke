@@ -576,9 +576,27 @@ export default function Audience() {
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                padding: "40px"
+                padding: "40px",
+                background: "linear-gradient(135deg, #020617 0%, #0a1929 50%, #020617 100%)"
               }}
             >
+              {/* Debug indicator */}
+              <div style={{
+                position: "fixed",
+                top: "50px",
+                left: "50%",
+                transform: "translateX(-50%)",
+                background: "rgba(16, 185, 129, 0.9)",
+                color: "#fff",
+                padding: "10px 20px",
+                borderRadius: "12px",
+                fontSize: "1rem",
+                fontWeight: "700",
+                zIndex: 9999
+              }}>
+                🟢 מסך QR פעיל
+              </div>
+
               {/* Title */}
               <motion.div
                 animate={{ 
