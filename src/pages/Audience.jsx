@@ -58,7 +58,7 @@ export default function Audience() {
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
-  const [currentMode, setCurrentMode] = useState("queue"); // "media", "queue", "qr"
+  const [currentMode, setCurrentMode] = useState("media"); // "media", "queue", "qr"
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
   const [displayedMessages, setDisplayedMessages] = useState([]);
   const [displayedMediaIds, setDisplayedMediaIds] = useState(new Set());
@@ -110,43 +110,37 @@ export default function Audience() {
     }
   }, [currentMode]);
 
-  // Simple rotation logic - show latest media always
+  // Simple rotation logic: media -> queue -> qr (17 seconds each)
   React.useEffect(() => {
     const interval = setInterval(() => {
       setCurrentMode(prev => {
         console.log("Current mode:", prev, "Media count:", mediaUploads.length);
         
-        // If we have media, show it
-        if ((prev === "queue" || prev === "qr") && mediaUploads.length > 0) {
-          console.log("Switching to media");
-          return "media";
-        }
-        
-        // After media, go to queue
+        // Cycle: media -> queue -> qr -> repeat
         if (prev === "media") {
           console.log("Switching to queue");
           return "queue";
         }
         
-        // After queue, show QR codes
         if (prev === "queue") {
           console.log("Switching to QR");
           return "qr";
         }
         
-        // After QR, back to media if exists, else queue
+        // After QR, go back to media if exists, otherwise back to queue
         if (prev === "qr") {
           if (mediaUploads.length > 0) {
             console.log("Switching from QR to media");
             return "media";
           }
-          console.log("Switching from QR to queue");
+          console.log("Switching from QR to queue (no media)");
           return "queue";
         }
         
-        return "queue";
+        // Default: start with queue if no media, media if there is
+        return mediaUploads.length > 0 ? "media" : "queue";
       });
-    }, currentMode === "media" ? 30000 : currentMode === "queue" ? 25000 : 15000);
+    }, 17000); // 17 seconds for each screen
 
     return () => clearInterval(interval);
   }, [currentMode, mediaUploads.length]);
