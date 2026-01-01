@@ -311,126 +311,178 @@ export default function Audience() {
           {currentMode === "queue" && (
             <motion.div
               key="queue"
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -50 }}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.8 }}
               style={{
                 width: "100%",
                 height: "100%",
                 display: "flex",
                 flexDirection: "column",
-                gap: "20px",
-                padding: "40px"
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "60px",
+                gap: "40px"
               }}
             >
-              {/* Current Song */}
-              {currentSong && (
-                <div style={{
-                  background: "rgba(15, 23, 42, 0.9)",
-                  borderRadius: "24px",
-                  padding: "30px",
-                  border: "3px solid rgba(0, 202, 255, 0.5)",
-                  boxShadow: "0 0 60px rgba(0, 202, 255, 0.4)"
-                }}>
-                  <div style={{
-                    fontSize: "1.2rem",
-                    color: "#00caff",
-                    marginBottom: "12px",
-                    fontWeight: "700"
-                  }}>
-                    🎤 שר עכשיו
-                  </div>
-                  <div style={{
-                    fontSize: "clamp(2rem, 4vw, 3.5rem)",
-                    fontWeight: "900",
-                    color: "#fff",
-                    marginBottom: "12px"
-                  }}>
-                    {currentSong.singer_name}
-                  </div>
-                  <div style={{
-                    fontSize: "clamp(1.2rem, 2vw, 2rem)",
-                    color: "#cbd5e1",
-                    fontWeight: "600"
-                  }}>
-                    {currentSong.song_title}
-                  </div>
-                  {currentSong.song_artist && (
+              {/* Title */}
+              <motion.div
+                animate={{
+                  scale: [1, 1.05, 1]
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity
+                }}
+                style={{
+                  fontSize: "clamp(2.5rem, 6vw, 5rem)",
+                  fontWeight: "900",
+                  color: "#fbbf24",
+                  textShadow: "0 0 40px rgba(251, 191, 36, 0.8)",
+                  marginBottom: "20px",
+                  textAlign: "center"
+                }}
+              >
+                🎤 הבאים בתור 🎤
+              </motion.div>
+
+              {/* Next 3 Singers */}
+              <div style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(3, 1fr)",
+                gap: "30px",
+                width: "100%",
+                maxWidth: "1400px"
+              }}>
+                {waitingQueue.slice(0, 3).map((req, idx) => (
+                  <motion.div
+                    key={req.id}
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.2 }}
+                    style={{
+                      background: idx === 0 
+                        ? "linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(245, 158, 11, 0.1))"
+                        : "rgba(15, 23, 42, 0.8)",
+                      border: idx === 0 
+                        ? "3px solid rgba(251, 191, 36, 0.6)" 
+                        : "2px solid rgba(0, 202, 255, 0.3)",
+                      borderRadius: "24px",
+                      padding: "40px 30px",
+                      textAlign: "center",
+                      boxShadow: idx === 0 
+                        ? "0 0 80px rgba(251, 191, 36, 0.5)" 
+                        : "0 0 40px rgba(0, 202, 255, 0.2)",
+                      position: "relative",
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      minHeight: "350px"
+                    }}
+                  >
+                    {/* Position Badge */}
                     <div style={{
-                      fontSize: "1.2rem",
-                      color: "#94a3b8",
-                      marginTop: "8px"
+                      position: "absolute",
+                      top: "-20px",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      width: "60px",
+                      height: "60px",
+                      borderRadius: "50%",
+                      background: idx === 0 
+                        ? "linear-gradient(135deg, #fbbf24, #f59e0b)" 
+                        : "linear-gradient(135deg, #00caff, #0088ff)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "2rem",
+                      fontWeight: "900",
+                      color: "#001a2e",
+                      boxShadow: idx === 0 
+                        ? "0 0 40px rgba(251, 191, 36, 0.6)" 
+                        : "0 0 30px rgba(0, 202, 255, 0.5)",
+                      border: "4px solid rgba(2, 6, 23, 0.9)"
                     }}>
-                      {currentSong.song_artist}
+                      {idx + 1}
                     </div>
-                  )}
+
+                    {/* Singer Name */}
+                    <div style={{
+                      fontSize: idx === 0 ? "clamp(2rem, 3vw, 3rem)" : "clamp(1.5rem, 2.5vw, 2.5rem)",
+                      fontWeight: "900",
+                      color: idx === 0 ? "#fbbf24" : "#00caff",
+                      marginBottom: "20px",
+                      marginTop: "20px",
+                      textShadow: idx === 0 
+                        ? "0 0 30px rgba(251, 191, 36, 0.6)" 
+                        : "0 0 20px rgba(0, 202, 255, 0.5)",
+                      lineHeight: "1.2"
+                    }}>
+                      {req.singer_name}
+                    </div>
+
+                    {/* Song Title */}
+                    <div style={{
+                      fontSize: idx === 0 ? "clamp(1.3rem, 2vw, 2rem)" : "clamp(1.1rem, 1.8vw, 1.7rem)",
+                      color: "#e2e8f0",
+                      fontWeight: "700",
+                      lineHeight: "1.4",
+                      marginBottom: "10px"
+                    }}>
+                      {req.song_title}
+                    </div>
+
+                    {/* Artist Name */}
+                    {req.song_artist && (
+                      <div style={{
+                        fontSize: "1.1rem",
+                        color: "#94a3b8",
+                        fontWeight: "600"
+                      }}>
+                        {req.song_artist}
+                      </div>
+                    )}
+
+                    {/* Special Badge for First */}
+                    {idx === 0 && (
+                      <motion.div
+                        animate={{
+                          scale: [1, 1.1, 1],
+                          opacity: [0.8, 1, 0.8]
+                        }}
+                        transition={{
+                          duration: 2,
+                          repeat: Infinity
+                        }}
+                        style={{
+                          marginTop: "20px",
+                          padding: "10px 20px",
+                          background: "rgba(251, 191, 36, 0.2)",
+                          border: "2px solid rgba(251, 191, 36, 0.5)",
+                          borderRadius: "12px",
+                          fontSize: "1.1rem",
+                          fontWeight: "800",
+                          color: "#fbbf24"
+                        }}
+                      >
+                        🌟 הבא לבמה! 🌟
+                      </motion.div>
+                    )}
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Bottom Note */}
+              {waitingQueue.length === 0 && (
+                <div style={{
+                  fontSize: "1.5rem",
+                  color: "#64748b",
+                  textAlign: "center"
+                }}>
+                  אין זמרים בתור כרגע 🎤
                 </div>
               )}
-
-              {/* Next in Queue */}
-              <div style={{
-                background: "rgba(15, 23, 42, 0.9)",
-                borderRadius: "24px",
-                padding: "30px",
-                border: "2px solid rgba(251, 191, 36, 0.3)",
-                flex: 1
-              }}>
-                <div style={{
-                  fontSize: "1.2rem",
-                  color: "#fbbf24",
-                  marginBottom: "16px",
-                  fontWeight: "700"
-                }}>
-                  📋 הבאים בתור
-                </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                  {waitingQueue.map((req, idx) => (
-                    <div
-                      key={req.id}
-                      style={{
-                        background: "rgba(30, 41, 59, 0.5)",
-                        borderRadius: "16px",
-                        padding: "16px",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "16px"
-                      }}
-                    >
-                      <div style={{
-                        width: "40px",
-                        height: "40px",
-                        borderRadius: "12px",
-                        background: "linear-gradient(135deg, #fbbf24, #f59e0b)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: "1.2rem",
-                        fontWeight: "900",
-                        color: "#001a2e"
-                      }}>
-                        {idx + 1}
-                      </div>
-                      <div style={{ flex: 1 }}>
-                        <div style={{
-                          fontSize: "1.3rem",
-                          fontWeight: "700",
-                          color: "#fff",
-                          marginBottom: "4px"
-                        }}>
-                          {req.singer_name}
-                        </div>
-                        <div style={{
-                          fontSize: "1rem",
-                          color: "#cbd5e1"
-                        }}>
-                          {req.song_title}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
             </motion.div>
           )}
 
