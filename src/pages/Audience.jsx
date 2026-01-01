@@ -264,11 +264,9 @@ export default function Audience() {
                   muted
                   playsInline
                   style={{
-                    maxWidth: "100%",
-                    maxHeight: "100%",
-                    width: "auto",
-                    height: "auto",
-                    objectFit: "contain"
+                    width: "100vw",
+                    height: "100vh",
+                    objectFit: "cover"
                   }}
                 />
               ) : (
@@ -276,12 +274,9 @@ export default function Audience() {
                   src={mediaUploads[0].media_url}
                   alt="מהמנהל"
                   style={{
-                    maxWidth: "100%",
-                    maxHeight: "100%",
-                    width: "auto",
-                    height: "auto",
-                    objectFit: "contain",
-                    imageRendering: "high-quality"
+                    width: "100vw",
+                    height: "100vh",
+                    objectFit: "cover"
                   }}
                 />
               )}

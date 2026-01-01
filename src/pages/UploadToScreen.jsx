@@ -246,8 +246,8 @@ export default function UploadToScreen() {
             </button>
           </div>
 
-          {/* Message Tab */}
-          {activeTab === "message" && (
+          {/* Photo Tab */}
+          {activeTab === "photo" && (
             <div>
               {!capturedPhoto ? (
                 <div>
@@ -427,26 +427,8 @@ export default function UploadToScreen() {
             </div>
           )}
 
-          {/* Photo Tab - Admin Only */}
-          {activeTab === "photo" && !isAdmin && (
-            <div style={{
-              padding: "40px 20px",
-              textAlign: "center",
-              background: "rgba(248, 113, 113, 0.1)",
-              border: "2px solid rgba(248, 113, 113, 0.3)",
-              borderRadius: "16px"
-            }}>
-              <div style={{ fontSize: "3rem", marginBottom: "16px" }}>🔒</div>
-              <div style={{ fontSize: "1.2rem", fontWeight: "700", color: "#f87171", marginBottom: "8px" }}>
-                העלאת תמונות מוגבלת
-              </div>
-              <div style={{ fontSize: "0.95rem", color: "#cbd5e1" }}>
-                רק מנהלים יכולים להעלות תמונות למסך הקהל
-              </div>
-            </div>
-          )}
-
-          {activeTab === "photo" && isAdmin && (
+          {/* Message Tab */}
+          {activeTab === "message" && (
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               <div>
                 <label 
