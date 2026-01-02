@@ -4,6 +4,8 @@ import ApyironLogo from "../components/ApyironLogo";
 import AudioWave from "../components/AudioWave";
 import EventSummaryModal from "../components/EventSummaryModal";
 import PerformanceTimer from "../components/PerformanceTimer";
+import FloatingMessages from "../components/FloatingMessages";
+import SingleQRDisplay from "../components/SingleQRDisplay";
 import { motion } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
@@ -59,10 +61,9 @@ export default function Audience() {
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
-  const [currentMode, setCurrentMode] = useState("current_song"); // "current_song", "media", "queue", "qr", "gallery", "messages"
-  const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
-  const [displayedMessages, setDisplayedMessages] = useState([]);
-  const [displayedMediaIds, setDisplayedMediaIds] = useState(new Set());
+  const [currentMode, setCurrentMode] = useState("idle"); // "current_song", "idle"
+  const [idleSubMode, setIdleSubMode] = useState("audience_media"); // "audience_media", "floating_messages", "qr", "gallery"
+  const [displayedAudienceMedia, setDisplayedAudienceMedia] = useState(new Set());
   const [currentQRIndex, setCurrentQRIndex] = useState(0);
 
   const { data: requests = [] } = useQuery({
@@ -72,14 +73,14 @@ export default function Audience() {
     staleTime: 2000,
   });
 
-  const { data: mediaUploads = [] } = useQuery({
-    queryKey: ['media-uploads'],
+  const { data: audienceMedia = [] } = useQuery({
+    queryKey: ['audience-media'],
     queryFn: async () => {
       const data = await base44.entities.MediaUpload.filter({ is_active: true }, '-created_date', 50);
       return data;
     },
-    refetchInterval: 5000,
-    staleTime: 4000,
+    refetchInterval: 3000,
+    staleTime: 2000,
   });
 
   const { data: messages = [] } = useQuery({
@@ -117,25 +118,90 @@ export default function Audience() {
   const waitingQueue = requests.filter(r => r.status === "waiting").slice(0, 4);
   const [currentGalleryImageIndex, setCurrentGalleryImageIndex] = useState(0);
 
-  // Delete displayed messages when mode changes
+  // Smart rotation logic
   React.useEffect(() => {
-    const deleteMessages = async () => {
-      if (displayedMessages.length > 0) {
-        for (const msgId of displayedMessages) {
-          try {
-            await base44.entities.Message.delete(msgId);
-          } catch (err) {
-            console.error("Failed to delete message:", err);
-          }
-        }
-        setDisplayedMessages([]);
+    let timeout;
+    
+    const deleteUsedMedia = async (mediaId) => {
+      try {
+        await base44.entities.MediaUpload.delete(mediaId);
+      } catch (err) {
+        console.error("Failed to delete media:", err);
       }
     };
-
-    if (currentMode !== "messages") {
-      deleteMessages();
-    }
-  }, [currentMode]);
+    
+    const getNextIdleMode = (current) => {
+      const hasUnseenMedia = audienceMedia.some(m => !displayedAudienceMedia.has(m.id));
+      const hasMessages = messages.length > 0;
+      const hasGallery = galleryImages.length > 0;
+      
+      // סיבוב: תמונות קהל -> הודעות מרחפות -> QR -> גלריה
+      if (current === "audience_media") {
+        if (hasMessages) return "floating_messages";
+        setCurrentQRIndex(0);
+        return "qr";
+      }
+      
+      if (current === "floating_messages") {
+        setCurrentQRIndex(0);
+        return "qr";
+      }
+      
+      if (current === "qr") {
+        if (currentQRIndex < 2) {
+          setCurrentQRIndex(prev => prev + 1);
+          return "qr";
+        }
+        if (hasGallery) return "gallery";
+        if (hasUnseenMedia) return "audience_media";
+        if (hasMessages) return "floating_messages";
+        setCurrentQRIndex(0);
+        return "qr";
+      }
+      
+      if (current === "gallery") {
+        if (hasUnseenMedia) return "audience_media";
+        if (hasMessages) return "floating_messages";
+        setCurrentQRIndex(0);
+        return "qr";
+      }
+      
+      // התחלה
+      if (hasUnseenMedia) return "audience_media";
+      if (hasMessages) return "floating_messages";
+      setCurrentQRIndex(0);
+      return "qr";
+    };
+    
+    const transition = () => {
+      // אם יש שיר נוכחי - מסך שיר
+      if (currentSong) {
+        setCurrentMode("current_song");
+        timeout = setTimeout(transition, 60000);
+        return;
+      }
+      
+      // אם אין שיר - מסך Idle
+      setCurrentMode("idle");
+      
+      const nextSubMode = getNextIdleMode(idleSubMode);
+      setIdleSubMode(nextSubMode);
+      
+      // זמנים: תמונות קהל=15s, הודעות=20s, QR=12s, גלריה=10s
+      const durations = {
+        audience_media: 15000,
+        floating_messages: 20000,
+        qr: 12000,
+        gallery: 10000
+      };
+      
+      timeout = setTimeout(transition, durations[nextSubMode] || 15000);
+    };
+    
+    timeout = setTimeout(transition, currentMode === "current_song" ? 60000 : 15000);
+    
+    return () => clearTimeout(timeout);
+  }, [currentMode, idleSubMode, currentSong, audienceMedia, messages, galleryImages.length, currentQRIndex, displayedAudienceMedia]);
 
   // Simplified rotation: Only current_song (if exists) and queue + gallery slideshow
   React.useEffect(() => {
@@ -445,57 +511,131 @@ export default function Audience() {
             </motion.div>
           )}
 
-          {/* Mode 1: Media Display (30 seconds) - Show latest media only */}
-          {currentMode === "media" && mediaUploads.length > 0 && (
-            <motion.div
-              key={`media-${mediaUploads[0].id}`}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 1 }}
-              style={{
-                position: "fixed",
-                top: 0,
-                left: 0,
-                width: "100vw",
-                height: "100vh",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                background: "#000",
-                zIndex: 1
-              }}
-            >
-              {mediaUploads[0].media_type === 'video' ? (
-                <video
-                  key={mediaUploads[0].media_url}
-                  src={mediaUploads[0].media_url}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  style={{
-                    width: "100vw",
-                    height: "100vh",
-                    objectFit: "cover"
-                  }}
-                />
-              ) : (
-                <img
-                  src={mediaUploads[0].media_url}
-                  alt="מהמנהל"
-                  style={{
-                    width: "100vw",
-                    height: "100vh",
-                    objectFit: "cover"
-                  }}
-                />
+          {/* Idle Mode: When no current song */}
+          {currentMode === "idle" && (
+            <>
+              {/* Sub-mode 1: Audience Media (15s) */}
+              {idleSubMode === "audience_media" && audienceMedia.length > 0 && (() => {
+                const unseenMedia = audienceMedia.filter(m => !displayedAudienceMedia.has(m.id));
+                const mediaToShow = unseenMedia.length > 0 ? unseenMedia[0] : audienceMedia[0];
+                
+                React.useEffect(() => {
+                  if (mediaToShow) {
+                    setDisplayedAudienceMedia(prev => new Set([...prev, mediaToShow.id]));
+                    setTimeout(async () => {
+                      try {
+                        await base44.entities.MediaUpload.delete(mediaToShow.id);
+                      } catch (err) {
+                        console.error("Failed to delete media:", err);
+                      }
+                    }, 15000);
+                  }
+                }, [mediaToShow?.id]);
+                
+                return (
+                  <motion.div
+                    key={`audience-media-${mediaToShow.id}`}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 1 }}
+                    style={{
+                      position: "fixed",
+                      top: 0,
+                      left: 0,
+                      width: "100vw",
+                      height: "100vh",
+                      background: "#000",
+                      zIndex: 1
+                    }}
+                  >
+                    {mediaToShow.media_type === 'video' ? (
+                      <video
+                        key={mediaToShow.media_url}
+                        src={mediaToShow.media_url}
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      />
+                    ) : (
+                      <img
+                        src={mediaToShow.media_url}
+                        alt="תמונה מהקהל"
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      />
+                    )}
+                  </motion.div>
+                );
+              })()}
+
+              {/* Sub-mode 2: Floating Messages (20s) */}
+              {idleSubMode === "floating_messages" && messages.length > 0 && (
+                <FloatingMessages messages={messages.slice(0, 4)} onComplete={async (msgIds) => {
+                  for (const id of msgIds) {
+                    try {
+                      await base44.entities.Message.delete(id);
+                    } catch (err) {
+                      console.error("Failed to delete message:", err);
+                    }
+                  }
+                }} />
               )}
-            </motion.div>
+
+              {/* Sub-mode 3: Single QR (12s per QR) */}
+              {idleSubMode === "qr" && (
+                <SingleQRDisplay qrIndex={currentQRIndex} />
+              )}
+
+              {/* Sub-mode 4: Gallery Image (10s) */}
+              {idleSubMode === "gallery" && galleryImages.length > 0 && (() => {
+                const currentImg = galleryImages[Math.floor(Math.random() * galleryImages.length)];
+                return (
+                  <motion.div
+                    key={`gallery-idle-${currentImg.id}`}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 1 }}
+                    style={{
+                      position: "fixed",
+                      top: 0,
+                      left: 0,
+                      width: "100vw",
+                      height: "100vh",
+                      background: "#000",
+                      zIndex: 1
+                    }}
+                  >
+                    <img
+                      src={currentImg.image_url}
+                      alt="מהגלריה"
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                    <div style={{
+                      position: "absolute",
+                      bottom: "40px",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      background: "rgba(0, 202, 255, 0.9)",
+                      padding: "15px 40px",
+                      borderRadius: "50px",
+                      fontSize: "clamp(1.5rem, 3vw, 2.5rem)",
+                      fontWeight: "800",
+                      color: "#001a2e",
+                      boxShadow: "0 0 40px rgba(0, 202, 255, 0.6)"
+                    }}>
+                      📸 מהגלריה שלנו
+                    </div>
+                  </motion.div>
+                );
+              })()}
+            </>
           )}
 
-          {/* Mode 2: Queue + Gallery Background (Static) */}
-          {currentMode === "queue" && (
+          {/* Old modes removed - replaced with idle system */}
+          {false && currentMode === "queue" && (
             <motion.div
               key="queue"
               initial={{ opacity: 0 }}
@@ -761,8 +901,7 @@ export default function Audience() {
             </motion.div>
           )}
 
-          {/* Mode 2.5: Gallery Image Display (17 seconds) */}
-          {currentMode === "gallery" && galleryImages.length > 0 && (
+          {false && currentMode === "gallery" && galleryImages.length > 0 && (
             <motion.div
               key={`gallery-${galleryImages[currentGalleryImageIndex]?.id}`}
               initial={{ opacity: 0, scale: 0.95 }}
@@ -812,8 +951,7 @@ export default function Audience() {
             </motion.div>
           )}
 
-          {/* Mode 3: Big Bold Messages (20 seconds) */}
-          {currentMode === "messages" && messages.length > 0 && (
+          {false && currentMode === "messages" && messages.length > 0 && (
             <motion.div
               key="messages"
               initial={{ opacity: 0, scale: 0.9 }}
@@ -900,8 +1038,7 @@ export default function Audience() {
             </motion.div>
           )}
 
-          {/* Mode 4: Single QR Code (15 seconds per QR) */}
-          {currentMode === "qr" && (
+          {false && currentMode === "qr" && (
             <motion.div
               key={`qr-${currentQRIndex}`}
               initial={{ opacity: 0, scale: 0.9 }}
