@@ -17,14 +17,15 @@ const useSmartQueue = () => {
     queryKey: ['incoming-data'],
     queryFn: async () => {
       // שליפת מדיה (FIFO - ישנים קודם)
-      const newMedia = await base44.entities.MediaUpload.filter({ is_active: true }, 'created_date', 20);
+      const newMedia = await base44.entities.MediaUpload.filter({ is_active: true }, 'created_date', 10);
       // שליפת הודעות
-      const newMessages = await base44.entities.Message.list('created_date', 20);
+      const newMessages = await base44.entities.Message.list('created_date', 10);
 
       handleNewItems(newMedia, newMessages);
       return { newMedia, newMessages };
     },
-    refetchInterval: 3000
+    refetchInterval: 5000,
+    staleTime: 4000
   });
 
   const handleNewItems = useCallback((serverMedia, serverMessages) => {
@@ -271,8 +272,9 @@ export default function SmartAudience() {
   // שליפת שיר נוכחי
   const { data: requests = [] } = useQuery({
     queryKey: ['karaoke-requests'],
-    queryFn: () => base44.entities.KaraokeRequest.list('-created_date', 50),
-    refetchInterval: 3000,
+    queryFn: () => base44.entities.KaraokeRequest.list('-created_date', 30),
+    refetchInterval: 5000,
+    staleTime: 4000
   });
   const currentSong = requests.find(r => r.status === "performing");
 
@@ -280,10 +282,12 @@ export default function SmartAudience() {
   const { data: galleryImages = [] } = useQuery({
     queryKey: ['gallery-images-audience'],
     queryFn: async () => {
-      const images = await base44.entities.GalleryImage.list('-created_date', 100);
+      const images = await base44.entities.GalleryImage.list('-created_date', 50);
       return images.filter(img => img.image_url);
     },
-    refetchInterval: 30000,
+    refetchInterval: 60000,
+    staleTime: 50000,
+    cacheTime: 300000
   });
 
   // לוגיקת הבמאי (Director)

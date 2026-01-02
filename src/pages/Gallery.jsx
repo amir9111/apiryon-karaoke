@@ -107,28 +107,31 @@ export default function Gallery() {
   const { data: galleries = [], isLoading: galleriesLoading, error: galleriesError } = useQuery({
     queryKey: ['galleries'],
     queryFn: async () => {
-      return await base44.entities.GalleryCategory.filter({ is_active: true }, '-date', 50);
+      return await base44.entities.GalleryCategory.filter({ is_active: true }, '-date', 20);
     },
-    retry: 2,
-    staleTime: 60000
+    retry: 1,
+    staleTime: 300000,
+    cacheTime: 600000
   });
 
   const { data: images = [], isLoading: imagesLoading, error: imagesError } = useQuery({
     queryKey: ['gallery-images', selectedGallery?.id],
     queryFn: async () => {
-      return await base44.entities.GalleryImage.filter({ gallery_id: selectedGallery.id }, '-created_date', 500);
+      return await base44.entities.GalleryImage.filter({ gallery_id: selectedGallery.id }, '-created_date', 100);
     },
     enabled: !!selectedGallery,
-    retry: 2,
-    staleTime: 60000
+    retry: 1,
+    staleTime: 300000,
+    cacheTime: 600000
   });
 
   const { data: approvedFeedbacks = [] } = useQuery({
     queryKey: ['approved-feedbacks'],
     queryFn: async () => {
-      return await base44.entities.GalleryFeedback.filter({ is_approved: true }, '-created_date', 10);
+      return await base44.entities.GalleryFeedback.filter({ is_approved: true }, '-created_date', 6);
     },
-    staleTime: 60000
+    staleTime: 300000,
+    cacheTime: 600000
   });
 
   const handleDownload = async (imageUrl, filename, imageId) => {
@@ -1145,7 +1148,7 @@ function UploadGalleryModal({ existingGallery, onClose, onSuccess }) {
       const gallery = existingGallery || (await base44.entities.GalleryCategory.create(galleryData));
 
       // שליפת תמונות קיימות בגלריה
-      const existingImages = await base44.entities.GalleryImage.filter({ gallery_id: gallery.id }, 'created_date', 500);
+      const existingImages = await base44.entities.GalleryImage.filter({ gallery_id: gallery.id }, 'created_date', 200);
       const existingFilenames = new Set(existingImages.map(img => img.original_filename));
 
       let uploaded = 0;

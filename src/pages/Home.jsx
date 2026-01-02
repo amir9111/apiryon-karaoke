@@ -37,9 +37,10 @@ export default function Home() {
 
   const { data: requests = [] } = useQuery({
     queryKey: ['karaoke-requests'],
-    queryFn: () => base44.entities.KaraokeRequest.list('-created_date', 100),
-    refetchInterval: 3000,
-    staleTime: 2000,
+    queryFn: () => base44.entities.KaraokeRequest.list('-created_date', 50),
+    refetchInterval: 5000,
+    staleTime: 4000,
+    cacheTime: 60000
   });
 
   const currentSong = requests.find(r => r.status === "performing");
