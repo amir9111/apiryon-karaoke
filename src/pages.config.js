@@ -11,6 +11,7 @@ import Terms from './pages/Terms';
 import UploadToScreen from './pages/UploadToScreen';
 import UserManagement from './pages/UserManagement';
 import Gallery from './pages/Gallery';
+import GalleryStats from './pages/GalleryStats';
 
 
 export const PAGES = {
@@ -27,6 +28,7 @@ export const PAGES = {
     "UploadToScreen": UploadToScreen,
     "UserManagement": UserManagement,
     "Gallery": Gallery,
+    "GalleryStats": GalleryStats,
 }
 
 export const pagesConfig = {

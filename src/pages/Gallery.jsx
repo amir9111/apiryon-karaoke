@@ -39,6 +39,29 @@ export default function Gallery() {
     return () => { mounted = false; };
   }, []);
 
+  // Track page view
+  React.useEffect(() => {
+    const trackView = async () => {
+      try {
+        let userIdentifier = 'anonymous';
+        try {
+          const user = await base44.auth.me();
+          userIdentifier = user?.email || 'anonymous';
+        } catch (err) {
+          userIdentifier = 'anonymous';
+        }
+
+        await base44.entities.GalleryView.create({
+          user_identifier: userIdentifier,
+          gallery_id: selectedGallery?.id || null
+        });
+      } catch (err) {
+        // Silent fail for tracking
+      }
+    };
+    trackView();
+  }, [selectedGallery]);
+
   const { data: galleries = [], isLoading: galleriesLoading, error: galleriesError } = useQuery({
     queryKey: ['galleries'],
     queryFn: async () => {
@@ -58,8 +81,27 @@ export default function Gallery() {
     staleTime: 60000,
   });
 
-  const handleDownload = async (imageUrl, filename) => {
+  const handleDownload = async (imageUrl, filename, imageId) => {
     try {
+      // Track download
+      try {
+        let userIdentifier = 'anonymous';
+        try {
+          const user = await base44.auth.me();
+          userIdentifier = user?.email || 'anonymous';
+        } catch (err) {
+          userIdentifier = 'anonymous';
+        }
+
+        await base44.entities.GalleryDownload.create({
+          image_id: imageId,
+          gallery_id: selectedGallery?.id || null,
+          user_identifier: userIdentifier
+        });
+      } catch (err) {
+        // Silent fail for tracking
+      }
+
       const response = await fetch(imageUrl);
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
@@ -472,7 +514,7 @@ export default function Gallery() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleDownload(img.image_url, img.original_filename);
+                          handleDownload(img.image_url, img.original_filename, img.id);
                         }}
                         style={{
                           padding: "8px 16px",
@@ -554,7 +596,7 @@ export default function Gallery() {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              handleDownload(selectedImage.image_url, selectedImage.original_filename);
+              handleDownload(selectedImage.image_url, selectedImage.original_filename, selectedImage.id);
             }}
             style={{
               position: "absolute",
