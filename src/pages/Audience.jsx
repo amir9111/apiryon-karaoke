@@ -164,7 +164,8 @@ const SongView = ({ song }) => (
 const IdleView = ({ galleryImages }) => {
     // רוטציה פנימית ל-Idle: QR קריוקי -> QR ווטסאפ -> QR טיקטוק -> גלריה -> לוגו
     const [step, setStep] = useState(0);
-    const totalSteps = 3 + (galleryImages.length > 0 ? 1 : 0) + 1; // 3 QR + גלריה + לוגו
+    const hasGallery = galleryImages && galleryImages.length > 0;
+    const totalSteps = hasGallery ? 5 : 4; // 3 QR + גלריה (אם יש) + לוגו
     
     useEffect(() => {
         const interval = setInterval(() => setStep(prev => (prev + 1) % totalSteps), 10000);
@@ -173,8 +174,8 @@ const IdleView = ({ galleryImages }) => {
 
     const qrData = [
         {
-            title: "הצטרפו לחגיגה!",
-            subtitle: "סרקו לבחירת שירים",
+            title: "תרשם לתור!",
+            subtitle: "סרקו לרישום שיר",
             url: `${window.location.origin}/Home`,
             borderColor: "border-cyan-500",
             shadowColor: "shadow-[0_0_100px_rgba(6,182,212,0.3)]",
@@ -199,8 +200,8 @@ const IdleView = ({ galleryImages }) => {
     ];
 
     const currentQR = qrData[step];
-    const isGalleryStep = step === 3 && galleryImages.length > 0;
-    const isLogoStep = step === (galleryImages.length > 0 ? 4 : 3);
+    const isGalleryStep = step === 3 && hasGallery;
+    const isLogoStep = hasGallery ? step === 4 : step === 3;
 
     return (
         <motion.div 
@@ -225,14 +226,14 @@ const IdleView = ({ galleryImages }) => {
                     </motion.div>
                 )}
 
-                {isGalleryStep && (
+                {isGalleryStep && galleryImages.length > 0 && (
                     <motion.div 
                         key="gallery"
                         initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                         className="w-full h-full relative"
                     >
                         <img 
-                            src={galleryImages[Math.floor(Math.random() * galleryImages.length)]?.image_url}
+                            src={galleryImages[Math.floor(Math.random() * galleryImages.length)].image_url}
                             alt="מהגלריה"
                             className="w-full h-full object-cover"
                         />
