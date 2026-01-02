@@ -1,5 +1,7 @@
 import Admin from './pages/Admin';
 import Audience from './pages/Audience';
+import Gallery from './pages/Gallery';
+import GalleryStats from './pages/GalleryStats';
 import Home from './pages/Home';
 import Landing from './pages/Landing';
 import ManualQueue from './pages/ManualQueue';
@@ -10,13 +12,14 @@ import Statistics from './pages/Statistics';
 import Terms from './pages/Terms';
 import UploadToScreen from './pages/UploadToScreen';
 import UserManagement from './pages/UserManagement';
-import Gallery from './pages/Gallery';
-import GalleryStats from './pages/GalleryStats';
+import FeedbackManagement from './pages/FeedbackManagement';
 
 
 export const PAGES = {
     "Admin": Admin,
     "Audience": Audience,
+    "Gallery": Gallery,
+    "GalleryStats": GalleryStats,
     "Home": Home,
     "Landing": Landing,
     "ManualQueue": ManualQueue,
@@ -27,8 +30,7 @@ export const PAGES = {
     "Terms": Terms,
     "UploadToScreen": UploadToScreen,
     "UserManagement": UserManagement,
-    "Gallery": Gallery,
-    "GalleryStats": GalleryStats,
+    "FeedbackManagement": FeedbackManagement,
 }
 
 export const pagesConfig = {
