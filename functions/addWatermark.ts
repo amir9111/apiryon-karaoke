@@ -16,43 +16,41 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'image_url is required' }, { status: 400 });
     }
 
-    // טעינת התמונה באיכות מקסימלית
+    // טעינת התמונה
     const image = await Jimp.read(image_url);
-    const width = image.bitmap.width;
-    const height = image.bitmap.height;
 
-    // יצירת צל עדין מסביב
-    const shadowSize = 40;
-    const canvas = new Jimp(width + shadowSize * 2, height + shadowSize * 2, 0x00000000);
+    // חותמת פשוטה בפינה ימנית תחתונה
+    const font = await Jimp.loadFont(Jimp.FONT_SANS_32_WHITE);
+    const stampText = 'APIRYON';
     
-    // יצירת שכבת צל
-    const shadow = new Jimp(width + shadowSize, height + shadowSize, 0x00000040);
-    shadow.blur(20);
-    canvas.composite(shadow, shadowSize / 2, shadowSize / 2);
+    // הוספת טקסט עם אפקט צל (הדפסה כפולה)
+    const padding = 40;
+    const xPos = image.bitmap.width - Jimp.measureText(font, stampText) - padding;
+    const yPos = image.bitmap.height - 70;
     
-    // הדבקת התמונה המקורית
-    canvas.composite(image, shadowSize, shadowSize);
+    // צל (שחור עם שקיפות)
+    image.print(font, xPos + 2, yPos + 2, {
+      text: stampText,
+      alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT
+    });
+    
+    // טקסט לבן
+    image.opacity(0.7);
+    const overlay = image.clone();
+    overlay.opacity(1.0);
+    overlay.print(font, xPos, yPos, {
+      text: stampText,
+      alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT
+    });
+    
+    image.composite(overlay, 0, 0);
 
-    // חותמת מינימליסטית בפינה ימנית תחתונה
-    const font = await Jimp.loadFont(Jimp.FONT_SANS_16_WHITE);
-    const stampText = 'APIRYON | אפריון הפקות';
-    const textWidth = Jimp.measureText(font, stampText);
-    
-    // יצירת רקע עדין מאוד לחותמת
-    const stampBg = new Jimp(textWidth + 40, 50, 0x00000030);
-    stampBg.print(font, 20, 17, stampText);
-    
-    // הדבקת החותמת בפינה ימנית תחתונה
-    const stampX = canvas.bitmap.width - textWidth - 60;
-    const stampY = canvas.bitmap.height - 70;
-    canvas.composite(stampBg, stampX, stampY);
-
-    // שמירה באיכות מקסימלית (95% quality)
-    const buffer = await canvas.quality(95).getBufferAsync(Jimp.MIME_JPEG);
+    // שמירה באיכות גבוהה
+    const buffer = await image.quality(90).getBufferAsync(Jimp.MIME_JPEG);
     const blob = new Blob([buffer], { type: 'image/jpeg' });
     const file = new File([blob], 'watermarked.jpg', { type: 'image/jpeg' });
 
-    // העלאת התמונה המעובדת
+    // העלאה
     const uploadResult = await base44.integrations.Core.UploadFile({ file });
 
     return Response.json({ 
