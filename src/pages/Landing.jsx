@@ -734,12 +734,12 @@ export default function Landing() {
             
             <div style={{ fontSize: "1.1rem", color: "#cbd5e1", lineHeight: "2" }}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px" }}>
-                <span style={{ fontWeight: "700" }}>ימי חמישי - שבת:</span>
-                <span>19:00 - 02:00</span>
+                <span style={{ fontWeight: "700" }}>ימי חמישי:</span>
+                <span>21:00 - אחרון הלקוחות</span>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <span style={{ fontWeight: "700" }}>שאר הימים:</span>
-                <span style={{ color: "#fbbf24" }}>על פי תיאום מראש</span>
+                <span style={{ color: "#64748b" }}>סגור</span>
               </div>
             </div>
           </motion.div>
