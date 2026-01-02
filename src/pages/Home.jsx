@@ -195,11 +195,6 @@ export default function Home() {
     e.preventDefault();
     if (isSubmitting) return;
 
-    if (!capturedPhoto) {
-      setStatus({ type: "error", message: "נא לצלם תמונה לפני השליחה 📸" });
-      return;
-    }
-
     if (!formData.singer_name.trim()) {
       setStatus({ type: "error", message: "נא למלא שם 🙂" });
       return;
@@ -513,120 +508,69 @@ export default function Home() {
             מלא פרטים והצטרף למסיבה
           </p>
 
-          {!capturedPhoto && !photoUploaded ? (
+          <form onSubmit={handleSubmit} className="flex flex-col gap-3 mt-2">
+            {/* Photo Section */}
             <div style={{
-              padding: "40px 20px",
-              background: "rgba(0, 202, 255, 0.1)",
-              border: "2px solid rgba(0, 202, 255, 0.4)",
-              borderRadius: "18px",
+              padding: "20px",
+              background: "rgba(0, 202, 255, 0.05)",
+              border: "2px solid rgba(0, 202, 255, 0.2)",
+              borderRadius: "16px",
               textAlign: "center"
             }}>
-              <div style={{ fontSize: "3rem", marginBottom: "16px" }}>📸</div>
-              <h2 style={{ fontSize: "1.5rem", fontWeight: "800", color: "#00caff", marginBottom: "12px", textShadow: "0 0 20px rgba(0, 202, 255, 0.5)" }}>
-                קודם כל - סלפי!
-              </h2>
-              <p style={{ fontSize: "0.95rem", color: "#cbd5e1", marginBottom: "24px", lineHeight: "1.6" }}>
-                לפני שנרשום אותך לתור,<br />
-                בואו נצלם תמונה יפה שתוצג על המסכים 🌟
-              </p>
-              
-              {!showCamera ? (
-                <div style={{ display: "flex", flexDirection: "column", gap: "12px", alignItems: "center" }}>
+              {capturedPhoto ? (
+                <div>
+                  <img src={capturedPhoto} alt="תמונת הפרופיל שלך" style={{ width: "120px", height: "120px", borderRadius: "50%", margin: "0 auto 12px", border: "3px solid #00caff", boxShadow: "0 0 20px rgba(0, 202, 255, 0.3)", objectFit: "cover" }} />
                   <button
                     type="button"
-                    onClick={startCamera}
-                    aria-label="פתח מצלמה לצילום תמונת פרופיל"
+                    onClick={() => {
+                      setCapturedPhoto(null);
+                      setPhotoUploaded(false);
+                    }}
                     style={{
-                      padding: "16px 32px",
-                      background: "linear-gradient(135deg, #00caff, #0088ff)",
-                      color: "#001a2e",
-                      border: "none",
-                      borderRadius: "12px",
-                      fontSize: "1.1rem",
-                      fontWeight: "700",
-                      cursor: "pointer",
-                      boxShadow: "0 0 30px rgba(0, 202, 255, 0.5)",
-                      width: "100%",
-                      maxWidth: "300px"
+                      padding: "8px 16px",
+                      background: "rgba(248, 113, 113, 0.2)",
+                      color: "#f87171",
+                      border: "2px solid rgba(248, 113, 113, 0.4)",
+                      borderRadius: "8px",
+                      fontSize: "0.85rem",
+                      fontWeight: "600",
+                      cursor: "pointer"
                     }}
                   >
-                    📸 פתח מצלמה
+                    📸 שנה תמונה
                   </button>
-                  
-                  <div style={{ color: "#94a3b8", fontSize: "0.9rem" }}>או</div>
-                  
-                  <label 
-                    htmlFor="photo-upload"
-                    style={{
-                    padding: "16px 32px",
-                    background: "linear-gradient(135deg, #8b5cf6, #6d28d9)",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: "12px",
-                    fontSize: "1.1rem",
-                    fontWeight: "700",
-                    cursor: "pointer",
-                    boxShadow: "0 0 30px rgba(139, 92, 246, 0.5)",
-                    width: "100%",
-                    maxWidth: "300px",
-                    textAlign: "center",
-                    display: "inline-block"
-                  }}>
-                    📤 העלה תמונה
-                    <input
-                      id="photo-upload"
-                      type="file"
-                      accept="image/*"
-                      aria-label="העלה תמונת פרופיל מהגלריה"
-                      style={{ display: "none" }}
-                      onChange={async (e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          const reader = new FileReader();
-                          reader.onloadend = () => {
-                            setCapturedPhoto(reader.result);
-                            setPhotoUploaded(true);
-                          };
-                          reader.readAsDataURL(file);
-                        }
-                      }}
-                    />
-                  </label>
                 </div>
-              ) : (
+              ) : showCamera ? (
                 <div>
-                  <video ref={videoRef} autoPlay playsInline aria-label="תצוגה מקדימה של המצלמה" style={{ width: "100%", maxWidth: "400px", borderRadius: "16px", marginBottom: "16px", border: "3px solid #00caff", boxShadow: "0 0 30px rgba(0, 202, 255, 0.3)" }} />
-                  <canvas ref={canvasRef} style={{ display: "none" }} aria-hidden="true" />
-                  <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}>
+                  <video ref={videoRef} autoPlay playsInline style={{ width: "100%", maxWidth: "300px", borderRadius: "12px", marginBottom: "12px", border: "2px solid #00caff" }} />
+                  <canvas ref={canvasRef} style={{ display: "none" }} />
+                  <div style={{ display: "flex", gap: "8px", justifyContent: "center", flexWrap: "wrap" }}>
                     <button
                       type="button"
                       onClick={capturePhoto}
-                      aria-label="צלם תמונה עכשיו"
                       style={{
-                        padding: "14px 28px",
+                        padding: "10px 20px",
                         background: "linear-gradient(135deg, #10b981, #059669)",
                         color: "#fff",
                         border: "none",
-                        borderRadius: "12px",
-                        fontSize: "1rem",
+                        borderRadius: "8px",
+                        fontSize: "0.9rem",
                         fontWeight: "700",
-                        cursor: "pointer",
-                        boxShadow: "0 0 20px rgba(16, 185, 129, 0.4)"
+                        cursor: "pointer"
                       }}
                     >
-                      ✓ צלם תמונה
+                      ✓ צלם
                     </button>
                     <button
                       type="button"
                       onClick={stopCamera}
-                      aria-label="בטל צילום וסגור את המצלמה"
                       style={{
-                        padding: "14px 28px",
+                        padding: "10px 20px",
                         background: "rgba(248, 113, 113, 0.2)",
                         color: "#f87171",
                         border: "2px solid rgba(248, 113, 113, 0.4)",
-                        borderRadius: "12px",
-                        fontSize: "1rem",
+                        borderRadius: "8px",
+                        fontSize: "0.9rem",
                         fontWeight: "700",
                         cursor: "pointer"
                       }}
@@ -635,45 +579,69 @@ export default function Home() {
                     </button>
                   </div>
                 </div>
-              )}
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="flex flex-col gap-2.5 mt-2">
-              {!photoUploaded && capturedPhoto && (
-                <div style={{
-                  padding: "16px",
-                  background: "rgba(0, 202, 255, 0.1)",
-                  border: "2px solid rgba(0, 202, 255, 0.3)",
-                  borderRadius: "12px",
-                  textAlign: "center"
-                }}>
-                  <div style={{ fontSize: "0.9rem", fontWeight: "600", color: "#00caff", marginBottom: "12px" }}>
-                    ✓ תמונה צולמה בהצלחה!
+              ) : (
+                <div>
+                  <div style={{ fontSize: "2.5rem", marginBottom: "12px" }}>📸</div>
+                  <div style={{ fontSize: "0.95rem", color: "#cbd5e1", marginBottom: "12px" }}>
+                    הוסף תמונה (אופציונלי)
                   </div>
-                  <img src={capturedPhoto} alt="תמונת הפרופיל שצילמת - מוכנה להעלאה" style={{ width: "100%", maxWidth: "250px", borderRadius: "16px", marginBottom: "12px", border: "3px solid #00caff", boxShadow: "0 0 20px rgba(0, 202, 255, 0.3)" }} />
-                  <button
-                    type="button"
-                    onClick={() => setCapturedPhoto(null)}
-                    aria-label="צלם תמונה מחדש"
-                    style={{
-                      padding: "10px 20px",
-                      background: "rgba(248, 113, 113, 0.2)",
-                      color: "#f87171",
-                      border: "2px solid rgba(248, 113, 113, 0.4)",
-                      borderRadius: "10px",
-                      fontSize: "0.9rem",
-                      fontWeight: "600",
-                      cursor: "pointer"
-                    }}
-                  >
-                    📸 צלם מחדש
-                  </button>
+                  <div style={{ display: "flex", gap: "8px", justifyContent: "center", flexWrap: "wrap" }}>
+                    <button
+                      type="button"
+                      onClick={startCamera}
+                      style={{
+                        padding: "10px 20px",
+                        background: "linear-gradient(135deg, #00caff, #0088ff)",
+                        color: "#001a2e",
+                        border: "none",
+                        borderRadius: "8px",
+                        fontSize: "0.9rem",
+                        fontWeight: "700",
+                        cursor: "pointer"
+                      }}
+                    >
+                      📸 צלם
+                    </button>
+                    <label 
+                      htmlFor="photo-upload"
+                      style={{
+                        padding: "10px 20px",
+                        background: "linear-gradient(135deg, #8b5cf6, #6d28d9)",
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: "8px",
+                        fontSize: "0.9rem",
+                        fontWeight: "700",
+                        cursor: "pointer"
+                      }}>
+                      📤 העלה
+                      <input
+                        id="photo-upload"
+                        type="file"
+                        accept="image/*"
+                        style={{ display: "none" }}
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onloadend = () => {
+                              setCapturedPhoto(reader.result);
+                              setPhotoUploaded(true);
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                      />
+                    </label>
+                  </div>
                 </div>
               )}
+            </div>
 
+            {/* Name Input */}
             <div>
-              <label htmlFor="singer-name-input" className="block text-[0.9rem] mb-0.5">
-                שם מלא / שם במה
+              <label htmlFor="singer-name-input" className="block text-[0.95rem] mb-1 font-semibold" style={{ color: "#e2e8f0" }}>
+                👤 שם מלא / שם במה
               </label>
               <input
                 id="singer-name-input"
@@ -682,10 +650,8 @@ export default function Home() {
                 value={formData.singer_name}
                 onChange={handleChange}
                 required
-                aria-required="true"
-                aria-label="הכנס את שמך המלא או שם הבמה שלך"
                 placeholder={namePlaceholder}
-                className="w-full px-3 py-2.5 rounded-xl border outline-none text-[0.95rem]"
+                className="w-full px-4 py-3 rounded-xl border outline-none text-[1rem]"
                 style={{
                   borderColor: "#1f2937",
                   background: "rgba(15,23,42,0.9)",
@@ -693,7 +659,7 @@ export default function Home() {
                 }}
                 onFocus={(e) => {
                   e.target.style.borderColor = "#00caff";
-                  e.target.style.boxShadow = "0 0 0 1px rgba(0, 202, 255, 0.5)";
+                  e.target.style.boxShadow = "0 0 0 2px rgba(0, 202, 255, 0.3)";
                 }}
                 onBlur={(e) => {
                   e.target.style.borderColor = "#1f2937";
@@ -702,93 +668,89 @@ export default function Home() {
               />
             </div>
 
-            {/* Manual song input only */}
-            <div className="space-y-2">
-              <div>
-                <label htmlFor="manual-song-title" className="block text-[0.9rem] mb-0.5">
-                  שם השיר *
-                </label>
-                <input
-                  id="manual-song-title"
-                  type="text"
-                  name="song_title"
-                  value={formData.song_title}
-                  onChange={handleChange}
-                  required
-                  placeholder="לדוגמה: אהבה ראשונה"
-                  className="w-full px-3 py-2.5 rounded-xl border outline-none text-[0.95rem]"
-                  style={{
-                    borderColor: "#1f2937",
-                    background: "rgba(15,23,42,0.9)",
-                    color: "#f9fafb"
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = "#00caff";
-                    e.target.style.boxShadow = "0 0 0 1px rgba(0, 202, 255, 0.5)";
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = "#1f2937";
-                    e.target.style.boxShadow = "none";
-                  }}
-                />
-              </div>
-
-              <div>
-                <label htmlFor="manual-song-artist" className="block text-[0.9rem] mb-0.5">
-                  שם האמן *
-                </label>
-                <input
-                  id="manual-song-artist"
-                  type="text"
-                  name="song_artist"
-                  value={formData.song_artist}
-                  onChange={handleChange}
-                  required
-                  placeholder="לדוגמה: עומר אדם"
-                  className="w-full px-3 py-2.5 rounded-xl border outline-none text-[0.95rem]"
-                  style={{
-                    borderColor: "#1f2937",
-                    background: "rgba(15,23,42,0.9)",
-                    color: "#f9fafb"
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = "#00caff";
-                    e.target.style.boxShadow = "0 0 0 1px rgba(0, 202, 255, 0.5)";
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = "#1f2937";
-                    e.target.style.boxShadow = "none";
-                  }}
-                />
-              </div>
+            {/* Song Title Input */}
+            <div>
+              <label htmlFor="manual-song-title" className="block text-[0.95rem] mb-1 font-semibold" style={{ color: "#e2e8f0" }}>
+                🎵 שם השיר
+              </label>
+              <input
+                id="manual-song-title"
+                type="text"
+                name="song_title"
+                value={formData.song_title}
+                onChange={handleChange}
+                required
+                placeholder="לדוגמה: אהבה ראשונה"
+                className="w-full px-4 py-3 rounded-xl border outline-none text-[1rem]"
+                style={{
+                  borderColor: "#1f2937",
+                  background: "rgba(15,23,42,0.9)",
+                  color: "#f9fafb"
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = "#00caff";
+                  e.target.style.boxShadow = "0 0 0 2px rgba(0, 202, 255, 0.3)";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = "#1f2937";
+                  e.target.style.boxShadow = "none";
+                }}
+              />
             </div>
 
+            {/* Artist Input */}
+            <div>
+              <label htmlFor="manual-song-artist" className="block text-[0.95rem] mb-1 font-semibold" style={{ color: "#e2e8f0" }}>
+                🎤 שם האמן
+              </label>
+              <input
+                id="manual-song-artist"
+                type="text"
+                name="song_artist"
+                value={formData.song_artist}
+                onChange={handleChange}
+                required
+                placeholder="לדוגמה: עומר אדם"
+                className="w-full px-4 py-3 rounded-xl border outline-none text-[1rem]"
+                style={{
+                  borderColor: "#1f2937",
+                  background: "rgba(15,23,42,0.9)",
+                  color: "#f9fafb"
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = "#00caff";
+                  e.target.style.boxShadow = "0 0 0 2px rgba(0, 202, 255, 0.3)";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = "#1f2937";
+                  e.target.style.boxShadow = "none";
+                }}
+              />
+            </div>
 
-
+            {/* Submit Button */}
             <button
               type="submit"
               disabled={isSubmitting}
-              aria-label={isSubmitting ? "שולח את הבקשה לתור..." : "שלח בקשה להצטרפות לתור הקריוקי"}
-              aria-disabled={isSubmitting}
-              className="w-full mt-2 py-[11px] px-[14px] rounded-full border-none font-semibold text-base"
+              className="w-full mt-2 py-3.5 px-4 rounded-full border-none font-bold text-[1.1rem]"
               style={{
                 background: isSubmitting ? "rgba(100, 116, 139, 0.5)" : "linear-gradient(135deg, #00caff, #0088ff)",
                 color: isSubmitting ? "#64748b" : "#001a2e",
                 cursor: isSubmitting ? "not-allowed" : "pointer",
-                boxShadow: isSubmitting ? "none" : "0 0 20px rgba(0, 202, 255, 0.4)",
+                boxShadow: isSubmitting ? "none" : "0 0 30px rgba(0, 202, 255, 0.5)",
                 pointerEvents: isSubmitting ? "none" : "auto"
               }}
               onMouseDown={(e) => !isSubmitting && (e.currentTarget.style.transform = "scale(0.98)")}
               onMouseUp={(e) => !isSubmitting && (e.currentTarget.style.transform = "scale(1)")}
               onMouseLeave={(e) => !isSubmitting && (e.currentTarget.style.transform = "scale(1)")}
             >
-              {isSubmitting ? "שולח..." : "שלחו אותי לתור 🎵"}
+              {isSubmitting ? "שולח..." : "🎵 שלח לתור!"}
             </button>
 
             {/* Upload to Screen CTA */}
             <Link
               to={createPageUrl("UploadToScreen")}
-              className="w-full mt-3 py-[11px] px-[14px] rounded-full border-none font-semibold text-base block text-center"
+              className="w-full mt-2 py-3 px-4 rounded-full border-none font-semibold text-[0.95rem] block text-center"
               style={{
                 background: "linear-gradient(135deg, #8b5cf6, #6d28d9)",
                 color: "#fff",
@@ -800,19 +762,18 @@ export default function Home() {
                 gap: "8px"
               }}
             >
-              📺 רוצה להופיע על מסך הקהל? לחץ כאן!
+              📺 הופע על מסך הקהל!
             </Link>
 
-              {status.type && (
-                <div 
-                  className="mt-2.5 text-[0.9rem] text-center"
-                  style={{ color: status.type === "ok" ? "#00caff" : "#f97373" }}
-                >
-                  {status.message}
-                </div>
-              )}
-            </form>
-          )}
+            {status.type && (
+              <div 
+                className="mt-2 text-[0.95rem] text-center font-semibold"
+                style={{ color: status.type === "ok" ? "#00caff" : "#f97373" }}
+              >
+                {status.message}
+              </div>
+            )}
+          </form>
 
 
         </div>
