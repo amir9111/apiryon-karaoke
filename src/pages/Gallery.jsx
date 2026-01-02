@@ -13,19 +13,28 @@ export default function Gallery() {
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [showFeedbackForm, setShowFeedbackForm] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
   
   const queryClient = useQueryClient();
 
   React.useEffect(() => {
+    let mounted = true;
     async function checkAdmin() {
       try {
         const user = await base44.auth.me();
-        setIsAdmin(user?.role === 'admin');
+        if (mounted) {
+          setIsAdmin(user?.role === 'admin');
+          setAuthChecked(true);
+        }
       } catch (err) {
-        setIsAdmin(false);
+        if (mounted) {
+          setIsAdmin(false);
+          setAuthChecked(true);
+        }
       }
     }
     checkAdmin();
+    return () => { mounted = false; };
   }, []);
 
   const { data: galleries = [], isLoading: galleriesLoading } = useQuery({
@@ -38,6 +47,8 @@ export default function Gallery() {
         return [];
       }
     },
+    enabled: authChecked,
+    staleTime: 60000,
   });
 
   const { data: images = [], isLoading: imagesLoading } = useQuery({
@@ -50,7 +61,8 @@ export default function Gallery() {
         return [];
       }
     },
-    enabled: !!selectedGallery,
+    enabled: !!selectedGallery && authChecked,
+    staleTime: 60000,
   });
 
   const handleDownload = async (imageUrl, filename) => {
@@ -99,6 +111,23 @@ export default function Gallery() {
       alert('שגיאה בשליחת המשוב');
     }
   };
+
+  if (!authChecked) {
+    return (
+      <div dir="rtl" style={{
+        minHeight: "100vh",
+        background: "linear-gradient(135deg, #020617 0%, #0a1929 50%, #020617 100%)",
+        color: "#f9fafb",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center"
+      }}>
+        <div style={{ textAlign: "center" }}>
+          <div style={{ fontSize: "1.5rem", color: "#00caff", marginBottom: "10px" }}>טוען...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div dir="rtl" style={{
