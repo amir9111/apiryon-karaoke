@@ -28,14 +28,28 @@ export default function Gallery() {
     checkAdmin();
   }, []);
 
-  const { data: galleries = [] } = useQuery({
+  const { data: galleries = [], isLoading: galleriesLoading } = useQuery({
     queryKey: ['galleries'],
-    queryFn: () => base44.entities.GalleryCategory.filter({ is_active: true }, '-date', 50),
+    queryFn: async () => {
+      try {
+        return await base44.entities.GalleryCategory.filter({ is_active: true }, '-date', 50);
+      } catch (err) {
+        console.error('Error loading galleries:', err);
+        return [];
+      }
+    },
   });
 
-  const { data: images = [] } = useQuery({
+  const { data: images = [], isLoading: imagesLoading } = useQuery({
     queryKey: ['gallery-images', selectedGallery?.id],
-    queryFn: () => base44.entities.GalleryImage.filter({ gallery_id: selectedGallery.id }, '-created_date', 500),
+    queryFn: async () => {
+      try {
+        return await base44.entities.GalleryImage.filter({ gallery_id: selectedGallery.id }, '-created_date', 500);
+      } catch (err) {
+        console.error('Error loading images:', err);
+        return [];
+      }
+    },
     enabled: !!selectedGallery,
   });
 
@@ -273,7 +287,11 @@ export default function Gallery() {
               בחר גלריה 🎨
             </h2>
             
-            {galleries.length === 0 ? (
+            {galleriesLoading ? (
+              <div style={{ textAlign: "center", padding: "60px 20px" }}>
+                <div style={{ fontSize: "1.2rem", color: "#00caff" }}>טוען גלריות...</div>
+              </div>
+            ) : galleries.length === 0 ? (
               <div style={{
                 textAlign: "center",
                 padding: "60px 20px",
