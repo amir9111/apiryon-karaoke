@@ -1,4 +1,5 @@
 import Admin from './pages/Admin';
+import AdminLogs from './pages/AdminLogs';
 import Audience from './pages/Audience';
 import FeedbackManagement from './pages/FeedbackManagement';
 import Gallery from './pages/Gallery';
@@ -12,11 +13,11 @@ import Statistics from './pages/Statistics';
 import Terms from './pages/Terms';
 import UploadToScreen from './pages/UploadToScreen';
 import UserManagement from './pages/UserManagement';
-import AdminLogs from './pages/AdminLogs';
 
 
 export const PAGES = {
     "Admin": Admin,
+    "AdminLogs": AdminLogs,
     "Audience": Audience,
     "FeedbackManagement": FeedbackManagement,
     "Gallery": Gallery,
@@ -30,7 +31,6 @@ export const PAGES = {
     "Terms": Terms,
     "UploadToScreen": UploadToScreen,
     "UserManagement": UserManagement,
-    "AdminLogs": AdminLogs,
 }
 
 export const pagesConfig = {
