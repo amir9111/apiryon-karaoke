@@ -11,6 +11,7 @@ export default function Gallery() {
   const [selectedGallery, setSelectedGallery] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [showUploadModal, setShowUploadModal] = useState(false);
+  const [uploadToGallery, setUploadToGallery] = useState(null);
   const [showFeedbackForm, setShowFeedbackForm] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
@@ -430,47 +431,29 @@ export default function Gallery() {
             </button>
 
             {isAdmin && (
-              <>
-                <button
-                  onClick={() => setSelectionMode(!selectionMode)}
-                  style={{
-                    padding: "12px 24px",
-                    background: selectionMode ? "linear-gradient(135deg, #ef4444, #dc2626)" : "linear-gradient(135deg, #8b5cf6, #7c3aed)",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: "12px",
-                    fontSize: "1rem",
-                    fontWeight: "700",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    boxShadow: "0 0 20px rgba(139, 92, 246, 0.4)"
-                  }}
-                >
-                  {selectionMode ? '❌ ביטול' : '✏️ מצב בחירה'}
-                </button>
-                <button
-                  onClick={() => setShowUploadModal(true)}
-                  style={{
-                    padding: "12px 24px",
-                    background: "linear-gradient(135deg, #00caff, #0088ff)",
-                    color: "#001a2e",
-                    border: "none",
-                    borderRadius: "12px",
-                    fontSize: "1rem",
-                    fontWeight: "700",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    boxShadow: "0 0 20px rgba(0, 202, 255, 0.4)"
-                  }}
-                >
-                  <Plus className="w-5 h-5" />
-                  הוסף גלריה חדשה
-                </button>
-              </>
+              <button
+                onClick={() => {
+                  setUploadToGallery(null);
+                  setShowUploadModal(true);
+                }}
+                style={{
+                  padding: "12px 24px",
+                  background: "linear-gradient(135deg, #00caff, #0088ff)",
+                  color: "#001a2e",
+                  border: "none",
+                  borderRadius: "12px",
+                  fontSize: "1rem",
+                  fontWeight: "700",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  boxShadow: "0 0 20px rgba(0, 202, 255, 0.4)"
+                }}
+              >
+                <Plus className="w-5 h-5" />
+                הוסף גלריה חדשה
+              </button>
             )}
           </div>
         </div>
@@ -709,23 +692,76 @@ export default function Gallery() {
           </div>
         ) : (
           <div>
-            {/* Back Button */}
-            <button
-              onClick={() => setSelectedGallery(null)}
-              style={{
-                padding: "10px 20px",
-                background: "rgba(0, 202, 255, 0.1)",
-                color: "#00caff",
-                border: "1px solid rgba(0, 202, 255, 0.3)",
-                borderRadius: "12px",
-                fontSize: "1rem",
-                fontWeight: "700",
-                cursor: "pointer",
-                marginBottom: "24px"
-              }}
-            >
-              ← חזרה לגלריות
-            </button>
+            {/* Back Button + Admin Controls */}
+            <div style={{ display: "flex", gap: "12px", alignItems: "center", marginBottom: "24px", flexWrap: "wrap" }}>
+              <button
+                onClick={() => {
+                  setSelectedGallery(null);
+                  setSelectionMode(false);
+                  setSelectedImages([]);
+                }}
+                style={{
+                  padding: "10px 20px",
+                  background: "rgba(0, 202, 255, 0.1)",
+                  color: "#00caff",
+                  border: "1px solid rgba(0, 202, 255, 0.3)",
+                  borderRadius: "12px",
+                  fontSize: "1rem",
+                  fontWeight: "700",
+                  cursor: "pointer"
+                }}
+              >
+                ← חזרה לגלריות
+              </button>
+
+              {isAdmin && (
+                <>
+                  <button
+                    onClick={() => setSelectionMode(!selectionMode)}
+                    style={{
+                      padding: "10px 20px",
+                      background: selectionMode ? "linear-gradient(135deg, #ef4444, #dc2626)" : "linear-gradient(135deg, #8b5cf6, #7c3aed)",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "12px",
+                      fontSize: "1rem",
+                      fontWeight: "700",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      boxShadow: "0 0 20px rgba(139, 92, 246, 0.4)"
+                    }}
+                  >
+                    {selectionMode ? '❌ ביטול בחירה' : '✏️ מחק תמונות'}
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setUploadToGallery(selectedGallery);
+                      setShowUploadModal(true);
+                    }}
+                    style={{
+                      padding: "10px 20px",
+                      background: "linear-gradient(135deg, #10b981, #059669)",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "12px",
+                      fontSize: "1rem",
+                      fontWeight: "700",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      boxShadow: "0 0 20px rgba(16, 185, 129, 0.4)"
+                    }}
+                  >
+                    <Upload className="w-5 h-5" />
+                    העלה תמונות
+                  </button>
+                </>
+              )}
+            </div>
 
             <h2 style={{ fontSize: "1.8rem", fontWeight: "800", color: "#fbbf24", marginBottom: "24px" }}>
               {selectedGallery.name} - {images.length} תמונות
@@ -1113,10 +1149,16 @@ export default function Gallery() {
       {/* Upload Modal - Admin Only */}
       {isAdmin && showUploadModal && (
         <UploadGalleryModal
-          onClose={() => setShowUploadModal(false)}
+          existingGallery={uploadToGallery}
+          onClose={() => {
+            setShowUploadModal(false);
+            setUploadToGallery(null);
+          }}
           onSuccess={() => {
             queryClient.invalidateQueries({ queryKey: ['galleries'] });
+            queryClient.invalidateQueries({ queryKey: ['gallery-images'] });
             setShowUploadModal(false);
+            setUploadToGallery(null);
           }}
         />
       )}
@@ -1127,9 +1169,9 @@ export default function Gallery() {
 }
 
 // Upload Modal Component
-function UploadGalleryModal({ onClose, onSuccess }) {
-  const [step, setStep] = useState(1);
-  const [galleryData, setGalleryData] = useState({ name: '', date: '', description: '' });
+function UploadGalleryModal({ existingGallery, onClose, onSuccess }) {
+  const [step, setStep] = useState(existingGallery ? 2 : 1);
+  const [galleryData, setGalleryData] = useState(existingGallery || { name: '', date: '', description: '' });
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -1156,8 +1198,8 @@ function UploadGalleryModal({ onClose, onSuccess }) {
     setIsUploading(true);
     
     try {
-      // Create gallery
-      const gallery = await base44.entities.GalleryCategory.create(galleryData);
+      // Create gallery or use existing
+      const gallery = existingGallery || await base44.entities.GalleryCategory.create(galleryData);
       
       // Upload images with watermark
       for (let i = 0; i < selectedFiles.length; i++) {
@@ -1181,10 +1223,10 @@ function UploadGalleryModal({ onClose, onSuccess }) {
         });
       }
       
-      alert('✅ הגלריה הועלתה בהצלחה עם לוגו אפריון!');
+      alert(existingGallery ? `✅ הועלו ${selectedFiles.length} תמונות לגלריה!` : '✅ הגלריה הועלתה בהצלחה!');
       onSuccess();
     } catch (err) {
-      alert('שגיאה בהעלאת הגלריה: ' + err.message);
+      alert('שגיאה בהעלאה: ' + err.message);
       console.error(err);
     } finally {
       setIsUploading(false);
@@ -1222,7 +1264,7 @@ function UploadGalleryModal({ onClose, onSuccess }) {
         }}
       >
         <h3 style={{ fontSize: "1.8rem", fontWeight: "800", color: "#00caff", marginBottom: "24px" }}>
-          {step === 1 ? '📸 צור גלריה חדשה' : '🖼️ העלה תמונות'}
+          {existingGallery ? `🖼️ העלה תמונות ל-${existingGallery.name}` : (step === 1 ? '📸 צור גלריה חדשה' : '🖼️ העלה תמונות')}
         </h3>
 
         {step === 1 ? (
