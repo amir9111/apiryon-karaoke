@@ -824,6 +824,7 @@ export default function Home() {
         
         {/* PWA Install Prompt */}
         <PWAInstallPrompt />
+        <PWAManager />
       </div>
     );
 }
