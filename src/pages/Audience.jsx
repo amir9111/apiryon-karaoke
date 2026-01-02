@@ -160,13 +160,40 @@ const SongView = ({ song }) => (
 );
 
 // תצוגת IDLE (QR / גלריה / לוגו)
-const IdleView = () => {
-    // רוטציה פנימית ל-Idle
+const IdleView = ({ galleryImages }) => {
+    // רוטציה פנימית ל-Idle: QR קריוקי -> QR ווטסאפ -> QR טיקטוק -> גלריה -> לוגו
     const [step, setStep] = useState(0);
+    const totalSteps = 3 + (galleryImages.length > 0 ? 1 : 0) + 1; // 3 QR + גלריה + לוגו
+    
     useEffect(() => {
-        const interval = setInterval(() => setStep(prev => (prev + 1) % 2), 10000);
+        const interval = setInterval(() => setStep(prev => (prev + 1) % totalSteps), 10000);
         return () => clearInterval(interval);
-    }, []);
+    }, [totalSteps]);
+
+    const qrData = [
+        {
+            title: "הצטרפו לחגיגה!",
+            subtitle: "סרקו לבחירת שירים",
+            url: `${window.location.origin}/Home`,
+            color: "cyan"
+        },
+        {
+            title: "הצטרפו לקבוצה!",
+            subtitle: "קבוצת עדכונים בווטסאפ",
+            url: "https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15",
+            color: "green"
+        },
+        {
+            title: "עקבו בטיקטוק!",
+            subtitle: "@apiryon.club",
+            url: "https://www.tiktok.com/@apiryon.club",
+            color: "pink"
+        }
+    ];
+
+    const currentQR = qrData[step];
+    const isGalleryStep = step === 3 && galleryImages.length > 0;
+    const isLogoStep = step === totalSteps - 1;
 
     return (
         <motion.div 
@@ -174,31 +201,54 @@ const IdleView = () => {
             className="w-full h-full flex items-center justify-center bg-slate-950 relative"
         >
             <AnimatePresence mode="wait">
-                {step === 0 ? (
+                {step < 3 && (
                     <motion.div 
-                        key="qr"
+                        key={`qr-${step}`}
                         initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.8, opacity: 0 }}
                         className="flex flex-col items-center gap-8 bg-slate-900 p-16 rounded-[3rem] border-4 border-cyan-500 shadow-[0_0_100px_rgba(6,182,212,0.3)]"
                     >
-                        <h2 className="text-6xl font-black text-white">הצטרפו לחגיגה!</h2>
+                        <h2 className="text-6xl font-black text-white">{currentQR.title}</h2>
                         <div className="bg-white p-4 rounded-3xl">
                              <img 
-                                src={`https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${window.location.origin}/Home`}
+                                src={`https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${currentQR.url}`}
                                 alt="QR" className="w-80 h-80"
                              />
                         </div>
-                        <p className="text-3xl text-cyan-400 font-bold">סרקו לבחירת שירים והעלאת תמונות</p>
+                        <p className="text-3xl text-cyan-400 font-bold">{currentQR.subtitle}</p>
                     </motion.div>
-                ) : (
+                )}
+
+                {isGalleryStep && (
+                    <motion.div 
+                        key="gallery"
+                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                        className="w-full h-full relative"
+                    >
+                        <img 
+                            src={galleryImages[Math.floor(Math.random() * galleryImages.length)]?.image_url}
+                            alt="מהגלריה"
+                            className="w-full h-full object-cover"
+                        />
+                        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 bg-black/70 px-10 py-4 rounded-full">
+                            <p className="text-4xl text-cyan-400 font-bold">📸 מהגלריה שלנו</p>
+                        </div>
+                    </motion.div>
+                )}
+
+                {isLogoStep && (
                     <motion.div 
                         key="logo"
                         initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.8, opacity: 0 }}
-                        className="text-center"
+                        className="text-center flex flex-col items-center gap-8"
                     >
-                        <h1 className="text-[10rem] font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-200 to-amber-500">
-                            APIRYON
-                        </h1>
-                        <p className="text-4xl text-slate-400 mt-4 tracking-[1rem] uppercase">Karaoke Club</p>
+                        <div className="w-64 h-64 rounded-full border-8 border-cyan-500 flex items-center justify-center shadow-[0_0_100px_rgba(6,182,212,0.5)]">
+                            <h1 className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-cyan-200" style={{
+                                textShadow: "0 0 40px rgba(6,182,212,0.8)"
+                            }}>
+                                APIRYON
+                            </h1>
+                        </div>
+                        <p className="text-5xl text-slate-300 font-bold">מועדון קריוקי</p>
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -219,6 +269,17 @@ export default function SmartAudience() {
     refetchInterval: 3000,
   });
   const currentSong = requests.find(r => r.status === "performing");
+
+  // שליפת תמונות גלריה
+  const { data: galleryImages = [] } = useQuery({
+    queryKey: ['gallery-images-audience'],
+    queryFn: async () => {
+      const images = await base44.entities.GalleryImage.list('-created_date', 100);
+      const oneHourAgo = Date.now() - (60 * 60 * 1000);
+      return images.filter(img => img.image_url && new Date(img.created_date).getTime() >= oneHourAgo);
+    },
+    refetchInterval: 30000,
+  });
 
   // לוגיקת הבמאי (Director)
   useEffect(() => {
@@ -314,7 +375,7 @@ export default function SmartAudience() {
         )}
 
         {currentView.type === 'idle' && (
-           <IdleView key="idle" />
+           <IdleView key="idle" galleryImages={galleryImages} />
         )}
 
         {currentView.type === 'loader' && (
