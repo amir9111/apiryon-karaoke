@@ -214,7 +214,7 @@ export default function MenuButton() {
                 onMouseLeave={(e) => e.currentTarget.style.background = "rgba(30, 41, 59, 0.5)"}
               >
                 <div style={{ fontSize: "1.2rem" }}>🏠</div>
-                אודות אפריון
+                דף הבית
               </Link>
 
               {/* Divider */}

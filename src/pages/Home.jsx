@@ -13,6 +13,7 @@ import ServiceWorkerRegistration from "../components/ServiceWorkerRegistration";
 import PushNotifications from "../components/PushNotifications";
 import AccessibilityHelper from "../components/AccessibilityHelper";
 import PWADebugger from "../components/PWADebugger";
+import TutorialOverlay from "../components/TutorialOverlay";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 export default function Home() {
@@ -30,6 +31,7 @@ export default function Home() {
   const [showTerms, setShowTerms] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [namePlaceholder, setNamePlaceholder] = useState("לדוגמה: יהושע דבוש");
+  const [showTutorial, setShowTutorial] = useState(false);
 
   const queryClient = useQueryClient();
 
@@ -92,6 +94,7 @@ export default function Home() {
     
     setTimeout(() => {
       setShowWelcome(false);
+      setShowTutorial(true);
     }, 5000);
   };
 
@@ -188,6 +191,11 @@ export default function Home() {
       
       {/* Terms Modal - Must accept first */}
       {showTerms && <TermsModal onAccept={handleAcceptTerms} />}
+
+      {/* Tutorial Overlay */}
+      {showTutorial && termsAccepted && (
+        <TutorialOverlay onComplete={() => setShowTutorial(false)} />
+      )}
 
       {/* Welcome Modal */}
       {showWelcome && termsAccepted && (
@@ -432,6 +440,7 @@ export default function Home() {
         </div>
 
         <div
+          id="form-section"
           className="rounded-[18px] p-5 md:p-6"
           style={{
             background: "rgba(15, 23, 42, 0.95)",
@@ -594,7 +603,9 @@ export default function Home() {
         </div>
 
         {/* Hamburger Menu */}
-        <MenuButton />
+        <div id="menu-button">
+          <MenuButton />
+        </div>
         
         {/* PWA Install Prompt */}
         <PWAInstallPrompt />
