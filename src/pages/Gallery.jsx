@@ -957,25 +957,32 @@ function UploadGalleryModal({ onClose, onSuccess }) {
       // Create gallery
       const gallery = await base44.entities.GalleryCategory.create(galleryData);
       
-      // Upload images
+      // Upload images with watermark
       for (let i = 0; i < selectedFiles.length; i++) {
         const file = selectedFiles[i];
         setProgress(Math.round(((i + 1) / selectedFiles.length) * 100));
         
+        // העלאת התמונה המקורית
         const upload = await base44.integrations.Core.UploadFile({ file });
         
+        // הוספת watermark
+        const watermarkResult = await base44.functions.invoke('addWatermark', {
+          image_url: upload.file_url
+        });
+        
+        // שמירה בדאטה בייס עם הלוגו
         await base44.entities.GalleryImage.create({
           gallery_id: gallery.id,
-          image_url: upload.file_url,
-          thumbnail_url: upload.file_url,
+          image_url: watermarkResult.data.watermarked_url,
+          thumbnail_url: watermarkResult.data.watermarked_url,
           original_filename: file.name
         });
       }
       
-      alert('✅ הגלריה הועלתה בהצלחה!');
+      alert('✅ הגלריה הועלתה בהצלחה עם לוגו אפריון!');
       onSuccess();
     } catch (err) {
-      alert('שגיאה בהעלאת הגלריה');
+      alert('שגיאה בהעלאת הגלריה: ' + err.message);
       console.error(err);
     } finally {
       setIsUploading(false);
