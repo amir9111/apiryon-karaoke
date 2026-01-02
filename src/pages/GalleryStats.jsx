@@ -8,6 +8,7 @@ import MenuButton from "../components/MenuButton";
 
 export default function GalleryStats() {
   const [isAdmin, setIsAdmin] = React.useState(false);
+  const [currentUserEmail, setCurrentUserEmail] = React.useState(null);
 
   React.useEffect(() => {
     const checkAdmin = async () => {
@@ -17,6 +18,7 @@ export default function GalleryStats() {
           window.location.href = '/';
         } else {
           setIsAdmin(true);
+          setCurrentUserEmail(user.email);
         }
       } catch (err) {
         window.location.href = '/';
@@ -57,20 +59,22 @@ export default function GalleryStats() {
   const totalViews = views.length;
   const totalDownloads = downloads.length;
 
-  // Get all visitors with their details
-  const visitorsList = views.reduce((acc, view) => {
-    const existing = acc.find(v => v.user_identifier === view.user_identifier);
-    if (existing) {
-      existing.visits++;
-    } else {
-      acc.push({
-        user_identifier: view.user_identifier,
-        visits: 1,
-        first_visit: view.created_date
-      });
-    }
-    return acc;
-  }, []).sort((a, b) => b.visits - a.visits);
+  // Get all visitors with their details (exclude current user)
+  const visitorsList = views
+    .filter(view => view.user_identifier !== currentUserEmail)
+    .reduce((acc, view) => {
+      const existing = acc.find(v => v.user_identifier === view.user_identifier);
+      if (existing) {
+        existing.visits++;
+      } else {
+        acc.push({
+          user_identifier: view.user_identifier,
+          visits: 1,
+          first_visit: view.created_date
+        });
+      }
+      return acc;
+    }, []).sort((a, b) => b.visits - a.visits);
 
   // Views by gallery
   const viewsByGallery = {};
