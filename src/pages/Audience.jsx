@@ -3,6 +3,7 @@ import NavigationMenu from "../components/NavigationMenu";
 import ApyironLogo from "../components/ApyironLogo";
 import AudioWave from "../components/AudioWave";
 import EventSummaryModal from "../components/EventSummaryModal";
+import PerformanceTimer from "../components/PerformanceTimer";
 import { motion } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
@@ -58,10 +59,11 @@ export default function Audience() {
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
-  const [currentMode, setCurrentMode] = useState("media"); // "media", "queue", "qr", "gallery"
+  const [currentMode, setCurrentMode] = useState("current_song"); // "current_song", "media", "queue", "qr", "gallery", "messages"
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
   const [displayedMessages, setDisplayedMessages] = useState([]);
   const [displayedMediaIds, setDisplayedMediaIds] = useState(new Set());
+  const [currentQRIndex, setCurrentQRIndex] = useState(0);
 
   const { data: requests = [] } = useQuery({
     queryKey: ['karaoke-requests'],
@@ -121,51 +123,85 @@ export default function Audience() {
     }
   }, [currentMode]);
 
-  // Simple rotation logic: media -> queue -> gallery -> qr (17 seconds each)
+  // Improved rotation logic with proper timings
   React.useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentMode(prev => {
-        console.log("Current mode:", prev, "Media count:", mediaUploads.length, "Gallery images:", galleryImages.length);
-        
-        // Cycle: media -> queue -> gallery -> qr -> repeat
-        if (prev === "media") {
-          console.log("Switching to queue");
-          return "queue";
+    let timeout;
+    
+    const getNextMode = (current) => {
+      // Priority: current_song (60s) -> media (30s) -> queue (20s) -> gallery (15s) -> qr (15s per QR) -> messages (20s)
+      
+      if (current === "current_song") {
+        if (mediaUploads.length > 0) return { next: "media", duration: 30000 };
+        return { next: "queue", duration: 20000 };
+      }
+      
+      if (current === "media") {
+        return { next: "queue", duration: 20000 };
+      }
+      
+      if (current === "queue") {
+        if (galleryImages.length > 0) {
+          setCurrentGalleryImageIndex(prevIdx => (prevIdx + 1) % galleryImages.length);
+          return { next: "gallery", duration: 15000 };
         }
-        
-        if (prev === "queue") {
-          if (galleryImages.length > 0) {
-            console.log("Switching to gallery");
-            // Advance to next gallery image
-            setCurrentGalleryImageIndex(prevIdx => (prevIdx + 1) % galleryImages.length);
-            return "gallery";
-          }
-          console.log("Switching to QR (no gallery)");
-          return "qr";
+        setCurrentQRIndex(0);
+        return { next: "qr", duration: 15000 };
+      }
+      
+      if (current === "gallery") {
+        setCurrentQRIndex(0);
+        return { next: "qr", duration: 15000 };
+      }
+      
+      if (current === "qr") {
+        // Cycle through 3 QR codes
+        if (currentQRIndex < 2) {
+          setCurrentQRIndex(prev => prev + 1);
+          return { next: "qr", duration: 15000 };
         }
-        
-        if (prev === "gallery") {
-          console.log("Switching to QR");
-          return "qr";
+        // After 3rd QR, check for messages
+        if (messages.length > 0) {
+          return { next: "messages", duration: 20000 };
         }
-        
-        // After QR, go back to media if exists, otherwise back to queue
-        if (prev === "qr") {
-          if (mediaUploads.length > 0) {
-            console.log("Switching from QR to media");
-            return "media";
-          }
-          console.log("Switching from QR to queue (no media)");
-          return "queue";
-        }
-        
-        // Default: start with queue if no media, media if there is
-        return mediaUploads.length > 0 ? "media" : "queue";
-      });
-    }, 17000); // 17 seconds for each screen
-
-    return () => clearInterval(interval);
-  }, [currentMode, mediaUploads.length, galleryImages.length]);
+        // Back to current song or media
+        if (currentSong) return { next: "current_song", duration: 60000 };
+        if (mediaUploads.length > 0) return { next: "media", duration: 30000 };
+        return { next: "queue", duration: 20000 };
+      }
+      
+      if (current === "messages") {
+        // Back to current song or media
+        if (currentSong) return { next: "current_song", duration: 60000 };
+        if (mediaUploads.length > 0) return { next: "media", duration: 30000 };
+        return { next: "queue", duration: 20000 };
+      }
+      
+      // Default start
+      if (currentSong) return { next: "current_song", duration: 60000 };
+      if (mediaUploads.length > 0) return { next: "media", duration: 30000 };
+      return { next: "queue", duration: 20000 };
+    };
+    
+    const transition = () => {
+      const { next, duration } = getNextMode(currentMode);
+      setCurrentMode(next);
+      timeout = setTimeout(transition, duration);
+    };
+    
+    // Initial duration based on current mode
+    const initialDurations = {
+      current_song: 60000,
+      media: 30000,
+      queue: 20000,
+      gallery: 15000,
+      qr: 15000,
+      messages: 20000
+    };
+    
+    timeout = setTimeout(transition, initialDurations[currentMode] || 20000);
+    
+    return () => clearTimeout(timeout);
+  }, [currentMode, mediaUploads.length, galleryImages.length, messages.length, currentSong, currentQRIndex]);
 
   return (
     <div dir="rtl" style={{
@@ -255,6 +291,189 @@ export default function Audience() {
           minHeight: 0,
           overflow: "hidden"
         }}>
+
+          {/* Mode 0: Current Song Performing (60 seconds) */}
+          {currentMode === "current_song" && currentSong && (
+            <motion.div
+              key={`current-song-${currentSong.id}`}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 1 }}
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "60px",
+                gap: "40px",
+                background: "linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(0, 10, 41, 0.9) 50%, rgba(251, 191, 36, 0.1) 100%)"
+              }}
+            >
+              {/* Animated Title */}
+              <motion.div
+                animate={{
+                  scale: [1, 1.1, 1],
+                  textShadow: [
+                    "0 0 40px rgba(251, 191, 36, 0.8)",
+                    "0 0 80px rgba(251, 191, 36, 1)",
+                    "0 0 40px rgba(251, 191, 36, 0.8)"
+                  ]
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity
+                }}
+                style={{
+                  fontSize: "clamp(2.5rem, 6vw, 5rem)",
+                  fontWeight: "900",
+                  color: "#fbbf24",
+                  textAlign: "center",
+                  marginBottom: "20px"
+                }}
+              >
+                🎤 שר עכשיו! 🎤
+              </motion.div>
+
+              {/* Singer Photo & Info */}
+              <div style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "30px",
+                background: "rgba(15, 23, 42, 0.9)",
+                padding: "60px",
+                borderRadius: "40px",
+                border: "4px solid rgba(251, 191, 36, 0.6)",
+                boxShadow: "0 0 100px rgba(251, 191, 36, 0.5)",
+                maxWidth: "1200px",
+                width: "100%"
+              }}>
+                {/* Photo */}
+                {currentSong.photo_url && (
+                  <motion.div
+                    animate={{
+                      boxShadow: [
+                        "0 0 40px rgba(251, 191, 36, 0.6)",
+                        "0 0 80px rgba(251, 191, 36, 0.9)",
+                        "0 0 40px rgba(251, 191, 36, 0.6)"
+                      ]
+                    }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                    style={{
+                      width: "clamp(200px, 25vw, 350px)",
+                      height: "clamp(200px, 25vw, 350px)",
+                      borderRadius: "50%",
+                      overflow: "hidden",
+                      border: "6px solid #fbbf24"
+                    }}
+                  >
+                    <img 
+                      src={currentSong.photo_url} 
+                      alt={currentSong.singer_name}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover"
+                      }}
+                    />
+                  </motion.div>
+                )}
+
+                {/* Singer Name */}
+                <div style={{
+                  fontSize: "clamp(3rem, 7vw, 6rem)",
+                  fontWeight: "900",
+                  color: "#fbbf24",
+                  textAlign: "center",
+                  textShadow: "0 0 40px rgba(251, 191, 36, 0.8)",
+                  lineHeight: "1.1"
+                }}>
+                  {currentSong.singer_name}
+                </div>
+
+                {/* Song Title */}
+                <div style={{
+                  fontSize: "clamp(2rem, 5vw, 4rem)",
+                  fontWeight: "700",
+                  color: "#00caff",
+                  textAlign: "center",
+                  textShadow: "0 0 30px rgba(0, 202, 255, 0.6)",
+                  lineHeight: "1.3"
+                }}>
+                  {currentSong.song_title}
+                </div>
+
+                {/* Artist */}
+                {currentSong.song_artist && (
+                  <div style={{
+                    fontSize: "clamp(1.5rem, 3vw, 2.5rem)",
+                    color: "#cbd5e1",
+                    textAlign: "center",
+                    fontWeight: "600"
+                  }}>
+                    {currentSong.song_artist}
+                  </div>
+                )}
+
+                {/* Live Rating */}
+                {currentSong.average_rating > 0 && (
+                  <motion.div
+                    animate={{ scale: [1, 1.1, 1] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "15px",
+                      marginTop: "20px",
+                      padding: "20px 40px",
+                      background: "rgba(251, 191, 36, 0.2)",
+                      borderRadius: "20px",
+                      border: "2px solid rgba(251, 191, 36, 0.5)"
+                    }}
+                  >
+                    <span style={{ fontSize: "3rem" }}>⭐</span>
+                    <span style={{
+                      fontSize: "clamp(2rem, 4vw, 3.5rem)",
+                      fontWeight: "900",
+                      color: "#fbbf24"
+                    }}>
+                      {currentSong.average_rating.toFixed(1)}
+                    </span>
+                  </motion.div>
+                )}
+
+                {/* Message from singer */}
+                {currentSong.message && (
+                  <div style={{
+                    marginTop: "20px",
+                    padding: "25px 40px",
+                    background: "rgba(139, 92, 246, 0.15)",
+                    borderRadius: "20px",
+                    border: "2px solid rgba(139, 92, 246, 0.4)",
+                    maxWidth: "800px"
+                  }}>
+                    <div style={{
+                      fontSize: "clamp(1.5rem, 3vw, 2.5rem)",
+                      color: "#a78bfa",
+                      textAlign: "center",
+                      fontWeight: "700",
+                      lineHeight: "1.5"
+                    }}>
+                      💬 "{currentSong.message}"
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Performance Timer */}
+              {currentSong.started_at && (
+                <PerformanceTimer startedAt={currentSong.started_at} />
+              )}
+            </motion.div>
+          )}
 
           {/* Mode 1: Media Display (30 seconds) - Show latest media only */}
           {currentMode === "media" && mediaUploads.length > 0 && (
@@ -515,22 +734,22 @@ export default function Audience() {
                 }}
               />
               
-              {/* Gallery indicator */}
+              {/* Gallery indicator with counter */}
               <div style={{
                 position: "absolute",
                 top: "40px",
                 left: "50%",
                 transform: "translateX(-50%)",
                 background: "rgba(0, 202, 255, 0.9)",
-                padding: "12px 30px",
+                padding: "15px 40px",
                 borderRadius: "50px",
-                fontSize: "1.5rem",
+                fontSize: "clamp(1.5rem, 3vw, 2.5rem)",
                 fontWeight: "800",
                 color: "#001a2e",
                 boxShadow: "0 0 40px rgba(0, 202, 255, 0.6)",
                 zIndex: 10
               }}>
-                📸 מהגלריה שלנו
+                📸 תמונה {currentGalleryImageIndex + 1} מתוך {galleryImages.length}
               </div>
             </motion.div>
           )}
@@ -623,14 +842,14 @@ export default function Audience() {
             </motion.div>
           )}
 
-          {/* Mode 4: QR Codes (15 seconds) */}
+          {/* Mode 4: Single QR Code (15 seconds per QR) */}
           {currentMode === "qr" && (
             <motion.div
-              key="qrcodes"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 1 }}
+              key={`qr-${currentQRIndex}`}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.8 }}
               style={{
                 width: "100%",
                 height: "100%",
@@ -638,254 +857,143 @@ export default function Audience() {
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                padding: "40px",
-                background: "linear-gradient(135deg, #020617 0%, #0a1929 50%, #020617 100%)"
+                padding: "60px",
+                gap: "50px"
               }}
             >
-              {/* Debug indicator */}
-              <div style={{
-                position: "fixed",
-                top: "50px",
-                left: "50%",
-                transform: "translateX(-50%)",
-                background: "rgba(16, 185, 129, 0.9)",
-                color: "#fff",
-                padding: "10px 20px",
-                borderRadius: "12px",
-                fontSize: "1rem",
-                fontWeight: "700",
-                zIndex: 9999
-              }}>
-                🟢 מסך QR פעיל
-              </div>
-
               {/* Title */}
               <motion.div
                 animate={{ 
-                  scale: [1, 1.05, 1]
+                  scale: [1, 1.08, 1]
                 }}
                 transition={{ 
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: "easeInOut"
+                  duration: 2.5,
+                  repeat: Infinity
                 }}
                 style={{
-                  fontSize: "clamp(2rem, 5vw, 4rem)",
+                  fontSize: "clamp(2.5rem, 6vw, 5rem)",
                   fontWeight: "900",
                   background: "linear-gradient(90deg, #00caff 0%, #0088ff 25%, #00d4ff 50%, #0088ff 75%, #00caff 100%)",
                   backgroundSize: "200% auto",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   animation: "shimmer 3s linear infinite",
-                  marginBottom: "40px",
-                  textAlign: "center"
+                  textAlign: "center",
+                  marginBottom: "20px"
                 }}
               >
-                🎤 הצטרפו אלינו! 🎵
+                {currentQRIndex === 0 && "💬 הצטרפו לקבוצה!"}
+                {currentQRIndex === 1 && "🎵 עקבו בטיקטוק!"}
+                {currentQRIndex === 2 && "📺 הופיעו במסך!"}
               </motion.div>
 
-              {/* QR Codes Grid */}
-              <div style={{ 
-                display: "grid",
-                gridTemplateColumns: "repeat(3, 1fr)",
-                gap: "30px",
-                maxWidth: "1200px",
-                width: "100%"
-              }}>
-                {/* QR Code for WhatsApp */}
-                <div style={{
-                    background: "rgba(15, 23, 42, 0.8)",
-                    borderRadius: "24px",
-                    padding: "30px",
-                    border: "3px solid rgba(0, 202, 255, 0.5)",
-                    textAlign: "center",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    boxShadow: "0 10px 60px rgba(0, 202, 255, 0.3)",
-                    backdropFilter: "blur(30px)"
-                  }}
-                >
-                  <div style={{ 
-                    fontSize: "clamp(1.5rem, 3vw, 2.5rem)", 
-                    color: "#00caff", 
-                    marginBottom: "20px",
-                    fontWeight: "800",
-                    textShadow: "0 0 20px rgba(0, 202, 255, 0.8)"
-                  }}>
-                    💬 קבוצת וואטסאפ
-                  </div>
-
-                  <div style={{
-                    width: "clamp(200px, 20vw, 300px)",
-                    height: "clamp(200px, 20vw, 300px)",
-                    background: "#fff",
-                    borderRadius: "20px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginBottom: "20px",
-                    boxShadow: "0 0 40px rgba(0, 202, 255, 0.4)",
-                    border: "4px solid #00caff"
-                  }}>
-                    <img 
-                      src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15"
-                      alt="QR Code WhatsApp"
-                      style={{ width: "90%", height: "90%" }}
-                    />
-                  </div>
-
-                  <div style={{ 
-                    fontSize: "clamp(1.2rem, 2vw, 1.8rem)", 
-                    color: "#cbd5e1",
-                    fontWeight: "700"
-                  }}>
-                    עדכונים על ערבי קריוקי
-                  </div>
-                </div>
-
-                {/* QR Code for TikTok */}
-                <div style={{
-                    background: "rgba(15, 23, 42, 0.8)",
-                    borderRadius: "24px",
-                    padding: "30px",
-                    border: "3px solid rgba(255, 0, 80, 0.5)",
-                    textAlign: "center",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    boxShadow: "0 10px 60px rgba(255, 0, 80, 0.3)",
-                    backdropFilter: "blur(30px)"
-                  }}
-                >
-                  <div style={{ 
-                    fontSize: "clamp(1.5rem, 3vw, 2.5rem)", 
-                    color: "#ff0050", 
-                    marginBottom: "20px",
-                    fontWeight: "800",
-                    textShadow: "0 0 20px rgba(255, 0, 80, 0.8)"
-                  }}>
-                    🎵 טיקטוק
-                  </div>
-
-                  <div style={{
-                    width: "clamp(200px, 20vw, 300px)",
-                    height: "clamp(200px, 20vw, 300px)",
-                    background: "#fff",
-                    borderRadius: "20px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginBottom: "20px",
-                    boxShadow: "0 0 40px rgba(255, 0, 80, 0.4)",
-                    border: "4px solid #ff0050"
-                  }}>
-                    <img 
-                      src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://www.tiktok.com/@apiryon.club"
-                      alt="QR Code TikTok"
-                      style={{ width: "90%", height: "90%" }}
-                    />
-                  </div>
-
-                  <div style={{ 
-                    fontSize: "clamp(1.2rem, 2vw, 1.8rem)", 
-                    color: "#cbd5e1",
-                    fontWeight: "700"
-                  }}>
-                    תראו את עצמכם בסרטונים! 📸
-                  </div>
-                </div>
-
-                {/* QR Code for Upload to Screen */}
-                <div style={{
-                    background: "rgba(15, 23, 42, 0.8)",
-                    borderRadius: "24px",
-                    padding: "30px",
-                    border: "3px solid rgba(139, 92, 246, 0.5)",
-                    textAlign: "center",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    boxShadow: "0 10px 60px rgba(139, 92, 246, 0.3)",
-                    backdropFilter: "blur(30px)"
-                  }}
-                >
-                  <div style={{ 
-                    fontSize: "clamp(1.5rem, 3vw, 2.5rem)", 
-                    color: "#a78bfa", 
-                    marginBottom: "20px",
-                    fontWeight: "800",
-                    textShadow: "0 0 20px rgba(139, 92, 246, 0.8)"
-                  }}>
-                    📺 הופיעו פה!
-                  </div>
-
-                  <div style={{
-                    width: "clamp(200px, 20vw, 300px)",
-                    height: "clamp(200px, 20vw, 300px)",
-                    background: "#fff",
-                    borderRadius: "20px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginBottom: "20px",
-                    boxShadow: "0 0 40px rgba(139, 92, 246, 0.4)",
-                    border: "4px solid #a78bfa"
-                  }}>
-                    <img 
-                      src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${window.location.origin}/UploadToScreen`}
-                      alt="QR Code העלאה למסך"
-                      style={{ width: "90%", height: "90%" }}
-                    />
-                  </div>
-
-                  <div style={{ 
-                    fontSize: "clamp(1.2rem, 2vw, 1.8rem)", 
-                    color: "#cbd5e1",
-                    fontWeight: "700",
-                    lineHeight: "1.4"
-                  }}>
-                    העלה תמונות והודעות למסך!
-                  </div>
-                </div>
-              </div>
-
-              {/* Rating Reminder */}
+              {/* Single Large QR Code */}
               <motion.div
                 animate={{
-                  scale: [1, 1.05, 1]
+                  boxShadow: [
+                    "0 0 60px rgba(0, 202, 255, 0.4)",
+                    "0 0 100px rgba(0, 202, 255, 0.7)",
+                    "0 0 60px rgba(0, 202, 255, 0.4)"
+                  ]
                 }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity
-                }}
+                transition={{ duration: 2, repeat: Infinity }}
                 style={{
-                  marginTop: "40px",
-                  padding: "20px 40px",
-                  background: "rgba(251, 191, 36, 0.15)",
-                  border: "2px solid rgba(251, 191, 36, 0.4)",
-                  borderRadius: "20px",
-                  textAlign: "center"
+                  background: "rgba(15, 23, 42, 0.9)",
+                  borderRadius: "40px",
+                  padding: "60px",
+                  border: currentQRIndex === 0 ? "5px solid rgba(0, 202, 255, 0.6)" : 
+                         currentQRIndex === 1 ? "5px solid rgba(255, 0, 80, 0.6)" :
+                         "5px solid rgba(139, 92, 246, 0.6)",
+                  textAlign: "center",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  maxWidth: "700px"
                 }}
               >
-                <div style={{
-                  fontSize: "clamp(1.5rem, 3vw, 2.5rem)",
-                  fontWeight: "900",
-                  color: "#fbbf24",
-                  marginBottom: "10px"
+                {/* QR Icon */}
+                <div style={{ 
+                  fontSize: "clamp(3rem, 6vw, 5rem)", 
+                  marginBottom: "30px"
                 }}>
-                  ⭐ אל תשכחו לדרג את הזמרים! ⭐
+                  {currentQRIndex === 0 && "💬"}
+                  {currentQRIndex === 1 && "🎵"}
+                  {currentQRIndex === 2 && "📺"}
                 </div>
+
+                {/* QR Code */}
                 <div style={{
-                  fontSize: "clamp(1rem, 2vw, 1.5rem)",
-                  color: "#cbd5e1"
+                  width: "clamp(300px, 35vw, 500px)",
+                  height: "clamp(300px, 35vw, 500px)",
+                  background: "#fff",
+                  borderRadius: "30px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: "30px",
+                  border: "8px solid " + (
+                    currentQRIndex === 0 ? "#00caff" : 
+                    currentQRIndex === 1 ? "#ff0050" :
+                    "#a78bfa"
+                  )
                 }}>
-                  סרקו את הQR בתור והצביעו לזמרים האהובים עליכם
+                  <img 
+                    src={
+                      currentQRIndex === 0 
+                        ? "https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15"
+                        : currentQRIndex === 1
+                        ? "https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=https://www.tiktok.com/@apiryon.club"
+                        : `https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=${window.location.origin}/UploadToScreen`
+                    }
+                    alt="QR Code"
+                    style={{ width: "90%", height: "90%" }}
+                  />
+                </div>
+
+                {/* Description */}
+                <div style={{ 
+                  fontSize: "clamp(1.8rem, 3.5vw, 3rem)", 
+                  color: currentQRIndex === 0 ? "#00caff" : 
+                         currentQRIndex === 1 ? "#ff0050" :
+                         "#a78bfa",
+                  fontWeight: "800",
+                  textShadow: "0 0 30px currentColor",
+                  lineHeight: "1.4",
+                  marginBottom: "20px"
+                }}>
+                  {currentQRIndex === 0 && "קבוצת וואטסאפ"}
+                  {currentQRIndex === 1 && "@apiryon.club"}
+                  {currentQRIndex === 2 && "העלה תמונות והודעות"}
+                </div>
+
+                <div style={{ 
+                  fontSize: "clamp(1.3rem, 2.5vw, 2rem)", 
+                  color: "#cbd5e1",
+                  fontWeight: "600",
+                  lineHeight: "1.5"
+                }}>
+                  {currentQRIndex === 0 && "עדכונים על ערבי קריוקי הבאים"}
+                  {currentQRIndex === 1 && "תראו את עצמכם בסרטונים! 📸"}
+                  {currentQRIndex === 2 && "הופיעו במסך הגדול!"}
                 </div>
               </motion.div>
+
+              {/* Progress Dots */}
+              <div style={{ display: "flex", gap: "15px" }}>
+                {[0, 1, 2].map((idx) => (
+                  <div
+                    key={idx}
+                    style={{
+                      width: "20px",
+                      height: "20px",
+                      borderRadius: "50%",
+                      background: idx === currentQRIndex ? "#00caff" : "rgba(100, 116, 139, 0.5)",
+                      transition: "all 0.3s",
+                      boxShadow: idx === currentQRIndex ? "0 0 20px rgba(0, 202, 255, 0.8)" : "none"
+                    }}
+                  />
+                ))}
+              </div>
             </motion.div>
           )}
         </main>
