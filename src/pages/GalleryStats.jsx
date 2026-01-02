@@ -56,8 +56,21 @@ export default function GalleryStats() {
   // Calculate stats
   const totalViews = views.length;
   const totalDownloads = downloads.length;
-  const uniqueViewers = new Set(views.map(v => v.user_identifier)).size;
-  const uniqueDownloaders = new Set(downloads.map(d => d.user_identifier)).size;
+
+  // Get all visitors with their details
+  const visitorsList = views.reduce((acc, view) => {
+    const existing = acc.find(v => v.user_identifier === view.user_identifier);
+    if (existing) {
+      existing.visits++;
+    } else {
+      acc.push({
+        user_identifier: view.user_identifier,
+        visits: 1,
+        first_visit: view.created_date
+      });
+    }
+    return acc;
+  }, []).sort((a, b) => b.visits - a.visits);
 
   // Views by gallery
   const viewsByGallery = {};
@@ -166,33 +179,67 @@ export default function GalleryStats() {
             </div>
             <div style={{ fontSize: "1rem", color: "#cbd5e1" }}>סך הורדות תמונות</div>
           </div>
+        </div>
 
-          <div style={{
-            background: "rgba(15, 23, 42, 0.95)",
-            border: "2px solid rgba(139, 92, 246, 0.3)",
-            borderRadius: "20px",
-            padding: "24px",
-            textAlign: "center"
-          }}>
-            <TrendingUp className="w-12 h-12" style={{ margin: "0 auto 16px", color: "#a78bfa" }} />
-            <div style={{ fontSize: "2.5rem", fontWeight: "900", color: "#a78bfa", marginBottom: "8px" }}>
-              {uniqueViewers}
-            </div>
-            <div style={{ fontSize: "1rem", color: "#cbd5e1" }}>מבקרים ייחודיים</div>
-          </div>
-
-          <div style={{
-            background: "rgba(15, 23, 42, 0.95)",
-            border: "2px solid rgba(16, 185, 129, 0.3)",
-            borderRadius: "20px",
-            padding: "24px",
-            textAlign: "center"
-          }}>
-            <Camera className="w-12 h-12" style={{ margin: "0 auto 16px", color: "#10b981" }} />
-            <div style={{ fontSize: "2.5rem", fontWeight: "900", color: "#10b981", marginBottom: "8px" }}>
-              {uniqueDownloaders}
-            </div>
-            <div style={{ fontSize: "1rem", color: "#cbd5e1" }}>מורידים ייחודיים</div>
+        {/* Visitors List */}
+        <div style={{
+          background: "rgba(15, 23, 42, 0.95)",
+          borderRadius: "20px",
+          padding: "24px",
+          border: "2px solid rgba(0, 202, 255, 0.3)",
+          marginBottom: "40px"
+        }}>
+          <h3 style={{ fontSize: "1.5rem", fontWeight: "800", color: "#00caff", marginBottom: "20px" }}>
+            👥 רשימת מבקרים
+          </h3>
+          <div style={{ maxHeight: "400px", overflowY: "auto" }}>
+            {visitorsList.length === 0 ? (
+              <div style={{ textAlign: "center", padding: "40px", color: "#64748b" }}>
+                עדיין אין מבקרים
+              </div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                {visitorsList.map((visitor, idx) => (
+                  <div
+                    key={idx}
+                    style={{
+                      padding: "16px",
+                      background: "rgba(30, 41, 59, 0.5)",
+                      borderRadius: "12px",
+                      border: "1px solid rgba(0, 202, 255, 0.2)",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center"
+                    }}
+                  >
+                    <div>
+                      <div style={{ fontSize: "1rem", fontWeight: "700", color: "#e2e8f0", marginBottom: "4px" }}>
+                        {visitor.user_identifier}
+                      </div>
+                      <div style={{ fontSize: "0.85rem", color: "#94a3b8" }}>
+                        ביקור ראשון: {new Date(visitor.first_visit).toLocaleDateString('he-IL', { 
+                          day: '2-digit', 
+                          month: '2-digit', 
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </div>
+                    </div>
+                    <div style={{
+                      padding: "8px 16px",
+                      background: "rgba(0, 202, 255, 0.1)",
+                      borderRadius: "8px",
+                      color: "#00caff",
+                      fontWeight: "700",
+                      fontSize: "0.9rem"
+                    }}>
+                      {visitor.visits} ביקורים
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
