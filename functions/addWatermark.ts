@@ -24,8 +24,8 @@ Deno.serve(async (req) => {
     // טעינת הלוגו
     const logo = await Jimp.read(LOGO_URL);
     
-    // שינוי גודל הלוגו - 120 פיקסלים
-    logo.resize(120, 120);
+    // שינוי גודל הלוגו - 100 פיקסלים
+    logo.resize(100, 100);
     
     // התאמת שקיפות - 75%
     logo.opacity(0.75);
@@ -39,7 +39,7 @@ Deno.serve(async (req) => {
     image.composite(logo, xPos, yPos);
 
     // שמירה באיכות גבוהה
-    const buffer = await image.quality(88).getBufferAsync(Jimp.MIME_JPEG);
+    const buffer = await image.quality(80).getBufferAsync(Jimp.MIME_JPEG);
     const blob = new Blob([buffer], { type: 'image/jpeg' });
     const file = new File([blob], 'watermarked.jpg', { type: 'image/jpeg' });
 
