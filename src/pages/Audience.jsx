@@ -6,6 +6,7 @@ import { base44 } from "@/api/base44Client";
 import ApyironLogo from "../components/ApyironLogo";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+import DOMPurify from "dompurify";
 
 // --- 1. Hook לניהול תור חכם ---
 const useSmartQueue = () => {
@@ -90,7 +91,7 @@ const MediaView = ({ data, queueLength }) => (
   </motion.div>
 );
 
-// תצוגת הודעות (Batch)
+// תצוגת הודעות (Batch) - עם הגנת XSS
 const MessagesView = ({ messages }) => (
   <motion.div 
     initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -50 }} transition={{ duration: 0.8 }}
@@ -110,8 +111,8 @@ const MessagesView = ({ messages }) => (
           initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.2 }}
           className="bg-white/5 border border-purple-500/30 p-8 rounded-3xl shadow-[0_0_30px_rgba(168,85,247,0.15)] flex flex-col gap-2"
         >
-          <span className="text-2xl text-purple-300 font-bold">{msg.sender_name}:</span>
-          <span className="text-4xl text-white font-bold leading-relaxed">{msg.message}</span>
+          <span className="text-2xl text-purple-300 font-bold">{DOMPurify.sanitize(msg.sender_name)}</span>
+          <span className="text-4xl text-white font-bold leading-relaxed">{DOMPurify.sanitize(msg.message)}</span>
         </motion.div>
       ))}
     </div>
@@ -149,14 +150,14 @@ const SongView = ({ song }) => (
       )}
 
       <div className="flex flex-col gap-2">
-        <h1 className="text-6xl md:text-8xl font-black text-white drop-shadow-2xl">{song.singer_name}</h1>
-        <h2 className="text-4xl md:text-5xl font-bold text-cyan-400">{song.song_title}</h2>
-        {song.song_artist && <h3 className="text-3xl text-slate-300">{song.song_artist}</h3>}
+        <h1 className="text-6xl md:text-8xl font-black text-white drop-shadow-2xl">{DOMPurify.sanitize(song.singer_name)}</h1>
+        <h2 className="text-4xl md:text-5xl font-bold text-cyan-400">{DOMPurify.sanitize(song.song_title)}</h2>
+        {song.song_artist && <h3 className="text-3xl text-slate-300">{DOMPurify.sanitize(song.song_artist)}</h3>}
       </div>
 
       {song.message && (
         <div className="mt-8 bg-white/10 px-8 py-6 rounded-2xl border border-white/20 text-3xl font-medium text-white italic">
-          "{song.message}"
+          "{DOMPurify.sanitize(song.message)}"
         </div>
       )}
     </div>

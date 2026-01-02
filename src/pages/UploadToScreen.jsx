@@ -89,6 +89,22 @@ export default function UploadToScreen() {
     setIsUploading(true);
     try {
       const blob = await fetch(capturedPhoto).then(r => r.blob());
+      
+      // 🔒 Security: Validate file size (max 5MB)
+      const MAX_SIZE = 5 * 1024 * 1024;
+      if (blob.size > MAX_SIZE) {
+        setStatus({ type: "error", message: "⚠️ התמונה גדולה מדי (מקסימום 5MB)" });
+        setIsUploading(false);
+        return;
+      }
+      
+      // 🔒 Security: Validate file type
+      if (!blob.type.startsWith('image/')) {
+        setStatus({ type: "error", message: "⚠️ ניתן להעלות תמונות בלבד" });
+        setIsUploading(false);
+        return;
+      }
+      
       const file = new File([blob], "audience.jpg", { type: "image/jpeg" });
       const upload = await base44.integrations.Core.UploadFile({ file });
 
@@ -116,11 +132,22 @@ export default function UploadToScreen() {
       return;
     }
 
+    // 🔒 Security: Validate input length
+    if (senderName.trim().length > 100) {
+      setStatus({ type: "error", message: "⚠️ שם ארוך מדי" });
+      return;
+    }
+    
+    if (message.trim().length > 100) {
+      setStatus({ type: "error", message: "⚠️ הודעה ארוכה מדי" });
+      return;
+    }
+
     setIsUploading(true);
     try {
       await base44.entities.Message.create({
-        sender_name: senderName.trim(),
-        message: message.trim()
+        sender_name: senderName.trim().substring(0, 100),
+        message: message.trim().substring(0, 100)
       });
 
       setStatus({ type: "ok", message: "✅ ההודעה נשלחה למסך!" });
@@ -315,6 +342,21 @@ export default function UploadToScreen() {
                           onChange={async (e) => {
                             const file = e.target.files?.[0];
                             if (file) {
+                              // 🔒 Security: Validate file size (max 5MB)
+                              const MAX_SIZE = 5 * 1024 * 1024;
+                              if (file.size > MAX_SIZE) {
+                                setStatus({ type: "error", message: "⚠️ התמונה גדולה מדי (מקסימום 5MB)" });
+                                e.target.value = '';
+                                return;
+                              }
+                              
+                              // 🔒 Security: Validate file type
+                              if (!file.type.startsWith('image/')) {
+                                setStatus({ type: "error", message: "⚠️ ניתן להעלות תמונות בלבד" });
+                                e.target.value = '';
+                                return;
+                              }
+                              
                               const reader = new FileReader();
                               reader.onloadend = () => {
                                 setCapturedPhoto(reader.result);
