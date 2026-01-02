@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Menu, X, LogOut, Phone, Settings, FileText, User } from "lucide-react";
+import { Menu, X, LogOut, Phone, Settings, FileText, User, Camera } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
@@ -150,6 +150,28 @@ export default function MenuButton() {
 
             {/* Menu Items */}
             <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+              <Link
+                to={createPageUrl("Gallery")}
+                onClick={() => setIsOpen(false)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  padding: "12px",
+                  background: "rgba(30, 41, 59, 0.5)",
+                  borderRadius: "10px",
+                  textDecoration: "none",
+                  color: "#e2e8f0",
+                  fontSize: "0.9rem",
+                  transition: "background 0.2s"
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = "rgba(139, 92, 246, 0.1)"}
+                onMouseLeave={(e) => e.currentTarget.style.background = "rgba(30, 41, 59, 0.5)"}
+              >
+                <Camera className="w-5 h-5" style={{ color: "#a78bfa" }} />
+                📸 גלריית תמונות
+              </Link>
+
               <Link
                 to={createPageUrl("Profile")}
                 onClick={() => setIsOpen(false)}
