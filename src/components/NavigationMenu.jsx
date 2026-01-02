@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Menu, X, Tv, Shield, BarChart3, UserPlus } from "lucide-react";
+import { Menu, X, Tv, Shield, BarChart3, UserPlus, Camera, Home, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
@@ -80,46 +80,54 @@ export default function NavigationMenu({ onSummaryClick }) {
           borderLeft: "1px solid rgba(0, 202, 255, 0.3)"
         }}
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-          {onSummaryClick && (
-            <button
-              onClick={() => {
-                setIsOpen(false);
-                onSummaryClick();
-              }}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
-                padding: "16px 20px",
-                borderRadius: "12px",
-                background: "rgba(251, 191, 36, 0.1)",
-                border: "1px solid rgba(251, 191, 36, 0.3)",
-                color: "#fbbf24",
-                textDecoration: "none",
-                fontSize: "1.1rem",
-                fontWeight: "600",
-                transition: "all 0.2s",
-                cursor: "pointer",
-                width: "100%",
-                textAlign: "right"
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = "rgba(251, 191, 36, 0.2)";
-                e.currentTarget.style.transform = "translateX(-5px)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "rgba(251, 191, 36, 0.1)";
-                e.currentTarget.style.transform = "translateX(0)";
-              }}
-            >
-              <BarChart3 className="w-5 h-5" />
-              <span>סיכום הערב</span>
-            </button>
-          )}
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px", overflowY: "auto", maxHeight: "calc(100vh - 100px)" }}>
+          {/* Main Action */}
+          <Link
+            to={createPageUrl("Home")}
+            onClick={() => setIsOpen(false)}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              padding: "16px 20px",
+              borderRadius: "12px",
+              background: "rgba(0, 202, 255, 0.15)",
+              border: "2px solid rgba(0, 202, 255, 0.4)",
+              color: "#00caff",
+              textDecoration: "none",
+              fontSize: "1.1rem",
+              fontWeight: "700",
+              transition: "all 0.2s"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "rgba(0, 202, 255, 0.25)";
+              e.currentTarget.style.transform = "translateX(-5px)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "rgba(0, 202, 255, 0.15)";
+              e.currentTarget.style.transform = "translateX(0)";
+            }}
+          >
+            <Home className="w-5 h-5" />
+            <span>🎤 רישום לקריוקי</span>
+          </Link>
 
           {user?.role === 'admin' && (
             <>
+              {/* Admin Section */}
+              <div style={{ 
+                fontSize: "0.75rem", 
+                color: "#64748b", 
+                fontWeight: "700", 
+                marginTop: "20px",
+                marginBottom: "8px",
+                paddingRight: "8px",
+                textTransform: "uppercase",
+                letterSpacing: "0.05em"
+              }}>
+                ניהול מנהל
+              </div>
+
               <Link
                 to={createPageUrl("Admin")}
                 onClick={() => setIsOpen(false)}
@@ -127,22 +135,22 @@ export default function NavigationMenu({ onSummaryClick }) {
                   display: "flex",
                   alignItems: "center",
                   gap: "12px",
-                  padding: "16px 20px",
-                  borderRadius: "12px",
-                  background: "rgba(0, 202, 255, 0.1)",
-                  border: "1px solid rgba(0, 202, 255, 0.3)",
+                  padding: "12px 16px",
+                  borderRadius: "10px",
+                  background: "rgba(0, 202, 255, 0.08)",
+                  border: "1px solid rgba(0, 202, 255, 0.2)",
                   color: "#00caff",
                   textDecoration: "none",
-                  fontSize: "1.1rem",
+                  fontSize: "1rem",
                   fontWeight: "600",
                   transition: "all 0.2s"
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "rgba(0, 202, 255, 0.2)";
+                  e.currentTarget.style.background = "rgba(0, 202, 255, 0.15)";
                   e.currentTarget.style.transform = "translateX(-5px)";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "rgba(0, 202, 255, 0.1)";
+                  e.currentTarget.style.background = "rgba(0, 202, 255, 0.08)";
                   e.currentTarget.style.transform = "translateX(0)";
                 }}
               >
@@ -157,27 +165,27 @@ export default function NavigationMenu({ onSummaryClick }) {
                   display: "flex",
                   alignItems: "center",
                   gap: "12px",
-                  padding: "16px 20px",
-                  borderRadius: "12px",
-                  background: "rgba(251, 191, 36, 0.1)",
-                  border: "1px solid rgba(251, 191, 36, 0.3)",
+                  padding: "12px 16px",
+                  borderRadius: "10px",
+                  background: "rgba(251, 191, 36, 0.08)",
+                  border: "1px solid rgba(251, 191, 36, 0.2)",
                   color: "#fbbf24",
                   textDecoration: "none",
-                  fontSize: "1.1rem",
+                  fontSize: "1rem",
                   fontWeight: "600",
                   transition: "all 0.2s"
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "rgba(251, 191, 36, 0.2)";
+                  e.currentTarget.style.background = "rgba(251, 191, 36, 0.15)";
                   e.currentTarget.style.transform = "translateX(-5px)";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "rgba(251, 191, 36, 0.1)";
+                  e.currentTarget.style.background = "rgba(251, 191, 36, 0.08)";
                   e.currentTarget.style.transform = "translateX(0)";
                 }}
               >
                 <BarChart3 className="w-5 h-5" />
-                <span>סטטיסטיקות ותחרות</span>
+                <span>סטטיסטיקות</span>
               </Link>
 
               <Link
@@ -187,126 +195,88 @@ export default function NavigationMenu({ onSummaryClick }) {
                   display: "flex",
                   alignItems: "center",
                   gap: "12px",
-                  padding: "16px 20px",
-                  borderRadius: "12px",
-                  background: "rgba(139, 92, 246, 0.1)",
-                  border: "1px solid rgba(139, 92, 246, 0.3)",
+                  padding: "12px 16px",
+                  borderRadius: "10px",
+                  background: "rgba(139, 92, 246, 0.08)",
+                  border: "1px solid rgba(139, 92, 246, 0.2)",
                   color: "#a78bfa",
                   textDecoration: "none",
-                  fontSize: "1.1rem",
+                  fontSize: "1rem",
                   fontWeight: "600",
                   transition: "all 0.2s"
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "rgba(139, 92, 246, 0.2)";
+                  e.currentTarget.style.background = "rgba(139, 92, 246, 0.15)";
                   e.currentTarget.style.transform = "translateX(-5px)";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "rgba(139, 92, 246, 0.1)";
+                  e.currentTarget.style.background = "rgba(139, 92, 246, 0.08)";
                   e.currentTarget.style.transform = "translateX(0)";
                 }}
               >
-                <Shield className="w-5 h-5" />
-                <span>ניהול משתמשים</span>
+                <Users className="w-5 h-5" />
+                <span>משתמשים</span>
               </Link>
 
-
-
-
+              {/* Display Screens Section */}
+              <div style={{ 
+                fontSize: "0.75rem", 
+                color: "#64748b", 
+                fontWeight: "700", 
+                marginTop: "20px",
+                marginBottom: "8px",
+                paddingRight: "8px",
+                textTransform: "uppercase",
+                letterSpacing: "0.05em"
+              }}>
+                מסכי תצוגה
+              </div>
 
               <Link
-                to={createPageUrl("ManualQueue")}
+                to={createPageUrl("Audience")}
                 onClick={() => setIsOpen(false)}
                 style={{
                   display: "flex",
                   alignItems: "center",
                   gap: "12px",
-                  padding: "16px 20px",
-                  borderRadius: "12px",
-                  background: "rgba(251, 191, 36, 0.1)",
-                  border: "1px solid rgba(251, 191, 36, 0.3)",
-                  color: "#fbbf24",
+                  padding: "12px 16px",
+                  borderRadius: "10px",
+                  background: "rgba(0, 202, 255, 0.08)",
+                  border: "1px solid rgba(0, 202, 255, 0.2)",
+                  color: "#00caff",
                   textDecoration: "none",
-                  fontSize: "1.1rem",
+                  fontSize: "1rem",
                   fontWeight: "600",
                   transition: "all 0.2s"
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "rgba(251, 191, 36, 0.2)";
+                  e.currentTarget.style.background = "rgba(0, 202, 255, 0.15)";
                   e.currentTarget.style.transform = "translateX(-5px)";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "rgba(251, 191, 36, 0.1)";
+                  e.currentTarget.style.background = "rgba(0, 202, 255, 0.08)";
                   e.currentTarget.style.transform = "translateX(0)";
                 }}
               >
-                <Menu className="w-5 h-5" />
-                <span>ניהול קריוקי ידני</span>
-              </Link>
-
-
-
-              <Link
-                to={createPageUrl("Home")}
-                onClick={() => setIsOpen(false)}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "12px",
-                  padding: "16px 20px",
-                  borderRadius: "12px",
-                  background: "rgba(251, 191, 36, 0.1)",
-                  border: "1px solid rgba(251, 191, 36, 0.3)",
-                  color: "#fbbf24",
-                  textDecoration: "none",
-                  fontSize: "1.1rem",
-                  fontWeight: "600",
-                  transition: "all 0.2s"
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "rgba(251, 191, 36, 0.2)";
-                  e.currentTarget.style.transform = "translateX(-5px)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "rgba(251, 191, 36, 0.1)";
-                  e.currentTarget.style.transform = "translateX(0)";
-                }}
-              >
-                <UserPlus className="w-5 h-5" />
-                <span>טופס רישום לתור</span>
+                <Tv className="w-5 h-5" />
+                <span>מסך קהל</span>
               </Link>
             </>
           )}
 
-          <Link
-            to={createPageUrl("UploadToScreen")}
-            onClick={() => setIsOpen(false)}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "12px",
-              padding: "16px 20px",
-              borderRadius: "12px",
-              background: "rgba(139, 92, 246, 0.1)",
-              border: "1px solid rgba(139, 92, 246, 0.3)",
-              color: "#a78bfa",
-              textDecoration: "none",
-              fontSize: "1.1rem",
-              fontWeight: "600",
-              transition: "all 0.2s"
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "rgba(139, 92, 246, 0.2)";
-              e.currentTarget.style.transform = "translateX(-5px)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "rgba(139, 92, 246, 0.1)";
-              e.currentTarget.style.transform = "translateX(0)";
-            }}
-          >
-            <Tv className="w-5 h-5" />
-            <span>העלה למסך</span>
-          </Link>
+          {/* Public Section */}
+          <div style={{ 
+            fontSize: "0.75rem", 
+            color: "#64748b", 
+            fontWeight: "700", 
+            marginTop: "20px",
+            marginBottom: "8px",
+            paddingRight: "8px",
+            textTransform: "uppercase",
+            letterSpacing: "0.05em"
+          }}>
+            דפים כלליים
+          </div>
 
           <Link
             to={createPageUrl("Landing")}
@@ -315,27 +285,27 @@ export default function NavigationMenu({ onSummaryClick }) {
               display: "flex",
               alignItems: "center",
               gap: "12px",
-              padding: "16px 20px",
-              borderRadius: "12px",
-              background: "rgba(251, 191, 36, 0.1)",
-              border: "1px solid rgba(251, 191, 36, 0.3)",
+              padding: "12px 16px",
+              borderRadius: "10px",
+              background: "rgba(251, 191, 36, 0.08)",
+              border: "1px solid rgba(251, 191, 36, 0.2)",
               color: "#fbbf24",
               textDecoration: "none",
-              fontSize: "1.1rem",
+              fontSize: "1rem",
               fontWeight: "600",
               transition: "all 0.2s"
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = "rgba(251, 191, 36, 0.2)";
+              e.currentTarget.style.background = "rgba(251, 191, 36, 0.15)";
               e.currentTarget.style.transform = "translateX(-5px)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = "rgba(251, 191, 36, 0.1)";
+              e.currentTarget.style.background = "rgba(251, 191, 36, 0.08)";
               e.currentTarget.style.transform = "translateX(0)";
             }}
           >
-            <Tv className="w-5 h-5" />
-            <span>דף נחיתה</span>
+            <Home className="w-5 h-5" />
+            <span>דף בית</span>
           </Link>
 
           <Link
@@ -345,57 +315,57 @@ export default function NavigationMenu({ onSummaryClick }) {
               display: "flex",
               alignItems: "center",
               gap: "12px",
-              padding: "16px 20px",
-              borderRadius: "12px",
-              background: "rgba(139, 92, 246, 0.1)",
-              border: "1px solid rgba(139, 92, 246, 0.3)",
+              padding: "12px 16px",
+              borderRadius: "10px",
+              background: "rgba(139, 92, 246, 0.08)",
+              border: "1px solid rgba(139, 92, 246, 0.2)",
               color: "#a78bfa",
               textDecoration: "none",
-              fontSize: "1.1rem",
+              fontSize: "1rem",
               fontWeight: "600",
               transition: "all 0.2s"
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = "rgba(139, 92, 246, 0.2)";
+              e.currentTarget.style.background = "rgba(139, 92, 246, 0.15)";
               e.currentTarget.style.transform = "translateX(-5px)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = "rgba(139, 92, 246, 0.1)";
+              e.currentTarget.style.background = "rgba(139, 92, 246, 0.08)";
               e.currentTarget.style.transform = "translateX(0)";
             }}
           >
-            <Tv className="w-5 h-5" />
-            <span>גלריית תמונות</span>
+            <Camera className="w-5 h-5" />
+            <span>גלריה</span>
           </Link>
 
           <Link
-            to={createPageUrl("Audience")}
+            to={createPageUrl("UploadToScreen")}
             onClick={() => setIsOpen(false)}
             style={{
               display: "flex",
               alignItems: "center",
               gap: "12px",
-              padding: "16px 20px",
-              borderRadius: "12px",
-              background: "rgba(0, 202, 255, 0.1)",
-              border: "1px solid rgba(0, 202, 255, 0.3)",
-              color: "#00caff",
+              padding: "12px 16px",
+              borderRadius: "10px",
+              background: "rgba(139, 92, 246, 0.08)",
+              border: "1px solid rgba(139, 92, 246, 0.2)",
+              color: "#a78bfa",
               textDecoration: "none",
-              fontSize: "1.1rem",
+              fontSize: "1rem",
               fontWeight: "600",
               transition: "all 0.2s"
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = "rgba(0, 202, 255, 0.2)";
+              e.currentTarget.style.background = "rgba(139, 92, 246, 0.15)";
               e.currentTarget.style.transform = "translateX(-5px)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = "rgba(0, 202, 255, 0.1)";
+              e.currentTarget.style.background = "rgba(139, 92, 246, 0.08)";
               e.currentTarget.style.transform = "translateX(0)";
             }}
           >
             <Tv className="w-5 h-5" />
-            <span>מסך קהל</span>
+            <span>העלאה למסך</span>
           </Link>
         </div>
       </div>
