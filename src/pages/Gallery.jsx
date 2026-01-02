@@ -132,7 +132,28 @@ export default function Gallery() {
     window.open(whatsappUrl, '_blank');
   };
 
-  const handleShareImage = (imageUrl) => {
+  const handleShareImage = async (imageUrl, imageName) => {
+    try {
+      // Try Web Share API (works on mobile)
+      if (navigator.share && navigator.canShare) {
+        const response = await fetch(imageUrl);
+        const blob = await response.blob();
+        const file = new File([blob], imageName || 'apiryon-photo.jpg', { type: blob.type });
+        
+        if (navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            files: [file],
+            title: 'תמונה מאפריון',
+            text: '📸 תראו אותי בתמונה הזו מאפריון! 🎤✨'
+          });
+          return;
+        }
+      }
+    } catch (err) {
+      // Fallback to WhatsApp with link
+    }
+    
+    // Fallback: WhatsApp with image link
     const text = `📸 תראו אותי בתמונה הזו מאפריון! 🎤✨\n\n${imageUrl}\n\n🎉 מועדון הקריוקי המוביל בצפון!`;
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
     window.open(whatsappUrl, '_blank');
@@ -622,7 +643,7 @@ export default function Gallery() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleShareImage(img.image_url);
+                          handleShareImage(img.image_url, img.original_filename);
                         }}
                         style={{
                           padding: "8px 16px",
@@ -733,7 +754,7 @@ export default function Gallery() {
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                handleShareImage(selectedImage.image_url);
+                handleShareImage(selectedImage.image_url, selectedImage.original_filename);
               }}
               style={{
                 padding: "14px 28px",
