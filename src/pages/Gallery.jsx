@@ -15,8 +15,6 @@ export default function Gallery() {
   const [showFeedbackForm, setShowFeedbackForm] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
-  const [isAddingWatermarks, setIsAddingWatermarks] = useState(false);
-  const [watermarkProgress, setWatermarkProgress] = useState({ current: 0, total: 0 });
   const [selectionMode, setSelectionMode] = useState(false);
   const [selectedImages, setSelectedImages] = useState([]);
 
