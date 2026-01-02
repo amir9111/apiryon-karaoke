@@ -658,52 +658,81 @@ export default function Gallery() {
               </button>
 
               {isAdmin &&
-            <>
-                  <button
-                onClick={() => setSelectionMode(!selectionMode)}
-                style={{
-                  padding: "10px 20px",
-                  background: selectionMode ? "linear-gradient(135deg, #ef4444, #dc2626)" : "linear-gradient(135deg, #8b5cf6, #7c3aed)",
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: "12px",
-                  fontSize: "1rem",
-                  fontWeight: "700",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  boxShadow: "0 0 20px rgba(139, 92, 246, 0.4)"
-                }}>
+              <>
+                    <button
+                  onClick={async () => {
+                    if (!confirm('למחוק כפילויות מהגלריה?')) return;
+                    try {
+                      const result = await base44.functions.invoke('removeDuplicateImages', { gallery_id: selectedGallery.id });
+                      alert(`✅ הוסרו ${result.data.duplicates_removed} תמונות כפולות`);
+                      queryClient.invalidateQueries({ queryKey: ['gallery-images'] });
+                    } catch (err) {
+                      alert('שגיאה: ' + err.message);
+                    }
+                  }}
+                  style={{
+                    padding: "10px 20px",
+                    background: "linear-gradient(135deg, #f59e0b, #d97706)",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "12px",
+                    fontSize: "1rem",
+                    fontWeight: "700",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    boxShadow: "0 0 20px rgba(245, 158, 11, 0.4)"
+                  }}>
 
-                    {selectionMode ? '❌ ביטול בחירה' : '✏️ מחק תמונות'}
-                  </button>
+                      🧹 נקה כפילויות
+                    </button>
 
-                  <button
-                onClick={() => {
-                  setUploadToGallery(selectedGallery);
-                  setShowUploadModal(true);
-                }}
-                style={{
-                  padding: "10px 20px",
-                  background: "linear-gradient(135deg, #10b981, #059669)",
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: "12px",
-                  fontSize: "1rem",
-                  fontWeight: "700",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  boxShadow: "0 0 20px rgba(16, 185, 129, 0.4)"
-                }}>
+                    <button
+                  onClick={() => setSelectionMode(!selectionMode)}
+                  style={{
+                    padding: "10px 20px",
+                    background: selectionMode ? "linear-gradient(135deg, #ef4444, #dc2626)" : "linear-gradient(135deg, #8b5cf6, #7c3aed)",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "12px",
+                    fontSize: "1rem",
+                    fontWeight: "700",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    boxShadow: "0 0 20px rgba(139, 92, 246, 0.4)"
+                  }}>
 
-                    <Upload className="w-5 h-5" />
-                    העלה תמונות
-                  </button>
-                </>
-            }
+                      {selectionMode ? '❌ ביטול בחירה' : '✏️ מחק תמונות'}
+                    </button>
+
+                    <button
+                  onClick={() => {
+                    setUploadToGallery(selectedGallery);
+                    setShowUploadModal(true);
+                  }}
+                  style={{
+                    padding: "10px 20px",
+                    background: "linear-gradient(135deg, #10b981, #059669)",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "12px",
+                    fontSize: "1rem",
+                    fontWeight: "700",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    boxShadow: "0 0 20px rgba(16, 185, 129, 0.4)"
+                  }}>
+
+                      <Upload className="w-5 h-5" />
+                      העלה תמונות
+                    </button>
+                  </>
+              }
             </div>
 
             <h2 style={{ fontSize: "1.8rem", fontWeight: "800", color: "#fbbf24", marginBottom: "24px" }}>
