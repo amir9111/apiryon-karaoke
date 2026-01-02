@@ -52,41 +52,45 @@ export default function Gallery() {
     try {
       // שליפת כל התמונות
       const allImages = await base44.entities.GalleryImage.list('-created_date', 1000);
+      console.log('סה"כ תמונות למעבד:', allImages.length);
       setWatermarkProgress({ current: 0, total: allImages.length });
 
       let processed = 0;
+      let updated = 0;
       for (const image of allImages) {
         try {
-          // דילוג על תמונות שכבר עובדו
-          if (image.image_url.includes('watermarked-')) {
-            processed++;
-            setWatermarkProgress({ current: processed, total: allImages.length });
-            continue;
-          }
+          console.log(`מעבד תמונה ${processed + 1}/${allImages.length}...`);
 
-          // הוספת לוגו
+          // הוספת לוגו (ללא דילוג!)
           const result = await base44.functions.invoke('addWatermark', {
             image_url: image.image_url
           });
 
-          // עדכון התמונה
-          await base44.entities.GalleryImage.update(image.id, {
-            image_url: result.data.watermarked_url,
-            thumbnail_url: result.data.watermarked_url
-          });
+          console.log('תוצאה:', result.data);
+
+          if (result.data.watermarked_url) {
+            // עדכון התמונה בדטאבייס
+            await base44.entities.GalleryImage.update(image.id, {
+              image_url: result.data.watermarked_url,
+              thumbnail_url: result.data.watermarked_url
+            });
+            console.log('תמונה עודכנה בהצלחה!');
+            updated++;
+          }
 
           processed++;
           setWatermarkProgress({ current: processed, total: allImages.length });
         } catch (err) {
-          console.error('שגיאה בעיבוד תמונה:', err);
+          console.error('שגיאה בעיבוד תמונה:', image.id, err);
           processed++;
           setWatermarkProgress({ current: processed, total: allImages.length });
         }
       }
 
-      alert('✅ הלוגו התווסף בהצלחה לכל התמונות!');
+      alert(`✅ הלוגו התווסף ל-${updated} תמונות!`);
       queryClient.invalidateQueries({ queryKey: ['gallery-images'] });
     } catch (err) {
+      console.error('שגיאה כללית:', err);
       alert('שגיאה: ' + err.message);
     } finally {
       setIsAddingWatermarks(false);
