@@ -79,62 +79,7 @@ export default function Gallery() {
     queryClient.invalidateQueries({ queryKey: ['gallery-images'] });
   };
 
-  const handleAddWatermarksToAll = async () => {
-    if (!confirm('להוסיף לוגו לכל התמונות בגלריה? זה עלול לקחת כמה דקות...')) {
-      return;
-    }
 
-    setIsAddingWatermarks(true);
-    setWatermarkProgress({ current: 0, total: 0 });
-
-    try {
-      // שליפת כל התמונות
-      const allImages = await base44.entities.GalleryImage.list('-created_date', 1000);
-      console.log('סה"כ תמונות למעבד:', allImages.length);
-      setWatermarkProgress({ current: 0, total: allImages.length });
-
-      let processed = 0;
-      let updated = 0;
-      for (const image of allImages) {
-        try {
-          console.log(`מעבד תמונה ${processed + 1}/${allImages.length}...`);
-
-          // הוספת לוגו (ללא דילוג!)
-          const result = await base44.functions.invoke('addWatermark', {
-            image_url: image.image_url
-          });
-
-          console.log('תוצאה:', result.data);
-
-          if (result.data.watermarked_url) {
-            // עדכון התמונה בדטאבייס
-            await base44.entities.GalleryImage.update(image.id, {
-              image_url: result.data.watermarked_url,
-              thumbnail_url: result.data.watermarked_url
-            });
-            console.log('תמונה עודכנה בהצלחה!');
-            updated++;
-          }
-
-          processed++;
-          setWatermarkProgress({ current: processed, total: allImages.length });
-        } catch (err) {
-          console.error('שגיאה בעיבוד תמונה:', image.id, err);
-          processed++;
-          setWatermarkProgress({ current: processed, total: allImages.length });
-        }
-      }
-
-      alert(`✅ הלוגו התווסף ל-${updated} תמונות!`);
-      queryClient.invalidateQueries({ queryKey: ['gallery-images'] });
-    } catch (err) {
-      console.error('שגיאה כללית:', err);
-      alert('שגיאה: ' + err.message);
-    } finally {
-      setIsAddingWatermarks(false);
-      setWatermarkProgress({ current: 0, total: 0 });
-    }
-  };
 
   // Track page view
   React.useEffect(() => {
@@ -1207,16 +1152,11 @@ function UploadGalleryModal({ existingGallery, onClose, onSuccess }) {
         // העלאת התמונה המקורית
         const upload = await base44.integrations.Core.UploadFile({ file });
 
-        // הוספת watermark
-        const watermarkResult = await base44.functions.invoke('addWatermark', {
-          image_url: upload.file_url
-        });
-
-        // שמירה בדאטה בייס עם הלוגו
+        // שמירה בדאטה בייס ישירות ללא watermark
         await base44.entities.GalleryImage.create({
           gallery_id: gallery.id,
-          image_url: watermarkResult.data.watermarked_url,
-          thumbnail_url: watermarkResult.data.watermarked_url,
+          image_url: upload.file_url,
+          thumbnail_url: upload.file_url,
           original_filename: file.name
         });
       }
