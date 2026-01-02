@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Calendar, Users, Music, Sparkles, Phone, Mail, MapPin, Clock, Star } from "lucide-react";
-import { motion } from "framer-motion";
+import { Calendar, Users, Music, Sparkles, Phone, Mail, MapPin, Clock, Star, ChevronLeft, ChevronRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import ApyironLogo from "../components/ApyironLogo";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 
 export default function Landing() {
   const [showVideo, setShowVideo] = useState(true);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const { data: feedbacks = [] } = useQuery({
     queryKey: ['approved-feedbacks'],
@@ -17,6 +18,32 @@ export default function Landing() {
       return all;
     }
   });
+
+  const { data: galleryImages = [] } = useQuery({
+    queryKey: ['landing-gallery-images'],
+    queryFn: async () => {
+      const images = await base44.entities.GalleryImage.list('-created_date', 20);
+      return images.filter(img => img.image_url);
+    },
+    refetchInterval: 30000
+  });
+
+  // Auto-advance carousel
+  React.useEffect(() => {
+    if (galleryImages.length === 0) return;
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % galleryImages.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [galleryImages.length]);
+
+  const nextImage = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % galleryImages.length);
+  };
+
+  const prevImage = () => {
+    setCurrentImageIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length);
+  };
 
   return (
     <div dir="rtl" style={{
@@ -234,6 +261,194 @@ export default function Landing() {
           </div>
         </div>
       </section>
+
+      {/* Gallery Carousel Section */}
+      {galleryImages.length > 0 && (
+        <section style={{
+          padding: "100px 20px",
+          background: "rgba(15, 23, 42, 0.5)"
+        }}>
+          <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+            <h2 style={{
+              fontSize: "clamp(2rem, 5vw, 3rem)",
+              fontWeight: "900",
+              textAlign: "center",
+              color: "#00caff",
+              marginBottom: "60px",
+              textShadow: "0 0 30px rgba(0, 202, 255, 0.5)"
+            }}>
+              📸 הגלריה שלנו
+            </h2>
+
+            <div style={{
+              position: "relative",
+              width: "100%",
+              maxWidth: "900px",
+              margin: "0 auto",
+              height: "500px",
+              borderRadius: "24px",
+              overflow: "hidden",
+              boxShadow: "0 20px 60px rgba(0, 202, 255, 0.3)"
+            }}>
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={currentImageIndex}
+                  src={galleryImages[currentImageIndex]?.image_url}
+                  alt="תמונה מהגלריה"
+                  initial={{ opacity: 0, scale: 1.1 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.7 }}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover"
+                  }}
+                />
+              </AnimatePresence>
+
+              {/* Navigation Buttons */}
+              <button
+                onClick={prevImage}
+                style={{
+                  position: "absolute",
+                  right: "20px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  width: "50px",
+                  height: "50px",
+                  borderRadius: "50%",
+                  background: "rgba(0, 202, 255, 0.9)",
+                  border: "none",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  boxShadow: "0 4px 20px rgba(0, 202, 255, 0.5)",
+                  transition: "all 0.3s",
+                  zIndex: 10
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
+                  e.currentTarget.style.boxShadow = "0 6px 30px rgba(0, 202, 255, 0.7)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(-50%) scale(1)";
+                  e.currentTarget.style.boxShadow = "0 4px 20px rgba(0, 202, 255, 0.5)";
+                }}
+              >
+                <ChevronRight className="w-6 h-6" style={{ color: "#001a2e" }} />
+              </button>
+
+              <button
+                onClick={nextImage}
+                style={{
+                  position: "absolute",
+                  left: "20px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  width: "50px",
+                  height: "50px",
+                  borderRadius: "50%",
+                  background: "rgba(0, 202, 255, 0.9)",
+                  border: "none",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  boxShadow: "0 4px 20px rgba(0, 202, 255, 0.5)",
+                  transition: "all 0.3s",
+                  zIndex: 10
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
+                  e.currentTarget.style.boxShadow = "0 6px 30px rgba(0, 202, 255, 0.7)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(-50%) scale(1)";
+                  e.currentTarget.style.boxShadow = "0 4px 20px rgba(0, 202, 255, 0.5)";
+                }}
+              >
+                <ChevronLeft className="w-6 h-6" style={{ color: "#001a2e" }} />
+              </button>
+
+              {/* Dots Indicator */}
+              <div style={{
+                position: "absolute",
+                bottom: "20px",
+                left: "50%",
+                transform: "translateX(-50%)",
+                display: "flex",
+                gap: "10px",
+                zIndex: 10
+              }}>
+                {galleryImages.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setCurrentImageIndex(idx)}
+                    style={{
+                      width: idx === currentImageIndex ? "30px" : "10px",
+                      height: "10px",
+                      borderRadius: "5px",
+                      background: idx === currentImageIndex ? "#00caff" : "rgba(255, 255, 255, 0.4)",
+                      border: "none",
+                      cursor: "pointer",
+                      transition: "all 0.3s",
+                      boxShadow: idx === currentImageIndex ? "0 0 10px rgba(0, 202, 255, 0.8)" : "none"
+                    }}
+                  />
+                ))}
+              </div>
+
+              {/* Image Counter */}
+              <div style={{
+                position: "absolute",
+                top: "20px",
+                left: "20px",
+                background: "rgba(0, 0, 0, 0.7)",
+                padding: "8px 16px",
+                borderRadius: "20px",
+                color: "#fff",
+                fontSize: "0.9rem",
+                fontWeight: "700",
+                backdropFilter: "blur(10px)"
+              }}>
+                {currentImageIndex + 1} / {galleryImages.length}
+              </div>
+            </div>
+
+            {/* View All Gallery Button */}
+            <div style={{ textAlign: "center", marginTop: "40px" }}>
+              <Link
+                to={createPageUrl("Gallery")}
+                style={{
+                  padding: "16px 40px",
+                  background: "linear-gradient(135deg, #8b5cf6, #6d28d9)",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "50px",
+                  fontSize: "1.2rem",
+                  fontWeight: "700",
+                  textDecoration: "none",
+                  display: "inline-block",
+                  boxShadow: "0 0 30px rgba(139, 92, 246, 0.5)",
+                  transition: "all 0.3s"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "scale(1.05)";
+                  e.currentTarget.style.boxShadow = "0 0 50px rgba(139, 92, 246, 0.7)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "scale(1)";
+                  e.currentTarget.style.boxShadow = "0 0 30px rgba(139, 92, 246, 0.5)";
+                }}
+              >
+                📸 צפו בכל הגלריה
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Story Section */}
       <section style={{
