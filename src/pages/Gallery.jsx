@@ -423,16 +423,23 @@ export default function Gallery() {
                       overflow: "hidden",
                       cursor: "pointer",
                       boxShadow: "0 10px 30px rgba(0, 0, 0, 0.5)",
-                      aspectRatio: "1"
+                      aspectRatio: "1",
+                      background: "rgba(15, 23, 42, 0.5)"
                     }}
                   >
                     <img
-                      src={img.thumbnail_url || img.image_url}
+                      src={img.image_url}
                       alt="תמונה מהגלריה"
+                      loading="lazy"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        e.target.parentElement.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#64748b;font-size:0.9rem;">⚠️ שגיאה בטעינת תמונה</div>';
+                      }}
                       style={{
                         width: "100%",
                         height: "100%",
-                        objectFit: "cover"
+                        objectFit: "cover",
+                        background: "#1e293b"
                       }}
                     />
                     <div style={{
