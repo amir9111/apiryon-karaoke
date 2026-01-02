@@ -2,12 +2,14 @@ import React from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { Check, X, Star, Trash2 } from "lucide-react";
+import { Check, X, Star, Trash2, Edit2 } from "lucide-react";
 import ApyironLogo from "../components/ApyironLogo";
 import MenuButton from "../components/MenuButton";
 
 export default function FeedbackManagement() {
   const [isAdmin, setIsAdmin] = React.useState(false);
+  const [editingFeedback, setEditingFeedback] = React.useState(null);
+  const [editForm, setEditForm] = React.useState({ name: '', message: '', rating: 5 });
   const queryClient = useQueryClient();
 
   React.useEffect(() => {
@@ -41,6 +43,28 @@ export default function FeedbackManagement() {
     mutationFn: (id) => base44.entities.GalleryFeedback.delete(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['feedbacks'] })
   });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }) => base44.entities.GalleryFeedback.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['feedbacks'] });
+      queryClient.invalidateQueries({ queryKey: ['approved-feedbacks'] });
+      setEditingFeedback(null);
+    }
+  });
+
+  const handleEdit = (feedback) => {
+    setEditingFeedback(feedback.id);
+    setEditForm({
+      name: feedback.name,
+      message: feedback.message,
+      rating: feedback.rating || 5
+    });
+  };
+
+  const handleSaveEdit = () => {
+    updateMutation.mutate({ id: editingFeedback, data: editForm });
+  };
 
   if (!isAdmin) {
     return null;
@@ -216,49 +240,164 @@ export default function FeedbackManagement() {
                     background: "rgba(15, 23, 42, 0.95)",
                     border: "2px solid rgba(16, 185, 129, 0.3)",
                     borderRadius: "20px",
-                    padding: "24px",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center"
+                    padding: "24px"
                   }}
                 >
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: "1.1rem", fontWeight: "700", color: "#10b981", marginBottom: "8px" }}>
-                      {feedback.name}
-                    </div>
-                    <div style={{ display: "flex", gap: "4px", marginBottom: "8px" }}>
-                      {[...Array(5)].map((_, i) => (
-                        <Star 
-                          key={i} 
-                          className="w-4 h-4" 
-                          style={{ 
-                            color: i < (feedback.rating || 5) ? "#fbbf24" : "#64748b",
-                            fill: i < (feedback.rating || 5) ? "#fbbf24" : "none"
-                          }} 
+                  {editingFeedback === feedback.id ? (
+                    <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                      <div>
+                        <label style={{ display: "block", fontSize: "0.9rem", color: "#cbd5e1", marginBottom: "6px" }}>
+                          שם
+                        </label>
+                        <input
+                          value={editForm.name}
+                          onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                          style={{
+                            width: "100%",
+                            padding: "10px",
+                            borderRadius: "8px",
+                            border: "1px solid #1f2937",
+                            background: "rgba(15,23,42,0.9)",
+                            color: "#f9fafb"
+                          }}
                         />
-                      ))}
+                      </div>
+
+                      <div>
+                        <label style={{ display: "block", fontSize: "0.9rem", color: "#cbd5e1", marginBottom: "6px" }}>
+                          דירוג
+                        </label>
+                        <div style={{ display: "flex", gap: "8px" }}>
+                          {[1,2,3,4,5].map(num => (
+                            <button
+                              key={num}
+                              onClick={() => setEditForm({ ...editForm, rating: num })}
+                              style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                            >
+                              <Star 
+                                className="w-6 h-6" 
+                                style={{ 
+                                  color: num <= editForm.rating ? "#fbbf24" : "#64748b",
+                                  fill: num <= editForm.rating ? "#fbbf24" : "none"
+                                }} 
+                              />
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div>
+                        <label style={{ display: "block", fontSize: "0.9rem", color: "#cbd5e1", marginBottom: "6px" }}>
+                          תוכן הביקורת
+                        </label>
+                        <textarea
+                          value={editForm.message}
+                          onChange={(e) => setEditForm({ ...editForm, message: e.target.value })}
+                          rows={4}
+                          style={{
+                            width: "100%",
+                            padding: "10px",
+                            borderRadius: "8px",
+                            border: "1px solid #1f2937",
+                            background: "rgba(15,23,42,0.9)",
+                            color: "#f9fafb",
+                            resize: "none"
+                          }}
+                        />
+                      </div>
+
+                      <div style={{ display: "flex", gap: "12px" }}>
+                        <button
+                          onClick={handleSaveEdit}
+                          disabled={updateMutation.isPending}
+                          style={{
+                            flex: 1,
+                            padding: "10px",
+                            background: "linear-gradient(135deg, #10b981, #059669)",
+                            color: "#fff",
+                            border: "none",
+                            borderRadius: "8px",
+                            fontSize: "0.95rem",
+                            fontWeight: "700",
+                            cursor: "pointer",
+                            opacity: updateMutation.isPending ? 0.5 : 1
+                          }}
+                        >
+                          שמור
+                        </button>
+                        <button
+                          onClick={() => setEditingFeedback(null)}
+                          style={{
+                            padding: "10px 20px",
+                            background: "rgba(100, 116, 139, 0.2)",
+                            color: "#94a3b8",
+                            border: "1px solid rgba(100, 116, 139, 0.3)",
+                            borderRadius: "8px",
+                            fontSize: "0.95rem",
+                            fontWeight: "700",
+                            cursor: "pointer"
+                          }}
+                        >
+                          ביטול
+                        </button>
+                      </div>
                     </div>
-                    <p style={{ fontSize: "1rem", color: "#cbd5e1" }}>
-                      "{feedback.message}"
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => {
-                      if (confirm('האם למחוק ביקורת זו?')) {
-                        deleteMutation.mutate(feedback.id);
-                      }
-                    }}
-                    style={{
-                      padding: "10px",
-                      background: "rgba(248, 113, 113, 0.1)",
-                      color: "#f87171",
-                      border: "1px solid rgba(248, 113, 113, 0.3)",
-                      borderRadius: "8px",
-                      cursor: "pointer"
-                    }}
-                  >
-                    <Trash2 className="w-5 h-5" />
-                  </button>
+                  ) : (
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: "1.1rem", fontWeight: "700", color: "#10b981", marginBottom: "8px" }}>
+                          {feedback.name}
+                        </div>
+                        <div style={{ display: "flex", gap: "4px", marginBottom: "8px" }}>
+                          {[...Array(5)].map((_, i) => (
+                            <Star 
+                              key={i} 
+                              className="w-4 h-4" 
+                              style={{ 
+                                color: i < (feedback.rating || 5) ? "#fbbf24" : "#64748b",
+                                fill: i < (feedback.rating || 5) ? "#fbbf24" : "none"
+                              }} 
+                            />
+                          ))}
+                        </div>
+                        <p style={{ fontSize: "1rem", color: "#cbd5e1" }}>
+                          "{feedback.message}"
+                        </p>
+                      </div>
+                      <div style={{ display: "flex", gap: "8px" }}>
+                        <button
+                          onClick={() => handleEdit(feedback)}
+                          style={{
+                            padding: "10px",
+                            background: "rgba(0, 202, 255, 0.1)",
+                            color: "#00caff",
+                            border: "1px solid rgba(0, 202, 255, 0.3)",
+                            borderRadius: "8px",
+                            cursor: "pointer"
+                          }}
+                        >
+                          <Edit2 className="w-5 h-5" />
+                        </button>
+                        <button
+                          onClick={() => {
+                            if (confirm('האם למחוק ביקורת זו?')) {
+                              deleteMutation.mutate(feedback.id);
+                            }
+                          }}
+                          style={{
+                            padding: "10px",
+                            background: "rgba(248, 113, 113, 0.1)",
+                            color: "#f87171",
+                            border: "1px solid rgba(248, 113, 113, 0.3)",
+                            borderRadius: "8px",
+                            cursor: "pointer"
+                          }}
+                        >
+                          <Trash2 className="w-5 h-5" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
