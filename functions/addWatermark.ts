@@ -19,31 +19,51 @@ Deno.serve(async (req) => {
     // טעינת התמונה
     const image = await Jimp.read(image_url);
 
-    // חותמת פשוטה בפינה ימנית תחתונה
-    const font = await Jimp.loadFont(Jimp.FONT_SANS_32_WHITE);
-    const stampText = 'APIRYON';
+    // יצירת חותמת עיגולית
+    const stampSize = 140;
+    const stamp = new Jimp(stampSize, stampSize, 0x00000000);
     
-    // הוספת טקסט עם אפקט צל (הדפסה כפולה)
-    const padding = 40;
-    const xPos = image.bitmap.width - Jimp.measureText(font, stampText) - padding;
-    const yPos = image.bitmap.height - 70;
+    // ציור עיגול עם מסגרת
+    const centerX = stampSize / 2;
+    const centerY = stampSize / 2;
+    const radius = stampSize / 2 - 5;
     
-    // צל (שחור עם שקיפות)
-    image.print(font, xPos + 2, yPos + 2, {
-      text: stampText,
-      alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT
+    // מילוי עיגול (רקע שקוף מאוד)
+    stamp.scan(0, 0, stampSize, stampSize, function(x, y, idx) {
+      const distance = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2));
+      if (distance < radius) {
+        this.bitmap.data[idx + 0] = 255; // R
+        this.bitmap.data[idx + 1] = 255; // G
+        this.bitmap.data[idx + 2] = 255; // B
+        this.bitmap.data[idx + 3] = 30;  // Alpha - שקיפות מאוד
+      }
+      // מסגרת העיגול
+      if (distance >= radius - 3 && distance <= radius) {
+        this.bitmap.data[idx + 0] = 255; // R
+        this.bitmap.data[idx + 1] = 255; // G
+        this.bitmap.data[idx + 2] = 255; // B
+        this.bitmap.data[idx + 3] = 200; // Alpha - מסגרת בולטת יותר
+      }
     });
     
-    // טקסט לבן
-    image.opacity(0.7);
-    const overlay = image.clone();
-    overlay.opacity(1.0);
-    overlay.print(font, xPos, yPos, {
-      text: stampText,
-      alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT
-    });
+    // הוספת טקסט "אפריון הפקות"
+    const font = await Jimp.loadFont(Jimp.FONT_SANS_16_WHITE);
+    const text1 = 'אפריון';
+    const text2 = 'הפקות';
     
-    image.composite(overlay, 0, 0);
+    // מרכוז הטקסט
+    const text1Width = Jimp.measureText(font, text1);
+    const text2Width = Jimp.measureText(font, text2);
+    
+    stamp.print(font, (stampSize - text1Width) / 2, centerY - 18, text1);
+    stamp.print(font, (stampSize - text2Width) / 2, centerY + 2, text2);
+    
+    // הדבקת החותמת בפינה ימנית תחתונה
+    const padding = 30;
+    const xPos = image.bitmap.width - stampSize - padding;
+    const yPos = image.bitmap.height - stampSize - padding;
+    
+    image.composite(stamp, xPos, yPos);
 
     // שמירה באיכות גבוהה
     const buffer = await image.quality(90).getBufferAsync(Jimp.MIME_JPEG);
