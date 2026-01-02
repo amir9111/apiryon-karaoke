@@ -150,6 +150,29 @@ export default function MenuButton() {
 
             {/* Menu Items */}
             <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+              {/* Main Navigation */}
+              <Link
+                to={createPageUrl("Home")}
+                onClick={() => setIsOpen(false)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  padding: "12px",
+                  background: "rgba(30, 41, 59, 0.5)",
+                  borderRadius: "10px",
+                  textDecoration: "none",
+                  color: "#e2e8f0",
+                  fontSize: "0.9rem",
+                  transition: "background 0.2s"
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = "rgba(0, 202, 255, 0.1)"}
+                onMouseLeave={(e) => e.currentTarget.style.background = "rgba(30, 41, 59, 0.5)"}
+              >
+                <div style={{ fontSize: "1.2rem" }}>🎤</div>
+                הצטרף לתור
+              </Link>
+
               <Link
                 to={createPageUrl("Gallery")}
                 onClick={() => setIsOpen(false)}
@@ -169,9 +192,35 @@ export default function MenuButton() {
                 onMouseLeave={(e) => e.currentTarget.style.background = "rgba(30, 41, 59, 0.5)"}
               >
                 <Camera className="w-5 h-5" style={{ color: "#a78bfa" }} />
-                📸 גלריית תמונות
+                גלריית תמונות
               </Link>
 
+              <Link
+                to={createPageUrl("Landing")}
+                onClick={() => setIsOpen(false)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  padding: "12px",
+                  background: "rgba(30, 41, 59, 0.5)",
+                  borderRadius: "10px",
+                  textDecoration: "none",
+                  color: "#e2e8f0",
+                  fontSize: "0.9rem",
+                  transition: "background 0.2s"
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = "rgba(251, 191, 36, 0.1)"}
+                onMouseLeave={(e) => e.currentTarget.style.background = "rgba(30, 41, 59, 0.5)"}
+              >
+                <div style={{ fontSize: "1.2rem" }}>🏠</div>
+                אודות אפריון
+              </Link>
+
+              {/* Divider */}
+              <div style={{ height: "1px", background: "rgba(100, 116, 139, 0.3)", margin: "8px 0" }} />
+
+              {/* User Section */}
               <Link
                 to={createPageUrl("Profile")}
                 onClick={() => setIsOpen(false)}
@@ -195,27 +244,30 @@ export default function MenuButton() {
               </Link>
 
               {user?.role === 'admin' && (
-                <Link
-                  to={createPageUrl("Admin")}
-                  onClick={() => setIsOpen(false)}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "10px",
-                    padding: "12px",
-                    background: "rgba(30, 41, 59, 0.5)",
-                    borderRadius: "10px",
-                    textDecoration: "none",
-                    color: "#e2e8f0",
-                    fontSize: "0.9rem",
-                    transition: "background 0.2s"
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.background = "rgba(0, 202, 255, 0.1)"}
-                  onMouseLeave={(e) => e.currentTarget.style.background = "rgba(30, 41, 59, 0.5)"}
-                >
-                  <Settings className="w-5 h-5" style={{ color: "#00caff" }} />
-                  מסך ניהול
-                </Link>
+                <>
+                  <div style={{ height: "1px", background: "rgba(100, 116, 139, 0.3)", margin: "8px 0" }} />
+                  <Link
+                    to={createPageUrl("Admin")}
+                    onClick={() => setIsOpen(false)}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
+                      padding: "12px",
+                      background: "rgba(30, 41, 59, 0.5)",
+                      borderRadius: "10px",
+                      textDecoration: "none",
+                      color: "#e2e8f0",
+                      fontSize: "0.9rem",
+                      transition: "background 0.2s"
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = "rgba(0, 202, 255, 0.1)"}
+                    onMouseLeave={(e) => e.currentTarget.style.background = "rgba(30, 41, 59, 0.5)"}
+                  >
+                    <Settings className="w-5 h-5" style={{ color: "#00caff" }} />
+                    מסך ניהול
+                  </Link>
+                </>
               )}
 
               <Link
@@ -233,12 +285,14 @@ export default function MenuButton() {
                   fontSize: "0.9rem",
                   transition: "background 0.2s"
                 }}
-                onMouseEnter={(e) => e.currentTarget.style.background = "rgba(0, 202, 255, 0.1)"}
+                onMouseEnter={(e) => e.currentTarget.style.background = "rgba(100, 116, 139, 0.1)"}
                 onMouseLeave={(e) => e.currentTarget.style.background = "rgba(30, 41, 59, 0.5)"}
               >
-                <FileText className="w-5 h-5" style={{ color: "#00caff" }} />
+                <FileText className="w-5 h-5" style={{ color: "#94a3b8" }} />
                 תנאי שימוש
               </Link>
+
+              <div style={{ height: "1px", background: "rgba(100, 116, 139, 0.3)", margin: "8px 0" }} />
 
               <button
                 onClick={handleLogout}
@@ -260,7 +314,7 @@ export default function MenuButton() {
                 onMouseLeave={(e) => e.currentTarget.style.background = "rgba(248, 113, 113, 0.1)"}
               >
                 <LogOut className="w-5 h-5" />
-                התנתק מהמערכת
+                התנתק
               </button>
             </div>
           </div>
