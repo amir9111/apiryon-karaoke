@@ -1,5 +1,4 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
-import Jimp from 'npm:jimp@0.22.10';
 
 Deno.serve(async (req) => {
   try {
@@ -18,64 +17,34 @@ Deno.serve(async (req) => {
 
     console.log('Processing image:', image_url);
 
-    // טעינת התמונה המקורית
+    // טעינת התמונה
     const imageResponse = await fetch(image_url);
-    const imageBuffer = await imageResponse.arrayBuffer();
-
-    // עיבוד עם Jimp
-    const image = await Jimp.read(Buffer.from(imageBuffer));
+    const imageBlob = await imageResponse.blob();
     
-    const width = image.bitmap.width;
-    const height = image.bitmap.height;
+    console.log('Image loaded, size:', imageBlob.size);
 
-    console.log('Image size:', width, 'x', height);
+    // קריאה לשירות ליצירת לוגו בעזרת LLM + העלאה
+    const logoPrompt = `Create a simple watermark image with:
+- Text: "APIRYON CLUB" in large bold white letters
+- Black semi-transparent background
+- Size: 800x200 pixels
+- Professional looking, high contrast`;
 
-    // טעינת פונט גדול
-    const font = await Jimp.loadFont(Jimp.FONT_SANS_128_WHITE);
-    
-    const text = 'APIRYON CLUB';
-    const textWidth = Jimp.measureText(font, text);
-    const textHeight = 128;
+    console.log('Generating watermark logo...');
 
-    // מיקום: מרכז התחתון
-    const x = Math.floor((width - textWidth) / 2);
-    const y = height - textHeight - 50;
+    const logoResult = await base44.asServiceRole.integrations.Core.GenerateImage({
+      prompt: logoPrompt,
+      existing_image_urls: [image_url]
+    });
 
-    console.log('Adding text at:', x, y);
+    console.log('Logo generated:', logoResult.url);
 
-    // רקע שחור
-    const bgPadding = 20;
-    for (let i = x - bgPadding; i < x + textWidth + bgPadding; i++) {
-      for (let j = y - bgPadding; j < y + textHeight + bgPadding; j++) {
-        if (i >= 0 && i < width && j >= 0 && j < height) {
-          image.setPixelColor(0x000000FF, i, j);
-        }
-      }
-    }
-
-    // הוספת טקסט לבן
-    image.print(font, x, y, text);
-
-    console.log('Watermark added successfully');
-
-    // המרה ל-buffer
-    const outputBuffer = await image.getBufferAsync(Jimp.MIME_JPEG);
-
-    // יצירת Blob והעלאה
-    const blob = new Blob([outputBuffer], { type: 'image/jpeg' });
-    const file = new File([blob], `watermarked-${Date.now()}.jpg`, { type: 'image/jpeg' });
-
-    console.log('Uploading watermarked image...');
-
-    // העלאה לשרת
-    const uploadResult = await base44.integrations.Core.UploadFile({ file });
-
-    console.log('Upload successful:', uploadResult.file_url);
-
+    // מחזירים את התמונה עם הלוגו
     return Response.json({ 
       success: true, 
-      watermarked_url: uploadResult.file_url,
-      original_url: image_url
+      watermarked_url: logoResult.url,
+      original_url: image_url,
+      method: 'ai_generated'
     });
 
   } catch (error) {
