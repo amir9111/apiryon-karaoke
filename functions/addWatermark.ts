@@ -15,43 +15,17 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'image_url is required' }, { status: 400 });
     }
 
-    console.log('Processing image:', image_url);
-
-    // טעינת התמונה
-    const imageResponse = await fetch(image_url);
-    const imageBlob = await imageResponse.blob();
-    
-    console.log('Image loaded, size:', imageBlob.size);
-
-    // קריאה לשירות ליצירת לוגו בעזרת LLM + העלאה
-    const logoPrompt = `Create a simple watermark image with:
-- Text: "APIRYON CLUB" in large bold white letters
-- Black semi-transparent background
-- Size: 800x200 pixels
-- Professional looking, high contrast`;
-
-    console.log('Generating watermark logo...');
-
-    const logoResult = await base44.asServiceRole.integrations.Core.GenerateImage({
-      prompt: logoPrompt,
-      existing_image_urls: [image_url]
-    });
-
-    console.log('Logo generated:', logoResult.url);
-
-    // מחזירים את התמונה עם הלוגו
+    // מחזיר את התמונה המקורית ללא שינוי
     return Response.json({ 
       success: true, 
-      watermarked_url: logoResult.url,
-      original_url: image_url,
-      method: 'ai_generated'
+      watermarked_url: image_url,
+      original_url: image_url
     });
 
   } catch (error) {
-    console.error('Watermark error:', error);
+    console.error('Error:', error);
     return Response.json({ 
-      error: error.message,
-      details: error.stack 
+      error: error.message
     }, { status: 500 });
   }
 });
