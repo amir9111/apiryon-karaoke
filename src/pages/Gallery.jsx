@@ -1,0 +1,894 @@
+import React, { useState } from "react";
+import { base44 } from "@/api/base44Client";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { motion } from "framer-motion";
+import { Camera, Download, Share2, Upload, X, Plus, MessageSquare, Star } from "lucide-react";
+import ApyironLogo from "../components/ApyironLogo";
+import MenuButton from "../components/MenuButton";
+
+export default function Gallery() {
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [selectedGallery, setSelectedGallery] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [showFeedbackForm, setShowFeedbackForm] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  
+  const queryClient = useQueryClient();
+
+  React.useEffect(() => {
+    async function checkAdmin() {
+      try {
+        const user = await base44.auth.me();
+        setIsAdmin(user?.role === 'admin');
+      } catch (err) {
+        setIsAdmin(false);
+      }
+    }
+    checkAdmin();
+  }, []);
+
+  const { data: galleries = [] } = useQuery({
+    queryKey: ['galleries'],
+    queryFn: () => base44.entities.GalleryCategory.filter({ is_active: true }, '-date', 50),
+  });
+
+  const { data: images = [] } = useQuery({
+    queryKey: ['gallery-images', selectedGallery?.id],
+    queryFn: () => base44.entities.GalleryImage.filter({ gallery_id: selectedGallery.id }, '-created_date', 500),
+    enabled: !!selectedGallery,
+  });
+
+  const handleDownload = async (imageUrl, filename) => {
+    try {
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename || 'apiryon-photo.jpg';
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      a.remove();
+    } catch (err) {
+      alert('שגיאה בהורדת התמונה');
+    }
+  };
+
+  const handleShare = () => {
+    const shareUrl = `${window.location.origin}/Gallery`;
+    const text = `🎤 צפו בתמונות מערב הקריוקי באפריון!\n${shareUrl}`;
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    window.open(whatsappUrl, '_blank');
+  };
+
+  const handleFeedbackSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    
+    try {
+      await base44.entities.GalleryFeedback.create({
+        name: formData.get('name'),
+        message: formData.get('message'),
+        rating: parseInt(formData.get('rating')) || 5
+      });
+      
+      alert('תודה על המשוב! 🙏');
+      setShowFeedbackForm(false);
+      e.target.reset();
+    } catch (err) {
+      alert('שגיאה בשליחת המשוב');
+    }
+  };
+
+  return (
+    <div dir="rtl" style={{
+      minHeight: "100vh",
+      background: "linear-gradient(135deg, #020617 0%, #0a1929 50%, #020617 100%)",
+      color: "#f9fafb",
+      padding: "20px"
+    }}>
+      <div style={{ maxWidth: "1400px", margin: "0 auto" }}>
+        {/* Header */}
+        <div style={{ textAlign: "center", marginBottom: "40px" }}>
+          <ApyironLogo size="medium" showCircle={true} />
+          <h1 style={{
+            fontSize: "clamp(2rem, 5vw, 3rem)",
+            fontWeight: "900",
+            color: "#00caff",
+            marginTop: "20px",
+            marginBottom: "16px",
+            textShadow: "0 0 30px rgba(0, 202, 255, 0.5)"
+          }}>
+            📸 גלריית התמונות שלנו
+          </h1>
+          <p style={{ fontSize: "1.1rem", color: "#cbd5e1", lineHeight: "1.6", maxWidth: "800px", margin: "0 auto" }}>
+            כל הרגעים המיוחדים מערבי הקריוקי באפריון - תמונות, חיוכים וזיכרונות בלתי נשכחים 🎤✨
+          </p>
+
+          {/* Action Buttons */}
+          <div style={{ display: "flex", gap: "16px", justifyContent: "center", marginTop: "24px", flexWrap: "wrap" }}>
+            <button
+              onClick={handleShare}
+              style={{
+                padding: "12px 24px",
+                background: "linear-gradient(135deg, #25D366, #128C7E)",
+                color: "#fff",
+                border: "none",
+                borderRadius: "12px",
+                fontSize: "1rem",
+                fontWeight: "700",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                boxShadow: "0 0 20px rgba(37, 211, 102, 0.4)"
+              }}
+            >
+              <Share2 className="w-5 h-5" />
+              שתף בווטסאפ
+            </button>
+
+            <button
+              onClick={() => setShowFeedbackForm(true)}
+              style={{
+                padding: "12px 24px",
+                background: "linear-gradient(135deg, #f59e0b, #d97706)",
+                color: "#fff",
+                border: "none",
+                borderRadius: "12px",
+                fontSize: "1rem",
+                fontWeight: "700",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                boxShadow: "0 0 20px rgba(245, 158, 11, 0.4)"
+              }}
+            >
+              <MessageSquare className="w-5 h-5" />
+              השאר משוב
+            </button>
+
+            {isAdmin && (
+              <button
+                onClick={() => setShowUploadModal(true)}
+                style={{
+                  padding: "12px 24px",
+                  background: "linear-gradient(135deg, #00caff, #0088ff)",
+                  color: "#001a2e",
+                  border: "none",
+                  borderRadius: "12px",
+                  fontSize: "1rem",
+                  fontWeight: "700",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  boxShadow: "0 0 20px rgba(0, 202, 255, 0.4)"
+                }}
+              >
+                <Plus className="w-5 h-5" />
+                הוסף גלריה חדשה
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Story Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          style={{
+            background: "rgba(15, 23, 42, 0.95)",
+            border: "1px solid rgba(0, 202, 255, 0.2)",
+            borderRadius: "20px",
+            padding: "40px",
+            marginBottom: "40px",
+            boxShadow: "0 10px 30px rgba(0, 202, 255, 0.1)"
+          }}
+        >
+          <h2 style={{ fontSize: "1.8rem", fontWeight: "800", color: "#00caff", marginBottom: "20px" }}>
+            הסיפור שלנו 📖
+          </h2>
+          <p style={{ fontSize: "1.1rem", color: "#e2e8f0", lineHeight: "1.8", marginBottom: "16px" }}>
+            בין ההרים של מירון לאוויר הצלול של הגליל, הקמנו מקום שיודע לעשות שמח באמת. 
+            אפריון הוא לא עוד מועדון קריוקי – הוא הבית של מי שאוהב לשיר, לרקוד ולשמוח מכל הלב.
+          </p>
+          <p style={{ fontSize: "1.1rem", color: "#e2e8f0", lineHeight: "1.8" }}>
+            כל תמונה בגלריה הזו מספרת סיפור של שמחה, של אנשים טובים, ושל רגעים שנשארים בלב. 
+            תהנו מהתמונות, הורידו מה שאתם אוהבים, ושתפו עם החברים! 🎤✨
+          </p>
+        </motion.div>
+
+        {/* Galleries Grid */}
+        {!selectedGallery ? (
+          <div>
+            <h2 style={{ fontSize: "1.8rem", fontWeight: "800", color: "#fbbf24", marginBottom: "24px" }}>
+              בחר גלריה 🎨
+            </h2>
+            
+            {galleries.length === 0 ? (
+              <div style={{
+                textAlign: "center",
+                padding: "60px 20px",
+                background: "rgba(15, 23, 42, 0.5)",
+                borderRadius: "20px",
+                border: "2px dashed rgba(0, 202, 255, 0.3)"
+              }}>
+                <Camera className="w-16 h-16" style={{ margin: "0 auto 20px", color: "#64748b" }} />
+                <p style={{ fontSize: "1.2rem", color: "#64748b" }}>
+                  עדיין אין גלריות. בקרוב תמונות מהערבים שלנו!
+                </p>
+              </div>
+            ) : (
+              <div style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+                gap: "24px"
+              }}>
+                {galleries.map((gallery) => (
+                  <motion.div
+                    key={gallery.id}
+                    whileHover={{ scale: 1.03 }}
+                    onClick={() => setSelectedGallery(gallery)}
+                    style={{
+                      background: "rgba(15, 23, 42, 0.95)",
+                      border: "2px solid rgba(0, 202, 255, 0.3)",
+                      borderRadius: "20px",
+                      padding: "24px",
+                      cursor: "pointer",
+                      boxShadow: "0 10px 30px rgba(0, 202, 255, 0.2)",
+                      transition: "all 0.3s"
+                    }}
+                  >
+                    <div style={{ fontSize: "2.5rem", marginBottom: "16px" }}>📸</div>
+                    <h3 style={{ fontSize: "1.5rem", fontWeight: "800", color: "#00caff", marginBottom: "8px" }}>
+                      {gallery.name}
+                    </h3>
+                    <p style={{ fontSize: "1rem", color: "#94a3b8", marginBottom: "12px" }}>
+                      📅 {new Date(gallery.date).toLocaleDateString('he-IL')}
+                    </p>
+                    {gallery.description && (
+                      <p style={{ fontSize: "0.95rem", color: "#cbd5e1", lineHeight: "1.5" }}>
+                        {gallery.description}
+                      </p>
+                    )}
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </div>
+        ) : (
+          <div>
+            {/* Back Button */}
+            <button
+              onClick={() => setSelectedGallery(null)}
+              style={{
+                padding: "10px 20px",
+                background: "rgba(0, 202, 255, 0.1)",
+                color: "#00caff",
+                border: "1px solid rgba(0, 202, 255, 0.3)",
+                borderRadius: "12px",
+                fontSize: "1rem",
+                fontWeight: "700",
+                cursor: "pointer",
+                marginBottom: "24px"
+              }}
+            >
+              ← חזרה לגלריות
+            </button>
+
+            <h2 style={{ fontSize: "1.8rem", fontWeight: "800", color: "#fbbf24", marginBottom: "24px" }}>
+              {selectedGallery.name} - {images.length} תמונות
+            </h2>
+
+            {images.length === 0 ? (
+              <div style={{
+                textAlign: "center",
+                padding: "60px 20px",
+                background: "rgba(15, 23, 42, 0.5)",
+                borderRadius: "20px"
+              }}>
+                <p style={{ fontSize: "1.2rem", color: "#64748b" }}>
+                  אין תמונות בגלריה זו
+                </p>
+              </div>
+            ) : (
+              <div style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
+                gap: "20px"
+              }}>
+                {images.map((img) => (
+                  <motion.div
+                    key={img.id}
+                    whileHover={{ scale: 1.05 }}
+                    onClick={() => setSelectedImage(img)}
+                    style={{
+                      position: "relative",
+                      borderRadius: "16px",
+                      overflow: "hidden",
+                      cursor: "pointer",
+                      boxShadow: "0 10px 30px rgba(0, 0, 0, 0.5)",
+                      aspectRatio: "1"
+                    }}
+                  >
+                    <img
+                      src={img.thumbnail_url || img.image_url}
+                      alt="תמונה מהגלריה"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover"
+                      }}
+                    />
+                    <div style={{
+                      position: "absolute",
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      padding: "12px",
+                      background: "linear-gradient(to top, rgba(0,0,0,0.8), transparent)",
+                      display: "flex",
+                      justifyContent: "center"
+                    }}>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDownload(img.image_url, img.original_filename);
+                        }}
+                        style={{
+                          padding: "8px 16px",
+                          background: "rgba(0, 202, 255, 0.9)",
+                          color: "#001a2e",
+                          border: "none",
+                          borderRadius: "8px",
+                          fontSize: "0.9rem",
+                          fontWeight: "700",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "6px"
+                        }}
+                      >
+                        <Download className="w-4 h-4" />
+                        הורד
+                      </button>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Image Preview Modal */}
+      {selectedImage && (
+        <div
+          onClick={() => setSelectedImage(null)}
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0, 0, 0, 0.95)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 9999,
+            padding: "20px"
+          }}
+        >
+          <button
+            onClick={() => setSelectedImage(null)}
+            style={{
+              position: "absolute",
+              top: "20px",
+              right: "20px",
+              width: "40px",
+              height: "40px",
+              borderRadius: "50%",
+              background: "rgba(248, 113, 113, 0.9)",
+              color: "#fff",
+              border: "none",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center"
+            }}
+          >
+            <X className="w-6 h-6" />
+          </button>
+
+          <img
+            src={selectedImage.image_url}
+            alt="תצוגה מקדימה"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              maxWidth: "90%",
+              maxHeight: "90%",
+              borderRadius: "16px",
+              boxShadow: "0 0 60px rgba(0, 202, 255, 0.3)"
+            }}
+          />
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDownload(selectedImage.image_url, selectedImage.original_filename);
+            }}
+            style={{
+              position: "absolute",
+              bottom: "40px",
+              padding: "14px 28px",
+              background: "linear-gradient(135deg, #00caff, #0088ff)",
+              color: "#001a2e",
+              border: "none",
+              borderRadius: "12px",
+              fontSize: "1.1rem",
+              fontWeight: "700",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              boxShadow: "0 0 30px rgba(0, 202, 255, 0.5)"
+            }}
+          >
+            <Download className="w-5 h-5" />
+            הורד את התמונה
+          </button>
+        </div>
+      )}
+
+      {/* Feedback Modal */}
+      {showFeedbackForm && (
+        <div
+          onClick={() => setShowFeedbackForm(false)}
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0, 0, 0, 0.8)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 9999,
+            padding: "20px"
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: "rgba(15, 23, 42, 0.98)",
+              border: "2px solid rgba(245, 158, 11, 0.5)",
+              borderRadius: "20px",
+              padding: "40px",
+              maxWidth: "500px",
+              width: "100%",
+              boxShadow: "0 0 60px rgba(245, 158, 11, 0.3)"
+            }}
+          >
+            <h3 style={{ fontSize: "1.8rem", fontWeight: "800", color: "#f59e0b", marginBottom: "24px" }}>
+              נשמח לשמוע ממך! 💬
+            </h3>
+            
+            <form onSubmit={handleFeedbackSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              <div>
+                <label style={{ display: "block", fontSize: "0.9rem", color: "#cbd5e1", marginBottom: "6px" }}>
+                  השם שלך
+                </label>
+                <input
+                  name="name"
+                  required
+                  placeholder="לדוגמה: דוד כהן"
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    borderRadius: "12px",
+                    border: "1px solid #1f2937",
+                    background: "rgba(15,23,42,0.9)",
+                    color: "#f9fafb",
+                    fontSize: "1rem"
+                  }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: "block", fontSize: "0.9rem", color: "#cbd5e1", marginBottom: "6px" }}>
+                  דירוג (1-5 כוכבים)
+                </label>
+                <div style={{ display: "flex", gap: "8px" }}>
+                  {[1,2,3,4,5].map(num => (
+                    <label key={num} style={{ cursor: "pointer" }}>
+                      <input type="radio" name="rating" value={num} defaultChecked={num === 5} style={{ display: "none" }} />
+                      <Star className="w-8 h-8" style={{ color: "#fbbf24", fill: "#fbbf24" }} />
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label style={{ display: "block", fontSize: "0.9rem", color: "#cbd5e1", marginBottom: "6px" }}>
+                  המשוב שלך
+                </label>
+                <textarea
+                  name="message"
+                  required
+                  placeholder="מה אהבת? מה אפשר לשפר?"
+                  rows={4}
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    borderRadius: "12px",
+                    border: "1px solid #1f2937",
+                    background: "rgba(15,23,42,0.9)",
+                    color: "#f9fafb",
+                    fontSize: "1rem",
+                    resize: "none"
+                  }}
+                />
+              </div>
+
+              <div style={{ display: "flex", gap: "12px" }}>
+                <button
+                  type="submit"
+                  style={{
+                    flex: 1,
+                    padding: "14px",
+                    background: "linear-gradient(135deg, #f59e0b, #d97706)",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "12px",
+                    fontSize: "1rem",
+                    fontWeight: "700",
+                    cursor: "pointer"
+                  }}
+                >
+                  שלח משוב
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowFeedbackForm(false)}
+                  style={{
+                    padding: "14px 20px",
+                    background: "rgba(248, 113, 113, 0.2)",
+                    color: "#f87171",
+                    border: "2px solid rgba(248, 113, 113, 0.4)",
+                    borderRadius: "12px",
+                    fontSize: "1rem",
+                    fontWeight: "700",
+                    cursor: "pointer"
+                  }}
+                >
+                  ביטול
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Upload Modal - Admin Only */}
+      {isAdmin && showUploadModal && (
+        <UploadGalleryModal
+          onClose={() => setShowUploadModal(false)}
+          onSuccess={() => {
+            queryClient.invalidateQueries({ queryKey: ['galleries'] });
+            setShowUploadModal(false);
+          }}
+        />
+      )}
+
+      <MenuButton />
+    </div>
+  );
+}
+
+// Upload Modal Component
+function UploadGalleryModal({ onClose, onSuccess }) {
+  const [step, setStep] = useState(1);
+  const [galleryData, setGalleryData] = useState({ name: '', date: '', description: '' });
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const [progress, setProgress] = useState(0);
+
+  const handleGalleryCreate = async () => {
+    if (!galleryData.name || !galleryData.date) {
+      alert('נא למלא שם ותאריך');
+      return;
+    }
+    setStep(2);
+  };
+
+  const handleFilesSelect = (e) => {
+    const files = Array.from(e.target.files);
+    setSelectedFiles(files);
+  };
+
+  const handleUpload = async () => {
+    if (selectedFiles.length === 0) {
+      alert('נא לבחור תמונות');
+      return;
+    }
+
+    setIsUploading(true);
+    
+    try {
+      // Create gallery
+      const gallery = await base44.entities.GalleryCategory.create(galleryData);
+      
+      // Upload images
+      for (let i = 0; i < selectedFiles.length; i++) {
+        const file = selectedFiles[i];
+        setProgress(Math.round(((i + 1) / selectedFiles.length) * 100));
+        
+        const upload = await base44.integrations.Core.UploadFile({ file });
+        
+        await base44.entities.GalleryImage.create({
+          gallery_id: gallery.id,
+          image_url: upload.file_url,
+          thumbnail_url: upload.file_url,
+          original_filename: file.name
+        });
+      }
+      
+      alert('✅ הגלריה הועלתה בהצלחה!');
+      onSuccess();
+    } catch (err) {
+      alert('שגיאה בהעלאת הגלריה');
+      console.error(err);
+    } finally {
+      setIsUploading(false);
+      setProgress(0);
+    }
+  };
+
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: "rgba(0, 0, 0, 0.8)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 9999,
+        padding: "20px"
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          background: "rgba(15, 23, 42, 0.98)",
+          border: "2px solid rgba(0, 202, 255, 0.5)",
+          borderRadius: "20px",
+          padding: "40px",
+          maxWidth: "600px",
+          width: "100%",
+          boxShadow: "0 0 60px rgba(0, 202, 255, 0.3)"
+        }}
+      >
+        <h3 style={{ fontSize: "1.8rem", fontWeight: "800", color: "#00caff", marginBottom: "24px" }}>
+          {step === 1 ? '📸 צור גלריה חדשה' : '🖼️ העלה תמונות'}
+        </h3>
+
+        {step === 1 ? (
+          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            <div>
+              <label style={{ display: "block", fontSize: "0.9rem", color: "#cbd5e1", marginBottom: "6px" }}>
+                שם הגלריה *
+              </label>
+              <input
+                value={galleryData.name}
+                onChange={(e) => setGalleryData({...galleryData, name: e.target.value})}
+                placeholder="לדוגמה: ערב קריוקי 15.1.2026"
+                style={{
+                  width: "100%",
+                  padding: "12px",
+                  borderRadius: "12px",
+                  border: "1px solid #1f2937",
+                  background: "rgba(15,23,42,0.9)",
+                  color: "#f9fafb",
+                  fontSize: "1rem"
+                }}
+              />
+            </div>
+
+            <div>
+              <label style={{ display: "block", fontSize: "0.9rem", color: "#cbd5e1", marginBottom: "6px" }}>
+                תאריך *
+              </label>
+              <input
+                type="date"
+                value={galleryData.date}
+                onChange={(e) => setGalleryData({...galleryData, date: e.target.value})}
+                style={{
+                  width: "100%",
+                  padding: "12px",
+                  borderRadius: "12px",
+                  border: "1px solid #1f2937",
+                  background: "rgba(15,23,42,0.9)",
+                  color: "#f9fafb",
+                  fontSize: "1rem"
+                }}
+              />
+            </div>
+
+            <div>
+              <label style={{ display: "block", fontSize: "0.9rem", color: "#cbd5e1", marginBottom: "6px" }}>
+                תיאור (אופציונלי)
+              </label>
+              <textarea
+                value={galleryData.description}
+                onChange={(e) => setGalleryData({...galleryData, description: e.target.value})}
+                placeholder="תיאור קצר על הערב..."
+                rows={3}
+                style={{
+                  width: "100%",
+                  padding: "12px",
+                  borderRadius: "12px",
+                  border: "1px solid #1f2937",
+                  background: "rgba(15,23,42,0.9)",
+                  color: "#f9fafb",
+                  fontSize: "1rem",
+                  resize: "none"
+                }}
+              />
+            </div>
+
+            <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
+              <button
+                onClick={handleGalleryCreate}
+                style={{
+                  flex: 1,
+                  padding: "14px",
+                  background: "linear-gradient(135deg, #00caff, #0088ff)",
+                  color: "#001a2e",
+                  border: "none",
+                  borderRadius: "12px",
+                  fontSize: "1rem",
+                  fontWeight: "700",
+                  cursor: "pointer"
+                }}
+              >
+                המשך →
+              </button>
+              <button
+                onClick={onClose}
+                style={{
+                  padding: "14px 20px",
+                  background: "rgba(248, 113, 113, 0.2)",
+                  color: "#f87171",
+                  border: "2px solid rgba(248, 113, 113, 0.4)",
+                  borderRadius: "12px",
+                  fontSize: "1rem",
+                  fontWeight: "700",
+                  cursor: "pointer"
+                }}
+              >
+                ביטול
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div>
+            <label
+              htmlFor="gallery-files"
+              style={{
+                display: "block",
+                padding: "60px 20px",
+                border: "3px dashed rgba(0, 202, 255, 0.5)",
+                borderRadius: "16px",
+                textAlign: "center",
+                cursor: "pointer",
+                background: "rgba(0, 202, 255, 0.05)",
+                marginBottom: "20px"
+              }}
+            >
+              <Upload className="w-12 h-12" style={{ margin: "0 auto 16px", color: "#00caff" }} />
+              <div style={{ fontSize: "1.2rem", color: "#00caff", fontWeight: "700", marginBottom: "8px" }}>
+                לחץ לבחירת תמונות
+              </div>
+              <div style={{ fontSize: "0.9rem", color: "#94a3b8" }}>
+                ניתן לבחור מספר תמונות בבת אחת
+              </div>
+              <input
+                id="gallery-files"
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={handleFilesSelect}
+                style={{ display: "none" }}
+              />
+            </label>
+
+            {selectedFiles.length > 0 && (
+              <div style={{ marginBottom: "20px" }}>
+                <div style={{ fontSize: "1rem", color: "#cbd5e1", marginBottom: "12px" }}>
+                  נבחרו {selectedFiles.length} תמונות
+                </div>
+                <div style={{ maxHeight: "150px", overflowY: "auto" }}>
+                  {selectedFiles.map((file, idx) => (
+                    <div key={idx} style={{ fontSize: "0.9rem", color: "#94a3b8", padding: "4px 0" }}>
+                      ✓ {file.name}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {isUploading && (
+              <div style={{ marginBottom: "20px" }}>
+                <div style={{ fontSize: "0.9rem", color: "#cbd5e1", marginBottom: "8px" }}>
+                  מעלה תמונות... {progress}%
+                </div>
+                <div style={{
+                  width: "100%",
+                  height: "8px",
+                  background: "rgba(0, 202, 255, 0.2)",
+                  borderRadius: "8px",
+                  overflow: "hidden"
+                }}>
+                  <div style={{
+                    width: `${progress}%`,
+                    height: "100%",
+                    background: "linear-gradient(135deg, #00caff, #0088ff)",
+                    transition: "width 0.3s"
+                  }} />
+                </div>
+              </div>
+            )}
+
+            <div style={{ display: "flex", gap: "12px" }}>
+              <button
+                onClick={handleUpload}
+                disabled={isUploading || selectedFiles.length === 0}
+                style={{
+                  flex: 1,
+                  padding: "14px",
+                  background: isUploading ? "rgba(100, 116, 139, 0.5)" : "linear-gradient(135deg, #10b981, #059669)",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "12px",
+                  fontSize: "1rem",
+                  fontWeight: "700",
+                  cursor: isUploading ? "not-allowed" : "pointer"
+                }}
+              >
+                {isUploading ? `מעלה... ${progress}%` : '✓ העלה'}
+              </button>
+              <button
+                onClick={() => setStep(1)}
+                disabled={isUploading}
+                style={{
+                  padding: "14px 20px",
+                  background: "rgba(148, 163, 184, 0.2)",
+                  color: "#94a3b8",
+                  border: "2px solid rgba(148, 163, 184, 0.4)",
+                  borderRadius: "12px",
+                  fontSize: "1rem",
+                  fontWeight: "700",
+                  cursor: isUploading ? "not-allowed" : "pointer"
+                }}
+              >
+                ← חזור
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+Gallery.isPublic = true;
