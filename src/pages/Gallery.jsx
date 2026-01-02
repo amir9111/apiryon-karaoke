@@ -660,35 +660,6 @@ export default function Gallery() {
               {isAdmin &&
               <>
                     <button
-                  onClick={async () => {
-                    if (!confirm('למחוק כפילויות מהגלריה?')) return;
-                    try {
-                      const result = await base44.functions.invoke('removeDuplicateImages', { gallery_id: selectedGallery.id });
-                      alert(`✅ הוסרו ${result.data.duplicates_removed} תמונות כפולות`);
-                      queryClient.invalidateQueries({ queryKey: ['gallery-images'] });
-                    } catch (err) {
-                      alert('שגיאה: ' + err.message);
-                    }
-                  }}
-                  style={{
-                    padding: "10px 20px",
-                    background: "linear-gradient(135deg, #f59e0b, #d97706)",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: "12px",
-                    fontSize: "1rem",
-                    fontWeight: "700",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    boxShadow: "0 0 20px rgba(245, 158, 11, 0.4)"
-                  }}>
-
-                      🧹 נקה כפילויות
-                    </button>
-
-                    <button
                   onClick={() => setSelectionMode(!selectionMode)}
                   style={{
                     padding: "10px 20px",
@@ -1173,10 +1144,23 @@ function UploadGalleryModal({ existingGallery, onClose, onSuccess }) {
       // Create gallery or use existing
       const gallery = existingGallery || (await base44.entities.GalleryCategory.create(galleryData));
 
+      // שליפת תמונות קיימות בגלריה
+      const existingImages = await base44.entities.GalleryImage.filter({ gallery_id: gallery.id }, 'created_date', 500);
+      const existingFilenames = new Set(existingImages.map(img => img.original_filename));
+
+      let uploaded = 0;
+      let skipped = 0;
+
       // Upload images with watermark
       for (let i = 0; i < selectedFiles.length; i++) {
         const file = selectedFiles[i];
         setProgress(Math.round((i + 1) / selectedFiles.length * 100));
+
+        // בדיקה אם הקובץ כבר קיים
+        if (existingFilenames.has(file.name)) {
+          skipped++;
+          continue;
+        }
 
         // העלאת התמונה המקורית
         const upload = await base44.integrations.Core.UploadFile({ file });
@@ -1188,9 +1172,13 @@ function UploadGalleryModal({ existingGallery, onClose, onSuccess }) {
           thumbnail_url: upload.file_url,
           original_filename: file.name
         });
+        uploaded++;
       }
 
-      alert(existingGallery ? `✅ הועלו ${selectedFiles.length} תמונות לגלריה!` : '✅ הגלריה הועלתה בהצלחה!');
+      const message = skipped > 0 
+        ? `✅ הועלו ${uploaded} תמונות חדשות, ${skipped} כפילויות דולגו`
+        : `✅ הועלו ${uploaded} תמונות לגלריה!`;
+      alert(message);
       onSuccess();
     } catch (err) {
       alert('שגיאה בהעלאה: ' + err.message);
