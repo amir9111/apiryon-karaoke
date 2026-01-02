@@ -58,9 +58,13 @@ export default function Gallery() {
 
   const handleShare = () => {
     const shareUrl = `${window.location.origin}/Gallery`;
-    const text = `🎤 צפו בתמונות מערב הקריוקי באפריון!\n${shareUrl}`;
+    const text = `🎤✨ הייתם אתמול באפריון?\n\n📸 כנסו עכשיו לגלריה וחפשו את התמונות שלכם!\n💾 הורידו את כל הרגעים המיוחדים שלכם בחינם\n\n${shareUrl}\n\n🎉 מועדון הקריוקי המוביל בצפון!`;
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
     window.open(whatsappUrl, '_blank');
+  };
+
+  const handleWhatsAppContact = () => {
+    window.open('https://wa.me/972525400396?text=היי%20אפריון!%20רוצה%20להזמין%20שולחן%20🎤', '_blank');
   };
 
   const handleFeedbackSubmit = async (e) => {
@@ -107,6 +111,46 @@ export default function Gallery() {
             כל הרגעים המיוחדים מערבי הקריוקי באפריון - תמונות, חיוכים וזיכרונות בלתי נשכחים 🎤✨
           </p>
 
+          {/* Big CTA Button */}
+          <motion.div
+            initial={{ scale: 0.95 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
+            style={{ marginTop: "32px", marginBottom: "16px" }}
+          >
+            <button
+              onClick={handleWhatsAppContact}
+              style={{
+                padding: "20px 48px",
+                background: "linear-gradient(135deg, #fbbf24, #f59e0b)",
+                color: "#001a2e",
+                border: "none",
+                borderRadius: "16px",
+                fontSize: "clamp(1.3rem, 3vw, 1.8rem)",
+                fontWeight: "900",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "12px",
+                boxShadow: "0 0 40px rgba(251, 191, 36, 0.6)",
+                width: "100%",
+                maxWidth: "600px",
+                margin: "0 auto"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "scale(1.05)";
+                e.currentTarget.style.boxShadow = "0 0 60px rgba(251, 191, 36, 0.8)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "scale(1)";
+                e.currentTarget.style.boxShadow = "0 0 40px rgba(251, 191, 36, 0.6)";
+              }}
+            >
+              🎤 הזמינו מקום לשבוע הבא!
+            </button>
+          </motion.div>
+
           {/* Action Buttons */}
           <div style={{ display: "flex", gap: "16px", justifyContent: "center", marginTop: "24px", flexWrap: "wrap" }}>
             <button
@@ -134,7 +178,7 @@ export default function Gallery() {
               onClick={() => setShowFeedbackForm(true)}
               style={{
                 padding: "12px 24px",
-                background: "linear-gradient(135deg, #f59e0b, #d97706)",
+                background: "linear-gradient(135deg, #8b5cf6, #7c3aed)",
                 color: "#fff",
                 border: "none",
                 borderRadius: "12px",
@@ -144,11 +188,31 @@ export default function Gallery() {
                 display: "flex",
                 alignItems: "center",
                 gap: "8px",
-                boxShadow: "0 0 20px rgba(245, 158, 11, 0.4)"
+                boxShadow: "0 0 20px rgba(139, 92, 246, 0.4)"
               }}
             >
-              <MessageSquare className="w-5 h-5" />
-              השאר משוב
+              <Star className="w-5 h-5" />
+              השאירו ביקורת
+            </button>
+
+            <button
+              onClick={handleWhatsAppContact}
+              style={{
+                padding: "12px 24px",
+                background: "linear-gradient(135deg, #10b981, #059669)",
+                color: "#fff",
+                border: "none",
+                borderRadius: "12px",
+                fontSize: "1rem",
+                fontWeight: "700",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                boxShadow: "0 0 20px rgba(16, 185, 129, 0.4)"
+              }}
+            >
+              💬 דברו איתנו
             </button>
 
             {isAdmin && (
@@ -474,8 +538,8 @@ export default function Gallery() {
               boxShadow: "0 0 60px rgba(245, 158, 11, 0.3)"
             }}
           >
-            <h3 style={{ fontSize: "1.8rem", fontWeight: "800", color: "#f59e0b", marginBottom: "24px" }}>
-              נשמח לשמוע ממך! 💬
+            <h3 style={{ fontSize: "1.8rem", fontWeight: "800", color: "#8b5cf6", marginBottom: "24px" }}>
+              נשמח לשמוע ממך! 💜
             </h3>
             
             <form onSubmit={handleFeedbackSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
@@ -541,7 +605,7 @@ export default function Gallery() {
                   style={{
                     flex: 1,
                     padding: "14px",
-                    background: "linear-gradient(135deg, #f59e0b, #d97706)",
+                    background: "linear-gradient(135deg, #8b5cf6, #7c3aed)",
                     color: "#fff",
                     border: "none",
                     borderRadius: "12px",
