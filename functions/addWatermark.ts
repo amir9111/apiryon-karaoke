@@ -16,46 +16,39 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'image_url is required' }, { status: 400 });
     }
 
-    // טעינת התמונה
+    // טעינת התמונה באיכות מקסימלית
     const image = await Jimp.read(image_url);
     const width = image.bitmap.width;
     const height = image.bitmap.height;
 
-    // הוספת מסגרת עדינה (20px לבן עם שקיפות)
-    const borderSize = 20;
-    const imageWithBorder = new Jimp(width + borderSize * 2, height + borderSize * 2, 0xFFFFFFFF);
-    imageWithBorder.composite(image, borderSize, borderSize);
-
-    // יצירת לוגו + טקסט בפינה ימנית תחתונה
-    const logoWidth = 300;
-    const logoHeight = 120;
-    const padding = 30;
+    // יצירת צל עדין מסביב
+    const shadowSize = 40;
+    const canvas = new Jimp(width + shadowSize * 2, height + shadowSize * 2, 0x00000000);
     
-    const logo = new Jimp(logoWidth, logoHeight, 0x00000080); // רקע שחור עם שקיפות
+    // יצירת שכבת צל
+    const shadow = new Jimp(width + shadowSize, height + shadowSize, 0x00000040);
+    shadow.blur(20);
+    canvas.composite(shadow, shadowSize / 2, shadowSize / 2);
     
-    // טקסט "APIRYON"
-    const font1 = await Jimp.loadFont(Jimp.FONT_SANS_64_WHITE);
-    logo.print(font1, 20, 15, {
-      text: 'APIRYON',
-      alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
-      alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
-    }, logoWidth - 40, 50);
+    // הדבקת התמונה המקורית
+    canvas.composite(image, shadowSize, shadowSize);
 
-    // טקסט "אפריון הפקות"
-    const font2 = await Jimp.loadFont(Jimp.FONT_SANS_32_WHITE);
-    logo.print(font2, 20, 70, {
-      text: 'אפריון הפקות',
-      alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
-      alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE
-    }, logoWidth - 40, 40);
+    // חותמת מינימליסטית בפינה ימנית תחתונה
+    const font = await Jimp.loadFont(Jimp.FONT_SANS_16_WHITE);
+    const stampText = 'APIRYON | אפריון הפקות';
+    const textWidth = Jimp.measureText(font, stampText);
+    
+    // יצירת רקע עדין מאוד לחותמת
+    const stampBg = new Jimp(textWidth + 40, 50, 0x00000030);
+    stampBg.print(font, 20, 17, stampText);
+    
+    // הדבקת החותמת בפינה ימנית תחתונה
+    const stampX = canvas.bitmap.width - textWidth - 60;
+    const stampY = canvas.bitmap.height - 70;
+    canvas.composite(stampBg, stampX, stampY);
 
-    // הדבקת הלוגו בפינה ימנית תחתונה
-    const xPos = imageWithBorder.bitmap.width - logoWidth - padding;
-    const yPos = imageWithBorder.bitmap.height - logoHeight - padding;
-    imageWithBorder.composite(logo, xPos, yPos);
-
-    // המרה ל-Buffer
-    const buffer = await imageWithBorder.getBufferAsync(Jimp.MIME_JPEG);
+    // שמירה באיכות מקסימלית (95% quality)
+    const buffer = await canvas.quality(95).getBufferAsync(Jimp.MIME_JPEG);
     const blob = new Blob([buffer], { type: 'image/jpeg' });
     const file = new File([blob], 'watermarked.jpg', { type: 'image/jpeg' });
 
