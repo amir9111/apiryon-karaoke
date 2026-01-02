@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Calendar, Users, Music, Sparkles, Phone, Mail, MapPin, Clock, Star, ChevronLeft, ChevronRight } from "lucide-react";
+import { Calendar, Users, Music, Sparkles, Phone, Mail, MapPin, Clock, Star, ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ApyironLogo from "../components/ApyironLogo";
 import { base44 } from "@/api/base44Client";
@@ -10,6 +10,19 @@ import { useQuery } from "@tanstack/react-query";
 export default function Landing() {
   const [showVideo, setShowVideo] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  React.useEffect(() => {
+    const checkAdmin = async () => {
+      try {
+        const user = await base44.auth.me();
+        setIsAdmin(user?.role === 'admin');
+      } catch (err) {
+        setIsAdmin(false);
+      }
+    };
+    checkAdmin();
+  }, []);
 
   const { data: feedbacks = [] } = useQuery({
     queryKey: ['approved-feedbacks'],
@@ -52,6 +65,42 @@ export default function Landing() {
       background: "linear-gradient(135deg, #020617 0%, #0a1929 50%, #020617 100%)",
       color: "#f9fafb"
     }}>
+      {/* Back Button */}
+      <Link
+        to={createPageUrl(isAdmin ? "Admin" : "Home")}
+        style={{
+          position: "fixed",
+          top: "20px",
+          right: "20px",
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+          padding: "12px 20px",
+          background: "rgba(0, 202, 255, 0.15)",
+          border: "2px solid rgba(0, 202, 255, 0.4)",
+          borderRadius: "50px",
+          color: "#00caff",
+          textDecoration: "none",
+          fontSize: "1rem",
+          fontWeight: "700",
+          zIndex: 1000,
+          boxShadow: "0 0 20px rgba(0, 202, 255, 0.3)",
+          backdropFilter: "blur(10px)",
+          transition: "all 0.3s"
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = "rgba(0, 202, 255, 0.25)";
+          e.currentTarget.style.transform = "translateX(5px)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = "rgba(0, 202, 255, 0.15)";
+          e.currentTarget.style.transform = "translateX(0)";
+        }}
+      >
+        <ArrowRight className="w-5 h-5" />
+        {isAdmin ? "חזרה לניהול" : "חזרה לרישום"}
+      </Link>
+
       {/* Hero Section */}
       <section style={{
         position: "relative",
