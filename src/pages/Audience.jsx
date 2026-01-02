@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
-import { Maximize, Minimize, Camera, MessageCircle } from "lucide-react";
+import { Maximize, Minimize, Camera, MessageCircle, Home } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import ApyironLogo from "../components/ApyironLogo";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "@/utils";
 
 // --- 1. Hook לניהול תור חכם ---
 const useSmartQueue = () => {
@@ -387,13 +389,21 @@ export default function SmartAudience() {
         )}
       </AnimatePresence>
 
-      {/* כפתור מסך מלא */}
-      <button 
-        onClick={toggleFullscreen}
-        className="fixed bottom-4 right-4 z-[100] p-3 bg-slate-900/80 rounded-xl text-cyan-400 border border-cyan-500/30 hover:bg-cyan-500/20 hover:scale-110 transition-all duration-300 shadow-[0_0_20px_rgba(6,182,212,0.2)]"
-      >
-        {isFullscreen ? <Minimize size={24} /> : <Maximize size={24} />}
-      </button>
+      {/* כפתורי ניווט */}
+      <div className="fixed bottom-4 right-4 z-[100] flex gap-3">
+        <Link
+          to={createPageUrl("Home")}
+          className="p-3 bg-slate-900/80 rounded-xl text-amber-400 border border-amber-500/30 hover:bg-amber-500/20 hover:scale-110 transition-all duration-300 shadow-[0_0_20px_rgba(251,191,36,0.2)]"
+        >
+          <Home size={24} />
+        </Link>
+        <button 
+          onClick={toggleFullscreen}
+          className="p-3 bg-slate-900/80 rounded-xl text-cyan-400 border border-cyan-500/30 hover:bg-cyan-500/20 hover:scale-110 transition-all duration-300 shadow-[0_0_20px_rgba(6,182,212,0.2)]"
+        >
+          {isFullscreen ? <Minimize size={24} /> : <Maximize size={24} />}
+        </button>
+      </div>
     </div>
   );
 }
