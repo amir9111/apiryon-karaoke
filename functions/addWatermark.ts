@@ -1,6 +1,8 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 import Jimp from 'npm:jimp@0.22.10';
 
+const LOGO_URL = 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/693c1c7149a5af7efdab4614/3870156cb_aprion-premium-logo.png';
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
@@ -16,38 +18,28 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'image_url is required' }, { status: 400 });
     }
 
-    // טעינת התמונה
+    // טעינת התמונה הראשית
     const image = await Jimp.read(image_url);
-    const font = await Jimp.loadFont(Jimp.FONT_SANS_32_WHITE);
     
-    const padding = 40;
-    const xPos = image.bitmap.width - 180;
-    const yPos = image.bitmap.height - 90;
+    // טעינת הלוגו
+    const logo = await Jimp.read(LOGO_URL);
     
-    // צל שחור
-    image.print(font, xPos + 3, yPos + 3, {
-      text: 'אפריון',
-      alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER
-    }, 150);
+    // שינוי גודל הלוגו - 120 פיקסלים
+    logo.resize(120, 120);
     
-    image.print(font, xPos + 3, yPos + 38, {
-      text: 'הפקות',
-      alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER
-    }, 150);
+    // התאמת שקיפות - 75%
+    logo.opacity(0.75);
     
-    // טקסט לבן
-    image.print(font, xPos, yPos, {
-      text: 'אפריון',
-      alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER
-    }, 150);
+    // מיקום בפינה ימנית תחתונה
+    const padding = 25;
+    const xPos = image.bitmap.width - logo.bitmap.width - padding;
+    const yPos = image.bitmap.height - logo.bitmap.height - padding;
     
-    image.print(font, xPos, yPos + 35, {
-      text: 'הפקות',
-      alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER
-    }, 150);
+    // הדבקת הלוגו
+    image.composite(logo, xPos, yPos);
 
-    // שמירה
-    const buffer = await image.quality(85).getBufferAsync(Jimp.MIME_JPEG);
+    // שמירה באיכות גבוהה
+    const buffer = await image.quality(88).getBufferAsync(Jimp.MIME_JPEG);
     const blob = new Blob([buffer], { type: 'image/jpeg' });
     const file = new File([blob], 'watermarked.jpg', { type: 'image/jpeg' });
 
