@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import { Maximize, Minimize, Camera, MessageCircle } from "lucide-react";
 import { base44 } from "@/api/base44Client";
+import ApyironLogo from "../components/ApyironLogo";
 
 // --- 1. Hook לניהול תור חכם ---
 const useSmartQueue = () => {
@@ -247,13 +248,7 @@ const IdleView = ({ galleryImages }) => {
                         initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                         className="text-center flex flex-col items-center gap-12"
                     >
-                        <div className="w-96 h-96 rounded-full border-8 border-cyan-500 flex items-center justify-center shadow-[0_0_150px_rgba(6,182,212,0.6)]">
-                            <h1 className="text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-cyan-200" style={{
-                                textShadow: "0 0 60px rgba(6,182,212,0.9)"
-                            }}>
-                                APIRYON
-                            </h1>
-                        </div>
+                        <ApyironLogo size="large" showCircle={true} />
                         <p className="text-7xl text-slate-200 font-black tracking-wider">מועדון קריוקי</p>
                     </motion.div>
                 )}
