@@ -278,6 +278,35 @@ export default function NavigationMenu({ onSummaryClick }) {
                 <span>ניהול ביקורות</span>
               </Link>
 
+              <Link
+                to={createPageUrl("AdminLogs")}
+                onClick={() => setIsOpen(false)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "12px",
+                  padding: "12px 16px",
+                  borderRadius: "10px",
+                  background: "rgba(16, 185, 129, 0.08)",
+                  border: "1px solid rgba(16, 185, 129, 0.2)",
+                  color: "#10b981",
+                  textDecoration: "none",
+                  fontSize: "1rem",
+                  fontWeight: "600",
+                  transition: "all 0.2s"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "rgba(16, 185, 129, 0.15)";
+                  e.currentTarget.style.transform = "translateX(-5px)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "rgba(16, 185, 129, 0.08)";
+                  e.currentTarget.style.transform = "translateX(0)";
+                }}
+              >
+                🔒 לוג אבטחה וגיבוי
+              </Link>
+
               {/* Display Screens Section */}
               <div style={{ 
                 fontSize: "0.75rem", 
