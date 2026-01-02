@@ -174,11 +174,13 @@ const IdleView = ({ galleryImages }) => {
         return () => clearInterval(interval);
     }, [totalSteps]);
 
+    const homeUrl = `${window.location.origin}/#/Home`;
+
     const qrData = [
         {
             title: "תרשם לתור!",
             subtitle: "סרקו לרישום שיר",
-            url: `${window.location.origin}/Home`,
+            url: homeUrl,
             borderColor: "border-cyan-500",
             shadowColor: "shadow-[0_0_100px_rgba(6,182,212,0.3)]",
             textColor: "text-cyan-400"
