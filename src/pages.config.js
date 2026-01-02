@@ -12,6 +12,7 @@ import Statistics from './pages/Statistics';
 import Terms from './pages/Terms';
 import UploadToScreen from './pages/UploadToScreen';
 import UserManagement from './pages/UserManagement';
+import AdminLogs from './pages/AdminLogs';
 
 
 export const PAGES = {
@@ -29,6 +30,7 @@ export const PAGES = {
     "Terms": Terms,
     "UploadToScreen": UploadToScreen,
     "UserManagement": UserManagement,
+    "AdminLogs": AdminLogs,
 }
 
 export const pagesConfig = {

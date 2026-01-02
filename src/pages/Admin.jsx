@@ -69,6 +69,15 @@ export default function Admin() {
         await base44.entities.KaraokeRequest.delete(req.id);
       }
       
+      // לוג הפעולה
+      await base44.entities.AdminLog.create({
+        admin_email: user.email,
+        admin_name: user.full_name,
+        action_type: 'reset',
+        action_description: `איפוס מלא של ${allRequests.length} בקשות קריוקי`,
+        entity_type: 'KaraokeRequest'
+      });
+      
       await queryClient.invalidateQueries({ queryKey: ['karaoke-requests'] });
       setShowResetConfirm(false);
       alert('✅ כל הסטטיסטיקות אופסו בהצלחה!');
@@ -170,6 +179,15 @@ export default function Admin() {
         media_url: file_url,
         media_type: isImage ? 'image' : 'video',
         is_active: true
+      });
+
+      // לוג הפעולה
+      await base44.entities.AdminLog.create({
+        admin_email: user.email,
+        admin_name: user.full_name,
+        action_type: 'upload',
+        action_description: `העלאת ${isImage ? 'תמונה' : 'וידאו'} למסך קהל`,
+        entity_type: 'MediaUpload'
       });
 
       alert("✅ התמונה הועלתה בהצלחה!");
