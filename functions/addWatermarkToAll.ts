@@ -19,12 +19,6 @@ Deno.serve(async (req) => {
 
     for (const image of allImages) {
       try {
-        // בדיקה אם כבר יש watermark (בודקים אם יש "watermarked" ב-URL)
-        if (image.image_url.includes('watermarked') || image.original_filename?.includes('watermarked')) {
-          skippedCount++;
-          continue;
-        }
-
         // טעינת התמונה
         const imageResponse = await fetch(image.image_url);
         const imageBuffer = await imageResponse.arrayBuffer();
