@@ -118,6 +118,26 @@ export default function Audience() {
   const waitingQueue = requests.filter(r => r.status === "waiting").slice(0, 4);
   const [currentGalleryImageIndex, setCurrentGalleryImageIndex] = useState(0);
 
+  // Handle audience media deletion after display
+  const unseenAudienceMedia = audienceMedia.filter(m => !displayedAudienceMedia.has(m.id));
+  const currentAudienceMedia = unseenAudienceMedia.length > 0 ? unseenAudienceMedia[0] : audienceMedia[0];
+
+  React.useEffect(() => {
+    if (idleSubMode === "audience_media" && currentAudienceMedia) {
+      setDisplayedAudienceMedia(prev => new Set([...prev, currentAudienceMedia.id]));
+      
+      const timer = setTimeout(async () => {
+        try {
+          await base44.entities.MediaUpload.delete(currentAudienceMedia.id);
+        } catch (err) {
+          console.error("Failed to delete media:", err);
+        }
+      }, 15000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [currentAudienceMedia?.id, idleSubMode]);
+
   // Smart rotation logic
   React.useEffect(() => {
     let timeout;
@@ -515,60 +535,42 @@ export default function Audience() {
           {currentMode === "idle" && (
             <>
               {/* Sub-mode 1: Audience Media (15s) */}
-              {idleSubMode === "audience_media" && audienceMedia.length > 0 && (() => {
-                const unseenMedia = audienceMedia.filter(m => !displayedAudienceMedia.has(m.id));
-                const mediaToShow = unseenMedia.length > 0 ? unseenMedia[0] : audienceMedia[0];
-                
-                React.useEffect(() => {
-                  if (mediaToShow) {
-                    setDisplayedAudienceMedia(prev => new Set([...prev, mediaToShow.id]));
-                    setTimeout(async () => {
-                      try {
-                        await base44.entities.MediaUpload.delete(mediaToShow.id);
-                      } catch (err) {
-                        console.error("Failed to delete media:", err);
-                      }
-                    }, 15000);
-                  }
-                }, [mediaToShow?.id]);
-                
-                return (
-                  <motion.div
-                    key={`audience-media-${mediaToShow.id}`}
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ duration: 1 }}
-                    style={{
-                      position: "fixed",
-                      top: 0,
-                      left: 0,
-                      width: "100vw",
-                      height: "100vh",
-                      background: "#000",
-                      zIndex: 1
-                    }}
-                  >
-                    {mediaToShow.media_type === 'video' ? (
-                      <video
-                        key={mediaToShow.media_url}
-                        src={mediaToShow.media_url}
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                      />
-                    ) : (
-                      <img
-                        src={mediaToShow.media_url}
-                        alt="תמונה מהקהל"
-                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                      />
-                    )}
-                  </motion.div>
-                );
-              })()}
+              {idleSubMode === "audience_media" && currentAudienceMedia && (
+                <motion.div
+                  key={`audience-media-${currentAudienceMedia.id}`}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 1 }}
+                  style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    width: "100vw",
+                    height: "100vh",
+                    background: "#000",
+                    zIndex: 1
+                  }}
+                >
+                  {currentAudienceMedia.media_type === 'video' ? (
+                    <video
+                      key={currentAudienceMedia.media_url}
+                      src={currentAudienceMedia.media_url}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                  ) : (
+                    <img
+                      src={currentAudienceMedia.media_url}
+                      alt="תמונה מהקהל"
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                  )}
+                </motion.div>
+              )}
 
               {/* Sub-mode 2: Floating Messages (20s) */}
               {idleSubMode === "floating_messages" && messages.length > 0 && (
@@ -589,48 +591,45 @@ export default function Audience() {
               )}
 
               {/* Sub-mode 4: Gallery Image (10s) */}
-              {idleSubMode === "gallery" && galleryImages.length > 0 && (() => {
-                const currentImg = galleryImages[Math.floor(Math.random() * galleryImages.length)];
-                return (
-                  <motion.div
-                    key={`gallery-idle-${currentImg.id}`}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 1 }}
-                    style={{
-                      position: "fixed",
-                      top: 0,
-                      left: 0,
-                      width: "100vw",
-                      height: "100vh",
-                      background: "#000",
-                      zIndex: 1
-                    }}
-                  >
-                    <img
-                      src={currentImg.image_url}
-                      alt="מהגלריה"
-                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                    />
-                    <div style={{
-                      position: "absolute",
-                      bottom: "40px",
-                      left: "50%",
-                      transform: "translateX(-50%)",
-                      background: "rgba(0, 202, 255, 0.9)",
-                      padding: "15px 40px",
-                      borderRadius: "50px",
-                      fontSize: "clamp(1.5rem, 3vw, 2.5rem)",
-                      fontWeight: "800",
-                      color: "#001a2e",
-                      boxShadow: "0 0 40px rgba(0, 202, 255, 0.6)"
-                    }}>
-                      📸 מהגלריה שלנו
-                    </div>
-                  </motion.div>
-                );
-              })()}
+              {idleSubMode === "gallery" && galleryImages.length > 0 && (
+                <motion.div
+                  key={`gallery-idle-${currentGalleryImageIndex}`}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 1 }}
+                  style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    width: "100vw",
+                    height: "100vh",
+                    background: "#000",
+                    zIndex: 1
+                  }}
+                >
+                  <img
+                    src={galleryImages[currentGalleryImageIndex % galleryImages.length]?.image_url}
+                    alt="מהגלריה"
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  />
+                  <div style={{
+                    position: "absolute",
+                    bottom: "40px",
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    background: "rgba(0, 202, 255, 0.9)",
+                    padding: "15px 40px",
+                    borderRadius: "50px",
+                    fontSize: "clamp(1.5rem, 3vw, 2.5rem)",
+                    fontWeight: "800",
+                    color: "#001a2e",
+                    boxShadow: "0 0 40px rgba(0, 202, 255, 0.6)"
+                  }}>
+                    📸 מהגלריה שלנו
+                  </div>
+                </motion.div>
+              )}
             </>
           )}
 
