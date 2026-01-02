@@ -61,17 +61,23 @@ export default function Gallery() {
       return;
     }
 
-    try {
-      for (const imageId of selectedImages) {
+    let deleted = 0;
+    let errors = 0;
+
+    for (const imageId of selectedImages) {
+      try {
         await base44.entities.GalleryImage.delete(imageId);
+        deleted++;
+      } catch (err) {
+        console.error('שגיאה במחיקת תמונה:', imageId, err);
+        errors++;
       }
-      alert(`✅ נמחקו ${selectedImages.length} תמונות`);
-      setSelectedImages([]);
-      setSelectionMode(false);
-      queryClient.invalidateQueries({ queryKey: ['gallery-images'] });
-    } catch (err) {
-      alert('שגיאה במחיקה: ' + err.message);
     }
+
+    alert(`✅ נמחקו ${deleted} תמונות${errors > 0 ? ` (${errors} שגיאות)` : ''}`);
+    setSelectedImages([]);
+    setSelectionMode(false);
+    queryClient.invalidateQueries({ queryKey: ['gallery-images'] });
   };
 
   const handleAddWatermarksToAll = async () => {
