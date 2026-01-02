@@ -258,6 +258,26 @@ export default function Gallery() {
               💬 דברו איתנו
             </button>
 
+            <button
+              onClick={() => window.open('https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15', '_blank')}
+              style={{
+                padding: "12px 24px",
+                background: "linear-gradient(135deg, #25D366, #128C7E)",
+                color: "#fff",
+                border: "none",
+                borderRadius: "12px",
+                fontSize: "1rem",
+                fontWeight: "700",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                boxShadow: "0 0 20px rgba(37, 211, 102, 0.4)"
+              }}
+            >
+              📢 הצטרפו לקבוצת העדכונים
+            </button>
+
             {isAdmin && (
               <button
                 onClick={() => setShowUploadModal(true)}
