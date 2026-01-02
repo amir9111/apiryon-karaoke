@@ -24,11 +24,13 @@ export default function Gallery() {
         const user = await base44.auth.me();
         if (mounted) {
           setIsAdmin(user?.role === 'admin');
-          setAuthChecked(true);
         }
       } catch (err) {
         if (mounted) {
           setIsAdmin(false);
+        }
+      } finally {
+        if (mounted) {
           setAuthChecked(true);
         }
       }
@@ -37,31 +39,22 @@ export default function Gallery() {
     return () => { mounted = false; };
   }, []);
 
-  const { data: galleries = [], isLoading: galleriesLoading } = useQuery({
+  const { data: galleries = [], isLoading: galleriesLoading, error: galleriesError } = useQuery({
     queryKey: ['galleries'],
     queryFn: async () => {
-      try {
-        return await base44.entities.GalleryCategory.filter({ is_active: true }, '-date', 50);
-      } catch (err) {
-        console.error('Error loading galleries:', err);
-        return [];
-      }
+      return await base44.entities.GalleryCategory.filter({ is_active: true }, '-date', 50);
     },
-    enabled: authChecked,
+    retry: 2,
     staleTime: 60000,
   });
 
-  const { data: images = [], isLoading: imagesLoading } = useQuery({
+  const { data: images = [], isLoading: imagesLoading, error: imagesError } = useQuery({
     queryKey: ['gallery-images', selectedGallery?.id],
     queryFn: async () => {
-      try {
-        return await base44.entities.GalleryImage.filter({ gallery_id: selectedGallery.id }, '-created_date', 500);
-      } catch (err) {
-        console.error('Error loading images:', err);
-        return [];
-      }
+      return await base44.entities.GalleryImage.filter({ gallery_id: selectedGallery.id }, '-created_date', 500);
     },
-    enabled: !!selectedGallery && authChecked,
+    enabled: !!selectedGallery,
+    retry: 2,
     staleTime: 60000,
   });
 
@@ -112,7 +105,9 @@ export default function Gallery() {
     }
   };
 
-  if (!authChecked) {
+  const isLoading = !authChecked || galleriesLoading;
+
+  if (isLoading) {
     return (
       <div dir="rtl" style={{
         minHeight: "100vh",
@@ -123,7 +118,8 @@ export default function Gallery() {
         justifyContent: "center"
       }}>
         <div style={{ textAlign: "center" }}>
-          <div style={{ fontSize: "1.5rem", color: "#00caff", marginBottom: "10px" }}>טוען...</div>
+          <ApyironLogo size="medium" showCircle={true} />
+          <div style={{ fontSize: "1.5rem", color: "#00caff", marginTop: "20px" }}>טוען גלריה...</div>
         </div>
       </div>
     );
@@ -336,9 +332,30 @@ export default function Gallery() {
               בחר גלריה 🎨
             </h2>
             
-            {galleriesLoading ? (
-              <div style={{ textAlign: "center", padding: "60px 20px" }}>
-                <div style={{ fontSize: "1.2rem", color: "#00caff" }}>טוען גלריות...</div>
+            {galleriesError ? (
+              <div style={{
+                textAlign: "center",
+                padding: "60px 20px",
+                background: "rgba(248, 113, 113, 0.1)",
+                borderRadius: "20px",
+                border: "2px solid rgba(248, 113, 113, 0.3)"
+              }}>
+                <p style={{ fontSize: "1.2rem", color: "#f87171", marginBottom: "12px" }}>
+                  ⚠️ שגיאה בטעינת הגלריות
+                </p>
+                <button
+                  onClick={() => window.location.reload()}
+                  style={{
+                    padding: "10px 20px",
+                    background: "rgba(0, 202, 255, 0.2)",
+                    color: "#00caff",
+                    border: "1px solid rgba(0, 202, 255, 0.3)",
+                    borderRadius: "12px",
+                    cursor: "pointer"
+                  }}
+                >
+                  נסה שוב
+                </button>
               </div>
             ) : galleries.length === 0 ? (
               <div style={{
