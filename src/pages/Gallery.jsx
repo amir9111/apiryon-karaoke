@@ -16,6 +16,8 @@ export default function Gallery() {
   const [authChecked, setAuthChecked] = useState(false);
   const [isAddingWatermarks, setIsAddingWatermarks] = useState(false);
   const [watermarkProgress, setWatermarkProgress] = useState({ current: 0, total: 0 });
+  const [selectionMode, setSelectionMode] = useState(false);
+  const [selectedImages, setSelectedImages] = useState([]);
   
   const queryClient = useQueryClient();
 
@@ -40,6 +42,37 @@ export default function Gallery() {
     checkAdmin();
     return () => { mounted = false; };
   }, []);
+
+  const handleSelectAll = () => {
+    if (selectedImages.length === images.length) {
+      setSelectedImages([]);
+    } else {
+      setSelectedImages(images.map(img => img.id));
+    }
+  };
+
+  const handleDeleteSelected = async () => {
+    if (selectedImages.length === 0) {
+      alert('לא נבחרו תמונות למחיקה');
+      return;
+    }
+
+    if (!confirm(`למחוק ${selectedImages.length} תמונות?`)) {
+      return;
+    }
+
+    try {
+      for (const imageId of selectedImages) {
+        await base44.entities.GalleryImage.delete(imageId);
+      }
+      alert(`✅ נמחקו ${selectedImages.length} תמונות`);
+      setSelectedImages([]);
+      setSelectionMode(false);
+      queryClient.invalidateQueries({ queryKey: ['gallery-images'] });
+    } catch (err) {
+      alert('שגיאה במחיקה: ' + err.message);
+    }
+  };
 
   const handleAddWatermarksToAll = async () => {
     if (!confirm('להוסיף לוגו לכל התמונות בגלריה? זה עלול לקחת כמה דקות...')) {
@@ -393,24 +426,23 @@ export default function Gallery() {
             {isAdmin && (
               <>
                 <button
-                  onClick={handleAddWatermarksToAll}
-                  disabled={isAddingWatermarks}
+                  onClick={() => setSelectionMode(!selectionMode)}
                   style={{
                     padding: "12px 24px",
-                    background: isAddingWatermarks ? "rgba(100, 116, 139, 0.5)" : "linear-gradient(135deg, #f59e0b, #d97706)",
+                    background: selectionMode ? "linear-gradient(135deg, #ef4444, #dc2626)" : "linear-gradient(135deg, #8b5cf6, #7c3aed)",
                     color: "#fff",
                     border: "none",
                     borderRadius: "12px",
                     fontSize: "1rem",
                     fontWeight: "700",
-                    cursor: isAddingWatermarks ? "not-allowed" : "pointer",
+                    cursor: "pointer",
                     display: "flex",
                     alignItems: "center",
                     gap: "8px",
-                    boxShadow: "0 0 20px rgba(245, 158, 11, 0.4)"
+                    boxShadow: "0 0 20px rgba(139, 92, 246, 0.4)"
                   }}
                 >
-                  🏷️ {isAddingWatermarks ? `מעבד... ${watermarkProgress.current}/${watermarkProgress.total}` : 'הוסף לוגו לכל התמונות'}
+                  {selectionMode ? '❌ ביטול' : '✏️ מצב בחירה'}
                 </button>
                 <button
                   onClick={() => setShowUploadModal(true)}
@@ -532,6 +564,58 @@ export default function Gallery() {
               ))}
             </div>
           </motion.div>
+        )}
+
+        {/* Selection Mode Controls */}
+        {selectionMode && selectedGallery && (
+          <div style={{
+            background: "rgba(15, 23, 42, 0.95)",
+            border: "2px solid rgba(139, 92, 246, 0.5)",
+            borderRadius: "16px",
+            padding: "16px",
+            marginBottom: "20px",
+            display: "flex",
+            gap: "12px",
+            alignItems: "center",
+            flexWrap: "wrap"
+          }}>
+            <button
+              onClick={handleSelectAll}
+              style={{
+                padding: "10px 20px",
+                background: "rgba(139, 92, 246, 0.2)",
+                color: "#a78bfa",
+                border: "2px solid rgba(139, 92, 246, 0.5)",
+                borderRadius: "10px",
+                fontSize: "0.95rem",
+                fontWeight: "700",
+                cursor: "pointer"
+              }}
+            >
+              {selectedImages.length === images.length ? '❌ בטל הכל' : '✅ סמן הכל'}
+            </button>
+            <div style={{ fontSize: "1rem", color: "#cbd5e1" }}>
+              נבחרו: {selectedImages.length} תמונות
+            </div>
+            {selectedImages.length > 0 && (
+              <button
+                onClick={handleDeleteSelected}
+                style={{
+                  padding: "10px 20px",
+                  background: "linear-gradient(135deg, #ef4444, #dc2626)",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "10px",
+                  fontSize: "0.95rem",
+                  fontWeight: "700",
+                  cursor: "pointer",
+                  boxShadow: "0 0 20px rgba(239, 68, 68, 0.4)"
+                }}
+              >
+                🗑️ מחק נבחרים
+              </button>
+            )}
+          </div>
         )}
 
         {/* Galleries Grid */}
@@ -662,7 +746,17 @@ export default function Gallery() {
                   <motion.div
                     key={img.id}
                     whileHover={{ scale: 1.05 }}
-                    onClick={() => setSelectedImage(img)}
+                    onClick={() => {
+                      if (selectionMode) {
+                        if (selectedImages.includes(img.id)) {
+                          setSelectedImages(selectedImages.filter(id => id !== img.id));
+                        } else {
+                          setSelectedImages([...selectedImages, img.id]);
+                        }
+                      } else {
+                        setSelectedImage(img);
+                      }
+                    }}
                     style={{
                       position: "relative",
                       borderRadius: "16px",
@@ -670,9 +764,28 @@ export default function Gallery() {
                       cursor: "pointer",
                       boxShadow: "0 10px 30px rgba(0, 0, 0, 0.5)",
                       aspectRatio: "1",
-                      background: "rgba(15, 23, 42, 0.5)"
+                      background: "rgba(15, 23, 42, 0.5)",
+                      border: selectionMode && selectedImages.includes(img.id) ? "4px solid #a78bfa" : "none"
                     }}
                   >
+                    {selectionMode && (
+                      <div style={{
+                        position: "absolute",
+                        top: "10px",
+                        right: "10px",
+                        width: "32px",
+                        height: "32px",
+                        borderRadius: "50%",
+                        background: selectedImages.includes(img.id) ? "#a78bfa" : "rgba(0,0,0,0.5)",
+                        border: "3px solid white",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        zIndex: 10
+                      }}>
+                        {selectedImages.includes(img.id) && <span style={{ color: "white", fontSize: "1.2rem" }}>✓</span>}
+                      </div>
+                    )}
                     <img
                       src={img.image_url}
                       alt="תמונה מהגלריה"
@@ -688,62 +801,64 @@ export default function Gallery() {
                         background: "#1e293b"
                       }}
                     />
-                    <div style={{
-                      position: "absolute",
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      padding: "12px",
-                      background: "linear-gradient(to top, rgba(0,0,0,0.8), transparent)",
-                      display: "flex",
-                      justifyContent: "center",
-                      gap: "8px"
-                    }}>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDownload(img.image_url, img.original_filename, img.id);
-                        }}
-                        style={{
-                          padding: "8px 16px",
-                          background: "rgba(0, 202, 255, 0.9)",
-                          color: "#001a2e",
-                          border: "none",
-                          borderRadius: "8px",
-                          fontSize: "0.9rem",
-                          fontWeight: "700",
-                          cursor: "pointer",
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "6px"
-                        }}
-                      >
-                        <Download className="w-4 h-4" />
-                        הורד
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleShareImage(img.image_url, img.original_filename);
-                        }}
-                        style={{
-                          padding: "8px 16px",
-                          background: "rgba(37, 211, 102, 0.9)",
-                          color: "#001a2e",
-                          border: "none",
-                          borderRadius: "8px",
-                          fontSize: "0.9rem",
-                          fontWeight: "700",
-                          cursor: "pointer",
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "6px"
-                        }}
-                      >
-                        <Share2 className="w-4 h-4" />
-                        שתף
-                      </button>
-                    </div>
+                    {!selectionMode && (
+                      <div style={{
+                        position: "absolute",
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        padding: "12px",
+                        background: "linear-gradient(to top, rgba(0,0,0,0.8), transparent)",
+                        display: "flex",
+                        justifyContent: "center",
+                        gap: "8px"
+                      }}>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDownload(img.image_url, img.original_filename, img.id);
+                          }}
+                          style={{
+                            padding: "8px 16px",
+                            background: "rgba(0, 202, 255, 0.9)",
+                            color: "#001a2e",
+                            border: "none",
+                            borderRadius: "8px",
+                            fontSize: "0.9rem",
+                            fontWeight: "700",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "6px"
+                          }}
+                        >
+                          <Download className="w-4 h-4" />
+                          הורד
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleShareImage(img.image_url, img.original_filename);
+                          }}
+                          style={{
+                            padding: "8px 16px",
+                            background: "rgba(37, 211, 102, 0.9)",
+                            color: "#001a2e",
+                            border: "none",
+                            borderRadius: "8px",
+                            fontSize: "0.9rem",
+                            fontWeight: "700",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "6px"
+                          }}
+                        >
+                          <Share2 className="w-4 h-4" />
+                          שתף
+                        </button>
+                      </div>
+                    )}
                   </motion.div>
                 ))}
               </div>
