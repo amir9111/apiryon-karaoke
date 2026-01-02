@@ -25,20 +25,16 @@ export default function Gallery() {
         if (mounted) {
           setIsAdmin(user?.role === 'admin');
           
-          // הוספת watermark לכל התמונות הישנות (פעם אחת בלבד)
+          // הוספת watermark לכל התמונות הישנות
           if (user?.role === 'admin') {
-            const watermarkProcessed = localStorage.getItem('apiryon_watermark_v2_processed');
-            if (!watermarkProcessed) {
-              try {
-                console.log('מעבד תמונות ישנות - מוסיף לוגו...');
-                const result = await base44.functions.invoke('addWatermarkToAll');
-                console.log('סיים לעבד תמונות:', result.data);
-                localStorage.setItem('apiryon_watermark_v2_processed', 'true');
-                // רענון הגלריות לאחר העדכון
-                queryClient.invalidateQueries({ queryKey: ['gallery-images'] });
-              } catch (err) {
-                console.error('שגיאה בהוספת לוגו לתמונות ישנות:', err);
-              }
+            try {
+              console.log('מעבד תמונות - מוסיף לוגו...');
+              const result = await base44.functions.invoke('addWatermarkToAll');
+              console.log('סיים לעבד תמונות:', result.data);
+              // רענון הגלריות לאחר העדכון
+              queryClient.invalidateQueries({ queryKey: ['gallery-images'] });
+            } catch (err) {
+              console.error('שגיאה בהוספת לוגו:', err);
             }
           }
         }
