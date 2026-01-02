@@ -30,36 +30,33 @@ Deno.serve(async (req) => {
 
     console.log('Image size:', width, 'x', height);
 
-    // יצירת לוגו גדול ובולט מאוד
-    const logoWidth = Math.floor(width * 0.6); // 60% מרוחב התמונה
-    const logoHeight = 200;
+    // טעינת פונט גדול
+    const font = await Jimp.loadFont(Jimp.FONT_SANS_128_WHITE);
     
-    // רקע ציאן בולט
-    const logo = new Jimp(logoWidth, logoHeight, 0x00caffFF);
-    
-    // טקסט שחור גדול
-    const font = await Jimp.loadFont(Jimp.FONT_SANS_128_BLACK);
-    const text = 'APIRYON';
+    const text = 'APIRYON CLUB';
     const textWidth = Jimp.measureText(font, text);
-    const textX = Math.floor((logoWidth - textWidth) / 2);
-    const textY = Math.floor((logoHeight - 128) / 2);
-    
-    logo.print(font, textX, textY, text);
+    const textHeight = 128;
 
-    // מיקום: באמצע התמונה
-    const logoX = Math.floor((width - logoWidth) / 2);
-    const logoY = Math.floor((height - logoHeight) / 2);
+    // מיקום: מרכז התחתון
+    const x = Math.floor((width - textWidth) / 2);
+    const y = height - textHeight - 50;
 
-    console.log('Adding logo at:', logoX, logoY);
+    console.log('Adding text at:', x, y);
 
-    // הדבקת הלוגו על התמונה
-    image.composite(logo, logoX, logoY, {
-      mode: Jimp.BLEND_SOURCE_OVER,
-      opacitySource: 0.9,
-      opacityDest: 1.0
-    });
+    // רקע שחור
+    const bgPadding = 20;
+    for (let i = x - bgPadding; i < x + textWidth + bgPadding; i++) {
+      for (let j = y - bgPadding; j < y + textHeight + bgPadding; j++) {
+        if (i >= 0 && i < width && j >= 0 && j < height) {
+          image.setPixelColor(0x000000FF, i, j);
+        }
+      }
+    }
 
-    console.log('Logo added successfully');
+    // הוספת טקסט לבן
+    image.print(font, x, y, text);
+
+    console.log('Watermark added successfully');
 
     // המרה ל-buffer
     const outputBuffer = await image.getBufferAsync(Jimp.MIME_JPEG);
