@@ -20,26 +20,31 @@ Deno.serve(async (req) => {
 
     // טעינת התמונה הראשית
     const image = await Jimp.read(image_url);
-    
+
+    // הקטנת התמונה לרזולוציה סבירה (מקסימום 1920px)
+    if (image.bitmap.width > 1920 || image.bitmap.height > 1920) {
+      image.scaleToFit(1920, 1920);
+    }
+
     // טעינת הלוגו
     const logo = await Jimp.read(LOGO_URL);
-    
-    // שינוי גודל הלוגו - 130 פיקסלים
-    logo.resize(130, 130);
-    
-    // התאמת שקיפות - 80%
-    logo.opacity(0.8);
-    
+
+    // שינוי גודל הלוגו - 70 פיקסלים (קטן יותר = מהיר יותר)
+    logo.resize(70, 70);
+
+    // התאמת שקיפות - 75%
+    logo.opacity(0.75);
+
     // מיקום בפינה ימנית תחתונה
-    const padding = 25;
+    const padding = 15;
     const xPos = image.bitmap.width - logo.bitmap.width - padding;
     const yPos = image.bitmap.height - logo.bitmap.height - padding;
-    
+
     // הדבקת הלוגו
     image.composite(logo, xPos, yPos);
 
-    // שמירה באיכות גבוהה
-    const buffer = await image.quality(80).getBufferAsync(Jimp.MIME_JPEG);
+    // שמירה באיכות מותאמת (יותר מהיר)
+    const buffer = await image.quality(72).getBufferAsync(Jimp.MIME_JPEG);
     const blob = new Blob([buffer], { type: 'image/jpeg' });
     const file = new File([blob], 'watermarked.jpg', { type: 'image/jpeg' });
 
