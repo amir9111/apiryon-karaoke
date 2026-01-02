@@ -132,6 +132,12 @@ export default function Gallery() {
     window.open(whatsappUrl, '_blank');
   };
 
+  const handleShareImage = (imageUrl) => {
+    const text = `📸 תראו אותי בתמונה הזו מאפריון! 🎤✨\n\n${imageUrl}\n\n🎉 מועדון הקריוקי המוביל בצפון!`;
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    window.open(whatsappUrl, '_blank');
+  };
+
   const handleWhatsAppContact = () => {
     window.open('https://wa.me/972525400396?text=היי%20אפריון!%20רוצה%20להזמין%20שולחן%20🎤', '_blank');
   };
@@ -588,7 +594,8 @@ export default function Gallery() {
                       padding: "12px",
                       background: "linear-gradient(to top, rgba(0,0,0,0.8), transparent)",
                       display: "flex",
-                      justifyContent: "center"
+                      justifyContent: "center",
+                      gap: "8px"
                     }}>
                       <button
                         onClick={(e) => {
@@ -611,6 +618,28 @@ export default function Gallery() {
                       >
                         <Download className="w-4 h-4" />
                         הורד
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleShareImage(img.image_url);
+                        }}
+                        style={{
+                          padding: "8px 16px",
+                          background: "rgba(37, 211, 102, 0.9)",
+                          color: "#001a2e",
+                          border: "none",
+                          borderRadius: "8px",
+                          fontSize: "0.9rem",
+                          fontWeight: "700",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "6px"
+                        }}
+                      >
+                        <Share2 className="w-4 h-4" />
+                        שתף
                       </button>
                     </div>
                   </motion.div>
@@ -672,31 +701,59 @@ export default function Gallery() {
             }}
           />
 
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleDownload(selectedImage.image_url, selectedImage.original_filename, selectedImage.id);
-            }}
-            style={{
-              position: "absolute",
-              bottom: "40px",
-              padding: "14px 28px",
-              background: "linear-gradient(135deg, #00caff, #0088ff)",
-              color: "#001a2e",
-              border: "none",
-              borderRadius: "12px",
-              fontSize: "1.1rem",
-              fontWeight: "700",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              boxShadow: "0 0 30px rgba(0, 202, 255, 0.5)"
-            }}
-          >
-            <Download className="w-5 h-5" />
-            הורד את התמונה
-          </button>
+          <div style={{
+            position: "absolute",
+            bottom: "40px",
+            display: "flex",
+            gap: "12px"
+          }}>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDownload(selectedImage.image_url, selectedImage.original_filename, selectedImage.id);
+              }}
+              style={{
+                padding: "14px 28px",
+                background: "linear-gradient(135deg, #00caff, #0088ff)",
+                color: "#001a2e",
+                border: "none",
+                borderRadius: "12px",
+                fontSize: "1.1rem",
+                fontWeight: "700",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                boxShadow: "0 0 30px rgba(0, 202, 255, 0.5)"
+              }}
+            >
+              <Download className="w-5 h-5" />
+              הורד
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleShareImage(selectedImage.image_url);
+              }}
+              style={{
+                padding: "14px 28px",
+                background: "linear-gradient(135deg, #25D366, #128C7E)",
+                color: "#fff",
+                border: "none",
+                borderRadius: "12px",
+                fontSize: "1.1rem",
+                fontWeight: "700",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                boxShadow: "0 0 30px rgba(37, 211, 102, 0.5)"
+              }}
+            >
+              <Share2 className="w-5 h-5" />
+              שתף בווטסאפ
+            </button>
+          </div>
         </div>
       )}
 
