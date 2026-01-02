@@ -14,6 +14,8 @@ export default function Gallery() {
   const [showFeedbackForm, setShowFeedbackForm] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
+  const [isAddingWatermarks, setIsAddingWatermarks] = useState(false);
+  const [watermarkProgress, setWatermarkProgress] = useState({ current: 0, total: 0 });
   
   const queryClient = useQueryClient();
 
@@ -24,19 +26,6 @@ export default function Gallery() {
         const user = await base44.auth.me();
         if (mounted) {
           setIsAdmin(user?.role === 'admin');
-          
-          // הוספת watermark לכל התמונות הישנות
-          if (user?.role === 'admin') {
-            try {
-              console.log('מעבד תמונות - מוסיף לוגו...');
-              const result = await base44.functions.invoke('addWatermarkToAll');
-              console.log('סיים לעבד תמונות:', result.data);
-              // רענון הגלריות לאחר העדכון
-              queryClient.invalidateQueries({ queryKey: ['gallery-images'] });
-            } catch (err) {
-              console.error('שגיאה בהוספת לוגו:', err);
-            }
-          }
         }
       } catch (err) {
         if (mounted) {
@@ -51,6 +40,59 @@ export default function Gallery() {
     checkAdmin();
     return () => { mounted = false; };
   }, []);
+
+  const handleAddWatermarksToAll = async () => {
+    if (!confirm('להוסיף לוגו לכל התמונות בגלריה? זה עלול לקחת כמה דקות...')) {
+      return;
+    }
+
+    setIsAddingWatermarks(true);
+    setWatermarkProgress({ current: 0, total: 0 });
+
+    try {
+      // שליפת כל התמונות
+      const allImages = await base44.entities.GalleryImage.list('-created_date', 1000);
+      setWatermarkProgress({ current: 0, total: allImages.length });
+
+      let processed = 0;
+      for (const image of allImages) {
+        try {
+          // דילוג על תמונות שכבר עובדו
+          if (image.image_url.includes('watermarked-')) {
+            processed++;
+            setWatermarkProgress({ current: processed, total: allImages.length });
+            continue;
+          }
+
+          // הוספת לוגו
+          const result = await base44.functions.invoke('addWatermark', {
+            image_url: image.image_url
+          });
+
+          // עדכון התמונה
+          await base44.entities.GalleryImage.update(image.id, {
+            image_url: result.data.watermarked_url,
+            thumbnail_url: result.data.watermarked_url
+          });
+
+          processed++;
+          setWatermarkProgress({ current: processed, total: allImages.length });
+        } catch (err) {
+          console.error('שגיאה בעיבוד תמונה:', err);
+          processed++;
+          setWatermarkProgress({ current: processed, total: allImages.length });
+        }
+      }
+
+      alert('✅ הלוגו התווסף בהצלחה לכל התמונות!');
+      queryClient.invalidateQueries({ queryKey: ['gallery-images'] });
+    } catch (err) {
+      alert('שגיאה: ' + err.message);
+    } finally {
+      setIsAddingWatermarks(false);
+      setWatermarkProgress({ current: 0, total: 0 });
+    }
+  };
 
   // Track page view
   React.useEffect(() => {
@@ -345,26 +387,48 @@ export default function Gallery() {
             </button>
 
             {isAdmin && (
-              <button
-                onClick={() => setShowUploadModal(true)}
-                style={{
-                  padding: "12px 24px",
-                  background: "linear-gradient(135deg, #00caff, #0088ff)",
-                  color: "#001a2e",
-                  border: "none",
-                  borderRadius: "12px",
-                  fontSize: "1rem",
-                  fontWeight: "700",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  boxShadow: "0 0 20px rgba(0, 202, 255, 0.4)"
-                }}
-              >
-                <Plus className="w-5 h-5" />
-                הוסף גלריה חדשה
-              </button>
+              <>
+                <button
+                  onClick={handleAddWatermarksToAll}
+                  disabled={isAddingWatermarks}
+                  style={{
+                    padding: "12px 24px",
+                    background: isAddingWatermarks ? "rgba(100, 116, 139, 0.5)" : "linear-gradient(135deg, #f59e0b, #d97706)",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "12px",
+                    fontSize: "1rem",
+                    fontWeight: "700",
+                    cursor: isAddingWatermarks ? "not-allowed" : "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    boxShadow: "0 0 20px rgba(245, 158, 11, 0.4)"
+                  }}
+                >
+                  🏷️ {isAddingWatermarks ? `מעבד... ${watermarkProgress.current}/${watermarkProgress.total}` : 'הוסף לוגו לכל התמונות'}
+                </button>
+                <button
+                  onClick={() => setShowUploadModal(true)}
+                  style={{
+                    padding: "12px 24px",
+                    background: "linear-gradient(135deg, #00caff, #0088ff)",
+                    color: "#001a2e",
+                    border: "none",
+                    borderRadius: "12px",
+                    fontSize: "1rem",
+                    fontWeight: "700",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    boxShadow: "0 0 20px rgba(0, 202, 255, 0.4)"
+                  }}
+                >
+                  <Plus className="w-5 h-5" />
+                  הוסף גלריה חדשה
+                </button>
+              </>
             )}
           </div>
         </div>
