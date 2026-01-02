@@ -24,8 +24,8 @@ Deno.serve(async (req) => {
     // טעינת הלוגו
     const logo = await Jimp.read(LOGO_URL);
     
-    // שינוי גודל הלוגו - 100 פיקסלים
-    logo.resize(100, 100);
+    // שינוי גודל הלוגו - 85 פיקסלים
+    logo.resize(85, 85);
     
     // התאמת שקיפות - 75%
     logo.opacity(0.75);
