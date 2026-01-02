@@ -93,7 +93,21 @@ export default function Audience() {
     queryKey: ['gallery-images-audience'],
     queryFn: async () => {
       const images = await base44.entities.GalleryImage.list('-created_date', 100);
-      return images.filter(img => img.image_url);
+      
+      // מחיקה אוטומטית של תמונות ישנות מעל שעה
+      const oneHourAgo = Date.now() - (60 * 60 * 1000);
+      for (const img of images) {
+        const imgTime = new Date(img.created_date).getTime();
+        if (imgTime < oneHourAgo) {
+          try {
+            await base44.entities.GalleryImage.delete(img.id);
+          } catch (err) {
+            console.error('Failed to delete old image:', err);
+          }
+        }
+      }
+      
+      return images.filter(img => img.image_url && new Date(img.created_date).getTime() >= oneHourAgo);
     },
     refetchInterval: 30000,
     staleTime: 20000,
@@ -123,85 +137,41 @@ export default function Audience() {
     }
   }, [currentMode]);
 
-  // Improved rotation logic with proper timings
+  // Simplified rotation: Only current_song (if exists) and queue + gallery slideshow
   React.useEffect(() => {
     let timeout;
     
     const getNextMode = (current) => {
-      // Priority: current_song (60s) -> media (30s) -> queue (20s) -> gallery (15s) -> qr (15s per QR) -> messages (20s)
-      
-      if (current === "current_song") {
-        if (mediaUploads.length > 0) return { next: "media", duration: 30000 };
-        return { next: "queue", duration: 20000 };
+      // אם יש שיר נוכחי - תמיד נשאר עליו
+      if (currentSong && current !== "current_song") {
+        return { next: "current_song", duration: 0 };
       }
       
-      if (current === "media") {
-        return { next: "queue", duration: 20000 };
-      }
-      
-      if (current === "queue") {
+      // אם אין שיר נוכחי - מסך קבוע עם תור + גלריה מתחלפת
+      if (!currentSong) {
+        // החלפת תמונות גלריה כל 8 שניות ברקע
         if (galleryImages.length > 0) {
           setCurrentGalleryImageIndex(prevIdx => (prevIdx + 1) % galleryImages.length);
-          return { next: "gallery", duration: 15000 };
         }
-        setCurrentQRIndex(0);
-        return { next: "qr", duration: 15000 };
+        return { next: "queue", duration: 8000 }; // החלפת תמונה כל 8 שניות
       }
       
-      if (current === "gallery") {
-        setCurrentQRIndex(0);
-        return { next: "qr", duration: 15000 };
-      }
-      
-      if (current === "qr") {
-        // Cycle through 3 QR codes
-        if (currentQRIndex < 2) {
-          setCurrentQRIndex(prev => prev + 1);
-          return { next: "qr", duration: 15000 };
-        }
-        // After 3rd QR, check for messages
-        if (messages.length > 0) {
-          return { next: "messages", duration: 20000 };
-        }
-        // Back to current song or media
-        if (currentSong) return { next: "current_song", duration: 60000 };
-        if (mediaUploads.length > 0) return { next: "media", duration: 30000 };
-        return { next: "queue", duration: 20000 };
-      }
-      
-      if (current === "messages") {
-        // Back to current song or media
-        if (currentSong) return { next: "current_song", duration: 60000 };
-        if (mediaUploads.length > 0) return { next: "media", duration: 30000 };
-        return { next: "queue", duration: 20000 };
-      }
-      
-      // Default start
-      if (currentSong) return { next: "current_song", duration: 60000 };
-      if (mediaUploads.length > 0) return { next: "media", duration: 30000 };
-      return { next: "queue", duration: 20000 };
+      // אם יש שיר נוכחי - נשאר על המסך שלו
+      return { next: "current_song", duration: 60000 };
     };
     
     const transition = () => {
       const { next, duration } = getNextMode(currentMode);
-      setCurrentMode(next);
-      timeout = setTimeout(transition, duration);
+      if (duration > 0) {
+        setCurrentMode(next);
+        timeout = setTimeout(transition, duration);
+      }
     };
     
-    // Initial duration based on current mode
-    const initialDurations = {
-      current_song: 60000,
-      media: 30000,
-      queue: 20000,
-      gallery: 15000,
-      qr: 15000,
-      messages: 20000
-    };
-    
-    timeout = setTimeout(transition, initialDurations[currentMode] || 20000);
+    timeout = setTimeout(transition, currentMode === "current_song" ? 60000 : 8000);
     
     return () => clearTimeout(timeout);
-  }, [currentMode, mediaUploads.length, galleryImages.length, messages.length, currentSong, currentQRIndex]);
+  }, [currentMode, currentSong, galleryImages.length]);
 
   return (
     <div dir="rtl" style={{
@@ -524,23 +494,67 @@ export default function Audience() {
             </motion.div>
           )}
 
-          {/* Mode 2: Queue (25 seconds) */}
+          {/* Mode 2: Queue + Gallery Background (Static) */}
           {currentMode === "queue" && (
             <motion.div
               key="queue"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               transition={{ duration: 0.8 }}
               style={{
                 width: "100%",
                 height: "100%",
+                position: "relative",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
                 padding: "60px",
                 gap: "40px"
+              }}
+            >
+              {/* Background Gallery Slideshow */}
+              {galleryImages.length > 0 && (
+                <motion.div
+                  key={`bg-gallery-${currentGalleryImageIndex}`}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 0.3 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 1.5 }}
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    zIndex: 0
+                  }}
+                >
+                  <img
+                    src={galleryImages[currentGalleryImageIndex]?.image_url}
+                    alt="רקע"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      filter: "blur(20px)"
+                    }}
+                  />
+                </motion.div>
+              )}
+
+              {/* Content overlay */}
+              <div style={{
+                position: "relative",
+                zIndex: 1,
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: "40px"
               }}
             >
               {/* Title */}
@@ -700,6 +714,50 @@ export default function Audience() {
                   אין זמרים בתור כרגע 🎤
                 </div>
               )}
+
+              {/* QR Code for Queue - Fixed Bottom Right */}
+              <motion.div
+                animate={{ scale: [1, 1.05, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                style={{
+                  position: "fixed",
+                  bottom: "40px",
+                  right: "40px",
+                  background: "rgba(15, 23, 42, 0.95)",
+                  padding: "20px",
+                  borderRadius: "20px",
+                  border: "3px solid rgba(0, 202, 255, 0.6)",
+                  boxShadow: "0 0 40px rgba(0, 202, 255, 0.5)",
+                  textAlign: "center",
+                  zIndex: 100
+                }}
+              >
+                <div style={{
+                  fontSize: "1.3rem",
+                  fontWeight: "800",
+                  color: "#00caff",
+                  marginBottom: "10px"
+                }}>
+                  🎤 הצטרף לתור
+                </div>
+                <div style={{
+                  width: "150px",
+                  height: "150px",
+                  background: "#fff",
+                  borderRadius: "12px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  border: "3px solid #00caff"
+                }}>
+                  <img 
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${window.location.origin}/Home`}
+                    alt="QR לתור"
+                    style={{ width: "90%", height: "90%" }}
+                  />
+                </div>
+              </motion.div>
+              </div>
             </motion.div>
           )}
 
@@ -737,7 +795,7 @@ export default function Audience() {
               {/* Gallery indicator with counter */}
               <div style={{
                 position: "absolute",
-                top: "40px",
+                bottom: "40px",
                 left: "50%",
                 transform: "translateX(-50%)",
                 background: "rgba(0, 202, 255, 0.9)",
