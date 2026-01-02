@@ -26,32 +26,70 @@ Deno.serve(async (req) => {
     const width = image.bitmap.width;
     const height = image.bitmap.height;
 
-    // טעינת פונט גדול יותר
-    const font = await Jimp.loadFont(Jimp.FONT_SANS_64_WHITE);
-
-    // טקסט הלוגו - גדול ובולט
-    const watermarkText = '🎤 APIRYON CLUB 🎤';
-    const textWidth = Jimp.measureText(font, watermarkText);
-    const textHeight = Jimp.measureTextHeight(font, watermarkText, textWidth);
-
-    // מיקום: באמצע התחתון של התמונה
-    const x = Math.floor((width - textWidth) / 2);
-    const y = height - textHeight - 30;
-
-    // הוספת רקע שחור מלא מאחורי הטקסט
-    const bgPadding = 15;
-    const bgColor = 0x000000FF; // שחור מלא
+    // יצירת לוגו APIRYON ויזואלי
+    const logoWidth = Math.min(600, Math.floor(width * 0.4)); // 40% מרוחב התמונה
+    const logoHeight = 150;
     
-    for (let i = x - bgPadding; i < x + textWidth + bgPadding; i++) {
-      for (let j = y - bgPadding; j < y + textHeight + bgPadding; j++) {
-        if (i >= 0 && i < width && j >= 0 && j < height) {
-          image.setPixelColor(bgColor, i, j);
-        }
+    // יצירת תמונת לוגו עם רקע
+    const logo = new Jimp(logoWidth, logoHeight, 0x000000E6); // רקע שחור עם שקיפות
+    
+    // מסגרת בצבע ציאן
+    const borderColor = 0x00caffFF;
+    const borderWidth = 8;
+    
+    // מסגרת עליונה
+    for (let x = 0; x < logoWidth; x++) {
+      for (let y = 0; y < borderWidth; y++) {
+        logo.setPixelColor(borderColor, x, y);
+      }
+    }
+    // מסגרת תחתונה
+    for (let x = 0; x < logoWidth; x++) {
+      for (let y = logoHeight - borderWidth; y < logoHeight; y++) {
+        logo.setPixelColor(borderColor, x, y);
+      }
+    }
+    // מסגרת שמאלית
+    for (let x = 0; x < borderWidth; x++) {
+      for (let y = 0; y < logoHeight; y++) {
+        logo.setPixelColor(borderColor, x, y);
+      }
+    }
+    // מסגרת ימנית
+    for (let x = logoWidth - borderWidth; x < logoWidth; x++) {
+      for (let y = 0; y < logoHeight; y++) {
+        logo.setPixelColor(borderColor, x, y);
       }
     }
 
-    // הוספת הטקסט בלבן
-    image.print(font, x, y, watermarkText);
+    // הוספת טקסט ללוגו
+    const font = await Jimp.loadFont(Jimp.FONT_SANS_64_WHITE);
+    const text = 'APIRYON';
+    const textWidth = Jimp.measureText(font, text);
+    const textX = Math.floor((logoWidth - textWidth) / 2);
+    const textY = Math.floor((logoHeight - 64) / 2);
+    
+    logo.print(font, textX, textY, text);
+
+    // הוספת טקסט קטן יותר מתחת
+    const smallFont = await Jimp.loadFont(Jimp.FONT_SANS_32_WHITE);
+    const subText = 'CLUB';
+    const subTextWidth = Jimp.measureText(smallFont, subText);
+    const subTextX = Math.floor((logoWidth - subTextWidth) / 2);
+    const subTextY = textY + 70;
+    
+    logo.print(smallFont, subTextX, subTextY, subText);
+
+    // מיקום הלוגו: מרכז התחתון
+    const logoX = Math.floor((width - logoWidth) / 2);
+    const logoY = height - logoHeight - 40;
+
+    // הדבקת הלוגו על התמונה
+    image.composite(logo, logoX, logoY, {
+      mode: Jimp.BLEND_SOURCE_OVER,
+      opacitySource: 0.95,
+      opacityDest: 1.0
+    });
 
     // המרה ל-buffer
     const outputBuffer = await image.getBufferAsync(Jimp.MIME_JPEG);
