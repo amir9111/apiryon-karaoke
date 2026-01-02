@@ -26,41 +26,31 @@ Deno.serve(async (req) => {
     const width = image.bitmap.width;
     const height = image.bitmap.height;
 
-    // טעינת פונט
-    const font = await Jimp.loadFont(Jimp.FONT_SANS_32_WHITE);
+    // טעינת פונט גדול יותר
+    const font = await Jimp.loadFont(Jimp.FONT_SANS_64_WHITE);
 
-    // טקסט הלוגו
-    const watermarkText = 'APIRYON CLUB';
+    // טקסט הלוגו - גדול ובולט
+    const watermarkText = '🎤 APIRYON CLUB 🎤';
     const textWidth = Jimp.measureText(font, watermarkText);
     const textHeight = Jimp.measureTextHeight(font, watermarkText, textWidth);
 
-    // מיקום: פינה ימנית למטה עם ריווח
-    const padding = 20;
-    const x = width - textWidth - padding;
-    const y = height - textHeight - padding;
+    // מיקום: באמצע התחתון של התמונה
+    const x = Math.floor((width - textWidth) / 2);
+    const y = height - textHeight - 30;
 
-    // הוספת רקע שחור שקוף מאחורי הטקסט לקריאות טובה
-    const bgPadding = 10;
-    const bgColor = 0x000000AA; // שחור עם שקיפות
+    // הוספת רקע שחור מלא מאחורי הטקסט
+    const bgPadding = 15;
+    const bgColor = 0x000000FF; // שחור מלא
     
     for (let i = x - bgPadding; i < x + textWidth + bgPadding; i++) {
       for (let j = y - bgPadding; j < y + textHeight + bgPadding; j++) {
         if (i >= 0 && i < width && j >= 0 && j < height) {
-          const currentColor = image.getPixelColor(i, j);
-          const blended = Jimp.intToRGBA(currentColor);
-          const bgRGBA = Jimp.intToRGBA(bgColor);
-          
-          // מיזוג פשוט
-          blended.r = Math.round(blended.r * 0.4 + bgRGBA.r * 0.6);
-          blended.g = Math.round(blended.g * 0.4 + bgRGBA.g * 0.6);
-          blended.b = Math.round(blended.b * 0.4 + bgRGBA.b * 0.6);
-          
-          image.setPixelColor(Jimp.rgbaToInt(blended.r, blended.g, blended.b, blended.a), i, j);
+          image.setPixelColor(bgColor, i, j);
         }
       }
     }
 
-    // הוספת הטקסט
+    // הוספת הטקסט בלבן
     image.print(font, x, y, watermarkText);
 
     // המרה ל-buffer
