@@ -27,13 +27,13 @@ export default function Gallery() {
           
           // הוספת watermark לכל התמונות הישנות (פעם אחת בלבד)
           if (user?.role === 'admin') {
-            const watermarkProcessed = localStorage.getItem('apiryon_watermark_processed');
+            const watermarkProcessed = localStorage.getItem('apiryon_watermark_v2_processed');
             if (!watermarkProcessed) {
               try {
                 console.log('מעבד תמונות ישנות - מוסיף לוגו...');
                 const result = await base44.functions.invoke('addWatermarkToAll');
                 console.log('סיים לעבד תמונות:', result.data);
-                localStorage.setItem('apiryon_watermark_processed', 'true');
+                localStorage.setItem('apiryon_watermark_v2_processed', 'true');
                 // רענון הגלריות לאחר העדכון
                 queryClient.invalidateQueries({ queryKey: ['gallery-images'] });
               } catch (err) {
