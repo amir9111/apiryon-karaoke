@@ -1,12 +1,22 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Calendar, Users, Music, Sparkles, Phone, Mail, MapPin, Clock } from "lucide-react";
+import { Calendar, Users, Music, Sparkles, Phone, Mail, MapPin, Clock, Star } from "lucide-react";
 import { motion } from "framer-motion";
 import ApyironLogo from "../components/ApyironLogo";
+import { base44 } from "@/api/base44Client";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Landing() {
   const [showVideo, setShowVideo] = useState(true);
+
+  const { data: feedbacks = [] } = useQuery({
+    queryKey: ['approved-feedbacks'],
+    queryFn: async () => {
+      const all = await base44.entities.GalleryFeedback.filter({ is_approved: true }, '-created_date', 20);
+      return all;
+    }
+  });
 
   return (
     <div dir="rtl" style={{
@@ -275,6 +285,82 @@ export default function Landing() {
           </div>
         </div>
       </section>
+
+      {/* Reviews Section */}
+      {feedbacks.length > 0 && (
+        <section style={{
+          padding: "100px 20px",
+          background: "rgba(15, 23, 42, 0.5)"
+        }}>
+          <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+            <h2 style={{
+              fontSize: "clamp(2rem, 5vw, 3rem)",
+              fontWeight: "900",
+              textAlign: "center",
+              color: "#fbbf24",
+              marginBottom: "60px",
+              textShadow: "0 0 30px rgba(251, 191, 36, 0.5)"
+            }}>
+              מה אומרים עלינו? ⭐
+            </h2>
+
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+              gap: "30px"
+            }}>
+              {feedbacks.slice(0, 6).map((feedback, idx) => (
+                <motion.div
+                  key={feedback.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.1 }}
+                  viewport={{ once: true }}
+                  style={{
+                    background: "rgba(15, 23, 42, 0.95)",
+                    border: "2px solid rgba(251, 191, 36, 0.3)",
+                    borderRadius: "20px",
+                    padding: "30px",
+                    boxShadow: "0 10px 30px rgba(251, 191, 36, 0.2)"
+                  }}
+                >
+                  <div style={{ display: "flex", gap: "4px", marginBottom: "16px", justifyContent: "center" }}>
+                    {[...Array(5)].map((_, i) => (
+                      <Star 
+                        key={i} 
+                        className="w-5 h-5" 
+                        style={{ 
+                          color: i < (feedback.rating || 5) ? "#fbbf24" : "#64748b",
+                          fill: i < (feedback.rating || 5) ? "#fbbf24" : "none"
+                        }} 
+                      />
+                    ))}
+                  </div>
+
+                  <p style={{
+                    fontSize: "1.1rem",
+                    color: "#e2e8f0",
+                    lineHeight: "1.7",
+                    marginBottom: "20px",
+                    fontStyle: "italic"
+                  }}>
+                    "{feedback.message}"
+                  </p>
+
+                  <div style={{
+                    fontSize: "1rem",
+                    fontWeight: "700",
+                    color: "#fbbf24",
+                    textAlign: "center"
+                  }}>
+                    - {feedback.name}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* CTA Section */}
       <section style={{

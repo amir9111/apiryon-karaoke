@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { Camera, Download, Share2, Upload, X, Plus, MessageSquare, Star } from "lucide-react";
+import { Camera, Download, Share2, Upload, X, Plus, MessageSquare, Star, Quote } from "lucide-react";
 import ApyironLogo from "../components/ApyironLogo";
 import MenuButton from "../components/MenuButton";
 
@@ -78,6 +78,14 @@ export default function Gallery() {
     },
     enabled: !!selectedGallery,
     retry: 2,
+    staleTime: 60000,
+  });
+
+  const { data: approvedFeedbacks = [] } = useQuery({
+    queryKey: ['approved-feedbacks'],
+    queryFn: async () => {
+      return await base44.entities.GalleryFeedback.filter({ is_approved: true }, '-created_date', 10);
+    },
     staleTime: 60000,
   });
 
@@ -346,6 +354,77 @@ export default function Gallery() {
             תהנו מהתמונות, הורידו מה שאתם אוהבים, ושתפו עם החברים! 🎤✨
           </p>
         </motion.div>
+
+        {/* Reviews Section */}
+        {approvedFeedbacks.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            style={{
+              background: "rgba(15, 23, 42, 0.95)",
+              border: "2px solid rgba(251, 191, 36, 0.3)",
+              borderRadius: "20px",
+              padding: "40px",
+              marginBottom: "40px",
+              boxShadow: "0 10px 30px rgba(251, 191, 36, 0.2)"
+            }}
+          >
+            <h2 style={{ fontSize: "1.8rem", fontWeight: "800", color: "#fbbf24", marginBottom: "30px", textAlign: "center" }}>
+              ⭐ מה אומרים המבקרים שלנו
+            </h2>
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+              gap: "20px"
+            }}>
+              {approvedFeedbacks.slice(0, 4).map((feedback) => (
+                <div
+                  key={feedback.id}
+                  style={{
+                    background: "rgba(30, 41, 59, 0.5)",
+                    border: "1px solid rgba(251, 191, 36, 0.2)",
+                    borderRadius: "16px",
+                    padding: "24px",
+                    position: "relative"
+                  }}
+                >
+                  <Quote className="w-8 h-8" style={{ color: "rgba(251, 191, 36, 0.3)", marginBottom: "12px" }} />
+                  
+                  <div style={{ display: "flex", gap: "4px", marginBottom: "12px" }}>
+                    {[...Array(5)].map((_, i) => (
+                      <Star 
+                        key={i} 
+                        className="w-4 h-4" 
+                        style={{ 
+                          color: i < (feedback.rating || 5) ? "#fbbf24" : "#64748b",
+                          fill: i < (feedback.rating || 5) ? "#fbbf24" : "none"
+                        }} 
+                      />
+                    ))}
+                  </div>
+
+                  <p style={{
+                    fontSize: "1rem",
+                    color: "#e2e8f0",
+                    lineHeight: "1.6",
+                    marginBottom: "16px",
+                    fontStyle: "italic"
+                  }}>
+                    "{feedback.message}"
+                  </p>
+
+                  <div style={{
+                    fontSize: "0.95rem",
+                    fontWeight: "700",
+                    color: "#fbbf24"
+                  }}>
+                    - {feedback.name}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
 
         {/* Galleries Grid */}
         {!selectedGallery ? (

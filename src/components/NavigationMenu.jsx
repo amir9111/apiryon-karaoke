@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Menu, X, Tv, Shield, BarChart3, UserPlus, Camera, Home, Users } from "lucide-react";
+import { Menu, X, Tv, Shield, BarChart3, UserPlus, Camera, Home, Users, Star } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
@@ -246,6 +246,36 @@ export default function NavigationMenu({ onSummaryClick }) {
               >
                 <Users className="w-5 h-5" />
                 <span>משתמשים</span>
+              </Link>
+
+              <Link
+                to={createPageUrl("FeedbackManagement")}
+                onClick={() => setIsOpen(false)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "12px",
+                  padding: "12px 16px",
+                  borderRadius: "10px",
+                  background: "rgba(251, 191, 36, 0.08)",
+                  border: "1px solid rgba(251, 191, 36, 0.2)",
+                  color: "#fbbf24",
+                  textDecoration: "none",
+                  fontSize: "1rem",
+                  fontWeight: "600",
+                  transition: "all 0.2s"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "rgba(251, 191, 36, 0.15)";
+                  e.currentTarget.style.transform = "translateX(-5px)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "rgba(251, 191, 36, 0.08)";
+                  e.currentTarget.style.transform = "translateX(0)";
+                }}
+              >
+                <Star className="w-5 h-5" />
+                <span>ניהול ביקורות</span>
               </Link>
 
               {/* Display Screens Section */}
