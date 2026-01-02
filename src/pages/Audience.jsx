@@ -58,7 +58,7 @@ export default function Audience() {
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
-  const [currentMode, setCurrentMode] = useState("media"); // "media", "queue", "qr"
+  const [currentMode, setCurrentMode] = useState("media"); // "media", "queue", "qr", "gallery"
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
   const [displayedMessages, setDisplayedMessages] = useState([]);
   const [displayedMediaIds, setDisplayedMediaIds] = useState(new Set());
@@ -87,8 +87,19 @@ export default function Audience() {
     staleTime: 2000,
   });
 
+  const { data: galleryImages = [] } = useQuery({
+    queryKey: ['gallery-images-audience'],
+    queryFn: async () => {
+      const images = await base44.entities.GalleryImage.list('-created_date', 100);
+      return images.filter(img => img.image_url);
+    },
+    refetchInterval: 30000,
+    staleTime: 20000,
+  });
+
   const currentSong = requests.find(r => r.status === "performing");
   const waitingQueue = requests.filter(r => r.status === "waiting").slice(0, 4);
+  const [currentGalleryImageIndex, setCurrentGalleryImageIndex] = useState(0);
 
   // Delete displayed messages when mode changes
   React.useEffect(() => {
@@ -110,19 +121,30 @@ export default function Audience() {
     }
   }, [currentMode]);
 
-  // Simple rotation logic: media -> queue -> qr (17 seconds each)
+  // Simple rotation logic: media -> queue -> gallery -> qr (17 seconds each)
   React.useEffect(() => {
     const interval = setInterval(() => {
       setCurrentMode(prev => {
-        console.log("Current mode:", prev, "Media count:", mediaUploads.length);
+        console.log("Current mode:", prev, "Media count:", mediaUploads.length, "Gallery images:", galleryImages.length);
         
-        // Cycle: media -> queue -> qr -> repeat
+        // Cycle: media -> queue -> gallery -> qr -> repeat
         if (prev === "media") {
           console.log("Switching to queue");
           return "queue";
         }
         
         if (prev === "queue") {
+          if (galleryImages.length > 0) {
+            console.log("Switching to gallery");
+            // Advance to next gallery image
+            setCurrentGalleryImageIndex(prevIdx => (prevIdx + 1) % galleryImages.length);
+            return "gallery";
+          }
+          console.log("Switching to QR (no gallery)");
+          return "qr";
+        }
+        
+        if (prev === "gallery") {
           console.log("Switching to QR");
           return "qr";
         }
@@ -143,7 +165,7 @@ export default function Audience() {
     }, 17000); // 17 seconds for each screen
 
     return () => clearInterval(interval);
-  }, [currentMode, mediaUploads.length]);
+  }, [currentMode, mediaUploads.length, galleryImages.length]);
 
   return (
     <div dir="rtl" style={{
@@ -462,7 +484,58 @@ export default function Audience() {
             </motion.div>
           )}
 
-          {/* Mode 2.5: Big Bold Messages (20 seconds) */}
+          {/* Mode 2.5: Gallery Image Display (17 seconds) */}
+          {currentMode === "gallery" && galleryImages.length > 0 && (
+            <motion.div
+              key={`gallery-${galleryImages[currentGalleryImageIndex]?.id}`}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 1 }}
+              style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                width: "100vw",
+                height: "100vh",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "#000",
+                zIndex: 1
+              }}
+            >
+              <img
+                src={galleryImages[currentGalleryImageIndex]?.image_url}
+                alt="תמונה מהגלריה"
+                style={{
+                  width: "100vw",
+                  height: "100vh",
+                  objectFit: "cover"
+                }}
+              />
+              
+              {/* Gallery indicator */}
+              <div style={{
+                position: "absolute",
+                top: "40px",
+                left: "50%",
+                transform: "translateX(-50%)",
+                background: "rgba(0, 202, 255, 0.9)",
+                padding: "12px 30px",
+                borderRadius: "50px",
+                fontSize: "1.5rem",
+                fontWeight: "800",
+                color: "#001a2e",
+                boxShadow: "0 0 40px rgba(0, 202, 255, 0.6)",
+                zIndex: 10
+              }}>
+                📸 מהגלריה שלנו
+              </div>
+            </motion.div>
+          )}
+
+          {/* Mode 3: Big Bold Messages (20 seconds) */}
           {currentMode === "messages" && messages.length > 0 && (
             <motion.div
               key="messages"
@@ -550,7 +623,7 @@ export default function Audience() {
             </motion.div>
           )}
 
-          {/* Mode 3: QR Codes (15 seconds) */}
+          {/* Mode 4: QR Codes (15 seconds) */}
           {currentMode === "qr" && (
             <motion.div
               key="qrcodes"
