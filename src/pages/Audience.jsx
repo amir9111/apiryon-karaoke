@@ -281,8 +281,7 @@ export default function SmartAudience() {
     queryKey: ['gallery-images-audience'],
     queryFn: async () => {
       const images = await base44.entities.GalleryImage.list('-created_date', 100);
-      const oneHourAgo = Date.now() - (60 * 60 * 1000);
-      return images.filter(img => img.image_url && new Date(img.created_date).getTime() >= oneHourAgo);
+      return images.filter(img => img.image_url);
     },
     refetchInterval: 30000,
   });
