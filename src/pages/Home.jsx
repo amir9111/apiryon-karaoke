@@ -27,10 +27,6 @@ export default function Home() {
   const [status, setStatus] = useState({ type: null, message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
-  const [capturedPhoto, setCapturedPhoto] = useState(null);
-  const [showCamera, setShowCamera] = useState(false);
-  const videoRef = React.useRef(null);
-  const canvasRef = React.useRef(null);
   const [showTerms, setShowTerms] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [namePlaceholder, setNamePlaceholder] = useState("לדוגמה: יהושע דבוש");
@@ -46,6 +42,12 @@ export default function Home() {
 
   const currentSong = requests.find(r => r.status === "performing");
   const waitingCount = requests.filter(r => r.status === "waiting").length;
+  
+  // Calculate estimated wait time (average 3.5 minutes per song)
+  const estimatedWaitMinutes = Math.round(waitingCount * 3.5);
+  const waitTimeText = estimatedWaitMinutes > 0 
+    ? `${estimatedWaitMinutes} דקות` 
+    : "מיידי";
 
   React.useEffect(() => {
     let timer;
@@ -98,91 +100,13 @@ export default function Home() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const startCamera = async () => {
-    setShowCamera(true);
-    try {
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        setStatus({ type: "error", message: "המצלמה לא נתמכת בדפדפן זה" });
-        setShowCamera(false);
-        return;
-      }
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-      } else {
-        stream.getTracks().forEach(track => {
-          try {
-            track.stop();
-          } catch (e) {}
-        });
-        setShowCamera(false);
-      }
-    } catch (err) {
-      setStatus({ type: "error", message: "לא ניתן לגשת למצלמה" });
-      setShowCamera(false);
-    }
-  };
-
-  const capturePhoto = () => {
-    try {
-      const video = videoRef.current;
-      const canvas = canvasRef.current;
-      if (!video || !canvas || !video.videoWidth || !video.videoHeight) {
-        setStatus({ type: "error", message: "נא להמתין עד שהמצלמה תהיה מוכנה" });
-        return;
-      }
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) {
-        setStatus({ type: "error", message: "שגיאה בצילום התמונה" });
-        return;
-      }
-      ctx.drawImage(video, 0, 0);
-      const photoData = canvas.toDataURL('image/jpeg', 0.8);
-      setCapturedPhoto(photoData);
-      setPhotoUploaded(true);
-      stopCamera();
-    } catch (e) {
-      setStatus({ type: "error", message: "שגיאה בצילום התמונה" });
-      stopCamera();
-    }
-  };
-
-  const stopCamera = React.useCallback(() => {
-    try {
-      if (videoRef.current && videoRef.current.srcObject) {
-        const stream = videoRef.current.srcObject;
-        const tracks = stream.getTracks();
-        tracks.forEach(track => {
-          try {
-            track.stop();
-          } catch (e) {
-            // Silent fail per track
-          }
-        });
-        videoRef.current.srcObject = null;
-      }
-    } catch (e) {
-      // Silent cleanup
-    }
-    setShowCamera(false);
-  }, []);
-
-  const [photoUploaded, setPhotoUploaded] = React.useState(false);
-
   React.useEffect(() => {
     try {
       if (typeof window === 'undefined') return;
       const savedName = localStorage.getItem('apiryon_user_name');
-      const savedPhoto = localStorage.getItem('apiryon_user_photo');
       
       if (savedName) {
         setNamePlaceholder(savedName);
-      }
-      if (savedPhoto) {
-        setCapturedPhoto(savedPhoto);
-        setPhotoUploaded(true);
       }
     } catch (e) {
       // localStorage not available
@@ -208,14 +132,6 @@ export default function Home() {
     setIsSubmitting(true);
 
     try {
-      let photoUrl = null;
-      if (capturedPhoto) {
-        const blob = await fetch(capturedPhoto).then((r) => r.blob());
-        const file = new File([blob], "singer.jpg", { type: "image/jpeg" });
-        const upload = await base44.integrations.Core.UploadFile({ file });
-        photoUrl = upload.file_url;
-      }
-
       const sanitizedData = {
         singer_name: formData.singer_name.trim().substring(0, 100),
         email: `${formData.singer_name.trim()}@apiryon.local`,
@@ -223,7 +139,7 @@ export default function Home() {
         song_artist: formData.song_artist?.trim().substring(0, 200) || "",
         song_id: null,
         status: "waiting",
-        photo_url: photoUrl,
+        photo_url: null,
         message: formData.message?.trim().substring(0, 100) || "",
       };
 
@@ -232,7 +148,6 @@ export default function Home() {
       try {
         localStorage.setItem('apiryon_user_email', sanitizedData.email);
         localStorage.setItem('apiryon_user_name', formData.singer_name);
-        localStorage.setItem('apiryon_user_photo', capturedPhoto);
       } catch (e) {
         // localStorage not available
       }
@@ -461,7 +376,7 @@ export default function Home() {
           </div>
         )}
 
-        {/* Waiting Count */}
+        {/* Waiting Count + Time */}
         <div 
           className="rounded-[18px] p-5"
           style={{
@@ -469,23 +384,50 @@ export default function Home() {
             boxShadow: "0 10px 30px rgba(0, 202, 255, 0.2), 0 0 80px rgba(0, 136, 255, 0.1)",
             backdropFilter: "blur(12px)",
             border: "1px solid rgba(0, 202, 255, 0.2)",
-            marginBottom: "20px",
-            textAlign: "center"
+            marginBottom: "20px"
           }}
         >
-          <div style={{
-            fontSize: "2.5rem",
-            fontWeight: "900",
-            color: "#fbbf24",
-            marginBottom: "8px"
-          }}>
-            {waitingCount}
-          </div>
-          <div style={{
-            fontSize: "0.95rem",
-            color: "#cbd5e1"
-          }}>
-            ממתינים בתור
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", textAlign: "center" }}>
+            <div>
+              <div style={{
+                fontSize: "2.5rem",
+                fontWeight: "900",
+                color: "#fbbf24",
+                marginBottom: "8px"
+              }}>
+                {waitingCount}
+              </div>
+              <div style={{
+                fontSize: "0.95rem",
+                color: "#cbd5e1"
+              }}>
+                ממתינים בתור
+              </div>
+            </div>
+            <div>
+              <div style={{
+                fontSize: "2.5rem",
+                fontWeight: "900",
+                color: "#00caff",
+                marginBottom: "8px"
+              }}>
+                ⏱️
+              </div>
+              <div style={{
+                fontSize: "0.95rem",
+                color: "#cbd5e1",
+                marginBottom: "4px"
+              }}>
+                זמן המתנה משוער
+              </div>
+              <div style={{
+                fontSize: "1.2rem",
+                fontWeight: "700",
+                color: "#00caff"
+              }}>
+                {waitTimeText}
+              </div>
+            </div>
           </div>
         </div>
 
@@ -509,135 +451,6 @@ export default function Home() {
           </p>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-3 mt-2">
-            {/* Photo Section */}
-            <div style={{
-              padding: "20px",
-              background: "rgba(0, 202, 255, 0.05)",
-              border: "2px solid rgba(0, 202, 255, 0.2)",
-              borderRadius: "16px",
-              textAlign: "center"
-            }}>
-              {capturedPhoto ? (
-                <div>
-                  <img src={capturedPhoto} alt="תמונת הפרופיל שלך" style={{ width: "120px", height: "120px", borderRadius: "50%", margin: "0 auto 12px", border: "3px solid #00caff", boxShadow: "0 0 20px rgba(0, 202, 255, 0.3)", objectFit: "cover" }} />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setCapturedPhoto(null);
-                      setPhotoUploaded(false);
-                    }}
-                    style={{
-                      padding: "8px 16px",
-                      background: "rgba(248, 113, 113, 0.2)",
-                      color: "#f87171",
-                      border: "2px solid rgba(248, 113, 113, 0.4)",
-                      borderRadius: "8px",
-                      fontSize: "0.85rem",
-                      fontWeight: "600",
-                      cursor: "pointer"
-                    }}
-                  >
-                    📸 שנה תמונה
-                  </button>
-                </div>
-              ) : showCamera ? (
-                <div>
-                  <video ref={videoRef} autoPlay playsInline style={{ width: "100%", maxWidth: "300px", borderRadius: "12px", marginBottom: "12px", border: "2px solid #00caff" }} />
-                  <canvas ref={canvasRef} style={{ display: "none" }} />
-                  <div style={{ display: "flex", gap: "8px", justifyContent: "center", flexWrap: "wrap" }}>
-                    <button
-                      type="button"
-                      onClick={capturePhoto}
-                      style={{
-                        padding: "10px 20px",
-                        background: "linear-gradient(135deg, #10b981, #059669)",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: "8px",
-                        fontSize: "0.9rem",
-                        fontWeight: "700",
-                        cursor: "pointer"
-                      }}
-                    >
-                      ✓ צלם
-                    </button>
-                    <button
-                      type="button"
-                      onClick={stopCamera}
-                      style={{
-                        padding: "10px 20px",
-                        background: "rgba(248, 113, 113, 0.2)",
-                        color: "#f87171",
-                        border: "2px solid rgba(248, 113, 113, 0.4)",
-                        borderRadius: "8px",
-                        fontSize: "0.9rem",
-                        fontWeight: "700",
-                        cursor: "pointer"
-                      }}
-                    >
-                      ביטול
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div>
-                  <div style={{ fontSize: "2.5rem", marginBottom: "12px" }}>📸</div>
-                  <div style={{ fontSize: "0.95rem", color: "#cbd5e1", marginBottom: "12px" }}>
-                    הוסף תמונה (אופציונלי)
-                  </div>
-                  <div style={{ display: "flex", gap: "8px", justifyContent: "center", flexWrap: "wrap" }}>
-                    <button
-                      type="button"
-                      onClick={startCamera}
-                      style={{
-                        padding: "10px 20px",
-                        background: "linear-gradient(135deg, #00caff, #0088ff)",
-                        color: "#001a2e",
-                        border: "none",
-                        borderRadius: "8px",
-                        fontSize: "0.9rem",
-                        fontWeight: "700",
-                        cursor: "pointer"
-                      }}
-                    >
-                      📸 צלם
-                    </button>
-                    <label 
-                      htmlFor="photo-upload"
-                      style={{
-                        padding: "10px 20px",
-                        background: "linear-gradient(135deg, #8b5cf6, #6d28d9)",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: "8px",
-                        fontSize: "0.9rem",
-                        fontWeight: "700",
-                        cursor: "pointer"
-                      }}>
-                      📤 העלה
-                      <input
-                        id="photo-upload"
-                        type="file"
-                        accept="image/*"
-                        style={{ display: "none" }}
-                        onChange={async (e) => {
-                          const file = e.target.files?.[0];
-                          if (file) {
-                            const reader = new FileReader();
-                            reader.onloadend = () => {
-                              setCapturedPhoto(reader.result);
-                              setPhotoUploaded(true);
-                            };
-                            reader.readAsDataURL(file);
-                          }
-                        }}
-                      />
-                    </label>
-                  </div>
-                </div>
-              )}
-            </div>
-
             {/* Name Input */}
             <div>
               <label htmlFor="singer-name-input" className="block text-[0.95rem] mb-1 font-semibold" style={{ color: "#e2e8f0" }}>
