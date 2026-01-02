@@ -175,25 +175,31 @@ const IdleView = ({ galleryImages }) => {
             title: "הצטרפו לחגיגה!",
             subtitle: "סרקו לבחירת שירים",
             url: `${window.location.origin}/Home`,
-            color: "cyan"
+            borderColor: "border-cyan-500",
+            shadowColor: "shadow-[0_0_100px_rgba(6,182,212,0.3)]",
+            textColor: "text-cyan-400"
         },
         {
             title: "הצטרפו לקבוצה!",
             subtitle: "קבוצת עדכונים בווטסאפ",
             url: "https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15",
-            color: "green"
+            borderColor: "border-green-500",
+            shadowColor: "shadow-[0_0_100px_rgba(34,197,94,0.3)]",
+            textColor: "text-green-400"
         },
         {
             title: "עקבו בטיקטוק!",
             subtitle: "@apiryon.club",
             url: "https://www.tiktok.com/@apiryon.club",
-            color: "pink"
+            borderColor: "border-pink-500",
+            shadowColor: "shadow-[0_0_100px_rgba(236,72,153,0.3)]",
+            textColor: "text-pink-400"
         }
     ];
 
     const currentQR = qrData[step];
     const isGalleryStep = step === 3 && galleryImages.length > 0;
-    const isLogoStep = step === totalSteps - 1;
+    const isLogoStep = step === (galleryImages.length > 0 ? 4 : 3);
 
     return (
         <motion.div 
@@ -205,7 +211,7 @@ const IdleView = ({ galleryImages }) => {
                     <motion.div 
                         key={`qr-${step}`}
                         initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.8, opacity: 0 }}
-                        className="flex flex-col items-center gap-8 bg-slate-900 p-16 rounded-[3rem] border-4 border-cyan-500 shadow-[0_0_100px_rgba(6,182,212,0.3)]"
+                        className={`flex flex-col items-center gap-8 bg-slate-900 p-16 rounded-[3rem] border-4 ${currentQR.borderColor} ${currentQR.shadowColor}`}
                     >
                         <h2 className="text-6xl font-black text-white">{currentQR.title}</h2>
                         <div className="bg-white p-4 rounded-3xl">
@@ -214,7 +220,7 @@ const IdleView = ({ galleryImages }) => {
                                 alt="QR" className="w-80 h-80"
                              />
                         </div>
-                        <p className="text-3xl text-cyan-400 font-bold">{currentQR.subtitle}</p>
+                        <p className={`text-3xl ${currentQR.textColor} font-bold`}>{currentQR.subtitle}</p>
                     </motion.div>
                 )}
 
@@ -238,17 +244,17 @@ const IdleView = ({ galleryImages }) => {
                 {isLogoStep && (
                     <motion.div 
                         key="logo"
-                        initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.8, opacity: 0 }}
-                        className="text-center flex flex-col items-center gap-8"
+                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                        className="text-center flex flex-col items-center gap-12"
                     >
-                        <div className="w-64 h-64 rounded-full border-8 border-cyan-500 flex items-center justify-center shadow-[0_0_100px_rgba(6,182,212,0.5)]">
-                            <h1 className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-cyan-200" style={{
-                                textShadow: "0 0 40px rgba(6,182,212,0.8)"
+                        <div className="w-96 h-96 rounded-full border-8 border-cyan-500 flex items-center justify-center shadow-[0_0_150px_rgba(6,182,212,0.6)]">
+                            <h1 className="text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-cyan-200" style={{
+                                textShadow: "0 0 60px rgba(6,182,212,0.9)"
                             }}>
                                 APIRYON
                             </h1>
                         </div>
-                        <p className="text-5xl text-slate-300 font-bold">מועדון קריוקי</p>
+                        <p className="text-7xl text-slate-200 font-black tracking-wider">מועדון קריוקי</p>
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -343,7 +349,7 @@ export default function SmartAudience() {
       isActive = false;
       clearTimeout(timeoutId);
     };
-  }, [mediaQueue.length, messageQueue.length, currentSong?.id]);
+  }, [mediaQueue.length, messageQueue.length, currentSong?.id, deleteItem, setMediaQueue, setMessageQueue]);
 
   // ניהול מסך מלא
   const toggleFullscreen = async () => {
