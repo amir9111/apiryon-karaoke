@@ -6,7 +6,6 @@ import Home from './pages/Home';
 import Landing from './pages/Landing';
 import ManualQueue from './pages/ManualQueue';
 import Profile from './pages/Profile';
-import QueueManager from './pages/QueueManager';
 import ReserveTable from './pages/ReserveTable';
 import Statistics from './pages/Statistics';
 import Terms from './pages/Terms';
@@ -24,7 +23,6 @@ export const PAGES = {
     "Landing": Landing,
     "ManualQueue": ManualQueue,
     "Profile": Profile,
-    "QueueManager": QueueManager,
     "ReserveTable": ReserveTable,
     "Statistics": Statistics,
     "Terms": Terms,

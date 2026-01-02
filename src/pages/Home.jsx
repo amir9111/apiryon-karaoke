@@ -5,6 +5,7 @@ import { createPageUrl } from "@/utils";
 import ApyironLogo from "../components/ApyironLogo";
 import TermsModal from "../components/TermsModal";
 import MenuButton from "../components/MenuButton";
+import PWAManager from "../components/PWAManager";
 
 import PWAInstallPrompt from "../components/PWAInstallPrompt";
 import PWASetup from "../components/PWASetup";

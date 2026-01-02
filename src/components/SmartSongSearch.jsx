@@ -21,7 +21,7 @@ export default function SmartSongSearch({ onSongSelect, disabled }) {
       return;
     }
 
-    const timer = setTimeout(async () => {
+    const timer = setTimeout(() => {
       setIsSearching(true);
       
       // חיפוש מקומי במאגר
@@ -31,47 +31,9 @@ export default function SmartSongSearch({ onSongSelect, disabled }) {
         song.search_keywords?.toLowerCase().includes(searchTerm.toLowerCase())
       );
 
-      // אם יש תוצאות מקומיות - מציג אותן
-      if (localResults.length > 0) {
-        setAiResults(localResults.slice(0, 5));
-        setIsSearching(false);
-      } else {
-        // אם אין תוצאות - מחפש עם AI
-        try {
-          const result = await base44.integrations.Core.InvokeLLM({
-            prompt: `המשתמש מחפש שיר קריוקי: "${searchTerm}". 
-            חפש במאגר השירים שלנו: ${JSON.stringify(songs.map(s => ({ id: s.id, title: s.title, artist: s.artist })))}
-            
-            החזר רק את השירים הרלוונטיים ביותר (עד 5), ממוינים לפי רלוונטיות.
-            אם אין שירים רלוונטיים - החזר מערך רק.`,
-            response_json_schema: {
-              type: "object",
-              properties: {
-                results: {
-                  type: "array",
-                  items: {
-                    type: "object",
-                    properties: {
-                      id: { type: "string" }
-                    }
-                  }
-                }
-              }
-            }
-          });
-
-          const matchedSongs = result.results
-            .map(r => songs.find(s => s.id === r.id))
-            .filter(Boolean);
-
-          setAiResults(matchedSongs);
-        } catch (error) {
-          console.error("AI search error:", error);
-          setAiResults([]);
-        }
-        setIsSearching(false);
-      }
-    }, 500);
+      setAiResults(localResults.slice(0, 5));
+      setIsSearching(false);
+    }, 300);
 
     return () => clearTimeout(timer);
   }, [searchTerm, songs]);

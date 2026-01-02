@@ -25,33 +25,7 @@ export default function MediaUploader() {
     },
   });
 
-  const enhanceImageWithAI = async (imageUrl) => {
-    try {
-      setUploadStatus("🤖 משפר תמונה באמצעות AI - שלב 1...");
-      
-      // First enhancement: Upscale and improve quality
-      const firstPass = await base44.integrations.Core.GenerateImage({
-        prompt: `ULTRA HIGH QUALITY 8K UPSCALE: Transform this image into ultra-high resolution 8K quality. Apply professional-grade enhancement: MAXIMUM sharpness and clarity, VIVID and saturated colors (boost saturation by 40%), PERFECT contrast and exposure, remove ALL noise and blur, enhance fine details and textures, professional color grading like a cinema camera, make colors POP and vibrant, crystal-clear focus, broadcast television quality, make it look STUNNING and PROFESSIONAL on giant screens and 4K/8K displays. This should look like it was shot on a RED camera with professional lighting.`,
-        existing_image_urls: [imageUrl]
-      });
-      
-      console.log('✨ First AI pass completed');
-      
-      setUploadStatus("🤖 משפר תמונה באמצעות AI - שלב 2...");
-      
-      // Second enhancement: Further refine and polish
-      const secondPass = await base44.integrations.Core.GenerateImage({
-        prompt: `FINAL PROFESSIONAL POLISH 8K: Take this already enhanced image to MAXIMUM quality. Apply final professional touches: razor-sharp details, MAXIMUM color vibrancy and richness, perfect lighting balance, eliminate any remaining imperfections, add depth and dimension, make it look like professional photography, suitable for large format prints and cinema displays. Colors should be incredibly rich and vivid. This is the FINAL master quality version for professional broadcast.`,
-        existing_image_urls: [firstPass.url]
-      });
-      
-      console.log('✨ AI double-enhancement completed:', secondPass.url);
-      return secondPass.url;
-    } catch (error) {
-      console.error('⚠️ AI enhancement failed, using original:', error);
-      return imageUrl;
-    }
-  };
+  // AI enhancement removed to save costs - images uploaded directly
 
   const handleFileUpload = async (e) => {
     const file = e.target.files?.[0];
@@ -80,15 +54,8 @@ export default function MediaUploader() {
       const mediaType = isVideo ? 'video' : 'image';
       console.log('✅ File uploaded:', file_url, 'Type:', mediaType);
       
-      let finalUrl = file_url;
-      
-      // Enhance images with AI
-      if (isImage) {
-        finalUrl = await enhanceImageWithAI(file_url);
-      }
-      
       await base44.entities.MediaUpload.create({
-        media_url: finalUrl,
+        media_url: file_url,
         media_type: mediaType,
         is_active: true
       });
@@ -226,15 +193,8 @@ export default function MediaUploader() {
       
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
       
-      let finalUrl = file_url;
-      
-      // Enhance images with AI
-      if (type === 'image') {
-        finalUrl = await enhanceImageWithAI(file_url);
-      }
-      
       await base44.entities.MediaUpload.create({
-        media_url: finalUrl,
+        media_url: file_url,
         media_type: type,
         is_active: true
       });
