@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ApyironLogo from "../components/ApyironLogo";
+import { Maximize, Minimize } from "lucide-react";
 
 export default function QRDisplay() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   // רוטציה אוטומטית כל 8 שניות
   useEffect(() => {
@@ -12,6 +14,20 @@ export default function QRDisplay() {
     }, 8000);
     return () => clearInterval(interval);
   }, []);
+
+  const toggleFullscreen = async () => {
+    try {
+      if (!document.fullscreenElement) {
+        await document.documentElement.requestFullscreen();
+        setIsFullscreen(true);
+      } else {
+        await document.exitFullscreen();
+        setIsFullscreen(false);
+      }
+    } catch (err) {
+      console.error('Fullscreen error:', err);
+    }
+  };
 
   const qrData = [
     {
@@ -235,6 +251,33 @@ export default function QRDisplay() {
       >
         ⏱️ החלפה אוטומטית כל 8 שניות
       </motion.p>
+
+      {/* Fullscreen Button */}
+      <button
+        onClick={toggleFullscreen}
+        style={{
+          position: "fixed",
+          bottom: "20px",
+          left: "20px",
+          width: "56px",
+          height: "56px",
+          borderRadius: "50%",
+          background: "linear-gradient(135deg, #00caff, #0088ff)",
+          border: "none",
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          boxShadow: "0 4px 20px rgba(0, 202, 255, 0.4)",
+          zIndex: 1000,
+          transition: "transform 0.3s",
+          color: "#001a2e"
+        }}
+        onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.1)"}
+        onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
+      >
+        {isFullscreen ? <Minimize size={28} /> : <Maximize size={28} />}
+      </button>
 
       {/* All QR Codes Grid (Bottom) */}
       <motion.div
