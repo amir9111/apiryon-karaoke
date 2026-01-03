@@ -48,6 +48,8 @@ export default function ApyironLogo({ size = "medium", showCircle = true }) {
         <h1 
           className={`${sizeClasses[size]} font-extrabold tracking-widest text-center select-none`}
           style={neonStyles.text}
+          translate="no"
+          lang="en"
         >
           APIRYON
         </h1>
@@ -59,6 +61,8 @@ export default function ApyironLogo({ size = "medium", showCircle = true }) {
     <h1 
       className={`${sizeClasses[size]} font-extrabold tracking-widest text-center select-none`}
       style={neonStyles.text}
+      translate="no"
+      lang="en"
     >
       APIRYON
     </h1>
