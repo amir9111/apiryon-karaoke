@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ApyironLogo from "../components/ApyironLogo";
-import { Maximize, Minimize } from "lucide-react";
+import { Maximize, Minimize, Home } from "lucide-react";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "@/utils";
 
 export default function QRDisplay() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -252,32 +254,59 @@ export default function QRDisplay() {
         ⏱️ החלפה אוטומטית כל 8 שניות
       </motion.p>
 
-      {/* Fullscreen Button */}
-      <button
-        onClick={toggleFullscreen}
-        style={{
-          position: "fixed",
-          bottom: "20px",
-          left: "20px",
-          width: "56px",
-          height: "56px",
-          borderRadius: "50%",
-          background: "linear-gradient(135deg, #00caff, #0088ff)",
-          border: "none",
-          cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          boxShadow: "0 4px 20px rgba(0, 202, 255, 0.4)",
-          zIndex: 1000,
-          transition: "transform 0.3s",
-          color: "#001a2e"
-        }}
-        onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.1)"}
-        onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
-      >
-        {isFullscreen ? <Minimize size={28} /> : <Maximize size={28} />}
-      </button>
+      {/* Control Buttons */}
+      <div style={{
+        position: "fixed",
+        bottom: "20px",
+        left: "20px",
+        display: "flex",
+        gap: "12px",
+        zIndex: 1000
+      }}>
+        <Link
+          to={createPageUrl("Home")}
+          style={{
+            width: "56px",
+            height: "56px",
+            borderRadius: "50%",
+            background: "linear-gradient(135deg, #fbbf24, #f59e0b)",
+            border: "none",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            boxShadow: "0 4px 20px rgba(251, 191, 36, 0.4)",
+            transition: "transform 0.3s",
+            color: "#1a1a1a",
+            textDecoration: "none"
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.1)"}
+          onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
+        >
+          <Home size={28} />
+        </Link>
+        <button
+          onClick={toggleFullscreen}
+          style={{
+            width: "56px",
+            height: "56px",
+            borderRadius: "50%",
+            background: "linear-gradient(135deg, #00caff, #0088ff)",
+            border: "none",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            boxShadow: "0 4px 20px rgba(0, 202, 255, 0.4)",
+            transition: "transform 0.3s",
+            color: "#001a2e"
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.1)"}
+          onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
+        >
+          {isFullscreen ? <Minimize size={28} /> : <Maximize size={28} />}
+        </button>
+      </div>
 
       {/* All QR Codes Grid (Bottom) */}
       <motion.div
