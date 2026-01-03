@@ -350,6 +350,36 @@ export default function NavigationMenu({ onSummaryClick }) {
                 <Tv className="w-5 h-5" />
                 <span>מסך קהל</span>
               </Link>
+
+              <Link
+                to={createPageUrl("QRDisplay")}
+                onClick={() => setIsOpen(false)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "12px",
+                  padding: "12px 16px",
+                  borderRadius: "10px",
+                  background: "rgba(139, 92, 246, 0.08)",
+                  border: "1px solid rgba(139, 92, 246, 0.2)",
+                  color: "#a78bfa",
+                  textDecoration: "none",
+                  fontSize: "1rem",
+                  fontWeight: "600",
+                  transition: "all 0.2s"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "rgba(139, 92, 246, 0.15)";
+                  e.currentTarget.style.transform = "translateX(-5px)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "rgba(139, 92, 246, 0.08)";
+                  e.currentTarget.style.transform = "translateX(0)";
+                }}
+              >
+                📱
+                <span>מסך ברקודים</span>
+              </Link>
             </>
           )}
 
