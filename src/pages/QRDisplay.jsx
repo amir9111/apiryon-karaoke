@@ -17,14 +17,21 @@ export default function QRDisplay() {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
+
   const toggleFullscreen = async () => {
     try {
       if (!document.fullscreenElement) {
         await document.documentElement.requestFullscreen();
-        setIsFullscreen(true);
       } else {
         await document.exitFullscreen();
-        setIsFullscreen(false);
       }
     } catch (err) {
       console.error('Fullscreen error:', err);
@@ -67,19 +74,19 @@ export default function QRDisplay() {
     <div
       dir="rtl"
       style={{
+        width: "100vw",
         minHeight: "100vh",
-        height: isFullscreen ? "100vh" : "100%",
+        height: isFullscreen ? "100vh" : "auto",
+        maxHeight: isFullscreen ? "100vh" : "none",
         background: "linear-gradient(135deg, #020617 0%, #0a1929 50%, #020617 100%)",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: isFullscreen ? "center" : "flex-start",
-        padding: isFullscreen ? "10px" : "20px",
-        paddingBottom: isFullscreen ? "80px" : "100px",
-        paddingTop: isFullscreen ? "10px" : "20px",
+        padding: isFullscreen ? "5vh 5vw" : "20px",
         position: "relative",
-        overflowY: "auto",
-        overflowX: "hidden"
+        overflow: isFullscreen ? "hidden" : "auto",
+        boxSizing: "border-box"
       }}
     >
       {/* Background Animation */}
@@ -113,9 +120,10 @@ export default function QRDisplay() {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.8 }}
         style={{ 
-          marginTop: isFullscreen ? "10px" : "20px", 
-          marginBottom: isFullscreen ? "15px" : "30px", 
-          zIndex: 10 
+          marginTop: isFullscreen ? "0" : "20px", 
+          marginBottom: isFullscreen ? "2vh" : "30px", 
+          zIndex: 10,
+          flexShrink: 0
         }}
       >
         <ApyironLogo size={isFullscreen ? "small" : "medium"} showCircle={true} />
@@ -131,23 +139,30 @@ export default function QRDisplay() {
           transition={{ duration: 0.6 }}
           className={`${currentQR.borderColor} ${currentQR.shadowColor}`}
           style={{
-            maxWidth: isFullscreen ? "90vw" : "700px",
+            maxWidth: isFullscreen ? "85vw" : "700px",
             width: "100%",
             background: "rgba(15, 23, 42, 0.95)",
             backdropFilter: "blur(20px)",
-            borderRadius: isFullscreen ? "20px" : "30px",
-            padding: isFullscreen ? "20px 15px" : "30px 20px",
+            borderRadius: isFullscreen ? "16px" : "30px",
+            padding: isFullscreen ? "2vh 3vw" : "30px 20px",
             border: "3px solid",
             textAlign: "center",
             position: "relative",
-            zIndex: 10
+            zIndex: 10,
+            flexShrink: 0,
+            maxHeight: isFullscreen ? "80vh" : "none",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center"
           }}
         >
           {/* Icon */}
           <div style={{
-            fontSize: isFullscreen ? "clamp(1.8rem, 5vw, 3rem)" : "clamp(2.5rem, 6vw, 4rem)",
-            marginBottom: isFullscreen ? "10px" : "16px",
-            animation: "pulse 2s ease-in-out infinite"
+            fontSize: isFullscreen ? "clamp(1.5rem, 4vh, 2.5rem)" : "clamp(2.5rem, 6vw, 4rem)",
+            marginBottom: isFullscreen ? "1vh" : "16px",
+            animation: "pulse 2s ease-in-out infinite",
+            flexShrink: 0
           }}>
             {currentQR.icon}
           </div>
@@ -156,11 +171,12 @@ export default function QRDisplay() {
           <h1 
             className={`bg-gradient-to-r ${currentQR.gradient} bg-clip-text`}
             style={{
-              fontSize: isFullscreen ? "clamp(1.2rem, 3.5vw, 2rem)" : "clamp(1.5rem, 4vw, 2.5rem)",
+              fontSize: isFullscreen ? "clamp(1rem, 2.5vh, 1.8rem)" : "clamp(1.5rem, 4vw, 2.5rem)",
               fontWeight: "900",
               color: "transparent",
-              marginBottom: isFullscreen ? "8px" : "12px",
-              lineHeight: "1.2"
+              marginBottom: isFullscreen ? "0.5vh" : "12px",
+              lineHeight: "1.2",
+              flexShrink: 0
             }}
           >
             {currentQR.title}
@@ -168,10 +184,11 @@ export default function QRDisplay() {
 
           {/* Subtitle */}
           <p style={{
-            fontSize: isFullscreen ? "clamp(0.8rem, 2vw, 1.1rem)" : "clamp(1rem, 2.5vw, 1.3rem)",
+            fontSize: isFullscreen ? "clamp(0.75rem, 1.8vh, 1rem)" : "clamp(1rem, 2.5vw, 1.3rem)",
             color: "#cbd5e1",
-            marginBottom: isFullscreen ? "15px" : "24px",
-            fontWeight: "600"
+            marginBottom: isFullscreen ? "1.5vh" : "24px",
+            fontWeight: "600",
+            flexShrink: 0
           }}>
             {currentQR.subtitle}
           </p>
@@ -183,18 +200,19 @@ export default function QRDisplay() {
             transition={{ delay: 0.3, duration: 0.5 }}
             style={{
               display: "inline-block",
-              padding: isFullscreen ? "12px" : "16px",
+              padding: isFullscreen ? "1vh" : "16px",
               background: "white",
-              borderRadius: isFullscreen ? "16px" : "24px",
-              boxShadow: "0 20px 60px rgba(0, 0, 0, 0.5)"
+              borderRadius: isFullscreen ? "12px" : "24px",
+              boxShadow: "0 20px 60px rgba(0, 0, 0, 0.5)",
+              flexShrink: 0
             }}
           >
             <img
               src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(currentQR.url)}`}
               alt="QR Code"
               style={{
-                width: isFullscreen ? "clamp(180px, 30vw, 250px)" : "clamp(200px, 35vw, 300px)",
-                height: isFullscreen ? "clamp(180px, 30vw, 250px)" : "clamp(200px, 35vw, 300px)",
+                width: isFullscreen ? "clamp(150px, 25vh, 220px)" : "clamp(200px, 35vw, 300px)",
+                height: isFullscreen ? "clamp(150px, 25vh, 220px)" : "clamp(200px, 35vw, 300px)",
                 display: "block"
               }}
             />
@@ -206,10 +224,11 @@ export default function QRDisplay() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6 }}
             style={{
-              marginTop: isFullscreen ? "12px" : "20px",
-              fontSize: isFullscreen ? "clamp(0.75rem, 1.5vw, 1rem)" : "clamp(0.9rem, 1.8vw, 1.2rem)",
+              marginTop: isFullscreen ? "1vh" : "20px",
+              fontSize: isFullscreen ? "clamp(0.7rem, 1.5vh, 0.95rem)" : "clamp(0.9rem, 1.8vw, 1.2rem)",
               color: "#94a3b8",
-              fontWeight: "600"
+              fontWeight: "600",
+              flexShrink: 0
             }}
           >
             📱 סרקו עם המצלמה שלכם
@@ -221,8 +240,9 @@ export default function QRDisplay() {
       <div style={{
         display: "flex",
         gap: isFullscreen ? "8px" : "12px",
-        marginTop: isFullscreen ? "12px" : "24px",
-        zIndex: 10
+        marginTop: isFullscreen ? "2vh" : "24px",
+        zIndex: 10,
+        flexShrink: 0
       }}>
         {qrData.map((_, index) => (
           <button
