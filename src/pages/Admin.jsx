@@ -296,6 +296,61 @@ export default function Admin() {
               />
             </label>
           </div>
+
+          {/* Display Screens Section */}
+          <div style={{
+            marginTop: "20px",
+            padding: "16px",
+            background: "rgba(0, 202, 255, 0.08)",
+            border: "1px solid rgba(0, 202, 255, 0.2)",
+            borderRadius: "12px"
+          }}>
+            <div style={{ fontSize: "0.9rem", fontWeight: "700", color: "#00caff", marginBottom: "12px" }}>
+              📺 מסכים מוצגים
+            </div>
+            <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+              <a
+                href="/#/Audience"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  padding: "8px 16px",
+                  borderRadius: "8px",
+                  border: "1px solid rgba(0, 202, 255, 0.3)",
+                  background: "rgba(0, 202, 255, 0.1)",
+                  color: "#00caff",
+                  fontSize: "0.85rem",
+                  fontWeight: "600",
+                  textDecoration: "none",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px"
+                }}
+              >
+                🎤 מסך קהל
+              </a>
+              <a
+                href="/#/QRDisplay"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  padding: "8px 16px",
+                  borderRadius: "8px",
+                  border: "1px solid rgba(139, 92, 246, 0.3)",
+                  background: "rgba(139, 92, 246, 0.1)",
+                  color: "#a78bfa",
+                  fontSize: "0.85rem",
+                  fontWeight: "600",
+                  textDecoration: "none",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px"
+                }}
+              >
+                📱 מסך ברקודים
+              </a>
+            </div>
+          </div>
         </div>
 
         {/* Reset Confirmation Modal */}
