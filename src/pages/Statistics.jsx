@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
-import { Trophy, TrendingUp, Star, Music, Award, Target } from "lucide-react";
+import { Trophy, TrendingUp, Star, Music, Target } from "lucide-react";
 import NavigationMenu from "../components/NavigationMenu";
 import ApyironLogo from "../components/ApyironLogo";
 

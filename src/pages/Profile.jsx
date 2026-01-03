@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { ArrowRight, Camera, User, Save } from "lucide-react";
 import ApyironLogo from "../components/ApyironLogo";
-import { base44 } from "@/api/base44Client";
 
 export default function Profile() {
   const [profileData, setProfileData] = useState({

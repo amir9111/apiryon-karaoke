@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Calendar, Users, Music, Sparkles, Phone, Mail, MapPin, Clock, Star, ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
+import { Calendar, Users, Music, Sparkles, Phone, MapPin, Clock, Star, ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ApyironLogo from "../components/ApyironLogo";
 import { base44 } from "@/api/base44Client";

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { Camera, Download, Share2, Upload, X, Plus, MessageSquare, Star, Quote } from "lucide-react";
+import { Camera, Download, Share2, Upload, X, Plus, Star, Quote } from "lucide-react";
 import ApyironLogo from "../components/ApyironLogo";
 import MenuButton from "../components/MenuButton";
 import { showToast, confirmAction } from "@/utils/toast";

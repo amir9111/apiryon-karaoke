@@ -1,7 +1,4 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { createPageUrl } from "@/utils";
-import ApyironLogo from "./ApyironLogo";
 
 export default function TermsModal({ onAccept }) {
   const [scrolledToBottom, setScrolledToBottom] = useState(false);

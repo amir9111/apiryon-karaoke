@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Clock, Users, Trash2, CheckCircle } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 

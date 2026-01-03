@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Menu, X, Tv, Shield, BarChart3, UserPlus, Camera, Home, Users, Star } from "lucide-react";
+import { Menu, X, Tv, Shield, BarChart3, Camera, Home, Users, Star } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
