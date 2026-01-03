@@ -164,50 +164,99 @@ const SongView = ({ song }) => (
   </motion.div>
 );
 
-// תצוגת IDLE (QR / גלריה / לוגו)
-const IdleView = ({ galleryImages }) => {
-    // רוטציה פנימית ל-Idle: QR קריוקי -> QR ווטסאפ -> QR טיקטוק -> גלריה -> לוגו
+// תצוגת QR מרכזית (3 ברקודים)
+const QRView = () => {
     const [step, setStep] = useState(0);
-    const hasGallery = galleryImages && galleryImages.length > 0;
-    const totalSteps = hasGallery ? 5 : 4; // 3 QR + גלריה (אם יש) + לוגו
     
     useEffect(() => {
-        const interval = setInterval(() => setStep(prev => (prev + 1) % totalSteps), 10000);
+        const interval = setInterval(() => setStep(prev => (prev + 1) % 3), 8000);
         return () => clearInterval(interval);
-    }, [totalSteps]);
-
-    const homeUrl = `${window.location.origin}/#/Home`;
+    }, []);
 
     const qrData = [
         {
-            title: "תרשם לתור!",
-            subtitle: "סרקו לרישום שיר",
-            url: homeUrl,
-            borderColor: "border-cyan-500",
-            shadowColor: "shadow-[0_0_100px_rgba(6,182,212,0.3)]",
-            textColor: "text-cyan-400"
-        },
-        {
+            icon: "📢",
             title: "הצטרפו לקבוצה!",
             subtitle: "קבוצת עדכונים בווטסאפ",
             url: "https://chat.whatsapp.com/KgbFSjNZtna645X5iRkB15",
             borderColor: "border-green-500",
-            shadowColor: "shadow-[0_0_100px_rgba(34,197,94,0.3)]",
-            textColor: "text-green-400"
+            shadowColor: "shadow-[0_0_100px_rgba(34,197,94,0.4)]"
         },
         {
+            icon: "🎵",
             title: "עקבו בטיקטוק!",
             subtitle: "@apiryon.club",
             url: "https://www.tiktok.com/@apiryon.club",
             borderColor: "border-pink-500",
-            shadowColor: "shadow-[0_0_100px_rgba(236,72,153,0.3)]",
-            textColor: "text-pink-400"
+            shadowColor: "shadow-[0_0_100px_rgba(236,72,153,0.4)]"
+        },
+        {
+            icon: "📸",
+            title: "גלריית התמונות!",
+            subtitle: "ראו רגעים מיוחדים",
+            url: `${window.location.origin}/#/Gallery`,
+            borderColor: "border-purple-500",
+            shadowColor: "shadow-[0_0_100px_rgba(168,85,247,0.4)]"
         }
     ];
 
     const currentQR = qrData[step];
-    const isGalleryStep = step === 3 && hasGallery;
-    const isLogoStep = hasGallery ? step === 4 : step === 3;
+
+    return (
+        <motion.div 
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-950 to-slate-900 relative"
+        >
+            <AnimatePresence mode="wait">
+                <motion.div
+                    key={step}
+                    initial={{ scale: 0.9, opacity: 0, rotateY: -15 }}
+                    animate={{ scale: 1, opacity: 1, rotateY: 0 }}
+                    exit={{ scale: 0.9, opacity: 0, rotateY: 15 }}
+                    transition={{ duration: 0.6 }}
+                    className={`flex flex-col items-center gap-8 bg-slate-900/95 p-16 rounded-[3rem] border-4 ${currentQR.borderColor} ${currentQR.shadowColor} backdrop-blur-xl`}
+                >
+                    <div className="text-8xl mb-4 animate-pulse">{currentQR.icon}</div>
+                    <h2 className="text-7xl font-black text-white text-center">{currentQR.title}</h2>
+                    <div className="bg-white p-6 rounded-3xl shadow-2xl">
+                        <img 
+                            src={`https://api.qrserver.com/v1/create-qr-code/?size=450x450&data=${encodeURIComponent(currentQR.url)}`}
+                            alt="QR" 
+                            className="w-96 h-96"
+                        />
+                    </div>
+                    <p className="text-4xl text-cyan-400 font-bold">{currentQR.subtitle}</p>
+                    <p className="text-2xl text-slate-400 mt-4">📱 סרקו עם המצלמה שלכם</p>
+                </motion.div>
+            </AnimatePresence>
+
+            {/* Pagination Dots */}
+            <div className="absolute bottom-12 flex gap-4">
+                {qrData.map((_, index) => (
+                    <div
+                        key={index}
+                        className={`h-4 rounded-full transition-all duration-300 ${
+                            step === index 
+                                ? 'w-12 bg-gradient-to-r from-cyan-400 to-blue-500 shadow-[0_0_20px_rgba(0,202,255,0.6)]' 
+                                : 'w-4 bg-slate-600'
+                        }`}
+                    />
+                ))}
+            </div>
+        </motion.div>
+    );
+};
+
+// תצוגת IDLE (גלריה / לוגו)
+const IdleView = ({ galleryImages }) => {
+    const [showGallery, setShowGallery] = useState(true);
+    const hasGallery = galleryImages && galleryImages.length > 0;
+    
+    useEffect(() => {
+        if (!hasGallery) return;
+        const interval = setInterval(() => setShowGallery(prev => !prev), 12000);
+        return () => clearInterval(interval);
+    }, [hasGallery]);
 
     return (
         <motion.div 
@@ -215,24 +264,7 @@ const IdleView = ({ galleryImages }) => {
             className="w-full h-full flex items-center justify-center bg-slate-950 relative"
         >
             <AnimatePresence mode="wait">
-                {step < 3 && (
-                    <motion.div 
-                        key={`qr-${step}`}
-                        initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.8, opacity: 0 }}
-                        className={`flex flex-col items-center gap-8 bg-slate-900 p-16 rounded-[3rem] border-4 ${currentQR.borderColor} ${currentQR.shadowColor}`}
-                    >
-                        <h2 className="text-6xl font-black text-white">{currentQR.title}</h2>
-                        <div className="bg-white p-4 rounded-3xl">
-                             <img 
-                                src={`https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${currentQR.url}`}
-                                alt="QR" className="w-80 h-80"
-                             />
-                        </div>
-                        <p className={`text-3xl ${currentQR.textColor} font-bold`}>{currentQR.subtitle}</p>
-                    </motion.div>
-                )}
-
-                {isGalleryStep && galleryImages.length > 0 && (
+                {showGallery && hasGallery && galleryImages.length > 0 ? (
                     <motion.div 
                         key="gallery"
                         initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
@@ -247,9 +279,7 @@ const IdleView = ({ galleryImages }) => {
                             <p className="text-4xl text-cyan-400 font-bold">📸 מהגלריה שלנו</p>
                         </div>
                     </motion.div>
-                )}
-
-                {isLogoStep && (
+                ) : (
                     <motion.div 
                         key="logo"
                         initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
@@ -336,15 +366,25 @@ export default function SmartAudience() {
             ? prev 
             : { type: 'song', data: currentSong }
         );
-        
+
         // בדיקה חוזרת עוד 5 שניות אם נכנס משהו חדש לתור
         timeoutId = setTimeout(playNext, 5000);
         return;
       }
 
-      // 4. ברירת מחדל: IDLE
+      // 4. עדיפות רביעית: QR Display (כל 30 שניות)
+      const now = Date.now();
+      const lastQR = sessionStorage.getItem('lastQRDisplay');
+      if (!lastQR || now - parseInt(lastQR) > 30000) {
+        sessionStorage.setItem('lastQRDisplay', now.toString());
+        setCurrentView({ type: 'qr', data: null });
+        timeoutId = setTimeout(playNext, 20000); // 20 שניות QR
+        return;
+      }
+
+      // 5. ברירת מחדל: IDLE
       setCurrentView({ type: 'idle', data: null });
-      timeoutId = setTimeout(playNext, 5000);
+      timeoutId = setTimeout(playNext, 8000);
     };
 
     playNext();
@@ -382,6 +422,10 @@ export default function SmartAudience() {
 
         {currentView.type === 'song' && (
            <SongView key="song" song={currentView.data} />
+        )}
+
+        {currentView.type === 'qr' && (
+           <QRView key="qr" />
         )}
 
         {currentView.type === 'idle' && (
