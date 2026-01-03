@@ -8,12 +8,12 @@ import Home from './pages/Home';
 import Landing from './pages/Landing';
 import ManualQueue from './pages/ManualQueue';
 import Profile from './pages/Profile';
+import QRDisplay from './pages/QRDisplay';
 import ReserveTable from './pages/ReserveTable';
 import Statistics from './pages/Statistics';
 import Terms from './pages/Terms';
 import UploadToScreen from './pages/UploadToScreen';
 import UserManagement from './pages/UserManagement';
-import QRDisplay from './pages/QRDisplay';
 
 
 export const PAGES = {
@@ -27,12 +27,12 @@ export const PAGES = {
     "Landing": Landing,
     "ManualQueue": ManualQueue,
     "Profile": Profile,
+    "QRDisplay": QRDisplay,
     "ReserveTable": ReserveTable,
     "Statistics": Statistics,
     "Terms": Terms,
     "UploadToScreen": UploadToScreen,
     "UserManagement": UserManagement,
-    "QRDisplay": QRDisplay,
 }
 
 export const pagesConfig = {
