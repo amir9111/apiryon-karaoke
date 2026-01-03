@@ -6,6 +6,10 @@ import ApyironLogo from "../components/ApyironLogo";
 import NavigationMenu from "../components/NavigationMenu";
 import PerformanceTimer from "../components/admin/PerformanceTimer";
 import SongHistory from "../components/admin/SongHistory";
+import { sanitizeInput } from "@/utils/sanitize";
+import { showToast } from "@/utils/toast";
+import { logger } from "@/utils/logger";
+import DOMPurify from 'dompurify';
 
 export default function Admin() {
   const [user, setUser] = useState(null);
@@ -37,8 +41,8 @@ export default function Admin() {
   const { data: requests = [], isLoading } = useQuery({
     queryKey: ['karaoke-requests'],
     queryFn: () => base44.entities.KaraokeRequest.list('-created_date', 200),
-    refetchInterval: 2000,
-    staleTime: 1000,
+    refetchInterval: 5000,
+    staleTime: 3000,
   });
 
   const { data: songs = [] } = useQuery({
@@ -65,25 +69,30 @@ export default function Admin() {
     try {
       const allRequests = await base44.entities.KaraokeRequest.list('-created_date', 500);
       
-      for (const req of allRequests) {
-        await base44.entities.KaraokeRequest.delete(req.id);
-      }
+      const deleteResults = await Promise.allSettled(
+        allRequests.map(req => base44.entities.KaraokeRequest.delete(req.id))
+      );
+      
+      const successful = deleteResults.filter(r => r.status === 'fulfilled').length;
+      const failed = deleteResults.filter(r => r.status === 'rejected').length;
       
       // לוג הפעולה
       await base44.entities.AdminLog.create({
         admin_email: user.email,
         admin_name: user.full_name,
         action_type: 'reset',
-        action_description: `איפוס מלא של ${allRequests.length} בקשות קריוקי`,
+        action_description: `איפוס מלא - ${successful} נמחקו, ${failed} נכשלו`,
         entity_type: 'KaraokeRequest'
       });
       
       await queryClient.invalidateQueries({ queryKey: ['karaoke-requests'] });
       setShowResetConfirm(false);
-      alert('✅ כל הסטטיסטיקות אופסו בהצלחה!');
+      showToast.success(
+        `✅ ${successful} רשומות נמחקו בהצלחה${failed > 0 ? ` (${failed} שגיאות)` : '!'}`
+      );
     } catch (error) {
-      console.error('Error resetting statistics:', error);
-      alert('❌ שגיאה באיפוס הסטטיסטיקות');
+      logger.error('Error resetting statistics:', error);
+      showToast.error('❌ שגיאה באיפוס הסטטיסטיקות');
     } finally {
       setIsResetting(false);
     }
@@ -135,14 +144,14 @@ export default function Admin() {
 
   const addManualSinger = () => {
     if (!newSinger.singer_name.trim() || !newSinger.song_title.trim()) {
-      alert("נא למלא שם זמר ושם שיר");
+      showToast.error("נא למלא שם זמר ושם שיר");
       return;
     }
     
     createMutation.mutate({
-      singer_name: newSinger.singer_name.trim(),
-      song_title: newSinger.song_title.trim(),
-      song_artist: newSinger.song_artist.trim(),
+      singer_name: sanitizeInput(newSinger.singer_name, 100),
+      song_title: sanitizeInput(newSinger.song_title, 200),
+      song_artist: sanitizeInput(newSinger.song_artist, 200),
       status: "waiting"
     });
     
@@ -167,9 +176,9 @@ export default function Admin() {
     try {
       // Delete all existing media first
       const existingMedia = await base44.entities.MediaUpload.list('-created_date', 100);
-      for (const media of existingMedia) {
-        await base44.entities.MediaUpload.delete(media.id);
-      }
+      await Promise.allSettled(
+        existingMedia.map(media => base44.entities.MediaUpload.delete(media.id))
+      );
 
       // Upload new file
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
@@ -190,10 +199,10 @@ export default function Admin() {
         entity_type: 'MediaUpload'
       });
 
-      alert("✅ התמונה הועלתה בהצלחה!");
+      showToast.success("✅ התמונה הועלתה בהצלחה!");
     } catch (err) {
-      console.error("Error uploading media:", err);
-      alert("❌ שגיאה בהעלאת התמונה");
+      logger.error("Error uploading media:", err);
+      showToast.error("❌ שגיאה בהעלאת התמונה");
     } finally {
       setUploadingMedia(false);
       e.target.value = '';
@@ -528,10 +537,10 @@ export default function Admin() {
                     <div style={{ fontSize: "0.85rem", color: "#00caff", fontWeight: "600" }}>🎤 שר כרגע</div>
                     <PerformanceTimer startedAt={currentSong.started_at} />
                   </div>
-                  <div style={{ fontSize: "1.5rem", fontWeight: "700", color: "#f1f5f9", marginBottom: "6px" }}>{currentSong.singer_name}</div>
-                  <div style={{ fontSize: "1.1rem", color: "#cbd5e1", marginBottom: "4px" }}>{currentSong.song_title}</div>
+                  <div style={{ fontSize: "1.5rem", fontWeight: "700", color: "#f1f5f9", marginBottom: "6px" }} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(currentSong.singer_name) }} />
+                  <div style={{ fontSize: "1.1rem", color: "#cbd5e1", marginBottom: "4px" }} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(currentSong.song_title) }} />
                   {currentSong.song_artist && (
-                    <div style={{ fontSize: "0.9rem", color: "#94a3b8", marginBottom: "4px" }}>{currentSong.song_artist}</div>
+                    <div style={{ fontSize: "0.9rem", color: "#94a3b8", marginBottom: "4px" }} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(currentSong.song_artist) }} />
                   )}
                   {currentSong.song_id && (
                     <div style={{ 
@@ -584,10 +593,10 @@ export default function Admin() {
                   boxShadow: "0 0 30px rgba(0, 202, 255, 0.2)"
                 }}>
                   <div style={{ fontSize: "0.85rem", color: "#00caff", marginBottom: "8px", fontWeight: "600" }}>⏭️ הבא בתור</div>
-                  <div style={{ fontSize: "1.5rem", fontWeight: "700", color: "#f1f5f9", marginBottom: "6px" }}>{waitingList[0].singer_name}</div>
-                  <div style={{ fontSize: "1.1rem", color: "#cbd5e1", marginBottom: "4px" }}>{waitingList[0].song_title}</div>
+                  <div style={{ fontSize: "1.5rem", fontWeight: "700", color: "#f1f5f9", marginBottom: "6px" }} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(waitingList[0].singer_name) }} />
+                  <div style={{ fontSize: "1.1rem", color: "#cbd5e1", marginBottom: "4px" }} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(waitingList[0].song_title) }} />
                   {waitingList[0].song_artist && (
-                    <div style={{ fontSize: "0.9rem", color: "#94a3b8", marginBottom: "4px" }}>{waitingList[0].song_artist}</div>
+                    <div style={{ fontSize: "0.9rem", color: "#94a3b8", marginBottom: "4px" }} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(waitingList[0].song_artist) }} />
                   )}
                   {waitingList[0].song_id && (
                     <div style={{ 
@@ -861,10 +870,8 @@ export default function Admin() {
                             {index + 1}
                           </div>
                           <div style={{ flex: 1 }}>
-                            <div style={{ fontSize: "1rem", fontWeight: "700", color: "#f1f5f9" }}>{req.singer_name}</div>
-                            <div style={{ fontSize: "0.85rem", color: "#94a3b8" }}>
-                              {req.song_title}{req.song_artist ? ` • ${req.song_artist}` : ""}
-                            </div>
+                            <div style={{ fontSize: "1rem", fontWeight: "700", color: "#f1f5f9" }} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(req.singer_name) }} />
+                            <div style={{ fontSize: "0.85rem", color: "#94a3b8" }} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(`${req.song_title}${req.song_artist ? ` • ${req.song_artist}` : ""}`) }} />
                           </div>
                         </div>
                       </div>

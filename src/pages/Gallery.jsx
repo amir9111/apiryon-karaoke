@@ -5,6 +5,8 @@ import { motion } from "framer-motion";
 import { Camera, Download, Share2, Upload, X, Plus, MessageSquare, Star, Quote } from "lucide-react";
 import ApyironLogo from "../components/ApyironLogo";
 import MenuButton from "../components/MenuButton";
+import { showToast, confirmAction } from "@/utils/toast";
+import { logger } from "@/utils/logger";
 
 export default function Gallery() {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -52,31 +54,35 @@ export default function Gallery() {
 
   const handleDeleteSelected = async () => {
     if (selectedImages.length === 0) {
-      alert('לא נבחרו תמונות למחיקה');
+      showToast.warning('לא נבחרו תמונות למחיקה');
       return;
     }
 
-    if (!confirm(`למחוק ${selectedImages.length} תמונות?`)) {
-      return;
-    }
+    confirmAction(
+      `למחוק ${selectedImages.length} תמונות?`,
+      async () => {
+        let deleted = 0;
+        let errors = 0;
 
-    let deleted = 0;
-    let errors = 0;
+        const deleteToastId = showToast.loading('מוחק תמונות...');
 
-    for (const imageId of selectedImages) {
-      try {
-        await base44.entities.GalleryImage.delete(imageId);
-        deleted++;
-      } catch (err) {
-        console.error('שגיאה במחיקת תמונה:', imageId, err);
-        errors++;
+        for (const imageId of selectedImages) {
+          try {
+            await base44.entities.GalleryImage.delete(imageId);
+            deleted++;
+          } catch (err) {
+            logger.error('שגיאה במחיקת תמונה:', imageId, err);
+            errors++;
+          }
+        }
+
+        showToast.dismiss(deleteToastId);
+        showToast.success(`✅ נמחקו ${deleted} תמונות${errors > 0 ? ` (${errors} שגיאות)` : ''}`);
+        setSelectedImages([]);
+        setSelectionMode(false);
+        queryClient.invalidateQueries({ queryKey: ['gallery-images'] });
       }
-    }
-
-    alert(`✅ נמחקו ${deleted} תמונות${errors > 0 ? ` (${errors} שגיאות)` : ''}`);
-    setSelectedImages([]);
-    setSelectionMode(false);
-    queryClient.invalidateQueries({ queryKey: ['gallery-images'] });
+    );
   };
 
 
@@ -166,7 +172,7 @@ export default function Gallery() {
       window.URL.revokeObjectURL(url);
       a.remove();
     } catch (err) {
-      alert('שגיאה בהורדת התמונה');
+      showToast.error('שגיאה בהורדת התמונה');
     }
   };
 
@@ -774,7 +780,7 @@ export default function Gallery() {
                         {selectedImages.includes(img.id) && <span style={{ color: "white", fontSize: "1.2rem" }}>✓</span>}
                       </div>
               }
-                    <img
+                    <img loading="lazy"
                 src={img.image_url}
                 alt="תמונה מהגלריה"
                 loading="lazy"
@@ -894,7 +900,7 @@ export default function Gallery() {
             <X className="w-6 h-6" />
           </button>
 
-          <img
+          <img loading="lazy"
           src={selectedImage.image_url}
           alt="תצוגה מקדימה"
           onClick={(e) => e.stopPropagation()}

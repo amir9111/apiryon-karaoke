@@ -15,6 +15,9 @@ import AccessibilityHelper from "../components/AccessibilityHelper";
 import PWADebugger from "../components/PWADebugger";
 import TutorialOverlay from "../components/TutorialOverlay";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { sanitizeInput } from "@/utils/sanitize";
+import { safeLocalStorage } from "@/utils/safeStorage";
+import { logger } from "@/utils/logger";
 
 export default function Home() {
   const [formData, setFormData] = useState({
@@ -38,8 +41,8 @@ export default function Home() {
   const { data: requests = [] } = useQuery({
     queryKey: ['karaoke-requests'],
     queryFn: () => base44.entities.KaraokeRequest.list('-created_date', 50),
-    refetchInterval: 5000,
-    staleTime: 4000,
+    refetchInterval: 10000,
+    staleTime: 8000,
     cacheTime: 60000
   });
 
@@ -54,26 +57,21 @@ export default function Home() {
 
   React.useEffect(() => {
     let timer;
-    try {
-      if (typeof window === 'undefined') return;
-      const hasAcceptedTerms = localStorage.getItem('apiryon_terms_accepted');
-      const hasVisited = localStorage.getItem('apiryon_visited');
-      
-      if (!hasAcceptedTerms) {
-        setShowTerms(true);
-      } else {
-        setTermsAccepted(true);
-        if (!hasVisited) {
-          localStorage.setItem('apiryon_visited', 'true');
-          setShowWelcome(true);
-          
-          timer = setTimeout(() => {
-            setShowWelcome(false);
-          }, 5000);
-        }
-      }
-    } catch (e) {
+    const hasAcceptedTerms = safeLocalStorage.getItem('apiryon_terms_accepted');
+    const hasVisited = safeLocalStorage.getItem('apiryon_visited');
+    
+    if (!hasAcceptedTerms) {
+      setShowTerms(true);
+    } else {
       setTermsAccepted(true);
+      if (!hasVisited) {
+        safeLocalStorage.setItem('apiryon_visited', 'true');
+        setShowWelcome(true);
+        
+        timer = setTimeout(() => {
+          setShowWelcome(false);
+        }, 5000);
+      }
     }
     
     return () => {
@@ -82,13 +80,7 @@ export default function Home() {
   }, []);
 
   const handleAcceptTerms = () => {
-    try {
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('apiryon_terms_accepted', 'true');
-      }
-    } catch (e) {
-      // Silent fail
-    }
+    safeLocalStorage.setItem('apiryon_terms_accepted', 'true');
     setShowTerms(false);
     setTermsAccepted(true);
     setShowWelcome(true);
@@ -105,15 +97,10 @@ export default function Home() {
   };
 
   React.useEffect(() => {
-    try {
-      if (typeof window === 'undefined') return;
-      const savedName = localStorage.getItem('apiryon_user_name');
-      
-      if (savedName) {
-        setNamePlaceholder(savedName);
-      }
-    } catch (e) {
-      // localStorage not available
+    const savedName = safeLocalStorage.getItem('apiryon_user_name');
+    
+    if (savedName) {
+      setNamePlaceholder(sanitizeInput(savedName, 100));
     }
   }, []);
 
@@ -137,24 +124,20 @@ export default function Home() {
 
     try {
       const sanitizedData = {
-        singer_name: formData.singer_name.trim().substring(0, 100),
-        email: `${formData.singer_name.trim()}@apiryon.local`,
-        song_title: formData.song_title.trim().substring(0, 200),
-        song_artist: formData.song_artist?.trim().substring(0, 200) || "",
+        singer_name: sanitizeInput(formData.singer_name, 100),
+        email: `${sanitizeInput(formData.singer_name, 100)}@apiryon.local`,
+        song_title: sanitizeInput(formData.song_title, 200),
+        song_artist: sanitizeInput(formData.song_artist || "", 200),
         song_id: null,
         status: "waiting",
         photo_url: null,
-        message: formData.message?.trim().substring(0, 100) || "",
+        message: sanitizeInput(formData.message || "", 100),
       };
 
       await base44.entities.KaraokeRequest.create(sanitizedData);
 
-      try {
-        localStorage.setItem('apiryon_user_email', sanitizedData.email);
-        localStorage.setItem('apiryon_user_name', formData.singer_name);
-      } catch (e) {
-        // localStorage not available
-      }
+      safeLocalStorage.setItem('apiryon_user_email', sanitizedData.email);
+      safeLocalStorage.setItem('apiryon_user_name', sanitizedData.singer_name);
 
       await queryClient.invalidateQueries({ queryKey: ["karaoke-requests"] });
 
@@ -172,7 +155,7 @@ export default function Home() {
 
       setTimeout(() => setStatus({ type: null, message: "" }), 4000);
     } catch (err) {
-      console.error(err);
+      logger.error('Failed to submit karaoke request:', err);
       setStatus({ type: "error", message: "שגיאה, נסה שוב" });
       setIsSubmitting(false);
     }
