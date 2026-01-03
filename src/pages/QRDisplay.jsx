@@ -68,14 +68,17 @@ export default function QRDisplay() {
       dir="rtl"
       style={{
         minHeight: "100vh",
+        height: "100%",
         background: "linear-gradient(135deg, #020617 0%, #0a1929 50%, #020617 100%)",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        justifyContent: "center",
-        padding: "40px 20px",
+        justifyContent: "flex-start",
+        padding: "20px",
+        paddingBottom: "100px",
         position: "relative",
-        overflow: "hidden"
+        overflowY: "auto",
+        overflowX: "hidden"
       }}
     >
       {/* Background Animation */}
@@ -108,9 +111,9 @@ export default function QRDisplay() {
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.8 }}
-        style={{ marginBottom: "60px", zIndex: 10 }}
+        style={{ marginTop: "20px", marginBottom: "30px", zIndex: 10 }}
       >
-        <ApyironLogo size="large" showCircle={true} />
+        <ApyironLogo size="medium" showCircle={true} />
       </motion.div>
 
       {/* Main QR Display */}
@@ -123,13 +126,13 @@ export default function QRDisplay() {
           transition={{ duration: 0.6 }}
           className={`${currentQR.borderColor} ${currentQR.shadowColor}`}
           style={{
-            maxWidth: "800px",
+            maxWidth: "700px",
             width: "100%",
             background: "rgba(15, 23, 42, 0.95)",
             backdropFilter: "blur(20px)",
-            borderRadius: "40px",
-            padding: "60px 40px",
-            border: "4px solid",
+            borderRadius: "30px",
+            padding: "30px 20px",
+            border: "3px solid",
             textAlign: "center",
             position: "relative",
             zIndex: 10
@@ -137,8 +140,8 @@ export default function QRDisplay() {
         >
           {/* Icon */}
           <div style={{
-            fontSize: "clamp(4rem, 8vw, 6rem)",
-            marginBottom: "24px",
+            fontSize: "clamp(2.5rem, 6vw, 4rem)",
+            marginBottom: "16px",
             animation: "pulse 2s ease-in-out infinite"
           }}>
             {currentQR.icon}
@@ -148,10 +151,10 @@ export default function QRDisplay() {
           <h1 
             className={`bg-gradient-to-r ${currentQR.gradient} bg-clip-text`}
             style={{
-              fontSize: "clamp(2rem, 5vw, 3.5rem)",
+              fontSize: "clamp(1.5rem, 4vw, 2.5rem)",
               fontWeight: "900",
               color: "transparent",
-              marginBottom: "16px",
+              marginBottom: "12px",
               lineHeight: "1.2"
             }}
           >
@@ -160,9 +163,9 @@ export default function QRDisplay() {
 
           {/* Subtitle */}
           <p style={{
-            fontSize: "clamp(1.2rem, 3vw, 1.8rem)",
+            fontSize: "clamp(1rem, 2.5vw, 1.3rem)",
             color: "#cbd5e1",
-            marginBottom: "48px",
+            marginBottom: "24px",
             fontWeight: "600"
           }}>
             {currentQR.subtitle}
@@ -175,18 +178,18 @@ export default function QRDisplay() {
             transition={{ delay: 0.3, duration: 0.5 }}
             style={{
               display: "inline-block",
-              padding: "24px",
+              padding: "16px",
               background: "white",
-              borderRadius: "32px",
+              borderRadius: "24px",
               boxShadow: "0 20px 60px rgba(0, 0, 0, 0.5)"
             }}
           >
             <img
-              src={`https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(currentQR.url)}`}
+              src={`https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=${encodeURIComponent(currentQR.url)}`}
               alt="QR Code"
               style={{
-                width: "clamp(250px, 40vw, 400px)",
-                height: "clamp(250px, 40vw, 400px)",
+                width: "clamp(200px, 35vw, 300px)",
+                height: "clamp(200px, 35vw, 300px)",
                 display: "block"
               }}
             />
@@ -198,8 +201,8 @@ export default function QRDisplay() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6 }}
             style={{
-              marginTop: "32px",
-              fontSize: "clamp(1rem, 2vw, 1.4rem)",
+              marginTop: "20px",
+              fontSize: "clamp(0.9rem, 1.8vw, 1.2rem)",
               color: "#94a3b8",
               fontWeight: "600"
             }}
@@ -212,8 +215,8 @@ export default function QRDisplay() {
       {/* Pagination Dots */}
       <div style={{
         display: "flex",
-        gap: "16px",
-        marginTop: "48px",
+        gap: "12px",
+        marginTop: "24px",
         zIndex: 10
       }}>
         {qrData.map((_, index) => (
@@ -244,8 +247,8 @@ export default function QRDisplay() {
         animate={{ opacity: 1 }}
         transition={{ delay: 1 }}
         style={{
-          marginTop: "24px",
-          fontSize: "0.95rem",
+          marginTop: "16px",
+          fontSize: "0.85rem",
           color: "#64748b",
           textAlign: "center",
           zIndex: 10
@@ -315,11 +318,12 @@ export default function QRDisplay() {
         transition={{ delay: 1.2 }}
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-          gap: "20px",
-          maxWidth: "1000px",
+          gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
+          gap: "15px",
+          maxWidth: "800px",
           width: "100%",
-          marginTop: "60px",
+          marginTop: "30px",
+          marginBottom: "20px",
           zIndex: 10
         }}
       >
@@ -329,12 +333,12 @@ export default function QRDisplay() {
             onClick={() => setCurrentIndex(index)}
             className={currentIndex === index ? qr.borderColor : "border-slate-700"}
             style={{
-              padding: "20px",
+              padding: "15px",
               background: currentIndex === index 
                 ? "rgba(15, 23, 42, 0.95)" 
                 : "rgba(15, 23, 42, 0.7)",
               backdropFilter: "blur(10px)",
-              borderRadius: "20px",
+              borderRadius: "15px",
               border: "2px solid",
               cursor: "pointer",
               transition: "all 0.3s",
@@ -349,8 +353,8 @@ export default function QRDisplay() {
               e.currentTarget.style.boxShadow = "none";
             }}
           >
-            <div style={{ fontSize: "2rem", marginBottom: "8px" }}>{qr.icon}</div>
-            <div style={{ fontSize: "0.9rem", color: "#cbd5e1", fontWeight: "600" }}>
+            <div style={{ fontSize: "1.5rem", marginBottom: "6px" }}>{qr.icon}</div>
+            <div style={{ fontSize: "0.8rem", color: "#cbd5e1", fontWeight: "600" }}>
               {qr.title.split('!')[0]}
             </div>
           </button>
