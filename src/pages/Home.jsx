@@ -14,6 +14,7 @@ import PushNotifications from "../components/PushNotifications";
 import AccessibilityHelper from "../components/AccessibilityHelper";
 import PWADebugger from "../components/PWADebugger";
 import TutorialOverlay from "../components/TutorialOverlay";
+import MyQueueTracker from "../components/MyQueueTracker";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { sanitizeInput } from "@/utils/sanitize";
 import { safeLocalStorage } from "@/utils/safeStorage";
@@ -581,6 +582,8 @@ export default function Home() {
             )}
           </form>
 
+          {/* My Queue Tracker */}
+          <MyQueueTracker />
 
         </div>
 
