@@ -176,3 +176,107 @@ base44 deploy --project apiryon
 **Repository:** https://github.com/amir9111/amir777  
 **Branch:** main  
 **Latest Commit:** c6d2ee2
+
+---
+
+## 🆘 פתרון נוסף: "המאגר לא נמצא"
+
+### הבעיה:
+```
+❌ לא ניתן היה לאחזר את הקוד מהמאגר
+   המאגר לא נמצא או שהגישה אליו הוסרה
+```
+
+### סיבות ופתרונות:
+
+#### 1. Repository הפך ל-Private:
+```bash
+# בדוק ב-GitHub:
+https://github.com/amir9111/amir777
+
+# אם יש 🔒 ליד השם - זה Private!
+
+# פתרון: הפוך ל-Public או תן הרשאות ל-Base44
+```
+
+**הפיכה ל-Public:**
+1. GitHub → Repository → Settings
+2. Danger Zone → Change visibility
+3. Make public → הקלד שם Repository
+4. אשר
+
+**מתן הרשאות ל-Private:**
+1. GitHub → Settings → Applications
+2. מצא "Base44"
+3. Repository access → בחר "amir777"
+4. Save
+
+#### 2. שם Repository השתנה:
+```bash
+# עדכן את ה-URL המקומי:
+cd /home/user/webapp
+git remote set-url origin https://github.com/USER/NEW-REPO.git
+
+# ואז ב-Base44:
+Settings → Integrations → GitHub → Disconnect → Connect
+```
+
+#### 3. Repository נמחק (לא סביר):
+```bash
+# אם נמחק - צור Repository חדש:
+1. GitHub → New Repository
+2. שם: apiryon-app (או שם אחר)
+3. הרץ:
+   cd /home/user/webapp
+   git remote set-url origin https://github.com/amir9111/NEW-REPO.git
+   git push -u origin main
+```
+
+---
+
+## 🎯 הצעדים המדויקים שלך:
+
+### צעד 1: בדוק את GitHub
+1. לך ל: **https://github.com/amir9111**
+2. מצא את **"amir777"** ברשימת Repositories
+3. בדוק מה הסטטוס:
+   - 🔒 Private? → עבור לצעד 2א
+   - שם שונה? → עבור לצעד 2ב
+   - לא קיים? → עבור לצעד 2ג
+
+### צעד 2א: אם Private
+1. Repository → Settings
+2. Danger Zone → Change visibility → **Make public**
+3. חזור ל-Base44 → Settings → Integrations
+4. Disconnect GitHub → Connect GitHub
+5. Deploy
+
+### צעד 2ב: אם שם שונה
+```bash
+# במחשב/Terminal:
+cd path/to/webapp
+git remote set-url origin https://github.com/amir9111/NEW-NAME.git
+git push origin main
+```
+אחר כך ב-Base44: Disconnect → Connect → בחר Repository חדש
+
+### צעד 2ג: אם נמחק - צור חדש
+1. GitHub → New Repository
+2. שם: `apiryon-karaoke` (לדוגמה)
+3. Create repository
+4. עדכן URL:
+```bash
+git remote set-url origin https://github.com/amir9111/apiryon-karaoke.git
+git push -u origin main --force
+```
+5. ב-Base44: Connect GitHub → בחר Repository חדש
+
+---
+
+## 📞 עזרה נוספת
+
+אם כל זה לא עזר:
+1. **תשלח לי צילום מסך** של דף ה-Repositories שלך ב-GitHub
+2. **תבדוק** אם יש Repository אחר עם הקוד
+3. **פנה לתמיכה** של Base44 עם הודעת השגיאה
+
