@@ -1,4 +1,4 @@
-#env
+# Environment
 .env
 .env.*
 !.env.example
@@ -12,7 +12,10 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies
 node_modules
+
+# Build outputs
 dist
 dist-ssr
 *.local
@@ -28,4 +31,14 @@ dist-ssr
 *.sln
 *.sw?
 
-.env
+# Archives
+*.zip
+*.tar.gz
+*.rar
+
+# Temporary files
+*.tmp
+.cache
+
+# OS files
+Thumbs.db
