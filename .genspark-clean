@@ -1,0 +1,11 @@
+# GenSpark Clean Marker
+# This file indicates that the project has been optimized and cleaned
+# Generated: 2026-01-06
+# Project size: 4MB (down from 367MB)
+# Status: OPTIMIZED ✓
+
+PROJECT_SIZE_MB=4
+CHECKPOINT_SAFE=true
+NODE_MODULES_REMOVED=true
+ARCHIVES_REMOVED=true
+GIT_CLEANED=true

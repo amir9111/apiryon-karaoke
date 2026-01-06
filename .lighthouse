@@ -1,0 +1,12 @@
+{
+  "project": "apiryon-karaoke",
+  "status": "optimized",
+  "size_mb": 4,
+  "checkpoint_compatible": true,
+  "last_cleanup": "2026-01-06T20:11:00Z",
+  "issues_resolved": [
+    "CHECKPOINT_LOAD_FAILURE",
+    "PROJECT_SIZE_OVERFLOW",
+    "NODE_MODULES_TRACKING"
+  ]
+}
