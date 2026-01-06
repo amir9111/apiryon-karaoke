@@ -56,6 +56,6 @@ fi
 echo ""
 
 echo "🔗 קישורים שימושיים:"
-echo "   • GitHub: https://github.com/amir9111/amir777"
+echo "   • GitHub: https://github.com/amir9111/apiryon-karaoke"
 echo "   • Base44: https://base44.com/dashboard"
 echo ""
